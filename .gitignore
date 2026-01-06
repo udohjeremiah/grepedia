@@ -18,15 +18,18 @@ coverage
 # Turbo
 .turbo
 
-# Vercel
-.vercel
+# TanStack
+.nitro
+.tanstack
+.wrangler
+.output
+.vinxi
+dist-ssr
 
 # Build Outputs
-.next/
 out/
 build
 dist
-
 
 # Debug
 npm-debug.log*

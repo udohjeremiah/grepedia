@@ -1,4 +1,4 @@
-node_modules
-.turbo
+**/routeTree.gen.ts
 dist
+node_modules
 pnpm-lock.yaml

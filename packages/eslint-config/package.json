@@ -5,12 +5,11 @@
   "private": true,
   "exports": {
     "./base": "./base.js",
-    "./next-js": "./next.js",
-    "./react-internal": "./react-internal.js"
+    "./react-library": "./react-library.js",
+    "./tanstack-start": "./tanstack-start.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@next/eslint-plugin-next": "^15.4.5",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
     "eslint": "^9.32.0",

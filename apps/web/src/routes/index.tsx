@@ -1,6 +1,9 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@workspace/ui/components/button";
 
-export default function Page() {
+export const Route = createFileRoute("/")({ component: RouteComponent });
+
+function RouteComponent() {
   return (
     <div className="flex min-h-svh items-center justify-center">
       <div className="flex flex-col items-center justify-center gap-4">
