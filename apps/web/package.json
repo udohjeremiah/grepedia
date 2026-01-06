@@ -40,6 +40,7 @@
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^9.32.0",
     "typescript": "^5.7.2",
     "vite": "^7.1.7"
   }

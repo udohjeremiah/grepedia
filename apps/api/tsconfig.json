@@ -1,0 +1,14 @@
+{
+  "extends": "@workspace/typescript-config/fastify.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "rootDir": "src",
+    "sourceMap": true,
+    "target": "ES2022"
+  },
+  "include": ["src/**/*.ts"]
+}
