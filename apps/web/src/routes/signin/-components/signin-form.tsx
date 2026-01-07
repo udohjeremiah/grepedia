@@ -16,19 +16,12 @@ import {
 } from "@workspace/ui/components/input-group";
 import { useState, type ComponentProps } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  EyeIcon,
-  EyeOffIcon,
-  LockIcon,
-  MailIcon,
-  UserRoundIcon,
-} from "lucide-react";
+import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
 import { z } from "zod";
 
 import { useForm } from "@tanstack/react-form";
 
 const formSchema = z.object({
-  fullName: z.string().min(2, "Must be at least 2 characters long"),
   emailAddress: z.email(),
   password: z.string().min(8, "Must be at least 8 characters long"),
 });
@@ -41,7 +34,6 @@ export default function SignupForm({
 
   const form = useForm({
     defaultValues: {
-      fullName: "",
       emailAddress: "",
       password: "",
     },
@@ -65,33 +57,6 @@ export default function SignupForm({
               The encyclopedia of tools powered by collective wisdom
             </p>
           </div>
-          <form.Field name="fullName">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <UserRoundIcon />
-                    </InputGroupAddon>
-                    <InputGroupInput
-                      aria-invalid={isInvalid}
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      required
-                    />
-                  </InputGroup>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
           <form.Field name="emailAddress">
             {(field) => {
               const isInvalid =
@@ -158,9 +123,9 @@ export default function SignupForm({
             }}
           </form.Field>
           <Field>
-            <Button type="submit">Create Account</Button>
+            <Button type="submit">Login</Button>
             <FieldDescription className="text-center">
-              Already have an account? <Link to="/signin">Sign in</Link>
+              Don&apos;t have an account? <Link to="/signup">Sign up</Link>
             </FieldDescription>
           </Field>
         </FieldGroup>
