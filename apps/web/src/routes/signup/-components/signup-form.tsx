@@ -60,7 +60,7 @@ export default function SignupForm({
       >
         <FieldGroup>
           <div className="flex flex-col items-center justify-center gap-0.5 text-center">
-            <h2 className="text-xl font-semibold">Grepedia</h2>
+            <h2 className="text-xl font-bold">Grepedia</h2>
             <p className="text-sm text-muted-foreground">
               The encyclopedia of tools powered by collective wisdom
             </p>
@@ -82,9 +82,9 @@ export default function SignupForm({
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
+                      required={true}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      required
                     />
                   </InputGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -110,9 +110,9 @@ export default function SignupForm({
                       type="email"
                       name={field.name}
                       value={field.state.value}
+                      required={true}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      required
                     />
                   </InputGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -138,9 +138,9 @@ export default function SignupForm({
                       type={showPassword ? "text" : "password"}
                       name={field.name}
                       value={field.state.value}
+                      required={true}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      required
                     />
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
