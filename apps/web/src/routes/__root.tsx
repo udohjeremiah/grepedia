@@ -10,6 +10,7 @@ import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import appCss from "@/styles/globals.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 export interface MyRouterContext {
   queryClient: QueryClient;
@@ -26,7 +27,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title:
+          "Grepedia — the encyclopedia of tools powered by collective wisdom",
+      },
+      {
+        name: "description",
+        content:
+          "Grepedia — the encyclopedia of tools powered by collective wisdom. Search and explore tools curated by the community.",
       },
     ],
     links: [
@@ -47,7 +54,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",
