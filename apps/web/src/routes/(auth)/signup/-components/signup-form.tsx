@@ -2,12 +2,10 @@ import { cn } from "@workspace/ui/lib/utils";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@workspace/ui/components/field";
-
 import {
   InputGroup,
   InputGroupAddon,
@@ -17,6 +15,8 @@ import {
 import { useState, type ComponentProps } from "react";
 import { Link } from "@tanstack/react-router";
 import {
+  AlertCircleIcon,
+  CircleCheckIcon,
   EyeIcon,
   EyeOffIcon,
   LockIcon,
@@ -24,34 +24,79 @@ import {
   UserRoundIcon,
 } from "lucide-react";
 import { z } from "zod";
-
 import { useForm } from "@tanstack/react-form";
+import { signUp } from "@/services/auth/sign-up";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@workspace/ui/components/alert";
+import { Spinner } from "@workspace/ui/components/spinner";
 
 const formSchema = z.object({
-  fullName: z.string().min(2, "Must be at least 2 characters long"),
-  emailAddress: z.email(),
-  password: z.string().min(8, "Must be at least 8 characters long"),
+  name: z.string().min(2, "Please provide at least 2 characters."),
+  email: z.email("Please provide a valid email address."),
+  password: z.string().min(8, "Please provide at least 8 characters."),
 });
+
+type SubmissionStatus = {
+  type: "error" | "success";
+  title: string;
+  message: string;
+};
 
 export default function SignupForm({
   className,
   ...props
 }: ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState(false);
+  const [submissionStatus, setSubmissionStatus] =
+    useState<SubmissionStatus | null>(null);
 
   const form = useForm({
     defaultValues: {
-      fullName: "",
-      emailAddress: "",
+      name: "",
+      email: "",
       password: "",
     },
     validators: {
       onSubmit: formSchema,
     },
+    onSubmit: async ({ value }) => {
+      setSubmissionStatus(null);
+
+      const { error } = await signUp(value);
+
+      if (error) {
+        setSubmissionStatus({
+          type: "error",
+          title: "Unable to create your account",
+          message: error.message ?? "Please check your details and try again.",
+        });
+        return;
+      }
+
+      form.reset();
+      setSubmissionStatus({
+        type: "success",
+        title: "Account created successfully",
+        message: "Check your email to verify your account before signing in.",
+      });
+    },
   });
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-12", className)} {...props}>
+      <img src="/favicon.svg" width={48} height={48} className="size-8" />
+      <div>
+        <h1 className="text-2xl font-medium">Welcome to Grepedia</h1>
+        <p className="text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Button asChild variant="link" className="size-fit gap-1 p-0">
+            <Link to="/signin">Sign in</Link>
+          </Button>
+        </p>
+      </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -59,13 +104,7 @@ export default function SignupForm({
         }}
       >
         <FieldGroup>
-          <div className="flex flex-col items-center justify-center gap-0.5 text-center">
-            <h2 className="text-xl font-bold">Grepedia</h2>
-            <p className="text-sm text-muted-foreground">
-              The encyclopedia of tools powered by collective wisdom
-            </p>
-          </div>
-          <form.Field name="fullName">
+          <form.Field name="name">
             {(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
@@ -80,7 +119,6 @@ export default function SignupForm({
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
-                      name={field.name}
                       value={field.state.value}
                       required={true}
                       onBlur={field.handleBlur}
@@ -92,7 +130,7 @@ export default function SignupForm({
               );
             }}
           </form.Field>
-          <form.Field name="emailAddress">
+          <form.Field name="email">
             {(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
@@ -108,7 +146,6 @@ export default function SignupForm({
                       aria-invalid={isInvalid}
                       id={field.name}
                       type="email"
-                      name={field.name}
                       value={field.state.value}
                       required={true}
                       onBlur={field.handleBlur}
@@ -136,7 +173,6 @@ export default function SignupForm({
                       aria-invalid={isInvalid}
                       id={field.name}
                       type={showPassword ? "text" : "password"}
-                      name={field.name}
                       value={field.state.value}
                       required={true}
                       onBlur={field.handleBlur}
@@ -158,10 +194,34 @@ export default function SignupForm({
             }}
           </form.Field>
           <Field>
-            <Button type="submit">Create Account</Button>
-            <FieldDescription className="text-center">
-              Already have an account? <Link to="/signin">Sign in</Link>
-            </FieldDescription>
+            <Button type="submit" disabled={form.state.isSubmitting}>
+              {form.state.isSubmitting ? (
+                <>
+                  <Spinner /> Creating account...
+                </>
+              ) : (
+                "Create Account"
+              )}
+            </Button>
+            {submissionStatus && (
+              <Alert
+                variant={
+                  submissionStatus.type === "success"
+                    ? "default"
+                    : "destructive"
+                }
+              >
+                {submissionStatus.type === "success" ? (
+                  <CircleCheckIcon />
+                ) : (
+                  <AlertCircleIcon />
+                )}
+                <AlertTitle>{submissionStatus.title}</AlertTitle>
+                <AlertDescription>
+                  <p>{submissionStatus.message}</p>
+                </AlertDescription>
+              </Alert>
+            )}
           </Field>
         </FieldGroup>
       </form>

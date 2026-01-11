@@ -1,8 +1,20 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+import { z } from "zod";
 
-const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get("/", async function (request, reply) {
-    return { root: true };
+const root: FastifyPluginAsyncZod = async (fastify) => {
+  fastify.route({
+    method: "GET",
+    url: "/",
+    schema: {
+      response: {
+        default: z.object({
+          root: z.boolean(),
+        }),
+      },
+    },
+    handler: function () {
+      return { root: true };
+    },
   });
 };
 

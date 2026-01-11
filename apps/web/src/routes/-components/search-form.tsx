@@ -14,8 +14,8 @@ import { ComponentProps, useRef } from "react";
 const formSchema = z.object({
   q: z
     .string()
-    .min(2, "Search must be at least 2 characters")
-    .max(8192, "Search cannot exceed 8192 characters"),
+    .min(2, "Please provide at least 2 characters.")
+    .max(8192, "Please keep it under 8192 characters."),
 });
 
 export default function SearchForm(props: ComponentProps<"search">) {
@@ -71,10 +71,10 @@ export default function SearchForm(props: ComponentProps<"search">) {
                     />
                     <InputGroupAddon align="block-end">
                       <InputGroupButton
-                        disabled={!canClear}
                         aria-label="Dismiss"
                         variant={canClear ? "destructive" : "outline"}
                         size="icon-sm"
+                        disabled={!canClear}
                         onClick={() => {
                           form.reset();
                           textareaRef.current?.focus();
@@ -85,10 +85,10 @@ export default function SearchForm(props: ComponentProps<"search">) {
                       </InputGroupButton>
                       <InputGroupButton
                         aria-label="Send"
-                        disabled={!canSend}
                         type="submit"
                         variant="default"
                         size="icon-sm"
+                        disabled={!canSend}
                         className="ml-auto rounded-full"
                       >
                         <ArrowUpIcon />

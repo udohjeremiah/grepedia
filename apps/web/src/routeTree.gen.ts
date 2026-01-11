@@ -9,58 +9,134 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SignupIndexRouteImport } from './routes/signup/index'
-import { Route as SigninIndexRouteImport } from './routes/signin/index'
+import { Route as AuthenticatedAtChar123usernameChar125IndexRouteImport } from './routes/_authenticated/@{$username}/index'
+import { Route as authSignupIndexRouteImport } from './routes/(auth)/signup/index'
+import { Route as authSigninIndexRouteImport } from './routes/(auth)/signin/index'
+import { Route as authResetPasswordIndexRouteImport } from './routes/(auth)/reset-password/index'
+import { Route as authRequestPasswordResetIndexRouteImport } from './routes/(auth)/request-password-reset/index'
 
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authRouteRoute = authRouteRouteImport.update({
+  id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SignupIndexRoute = SignupIndexRouteImport.update({
+const AuthenticatedAtChar123usernameChar125IndexRoute =
+  AuthenticatedAtChar123usernameChar125IndexRouteImport.update({
+    id: '/@{$username}/',
+    path: '/@{$username}/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const authSignupIndexRoute = authSignupIndexRouteImport.update({
   id: '/signup/',
   path: '/signup/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
-const SigninIndexRoute = SigninIndexRouteImport.update({
+const authSigninIndexRoute = authSigninIndexRouteImport.update({
   id: '/signin/',
   path: '/signin/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
+const authResetPasswordIndexRoute = authResetPasswordIndexRouteImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authRequestPasswordResetIndexRoute =
+  authRequestPasswordResetIndexRouteImport.update({
+    id: '/request-password-reset/',
+    path: '/request-password-reset/',
+    getParentRoute: () => authRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/signin': typeof SigninIndexRoute
-  '/signup': typeof SignupIndexRoute
+  '/request-password-reset': typeof authRequestPasswordResetIndexRoute
+  '/reset-password': typeof authResetPasswordIndexRoute
+  '/signin': typeof authSigninIndexRoute
+  '/signup': typeof authSignupIndexRoute
+  '/@{$username}': typeof AuthenticatedAtChar123usernameChar125IndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/signin': typeof SigninIndexRoute
-  '/signup': typeof SignupIndexRoute
+  '/request-password-reset': typeof authRequestPasswordResetIndexRoute
+  '/reset-password': typeof authResetPasswordIndexRoute
+  '/signin': typeof authSigninIndexRoute
+  '/signup': typeof authSignupIndexRoute
+  '/@{$username}': typeof AuthenticatedAtChar123usernameChar125IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/signin/': typeof SigninIndexRoute
-  '/signup/': typeof SignupIndexRoute
+  '/(auth)': typeof authRouteRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/(auth)/request-password-reset/': typeof authRequestPasswordResetIndexRoute
+  '/(auth)/reset-password/': typeof authResetPasswordIndexRoute
+  '/(auth)/signin/': typeof authSigninIndexRoute
+  '/(auth)/signup/': typeof authSignupIndexRoute
+  '/_authenticated/@{$username}/': typeof AuthenticatedAtChar123usernameChar125IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/signin' | '/signup'
+  fullPaths:
+    | '/'
+    | '/request-password-reset'
+    | '/reset-password'
+    | '/signin'
+    | '/signup'
+    | '/@{$username}'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/signin' | '/signup'
-  id: '__root__' | '/' | '/signin/' | '/signup/'
+  to:
+    | '/'
+    | '/request-password-reset'
+    | '/reset-password'
+    | '/signin'
+    | '/signup'
+    | '/@{$username}'
+  id:
+    | '__root__'
+    | '/'
+    | '/(auth)'
+    | '/_authenticated'
+    | '/(auth)/request-password-reset/'
+    | '/(auth)/reset-password/'
+    | '/(auth)/signin/'
+    | '/(auth)/signup/'
+    | '/_authenticated/@{$username}/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SigninIndexRoute: typeof SigninIndexRoute
-  SignupIndexRoute: typeof SignupIndexRoute
+  authRouteRoute: typeof authRouteRouteWithChildren
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)': {
+      id: '/(auth)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -68,27 +144,78 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/signup/': {
-      id: '/signup/'
+    '/_authenticated/@{$username}/': {
+      id: '/_authenticated/@{$username}/'
+      path: '/@{$username}'
+      fullPath: '/@{$username}'
+      preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125IndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/(auth)/signup/': {
+      id: '/(auth)/signup/'
       path: '/signup'
       fullPath: '/signup'
-      preLoaderRoute: typeof SignupIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof authSignupIndexRouteImport
+      parentRoute: typeof authRouteRoute
     }
-    '/signin/': {
-      id: '/signin/'
+    '/(auth)/signin/': {
+      id: '/(auth)/signin/'
       path: '/signin'
       fullPath: '/signin'
-      preLoaderRoute: typeof SigninIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof authSigninIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/reset-password/': {
+      id: '/(auth)/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof authResetPasswordIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/request-password-reset/': {
+      id: '/(auth)/request-password-reset/'
+      path: '/request-password-reset'
+      fullPath: '/request-password-reset'
+      preLoaderRoute: typeof authRequestPasswordResetIndexRouteImport
+      parentRoute: typeof authRouteRoute
     }
   }
 }
 
+interface authRouteRouteChildren {
+  authRequestPasswordResetIndexRoute: typeof authRequestPasswordResetIndexRoute
+  authResetPasswordIndexRoute: typeof authResetPasswordIndexRoute
+  authSigninIndexRoute: typeof authSigninIndexRoute
+  authSignupIndexRoute: typeof authSignupIndexRoute
+}
+
+const authRouteRouteChildren: authRouteRouteChildren = {
+  authRequestPasswordResetIndexRoute: authRequestPasswordResetIndexRoute,
+  authResetPasswordIndexRoute: authResetPasswordIndexRoute,
+  authSigninIndexRoute: authSigninIndexRoute,
+  authSignupIndexRoute: authSignupIndexRoute,
+}
+
+const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
+  authRouteRouteChildren,
+)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAtChar123usernameChar125IndexRoute: typeof AuthenticatedAtChar123usernameChar125IndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAtChar123usernameChar125IndexRoute:
+    AuthenticatedAtChar123usernameChar125IndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SigninIndexRoute: SigninIndexRoute,
-  SignupIndexRoute: SignupIndexRoute,
+  authRouteRoute: authRouteRouteWithChildren,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
