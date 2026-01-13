@@ -44,12 +44,12 @@ export default fp(
     //   }
     // }
 
-    const usersCollection = database.collection<User>(
+    const userCollection = database.collection<User>(
       fastify.env.MONGODB_COLL_USER,
     );
 
     fastify.decorate("getDatabase", () => database);
-    fastify.decorate("getUserCollection", () => usersCollection);
+    fastify.decorate("getUserCollection", () => userCollection);
   },
   { name: "database", dependencies: ["mongodb"] },
 );
