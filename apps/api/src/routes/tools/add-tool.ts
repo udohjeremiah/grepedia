@@ -3,7 +3,7 @@ import { z } from "zod";
 import { toolSchema, type ToolWithObjectIds } from "@/schemas/tool-schema.js";
 import { slugifyWithCounter } from "@sindresorhus/slugify";
 import { ObjectId } from "mongodb";
-import { omitKeys } from "@workspace/shared/omit-keys.js";
+import { omitKeys } from "@workspace/shared/omit-keys";
 import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
 
 const addTool: FastifyPluginAsyncZod = async (fastify) => {

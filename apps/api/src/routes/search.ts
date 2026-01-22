@@ -5,7 +5,7 @@ import {
   type ToolWithObjectIds,
   toolSchema,
 } from "@/schemas/tool-schema.js";
-import { omitKeys } from "@workspace/shared/omit-keys.js";
+import { omitKeys } from "@workspace/shared/omit-keys";
 import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
 import type { Document } from "mongodb";
 
