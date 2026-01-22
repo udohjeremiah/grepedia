@@ -25,13 +25,14 @@ import {
 } from "@workspace/ui/components/alert";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { requestPasswordReset } from "@/services/auth/request-password-reset";
+import { env } from "@/env";
 
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
 });
 
 type SubmissionStatus = {
-  type: "error" | "success";
+  type: "success" | "error";
   title: string;
   message: string;
 };
@@ -53,26 +54,29 @@ export default function RequestPasswordResetForm({
     onSubmit: async ({ value }) => {
       setSubmissionStatus(null);
 
-      const { error } = await requestPasswordReset(value);
-
-      if (error) {
-        setSubmissionStatus({
-          type: "error",
-          title: "Unable to send reset email",
-          message:
-            error.message ??
-            "Something went wrong while sending the reset email. Please try again.",
-        });
-        return;
-      }
-
-      form.reset();
-      setSubmissionStatus({
-        type: "success",
-        title: "Check your email",
-        message:
-          "If an account exists for this email, a password reset link has been sent.",
-      });
+      void requestPasswordReset(
+        { ...value, redirectTo: `${env.VITE_BASE_URL}/reset-password` },
+        {
+          onSuccess: () => {
+            form.reset();
+            setSubmissionStatus({
+              type: "success",
+              title: "Check your email",
+              message:
+                "If an account exists for this email, a password reset link has been sent.",
+            });
+          },
+          onError: (context) => {
+            setSubmissionStatus({
+              type: "error",
+              title: "Unable to send reset email",
+              message:
+                context.error.message ??
+                "Something went wrong while sending the reset email. Please try again.",
+            });
+          },
+        },
+      );
     },
   });
 

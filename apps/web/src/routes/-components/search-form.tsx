@@ -9,7 +9,7 @@ import {
   InputGroupButton,
   InputGroupTextarea,
 } from "@workspace/ui/components/input-group";
-import { ComponentProps, useRef } from "react";
+import { type ComponentProps, useRef } from "react";
 
 const formSchema = z.object({
   q: z

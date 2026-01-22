@@ -1,3 +1,6 @@
+// See this example if you want to run the application as a standalone Fastify executable:
+// https://github.com/fastify/demo/blob/main/src/server.ts
+
 import * as path from "node:path";
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { FastifyPluginAsync } from "fastify";
@@ -49,7 +52,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // might depend on them.
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, "plugins/external"),
-    options,
+    options: { ...options, prefix: "/api" },
     forceESM: true,
   });
 
@@ -58,7 +61,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // throughout your application.
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, "plugins/app"),
-    options,
+    options: { ...options, prefix: "/api" },
     forceESM: true,
   });
 

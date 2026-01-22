@@ -1,4 +1,4 @@
-import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
 
 const health: FastifyPluginAsyncZod = async (fastify) => {
@@ -8,25 +8,32 @@ const health: FastifyPluginAsyncZod = async (fastify) => {
     schema: {
       response: {
         default: z.object({
-          server: z.enum(["ok", "error"]),
+          server: z.literal("ok"),
           database: z.enum(["ok", "error"]),
-          timestamp: z.date(),
+          embedder: z.enum(["ok", "error"]),
+          timestamp: z.iso.datetime(),
         }),
       },
     },
-    handler: async function (_request, reply) {
+    handler: async (_request, reply) => {
+      let databaseStatus: "ok" | "error" = "ok";
+
       try {
         await fastify.getDatabase().command({ ping: 1 });
       } catch {
-        return reply
-          .code(503)
-          .send({ server: "ok", database: "error", timestamp: new Date() });
+        databaseStatus = "error";
       }
 
-      return reply.send({
+      const embedderStatus = fastify.embedder ? "ok" : "error";
+
+      const statusCode =
+        databaseStatus === "ok" && embedderStatus === "ok" ? 200 : 503;
+
+      return reply.code(statusCode).send({
         server: "ok",
-        database: "ok",
-        timestamp: new Date(),
+        database: databaseStatus,
+        embedder: embedderStatus,
+        timestamp: new Date().toISOString(),
       });
     },
   });

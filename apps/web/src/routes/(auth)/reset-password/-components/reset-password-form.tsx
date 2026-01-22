@@ -24,6 +24,7 @@ import {
 import { z } from "zod";
 
 import { useForm } from "@tanstack/react-form";
+import { omitKeys } from "@workspace/shared/omit-keys";
 import {
   Alert,
   AlertDescription,
@@ -50,7 +51,7 @@ const formSchema = z
   });
 
 type SubmissionStatus = {
-  type: "error" | "success";
+  type: "success" | "error";
   title: string;
   message: string;
 };
@@ -78,24 +79,24 @@ export default function ResetPasswordForm({
     onSubmit: async ({ value }) => {
       setSubmissionStatus(null);
 
-      const { error } = await resetPassword({
-        newPassword: value.newPassword,
-        token: value.token,
-      });
-
-      if (error) {
-        setSubmissionStatus({
-          type: "error",
-          title: "Unable to reset password",
-          message:
-            error.message ??
-            "This reset link may be invalid or expired. Please request a new one and try again.",
-        });
-        return;
-      }
-
-      form.reset();
-      navigate({ to: "/signin" });
+      void resetPassword(
+        { ...omitKeys(value, ["confirmPassword"]) },
+        {
+          onSuccess: () => {
+            form.reset();
+            navigate({ to: "/signin" });
+          },
+          onError: (context) => {
+            setSubmissionStatus({
+              type: "error",
+              title: "Unable to reset password",
+              message:
+                context.error.message ??
+                "This reset link may be invalid or expired. Please request a new one and try again.",
+            });
+          },
+        },
+      );
     },
   });
 

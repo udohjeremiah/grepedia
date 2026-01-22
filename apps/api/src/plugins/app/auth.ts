@@ -24,7 +24,7 @@ export default fp(
         requireEmailVerification: true,
         sendResetPassword: async ({ user, url }) => {
           void fastify.resend.emails.send({
-            from: fastify.env.AUTH_EMAIL,
+            from: fastify.env.EMAIL_AUTH,
             to: user.email,
             subject: "Reset your password",
             text: `Click the link to reset your password: ${url}`,
@@ -35,7 +35,7 @@ export default fp(
         sendOnSignUp: true,
         sendVerificationEmail: async ({ user, url }) => {
           void fastify.resend.emails.send({
-            from: fastify.env.AUTH_EMAIL,
+            from: fastify.env.EMAIL_AUTH,
             to: user.email,
             subject: "Verify your email address",
             text: `Click the link to verify your email: ${url}`,

@@ -10,8 +10,9 @@ declare module "fastify" {
       MONGODB_URL: string;
       MONGODB_DATABASE: string;
       MONGODB_COLL_USER: string;
+      MONGODB_COLL_TOOL: string;
       RESEND_API_KEY: string;
-      AUTH_EMAIL: string;
+      EMAIL_AUTH: string;
       CLIENT_BASE_URL: string;
     };
   }
@@ -28,8 +29,9 @@ const options: FastifyEnvOptions = {
       "MONGODB_URL",
       "MONGODB_DATABASE",
       "MONGODB_COLL_USER",
+      "MONGODB_COLL_TOOL",
       "RESEND_API_KEY",
-      "AUTH_EMAIL",
+      "EMAIL_AUTH",
       "CLIENT_BASE_URL",
     ],
     properties: {
@@ -55,13 +57,17 @@ const options: FastifyEnvOptions = {
       },
       MONGODB_COLL_USER: {
         type: "string",
-        default: "my-users",
+        default: "my-user",
+      },
+      MONGODB_COLL_TOOL: {
+        type: "string",
+        default: "my-tool",
       },
       RESEND_API_KEY: {
         type: "string",
         default: "re_xxxxxxxxx",
       },
-      AUTH_EMAIL: {
+      EMAIL_AUTH: {
         type: "string",
         default: "Grepedia <auth@resend.dev>",
       },

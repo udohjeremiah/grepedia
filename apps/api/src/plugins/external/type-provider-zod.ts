@@ -2,7 +2,7 @@ import fp from "fastify-plugin";
 import {
   serializerCompiler,
   validatorCompiler,
-  ZodTypeProvider,
+  type ZodTypeProvider,
 } from "fastify-type-provider-zod";
 
 /**

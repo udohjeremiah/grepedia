@@ -1,13 +1,7 @@
 import { authClient } from "@/lib/auth-client";
 
-type ResetPassword = {
-  newPassword: string;
-  token: string;
-};
-
-export async function resetPassword(value: ResetPassword) {
-  return authClient.resetPassword({
-    newPassword: value.newPassword,
-    token: value.token,
-  });
+export async function resetPassword(
+  ...args: Parameters<typeof authClient.resetPassword>
+) {
+  return authClient.resetPassword(...args);
 }

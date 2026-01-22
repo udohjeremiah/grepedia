@@ -32,6 +32,7 @@ import {
   AlertTitle,
 } from "@workspace/ui/components/alert";
 import { Spinner } from "@workspace/ui/components/spinner";
+import { env } from "@/env";
 
 const formSchema = z.object({
   name: z.string().min(2, "Please provide at least 2 characters."),
@@ -40,7 +41,7 @@ const formSchema = z.object({
 });
 
 type SubmissionStatus = {
-  type: "error" | "success";
+  type: "success" | "error";
   title: string;
   message: string;
 };
@@ -65,23 +66,29 @@ export default function SignupForm({
     onSubmit: async ({ value }) => {
       setSubmissionStatus(null);
 
-      const { error } = await signUp(value);
-
-      if (error) {
-        setSubmissionStatus({
-          type: "error",
-          title: "Unable to create your account",
-          message: error.message ?? "Please check your details and try again.",
-        });
-        return;
-      }
-
-      form.reset();
-      setSubmissionStatus({
-        type: "success",
-        title: "Account created successfully",
-        message: "Check your email to verify your account before signing in.",
-      });
+      void signUp(
+        { ...value, callbackURL: `${env.VITE_BASE_URL}/signin` },
+        {
+          onSuccess: () => {
+            form.reset();
+            setSubmissionStatus({
+              type: "success",
+              title: "Account created successfully",
+              message:
+                "Check your email to verify your account before signing in.",
+            });
+          },
+          onError: (context) => {
+            setSubmissionStatus({
+              type: "error",
+              title: "Unable to create your account",
+              message:
+                context.error.message ??
+                "Please check your details and try again.",
+            });
+          },
+        },
+      );
     },
   });
 

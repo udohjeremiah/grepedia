@@ -14,14 +14,17 @@ const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
         Object.entries(request.headers).forEach(([key, value]) => {
           if (value) headers.append(key, value.toString());
         });
+
         // Create Fetch API-compatible request
         const req = new Request(url.toString(), {
           method: request.method,
           headers,
           ...(request.body ? { body: JSON.stringify(request.body) } : {}),
         });
+
         // Process authentication request
         const response = await fastify.auth.handler(req);
+
         // Forward response to client
         reply.status(response.status);
         response.headers.forEach((value, key) => reply.header(key, value));

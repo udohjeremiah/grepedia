@@ -43,7 +43,7 @@ const formSchema = z.object({
 });
 
 type SubmissionStatus = {
-  type: "error" | "success";
+  type: "success" | "error";
   title: string;
   message: string;
 };
@@ -69,21 +69,25 @@ export default function SigninForm({
     onSubmit: async ({ value }) => {
       setSubmissionStatus(null);
 
-      const { data, error } = await signIn(value);
-
-      if (error) {
-        setSubmissionStatus({
-          type: "error",
-          title: "Unable to sign in",
-          message: error.message ?? "Please check your details and try again.",
-        });
-        return;
-      }
-
-      form.reset();
-
-      const username = (data as unknown as Session).user.username;
-      navigate({ to: `/@${username}` });
+      void signIn(
+        { ...value },
+        {
+          onSuccess: (context) => {
+            form.reset();
+            const username = (context.data as Session).user.username;
+            navigate({ to: `/@${username}` });
+          },
+          onError: (context) => {
+            setSubmissionStatus({
+              type: "error",
+              title: "Unable to sign in",
+              message:
+                context.error.message ??
+                "Please check your details and try again.",
+            });
+          },
+        },
+      );
     },
   });
 
