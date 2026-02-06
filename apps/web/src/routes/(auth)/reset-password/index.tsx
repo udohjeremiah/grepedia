@@ -1,9 +1,9 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
-import ResetPasswordForm from "./-components/reset-password-form";
 import { z } from "zod";
+import ResetPasswordForm from "./-components/reset-password-form";
 
-const searchParamsSchema = zodValidator(
+const searchParamsValidator = zodValidator(
   z.object({
     error: z.string().optional(),
     token: z.string().optional(),
@@ -11,10 +11,10 @@ const searchParamsSchema = zodValidator(
 );
 
 export const Route = createFileRoute("/(auth)/reset-password/")({
-  validateSearch: searchParamsSchema,
+  validateSearch: searchParamsValidator,
   beforeLoad: ({ search }) => {
     if (search.error || !search.token) {
-      notFound({ throw: true });
+      throw notFound();
     }
   },
   component: RouteComponent,
@@ -26,8 +26,8 @@ function RouteComponent() {
   if (!token) return;
 
   return (
-    <div className="w-full max-w-sm">
+    <main className="w-full max-w-sm">
       <ResetPasswordForm token={token} />
-    </div>
+    </main>
   );
 }

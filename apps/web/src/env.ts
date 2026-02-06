@@ -11,6 +11,7 @@ export const env = createEnv({
   client: {
     VITE_BASE_URL: z.url().min(1),
     VITE_SERVER_BASE_URL: z.url().min(1),
+    VITE_SERVER_API_URL: z.url().min(1),
   },
 
   /**

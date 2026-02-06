@@ -1,4 +1,12 @@
-import { cn } from "@workspace/ui/lib/utils";
+import { Session } from "@/lib/auth-client";
+import { signIn } from "@/services/auth/sign-in";
+import { useForm } from "@tanstack/react-form";
+import { Link, useNavigate } from "@tanstack/react-router";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import {
@@ -15,26 +23,17 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { useState, type ComponentProps } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Spinner } from "@workspace/ui/components/spinner";
 import {
-  AlertCircleIcon,
   CircleCheckIcon,
   EyeIcon,
   EyeOffIcon,
   LockIcon,
   MailIcon,
+  OctagonAlertIcon,
 } from "lucide-react";
+import { useState } from "react";
 import { z } from "zod";
-import { useForm } from "@tanstack/react-form";
-import { signIn } from "@/services/auth/sign-in";
-import { Session } from "@/lib/auth-client";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
-import { Spinner } from "@workspace/ui/components/spinner";
 
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
@@ -43,15 +42,12 @@ const formSchema = z.object({
 });
 
 type SubmissionStatus = {
-  type: "success" | "error";
+  status: "success" | "error";
   title: string;
-  message: string;
+  description: string;
 };
 
-export default function SigninForm({
-  className,
-  ...props
-}: ComponentProps<"div">) {
+export default function SigninForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [submissionStatus, setSubmissionStatus] =
     useState<SubmissionStatus | null>(null);
@@ -75,13 +71,13 @@ export default function SigninForm({
           onSuccess: (context) => {
             form.reset();
             const username = (context.data as Session).user.username;
-            navigate({ to: `/@${username}` });
+            navigate({ to: "/@{$username}", params: { username } });
           },
           onError: (context) => {
             setSubmissionStatus({
-              type: "error",
+              status: "error",
               title: "Unable to sign in",
-              message:
+              description:
                 context.error.message ??
                 "Please check your details and try again.",
             });
@@ -92,8 +88,14 @@ export default function SigninForm({
   });
 
   return (
-    <div className={cn("flex flex-col gap-12", className)} {...props}>
-      <img src="/favicon.svg" width={48} height={48} className="size-8" />
+    <div className="flex flex-col gap-12">
+      <img
+        src="/favicon.svg"
+        alt="Grepedia"
+        width={48}
+        height={48}
+        className="size-8"
+      />
       <div>
         <h1 className="text-2xl font-medium">Sign in to Grepedia</h1>
         <p className="text-sm text-muted-foreground">
@@ -214,19 +216,17 @@ export default function SigninForm({
             {submissionStatus && (
               <Alert
                 variant={
-                  submissionStatus.type === "success"
-                    ? "default"
-                    : "destructive"
+                  submissionStatus.status === "success" ? "success" : "critical"
                 }
               >
-                {submissionStatus.type === "success" ? (
+                {submissionStatus.status === "success" ? (
                   <CircleCheckIcon />
                 ) : (
-                  <AlertCircleIcon />
+                  <OctagonAlertIcon />
                 )}
                 <AlertTitle>{submissionStatus.title}</AlertTitle>
                 <AlertDescription>
-                  <p>{submissionStatus.message}</p>
+                  <p>{submissionStatus.description}</p>
                 </AlertDescription>
               </Alert>
             )}

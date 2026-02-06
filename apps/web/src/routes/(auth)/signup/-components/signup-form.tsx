@@ -1,4 +1,12 @@
-import { cn } from "@workspace/ui/lib/utils";
+import { env } from "@/env";
+import { signUp } from "@/services/auth/sign-up";
+import { useForm } from "@tanstack/react-form";
+import { Link } from "@tanstack/react-router";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
@@ -12,27 +20,18 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { useState, type ComponentProps } from "react";
-import { Link } from "@tanstack/react-router";
+import { Spinner } from "@workspace/ui/components/spinner";
 import {
-  AlertCircleIcon,
   CircleCheckIcon,
   EyeIcon,
   EyeOffIcon,
   LockIcon,
   MailIcon,
+  OctagonAlertIcon,
   UserRoundIcon,
 } from "lucide-react";
+import { useState } from "react";
 import { z } from "zod";
-import { useForm } from "@tanstack/react-form";
-import { signUp } from "@/services/auth/sign-up";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
-import { Spinner } from "@workspace/ui/components/spinner";
-import { env } from "@/env";
 
 const formSchema = z.object({
   name: z.string().min(2, "Please provide at least 2 characters."),
@@ -41,15 +40,12 @@ const formSchema = z.object({
 });
 
 type SubmissionStatus = {
-  type: "success" | "error";
+  status: "success" | "error";
   title: string;
-  message: string;
+  description: string;
 };
 
-export default function SignupForm({
-  className,
-  ...props
-}: ComponentProps<"div">) {
+export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [submissionStatus, setSubmissionStatus] =
     useState<SubmissionStatus | null>(null);
@@ -72,17 +68,17 @@ export default function SignupForm({
           onSuccess: () => {
             form.reset();
             setSubmissionStatus({
-              type: "success",
+              status: "success",
               title: "Account created successfully",
-              message:
+              description:
                 "Check your email to verify your account before signing in.",
             });
           },
           onError: (context) => {
             setSubmissionStatus({
-              type: "error",
+              status: "error",
               title: "Unable to create your account",
-              message:
+              description:
                 context.error.message ??
                 "Please check your details and try again.",
             });
@@ -93,8 +89,14 @@ export default function SignupForm({
   });
 
   return (
-    <div className={cn("flex flex-col gap-12", className)} {...props}>
-      <img src="/favicon.svg" width={48} height={48} className="size-8" />
+    <div className="flex flex-col gap-12">
+      <img
+        src="/favicon.svg"
+        alt="Grepedia"
+        width={48}
+        height={48}
+        className="size-8"
+      />
       <div>
         <h1 className="text-2xl font-medium">Welcome to Grepedia</h1>
         <p className="text-sm text-muted-foreground">
@@ -213,19 +215,17 @@ export default function SignupForm({
             {submissionStatus && (
               <Alert
                 variant={
-                  submissionStatus.type === "success"
-                    ? "default"
-                    : "destructive"
+                  submissionStatus.status === "success" ? "success" : "critical"
                 }
               >
-                {submissionStatus.type === "success" ? (
+                {submissionStatus.status === "success" ? (
                   <CircleCheckIcon />
                 ) : (
-                  <AlertCircleIcon />
+                  <OctagonAlertIcon />
                 )}
                 <AlertTitle>{submissionStatus.title}</AlertTitle>
                 <AlertDescription>
-                  <p>{submissionStatus.message}</p>
+                  <p>{submissionStatus.description}</p>
                 </AlertDescription>
               </Alert>
             )}

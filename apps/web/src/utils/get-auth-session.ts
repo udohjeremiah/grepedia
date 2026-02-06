@@ -1,11 +1,15 @@
 import { authClient } from "@/lib/auth-client";
-import { createServerOnlyFn } from "@tanstack/react-start";
+import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 
-export const getAuthSession = createServerOnlyFn(async () => {
-  const session = await authClient.getSession({
-    fetchOptions: { headers: getRequestHeaders() },
+export const getAuthSession = createIsomorphicFn()
+  .server(async () => {
+    const session = await authClient.getSession({
+      fetchOptions: { headers: getRequestHeaders() },
+    });
+    return session.data?.session;
+  })
+  .client(async () => {
+    const session = await authClient.getSession();
+    return session.data?.session;
   });
-
-  return session.data?.session;
-});

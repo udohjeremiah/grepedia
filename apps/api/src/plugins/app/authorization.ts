@@ -1,6 +1,6 @@
-import fp from "fastify-plugin";
-import type { FastifyReply, FastifyRequest } from "fastify";
 import type { User } from "better-auth";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import fp from "fastify-plugin";
 
 type AppUser = User & {
   username: string;

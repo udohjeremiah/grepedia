@@ -1,0 +1,109 @@
+import { globalBanner } from "@/utils/global-banner";
+import {
+  DefaultOptions,
+  defaultShouldDehydrateQuery,
+  MutationCache,
+  QueryCache,
+  QueryClient,
+} from "@tanstack/react-query";
+import { createIsomorphicFn } from "@tanstack/react-start";
+
+let browserQueryClient: QueryClient | undefined = undefined;
+
+function makeQueryClient() {
+  const defaultOptions: DefaultOptions = {
+    queries: {
+      // With SSR, we usually want to set some default staleTime
+      // above 0 to avoid refetching immediately on the client
+      staleTime: 5 * 60 * 1000,
+    },
+    dehydrate: {
+      shouldDehydrateQuery: (query) => {
+        // Include pending queries in dehydration, so the client can avoid
+        // initiating duplicate fetches for the same data. If the server has
+        // already started fetching data for a query, the client can use the
+        // pending state instead of triggering another fetch.
+        const shouldDehydrate =
+          defaultShouldDehydrateQuery(query) ||
+          query.state.status === "pending";
+
+        return shouldDehydrate;
+      },
+    },
+  };
+
+  const queryCache = new QueryCache({
+    onSuccess: (_data, query) => {
+      // Remove any previous associated global banner when data is successfully fetched
+      const bannerId = query.meta?.bannerId;
+      if (bannerId) {
+        globalBanner.emit({ type: "remove", id: bannerId });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        queryClient.setQueryData(query.queryKey, (oldData: any) => {
+          const { meta, ...rest } = oldData ?? {};
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { bannerId: _, ...newMeta } = meta;
+          return { ...rest, meta: newMeta };
+        });
+      }
+    },
+    onError: (_error, query) => {
+      // Show a global banner if we already have data in the cache which
+      // indicates a failed background update
+      if (query.state.data !== undefined) {
+        const bannerId = globalBanner.emit({
+          type: "add",
+          banner: {
+            variant: "critical",
+            title: "Couldn't refresh results",
+            description:
+              "We ran into an issue while updating this data. You're seeing the most recent saved results, which may be slightly out of date.",
+            autoDismiss: false,
+          },
+        });
+
+        // Store the bannerId in the query context for later removal
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        queryClient.setQueryData(query.queryKey, (oldData: any) => {
+          return oldData
+            ? { ...oldData, meta: { ...oldData.meta, bannerId } }
+            : oldData;
+        });
+      }
+    },
+  });
+
+  const mutationCache = new MutationCache({
+    onSuccess: (_data, _variables, _context, mutation) => {
+      // Automatic query invalidation after mutations:
+      // - A mutation with a `mutationKey` would invalidate everything related to that key only.
+      // - A mutation without a `mutationKey` would invalidate everything in the cache.
+      // The invalidation isn't awaited or returned because we want the
+      // mutations to finish as fast as possible.
+      queryClient.invalidateQueries({ queryKey: mutation.options.mutationKey });
+    },
+  });
+
+  const queryClient = new QueryClient({
+    defaultOptions,
+    queryCache,
+    mutationCache,
+  });
+
+  return queryClient;
+}
+
+export const tanstackQueryClient = createIsomorphicFn()
+  .server(() => {
+    // Always make a new query client
+    return makeQueryClient();
+  })
+  .client(() => {
+    // Make a new query client if we don't already have one.
+    // This is very important, so we don't re-make a new client if React
+    // suspends during the initial render. This may not be needed if we
+    // have a suspense boundary below the creation of the query client.
+    browserQueryClient ??= makeQueryClient();
+    return browserQueryClient;
+  });

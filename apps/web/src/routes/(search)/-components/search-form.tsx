@@ -1,37 +1,40 @@
-import { z } from "zod";
-
 import { useForm } from "@tanstack/react-form";
+import { useNavigate } from "@tanstack/react-router";
+import { searchQueryStringSchema } from "@workspace/shared/schemas/search";
 import { Field, FieldError, FieldGroup } from "@workspace/ui/components/field";
-import { ArrowUpIcon, XIcon } from "lucide-react";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupTextarea,
 } from "@workspace/ui/components/input-group";
+import { cn } from "@workspace/ui/lib/utils";
+import { ArrowUpIcon, XIcon } from "lucide-react";
 import { type ComponentProps, useRef } from "react";
 
-const formSchema = z.object({
-  q: z
-    .string()
-    .min(2, "Please provide at least 2 characters.")
-    .max(8192, "Please keep it under 8192 characters."),
-});
+const formSchema = searchQueryStringSchema.pick({ query: true });
 
-export default function SearchForm(props: ComponentProps<"search">) {
+export default function SearchForm({
+  className,
+  ...props
+}: ComponentProps<"search">) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
-      q: "",
+      query: "",
     },
     validators: {
       onSubmit: formSchema,
     },
+    onSubmit: ({ value }) => {
+      navigate({ to: "/search", search: { query: value.query } });
+    },
   });
 
   return (
-    <search {...props}>
+    <search className={cn(className)} {...props}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -39,7 +42,7 @@ export default function SearchForm(props: ComponentProps<"search">) {
         }}
       >
         <FieldGroup>
-          <form.Field name="q">
+          <form.Field name="query">
             {(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
@@ -52,7 +55,7 @@ export default function SearchForm(props: ComponentProps<"search">) {
                   <InputGroup className="rounded-3xl">
                     <InputGroupTextarea
                       ref={textareaRef}
-                      aria-label="Ask anything"
+                      aria-label="Ask Grepedia Search"
                       autoFocus={true}
                       autoCapitalize="off"
                       autoComplete="off"
@@ -61,13 +64,21 @@ export default function SearchForm(props: ComponentProps<"search">) {
                       aria-invalid={isInvalid}
                       minLength={2}
                       maxLength={8192}
-                      placeholder="Ask anything..."
+                      placeholder="Ask Grepedia Search"
                       name={field.name}
                       value={field.state.value}
                       required={true}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className="max-h-56 md:text-base"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          if (canSend) {
+                            form.handleSubmit();
+                          }
+                        }
+                      }}
+                      className="max-h-56 min-h-0 md:text-base"
                     />
                     <InputGroupAddon align="block-end">
                       <InputGroupButton
@@ -89,7 +100,7 @@ export default function SearchForm(props: ComponentProps<"search">) {
                         variant="default"
                         size="icon-sm"
                         disabled={!canSend}
-                        className="ml-auto rounded-full"
+                        className="ms-auto rounded-full"
                       >
                         <ArrowUpIcon />
                       </InputGroupButton>

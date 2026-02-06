@@ -1,4 +1,12 @@
-import { cn } from "@workspace/ui/lib/utils";
+import { resetPassword } from "@/services/auth/reset-password";
+import { useForm } from "@tanstack/react-form";
+import { useNavigate } from "@tanstack/react-router";
+import { omitKeys } from "@workspace/shared/omit-keys";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
@@ -6,33 +14,22 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@workspace/ui/components/field";
-
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { useState, type ComponentProps } from "react";
+import { Spinner } from "@workspace/ui/components/spinner";
 import {
-  AlertCircleIcon,
   CircleCheckIcon,
   EyeIcon,
   EyeOffIcon,
   LockIcon,
+  OctagonAlertIcon,
 } from "lucide-react";
+import { useState } from "react";
 import { z } from "zod";
-
-import { useForm } from "@tanstack/react-form";
-import { omitKeys } from "@workspace/shared/omit-keys";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
-import { Spinner } from "@workspace/ui/components/spinner";
-import { resetPassword } from "@/services/auth/reset-password";
-import { useNavigate } from "@tanstack/react-router";
 
 const formSchema = z
   .object({
@@ -51,16 +48,16 @@ const formSchema = z
   });
 
 type SubmissionStatus = {
-  type: "success" | "error";
+  status: "success" | "error";
   title: string;
-  message: string;
+  description: string;
 };
 
-export default function ResetPasswordForm({
-  token,
-  className,
-  ...props
-}: ComponentProps<"div"> & { token: string }) {
+interface ResetPasswordFormProps {
+  token: string;
+}
+
+export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submissionStatus, setSubmissionStatus] =
@@ -88,9 +85,9 @@ export default function ResetPasswordForm({
           },
           onError: (context) => {
             setSubmissionStatus({
-              type: "error",
+              status: "error",
               title: "Unable to reset password",
-              message:
+              description:
                 context.error.message ??
                 "This reset link may be invalid or expired. Please request a new one and try again.",
             });
@@ -101,8 +98,14 @@ export default function ResetPasswordForm({
   });
 
   return (
-    <div className={cn("flex flex-col gap-12", className)} {...props}>
-      <img src="/favicon.svg" width={48} height={48} className="size-8" />
+    <div className="flex flex-col gap-12">
+      <img
+        src="/favicon.svg"
+        alt="Grepedia"
+        width={48}
+        height={48}
+        className="size-8"
+      />
       <div>
         <h1 className="text-2xl font-medium">Reset password</h1>
         <p className="text-sm text-muted-foreground">
@@ -203,19 +206,17 @@ export default function ResetPasswordForm({
             {submissionStatus && (
               <Alert
                 variant={
-                  submissionStatus.type === "success"
-                    ? "default"
-                    : "destructive"
+                  submissionStatus.status === "success" ? "success" : "critical"
                 }
               >
-                {submissionStatus.type === "success" ? (
+                {submissionStatus.status === "success" ? (
                   <CircleCheckIcon />
                 ) : (
-                  <AlertCircleIcon />
+                  <OctagonAlertIcon />
                 )}
                 <AlertTitle>{submissionStatus.title}</AlertTitle>
                 <AlertDescription>
-                  <p>{submissionStatus.message}</p>
+                  <p>{submissionStatus.status}</p>
                 </AlertDescription>
               </Alert>
             )}

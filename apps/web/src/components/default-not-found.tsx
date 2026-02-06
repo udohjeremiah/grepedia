@@ -12,7 +12,10 @@ import { MehIcon } from "lucide-react";
 
 export default function DefaultNotFound() {
   return (
-    <main className="flex h-svh flex-col items-center justify-center p-6 md:p-10">
+    <div
+      role="alert"
+      className="flex h-svh flex-col items-center justify-center p-6 md:p-10"
+    >
       <Empty className="border border-dashed">
         <EmptyHeader>
           <EmptyMedia variant="icon">
@@ -26,11 +29,11 @@ export default function DefaultNotFound() {
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button asChild>
+          <Button asChild className="w-full">
             <Link to="/">Return to Home</Link>
           </Button>
         </EmptyContent>
       </Empty>
-    </main>
+    </div>
   );
 }

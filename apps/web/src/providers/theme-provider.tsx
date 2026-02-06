@@ -1,6 +1,6 @@
 import { ScriptOnce } from "@tanstack/react-router";
-import { createContext, type ReactNode, use, useEffect, useState } from "react";
 import { createClientOnlyFn, createIsomorphicFn } from "@tanstack/react-start";
+import { createContext, type ReactNode, use, useEffect, useState } from "react";
 import { z } from "zod";
 
 const ThemeSchema = z.enum(["light", "dark", "system"]).catch("system");
@@ -77,12 +77,12 @@ const themeScript = (storageKey: string) => {
   return `(${themeFn.toString()})(${JSON.stringify(storageKey)});`;
 };
 
-type ThemeState = {
+type ThemeContextType = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
 };
 
-const ThemeContext = createContext<ThemeState | null>(null);
+const ThemeContext = createContext<ThemeContextType | null>(null);
 
 interface ThemeProviderProps {
   storageKey?: string;
@@ -120,4 +120,10 @@ export function ThemeProvider({
   );
 }
 
-export const useTheme = () => use(ThemeContext);
+export const useTheme = () => {
+  const context = use(ThemeContext);
+  if (!context) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
+};

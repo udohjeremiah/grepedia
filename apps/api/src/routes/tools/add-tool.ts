@@ -1,39 +1,28 @@
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { z } from "zod";
-import { toolSchema, type ToolWithObjectIds } from "@/schemas/tool-schema.js";
-import { slugifyWithCounter } from "@sindresorhus/slugify";
-import { ObjectId } from "mongodb";
-import { omitKeys } from "@workspace/shared/omit-keys";
+import type { ToolWithObjectIds } from "@/schemas/tool.js";
 import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
+import { slugifyWithCounter } from "@sindresorhus/slugify";
+import { omitKeys } from "@workspace/shared/omit-keys";
+import {
+  addTool201ResponseSchema,
+  addToolBodySchema,
+} from "@workspace/shared/schemas/add-tool";
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+import { ObjectId } from "mongodb";
+import { z } from "zod";
 
 const addTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     method: "POST",
     url: "/",
     schema: {
-      body: z.object({
-        name: z.string().min(1),
-        short_description: z.string().min(1),
-        long_description: z.string().min(1),
-        image: z.url().nullable(),
-        cover_image: z.url().nullable(),
-        official_url: z.url(),
-        external_urls: z.array(z.object({ type: z.string(), url: z.url() })),
-        categories: z.array(z.string()),
-        tags: z.array(z.string()),
-        released_at: z.iso.datetime().nullable(),
-      }),
+      body: addToolBodySchema,
       response: {
         default: z.object({
           success: z.boolean(),
           message: z.string(),
           data: z.unknown().optional(),
         }),
-        201: z.object({
-          success: z.boolean(),
-          message: z.string(),
-          data: z.object({ tool: toolSchema }),
-        }),
+        201: addTool201ResponseSchema,
       },
     },
     handler: async function (request, reply) {
@@ -42,7 +31,6 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       const body = request.body;
-
       const tools = fastify.getToolCollection();
 
       const slugify = slugifyWithCounter();

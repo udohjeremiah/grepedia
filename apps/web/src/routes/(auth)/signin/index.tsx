@@ -7,8 +7,8 @@ export const Route = createFileRoute("/(auth)/signin/")({
 
 function RouteComponent() {
   return (
-    <div className="w-full max-w-sm">
+    <main className="w-full max-w-sm">
       <SigninForm />
-    </div>
+    </main>
   );
 }

@@ -12,6 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@daveyplate/better-auth-tanstack": "^1.3.6",
+    "@icons-pack/react-simple-icons": "^13.8.0",
     "@t3-oss/env-core": "^0.13.8",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.7.0",
@@ -26,11 +28,13 @@
     "@tanstack/zod-adapter": "^1.147.3",
     "@workspace/shared": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "axios": "^1.13.2",
     "better-auth": "^1.4.10",
     "lucide-react": "^0.561.0",
     "nitro": "latest",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-error-boundary": "^6.1.0",
     "vite-tsconfig-paths": "^6.0.2",
     "zod": "^4.1.11"
   },

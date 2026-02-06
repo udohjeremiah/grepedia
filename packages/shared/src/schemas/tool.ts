@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { z } from "zod";
 
 export const toolSchema = z.object({
@@ -27,17 +26,4 @@ export const toolSchema = z.object({
   status: z.enum(["pending", "published", "flagged"]),
 });
 
-export const toolWithVectorEmbeddings = toolSchema.extend({
-  vectorEmbeddings: z.array(z.number()),
-});
-
-export const toolWithObjectIds = toolWithVectorEmbeddings.extend({
-  _id: z.instanceof(ObjectId).optional(),
-  owner: z.instanceof(ObjectId).nullable(),
-  added_by: z.instanceof(ObjectId),
-  updated_by: z.instanceof(ObjectId).nullable(),
-});
-
 export type Tool = z.infer<typeof toolSchema>;
-export type ToolWithVectorEmbeddings = z.infer<typeof toolWithVectorEmbeddings>;
-export type ToolWithObjectIds = z.infer<typeof toolWithObjectIds>;

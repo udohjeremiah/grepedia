@@ -1,5 +1,5 @@
-import { betterAuth } from "better-auth/minimal";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { betterAuth } from "better-auth/minimal";
 import fp from "fastify-plugin";
 
 declare module "fastify" {

@@ -7,20 +7,42 @@
     "./omit-keys": {
       "types": "./dist/omit-keys.d.ts",
       "default": "./dist/omit-keys.js"
+    },
+    "./schemas/add-tool": {
+      "types": "./dist/schemas/add-tool.d.ts",
+      "default": "./dist/schemas/add-tool.js"
+    },
+    "./schemas/search": {
+      "types": "./dist/schemas/search.d.ts",
+      "default": "./dist/schemas/search.js"
+    },
+    "./schemas/tool": {
+      "types": "./dist/schemas/tool.d.ts",
+      "default": "./dist/schemas/tool.js"
+    },
+    "./schemas/user": {
+      "types": "./dist/schemas/user.d.ts",
+      "default": "./dist/schemas/user.js"
     }
   },
   "scripts": {
-    "dev": "tsc -w",
-    "build": "tsc",
+    "dev": "pnpm run build && concurrently -k \"tsc -w\" \"tsc-alias -w\"",
+    "build": "rimraf dist && tsc && tsc-alias",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
+    "concurrently": "^9.0.0",
     "eslint": "^9.32.0",
+    "rimraf": "^6.1.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
   }
 }

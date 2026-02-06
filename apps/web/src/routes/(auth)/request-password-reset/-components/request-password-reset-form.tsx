@@ -1,4 +1,12 @@
-import { cn } from "@workspace/ui/lib/utils";
+import { env } from "@/env";
+import { requestPasswordReset } from "@/services/auth/request-password-reset";
+import { useForm } from "@tanstack/react-form";
+import { Link } from "@tanstack/react-router";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
@@ -6,41 +14,27 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@workspace/ui/components/field";
-
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { useState, type ComponentProps } from "react";
-import { Link } from "@tanstack/react-router";
-import { AlertCircleIcon, CircleCheckIcon, MailIcon } from "lucide-react";
-import { z } from "zod";
-
-import { useForm } from "@tanstack/react-form";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
 import { Spinner } from "@workspace/ui/components/spinner";
-import { requestPasswordReset } from "@/services/auth/request-password-reset";
-import { env } from "@/env";
+import { CircleCheckIcon, MailIcon, OctagonAlertIcon } from "lucide-react";
+import { useState } from "react";
+import { z } from "zod";
 
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
 });
 
 type SubmissionStatus = {
-  type: "success" | "error";
+  status: "success" | "error";
   title: string;
-  message: string;
+  description: string;
 };
 
-export default function RequestPasswordResetForm({
-  className,
-  ...props
-}: ComponentProps<"div">) {
+export default function RequestPasswordResetForm() {
   const [submissionStatus, setSubmissionStatus] =
     useState<SubmissionStatus | null>(null);
 
@@ -60,17 +54,17 @@ export default function RequestPasswordResetForm({
           onSuccess: () => {
             form.reset();
             setSubmissionStatus({
-              type: "success",
+              status: "success",
               title: "Check your email",
-              message:
+              description:
                 "If an account exists for this email, a password reset link has been sent.",
             });
           },
           onError: (context) => {
             setSubmissionStatus({
-              type: "error",
+              status: "error",
               title: "Unable to send reset email",
-              message:
+              description:
                 context.error.message ??
                 "Something went wrong while sending the reset email. Please try again.",
             });
@@ -81,8 +75,14 @@ export default function RequestPasswordResetForm({
   });
 
   return (
-    <div className={cn("flex flex-col gap-12", className)} {...props}>
-      <img src="/favicon.svg" width={48} height={48} className="size-8" />
+    <div className="flex flex-col gap-12">
+      <img
+        src="/favicon.svg"
+        alt="Grepedia"
+        width={48}
+        height={48}
+        className="size-8"
+      />
       <div>
         <h1 className="text-2xl font-medium">Request password reset</h1>
         <p className="text-sm text-muted-foreground">
@@ -144,19 +144,17 @@ export default function RequestPasswordResetForm({
             {submissionStatus && (
               <Alert
                 variant={
-                  submissionStatus.type === "success"
-                    ? "default"
-                    : "destructive"
+                  submissionStatus.status === "success" ? "success" : "critical"
                 }
               >
-                {submissionStatus.type === "success" ? (
+                {submissionStatus.status === "success" ? (
                   <CircleCheckIcon />
                 ) : (
-                  <AlertCircleIcon />
+                  <OctagonAlertIcon />
                 )}
                 <AlertTitle>{submissionStatus.title}</AlertTitle>
                 <AlertDescription>
-                  <p>{submissionStatus.message}</p>
+                  <p>{submissionStatus.status}</p>
                 </AlertDescription>
               </Alert>
             )}

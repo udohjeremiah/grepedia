@@ -1,5 +1,5 @@
-import type { ToolWithObjectIds } from "@/schemas/tool-schema.js";
-import type { UserWithObjectIds } from "@/schemas/user-schema.js";
+import type { ToolWithObjectIds } from "@/schemas/tool.js";
+import type { UserWithObjectIds } from "@/schemas/user.js";
 import fp from "fastify-plugin";
 import type { Collection, Db } from "mongodb";
 
@@ -31,6 +31,15 @@ export default fp(
     const toolCollection = database.collection<ToolWithObjectIds>(
       fastify.env.MONGODB_COLL_TOOL,
     );
+    toolCollection.createIndex({ status: 1, _id: -1 });
+    toolCollection.createIndex({ status: 1, released_at: -1, _id: -1 });
+    toolCollection.createIndex({ status: 1, "stats.comments": -1, _id: -1 });
+    toolCollection.createIndex({
+      status: 1,
+      "stats.upvotes": -1,
+      "stats.downvotes": -1,
+      _id: -1,
+    });
 
     fastify.decorate("getDatabase", () => database);
     fastify.decorate("getUserCollection", () => userCollection);

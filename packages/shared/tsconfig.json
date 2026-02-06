@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
-      "@workspace/shared/*": ["./src/*"]
+      "@/*": ["./src/*"]
     },
     "rootDir": "src"
   },
