@@ -6,6 +6,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@workspace/ui/components/avatar";
+import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import {
   Sheet,
@@ -95,9 +96,9 @@ export default function Tool(tool: ToolProps) {
               {tool.short_description}
             </p>
             {stat && (
-              <div className="text-xs text-muted-foreground">
-                <span>{stat.value}</span> <span>{stat.label}</span>
-              </div>
+              <Badge variant="secondary">
+                {stat.value} {stat.label}
+              </Badge>
             )}
           </hgroup>
         </Link>
