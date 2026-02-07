@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as searchRouteRouteImport } from './routes/(search)/route'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
+import { Route as TermsOfServiceIndexRouteImport } from './routes/terms-of-service/index'
+import { Route as PrivacyPolicyIndexRouteImport } from './routes/privacy-policy/index'
 import { Route as searchIndexRouteImport } from './routes/(search)/index'
 import { Route as AuthenticatedAtChar123usernameChar125IndexRouteImport } from './routes/_authenticated/@{$username}/index'
 import { Route as searchSearchIndexRouteImport } from './routes/(search)/search/index'
@@ -32,6 +34,16 @@ const searchRouteRoute = searchRouteRouteImport.update({
 } as any)
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceIndexRoute = TermsOfServiceIndexRouteImport.update({
+  id: '/terms-of-service/',
+  path: '/terms-of-service/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyIndexRoute = PrivacyPolicyIndexRouteImport.update({
+  id: '/privacy-policy/',
+  path: '/privacy-policy/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const searchIndexRoute = searchIndexRouteImport.update({
@@ -86,6 +98,8 @@ const AuthenticatedAtChar123usernameChar125AddToolIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof searchIndexRoute
+  '/privacy-policy': typeof PrivacyPolicyIndexRoute
+  '/terms-of-service': typeof TermsOfServiceIndexRoute
   '/request-password-reset': typeof authRequestPasswordResetIndexRoute
   '/reset-password': typeof authResetPasswordIndexRoute
   '/signin': typeof authSigninIndexRoute
@@ -97,6 +111,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof searchIndexRoute
+  '/privacy-policy': typeof PrivacyPolicyIndexRoute
+  '/terms-of-service': typeof TermsOfServiceIndexRoute
   '/request-password-reset': typeof authRequestPasswordResetIndexRoute
   '/reset-password': typeof authResetPasswordIndexRoute
   '/signin': typeof authSigninIndexRoute
@@ -112,6 +128,8 @@ export interface FileRoutesById {
   '/(search)': typeof searchRouteRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/(search)/': typeof searchIndexRoute
+  '/privacy-policy/': typeof PrivacyPolicyIndexRoute
+  '/terms-of-service/': typeof TermsOfServiceIndexRoute
   '/(auth)/request-password-reset/': typeof authRequestPasswordResetIndexRoute
   '/(auth)/reset-password/': typeof authResetPasswordIndexRoute
   '/(auth)/signin/': typeof authSigninIndexRoute
@@ -125,6 +143,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/privacy-policy'
+    | '/terms-of-service'
     | '/request-password-reset'
     | '/reset-password'
     | '/signin'
@@ -136,6 +156,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/privacy-policy'
+    | '/terms-of-service'
     | '/request-password-reset'
     | '/reset-password'
     | '/signin'
@@ -150,6 +172,8 @@ export interface FileRouteTypes {
     | '/(search)'
     | '/_authenticated'
     | '/(search)/'
+    | '/privacy-policy/'
+    | '/terms-of-service/'
     | '/(auth)/request-password-reset/'
     | '/(auth)/reset-password/'
     | '/(auth)/signin/'
@@ -164,6 +188,8 @@ export interface RootRouteChildren {
   authRouteRoute: typeof authRouteRouteWithChildren
   searchRouteRoute: typeof searchRouteRouteWithChildren
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  PrivacyPolicyIndexRoute: typeof PrivacyPolicyIndexRoute
+  TermsOfServiceIndexRoute: typeof TermsOfServiceIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -187,6 +213,20 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof authRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service/': {
+      id: '/terms-of-service/'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy/': {
+      id: '/privacy-policy/'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(search)/': {
@@ -309,6 +349,8 @@ const rootRouteChildren: RootRouteChildren = {
   authRouteRoute: authRouteRouteWithChildren,
   searchRouteRoute: searchRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  PrivacyPolicyIndexRoute: PrivacyPolicyIndexRoute,
+  TermsOfServiceIndexRoute: TermsOfServiceIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

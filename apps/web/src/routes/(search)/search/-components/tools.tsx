@@ -47,7 +47,7 @@ export default function Tools() {
   return (
     <main
       ref={containerRef}
-      className="relative flex flex-1 flex-col p-4 sm:p-8 md:px-16"
+      className="relative flex flex-1 flex-col p-4 sm:px-8 md:px-16"
     >
       {tools.length > 0 ? (
         <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">

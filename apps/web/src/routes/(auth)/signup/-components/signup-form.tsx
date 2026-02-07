@@ -101,7 +101,7 @@ export default function SignupForm() {
         <h1 className="text-2xl font-medium">Welcome to Grepedia</h1>
         <p className="text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Button asChild variant="link" className="size-fit gap-1 p-0">
+          <Button asChild variant="link" className="size-fit p-0">
             <Link to="/signin">Sign in</Link>
           </Button>
         </p>

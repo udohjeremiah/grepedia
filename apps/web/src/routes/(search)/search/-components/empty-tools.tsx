@@ -31,21 +31,20 @@ export default function EmptyTools() {
       </EmptyHeader>
       <EmptyContent className="flex-row justify-center gap-2">
         <Button asChild>
-          <Link to="/search" search={{ ...searchParams, limit: undefined }}>
+          <Link
+            to="/search"
+            search={{ ...searchParams, tab: "all", limit: undefined }}
+          >
             View All Tools
           </Link>
         </Button>
         <Button asChild variant="outline">
-          {sessionData ? (
-            <Link
-              to="/@{$username}/add-tool"
-              params={{ username: sessionData.user.username }}
-            >
-              Add a Tool
-            </Link>
-          ) : (
-            <Link to="/signin">Add a Tool</Link>
-          )}
+          <Link
+            to="/@{$username}/add-tool"
+            params={{ username: sessionData?.user.username ?? "" }}
+          >
+            Add a Tool
+          </Link>
         </Button>
       </EmptyContent>
     </Empty>

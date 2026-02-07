@@ -6,10 +6,10 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
-  InputGroupTextarea,
+  InputGroupInput,
 } from "@workspace/ui/components/input-group";
 import { cn } from "@workspace/ui/lib/utils";
-import { ArrowUpIcon, XIcon } from "lucide-react";
+import { ArrowUpIcon, SearchIcon } from "lucide-react";
 import { type ComponentProps, useRef } from "react";
 
 const formSchema = searchQueryStringSchema.pick({ query: true });
@@ -18,7 +18,7 @@ export default function SearchForm({
   className,
   ...props
 }: ComponentProps<"search">) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   const form = useForm({
@@ -51,13 +51,15 @@ export default function SearchForm({
                 field.state.meta.isTouched && !field.state.meta.isValid;
               const canSend =
                 field.state.meta.isValid && field.state.value.length >= 2;
-              const canClear = field.state.value.length > 0;
 
               return (
                 <Field data-invalid={isInvalid}>
-                  <InputGroup className="rounded-3xl">
-                    <InputGroupTextarea
-                      ref={textareaRef}
+                  <InputGroup className="h-full rounded-3xl">
+                    <InputGroupAddon>
+                      <SearchIcon />
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      ref={inputRef}
                       aria-label="Ask Grepedia Search"
                       autoFocus={true}
                       autoCapitalize="off"
@@ -73,30 +75,8 @@ export default function SearchForm({
                       required={true}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          if (canSend) {
-                            form.handleSubmit();
-                          }
-                        }
-                      }}
-                      className="max-h-56 min-h-0 md:text-base"
                     />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupButton
-                        aria-label="Dismiss"
-                        variant={canClear ? "destructive" : "outline"}
-                        size="icon-sm"
-                        disabled={!canClear}
-                        onClick={() => {
-                          form.reset();
-                          textareaRef.current?.focus();
-                        }}
-                        className="rounded-full"
-                      >
-                        <XIcon />
-                      </InputGroupButton>
+                    <InputGroupAddon align="inline-end">
                       <InputGroupButton
                         aria-label="Send"
                         type="submit"

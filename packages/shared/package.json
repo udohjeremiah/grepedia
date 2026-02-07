@@ -12,6 +12,10 @@
       "types": "./dist/schemas/add-tool.d.ts",
       "default": "./dist/schemas/add-tool.js"
     },
+    "./schemas/get-tools-count": {
+      "types": "./dist/schemas/get-tools-count.d.ts",
+      "default": "./dist/schemas/get-tools-count.js"
+    },
     "./schemas/search": {
       "types": "./dist/schemas/search.d.ts",
       "default": "./dist/schemas/search.js"

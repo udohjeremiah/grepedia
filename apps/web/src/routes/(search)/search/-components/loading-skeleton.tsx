@@ -9,7 +9,7 @@ export default function LoadingSkeleton() {
   return (
     <div
       ref={containerRef}
-      className="grid flex-1 grid-cols-1 gap-4 overflow-hidden p-4 sm:p-8 md:grid-cols-2 md:px-16 lg:grid-cols-3 2xl:grid-cols-4"
+      className="grid flex-1 grid-cols-1 gap-4 overflow-hidden p-4 sm:px-8 md:grid-cols-2 md:px-16 lg:grid-cols-3 2xl:grid-cols-4"
     >
       {Array.from({ length: itemsCount }).map((_, index) => (
         <div key={index} className="flex items-center gap-3">
