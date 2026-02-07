@@ -70,7 +70,7 @@ function SearchForm({ className, onSubmitted, ...props }: SearchFormProps) {
     onSubmit: ({ value }) => {
       navigate({
         to: "/search",
-        search: { query: value.query, tab },
+        search: { query: value.query, tab, limit: undefined },
       });
       if (value.query !== searchParams.query) {
         window.scrollTo({ top: 0, behavior: "smooth" });

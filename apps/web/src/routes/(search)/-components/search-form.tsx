@@ -29,7 +29,10 @@ export default function SearchForm({
       onSubmit: formSchema,
     },
     onSubmit: ({ value }) => {
-      navigate({ to: "/search", search: { query: value.query } });
+      navigate({
+        to: "/search",
+        search: { query: value.query, limit: undefined },
+      });
     },
   });
 
