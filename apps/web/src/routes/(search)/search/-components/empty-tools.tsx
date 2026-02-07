@@ -31,7 +31,7 @@ export default function EmptyTools() {
       </EmptyHeader>
       <EmptyContent className="flex-row justify-center gap-2">
         <Button asChild>
-          <Link to="/search" search={searchParams}>
+          <Link to="/search" search={{ ...searchParams, limit: undefined }}>
             View All Tools
           </Link>
         </Button>
