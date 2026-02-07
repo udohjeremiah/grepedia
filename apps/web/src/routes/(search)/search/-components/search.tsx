@@ -80,7 +80,7 @@ function SearchForm({ className, onSubmitted, ...props }: SearchFormProps) {
   });
 
   return (
-    <search className={cn("w-full max-w-3xl", className)} {...props}>
+    <search className={cn("w-full max-w-2xl", className)} {...props}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
