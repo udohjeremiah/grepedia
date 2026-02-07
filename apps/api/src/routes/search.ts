@@ -39,7 +39,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       },
     },
     handler: async (request, reply) => {
-      const { query, tab, limit, cursor } = request.query;
+      const { query, tab, limit = 20, cursor } = request.query;
       const decodedCursor = decodeCursor(cursor);
       const tools = fastify.getToolCollection();
 

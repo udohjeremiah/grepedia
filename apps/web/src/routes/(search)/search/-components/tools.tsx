@@ -11,7 +11,7 @@ export default function Tools() {
   const searchParams = useSearch({ from: "/(search)/search/" });
   const containerRef = useRef<HTMLElement>(null);
   const trackingRef = useRef<HTMLDivElement>(null);
-  const limit = useItemsCount(containerRef, { rowHeight: 56, gap: 24 });
+  const limit = useItemsCount(containerRef, { rowHeight: 70, gap: 16 });
 
   const {
     data: tools,
@@ -50,7 +50,7 @@ export default function Tools() {
       className="relative flex flex-1 flex-col p-4 sm:p-8 md:px-16"
     >
       {tools.length > 0 ? (
-        <ul className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {tools.map((tool) => (
             <li key={tool._id}>
               <Tool {...tool} />

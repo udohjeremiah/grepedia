@@ -19,7 +19,7 @@ import { Route as authSignupIndexRouteImport } from './routes/(auth)/signup/inde
 import { Route as authSigninIndexRouteImport } from './routes/(auth)/signin/index'
 import { Route as authResetPasswordIndexRouteImport } from './routes/(auth)/reset-password/index'
 import { Route as authRequestPasswordResetIndexRouteImport } from './routes/(auth)/request-password-reset/index'
-import { Route as AuthenticatedToolsSlugIndexRouteImport } from './routes/_authenticated/tools/$slug/index'
+import { Route as AuthenticatedToolsAtChar123slugChar125IndexRouteImport } from './routes/_authenticated/tools/@{$slug}/index'
 import { Route as AuthenticatedAtChar123usernameChar125AddToolIndexRouteImport } from './routes/_authenticated/@{$username}/add-tool/index'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -71,10 +71,10 @@ const authRequestPasswordResetIndexRoute =
     path: '/request-password-reset/',
     getParentRoute: () => authRouteRoute,
   } as any)
-const AuthenticatedToolsSlugIndexRoute =
-  AuthenticatedToolsSlugIndexRouteImport.update({
-    id: '/tools/$slug/',
-    path: '/tools/$slug/',
+const AuthenticatedToolsAtChar123slugChar125IndexRoute =
+  AuthenticatedToolsAtChar123slugChar125IndexRouteImport.update({
+    id: '/tools/@{$slug}/',
+    path: '/tools/@{$slug}/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAtChar123usernameChar125AddToolIndexRoute =
@@ -93,7 +93,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof searchSearchIndexRoute
   '/@{$username}': typeof AuthenticatedAtChar123usernameChar125IndexRoute
   '/@{$username}/add-tool': typeof AuthenticatedAtChar123usernameChar125AddToolIndexRoute
-  '/tools/$slug': typeof AuthenticatedToolsSlugIndexRoute
+  '/tools/@{$slug}': typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof searchIndexRoute
@@ -104,7 +104,7 @@ export interface FileRoutesByTo {
   '/search': typeof searchSearchIndexRoute
   '/@{$username}': typeof AuthenticatedAtChar123usernameChar125IndexRoute
   '/@{$username}/add-tool': typeof AuthenticatedAtChar123usernameChar125AddToolIndexRoute
-  '/tools/$slug': typeof AuthenticatedToolsSlugIndexRoute
+  '/tools/@{$slug}': typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -119,7 +119,7 @@ export interface FileRoutesById {
   '/(search)/search/': typeof searchSearchIndexRoute
   '/_authenticated/@{$username}/': typeof AuthenticatedAtChar123usernameChar125IndexRoute
   '/_authenticated/@{$username}/add-tool/': typeof AuthenticatedAtChar123usernameChar125AddToolIndexRoute
-  '/_authenticated/tools/$slug/': typeof AuthenticatedToolsSlugIndexRoute
+  '/_authenticated/tools/@{$slug}/': typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,7 +132,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/@{$username}'
     | '/@{$username}/add-tool'
-    | '/tools/$slug'
+    | '/tools/@{$slug}'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -143,7 +143,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/@{$username}'
     | '/@{$username}/add-tool'
-    | '/tools/$slug'
+    | '/tools/@{$slug}'
   id:
     | '__root__'
     | '/(auth)'
@@ -157,7 +157,7 @@ export interface FileRouteTypes {
     | '/(search)/search/'
     | '/_authenticated/@{$username}/'
     | '/_authenticated/@{$username}/add-tool/'
-    | '/_authenticated/tools/$slug/'
+    | '/_authenticated/tools/@{$slug}/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -238,11 +238,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authRequestPasswordResetIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
-    '/_authenticated/tools/$slug/': {
-      id: '/_authenticated/tools/$slug/'
-      path: '/tools/$slug'
-      fullPath: '/tools/$slug'
-      preLoaderRoute: typeof AuthenticatedToolsSlugIndexRouteImport
+    '/_authenticated/tools/@{$slug}/': {
+      id: '/_authenticated/tools/@{$slug}/'
+      path: '/tools/@{$slug}'
+      fullPath: '/tools/@{$slug}'
+      preLoaderRoute: typeof AuthenticatedToolsAtChar123slugChar125IndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/@{$username}/add-tool/': {
@@ -290,7 +290,7 @@ const searchRouteRouteWithChildren = searchRouteRoute._addFileChildren(
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAtChar123usernameChar125IndexRoute: typeof AuthenticatedAtChar123usernameChar125IndexRoute
   AuthenticatedAtChar123usernameChar125AddToolIndexRoute: typeof AuthenticatedAtChar123usernameChar125AddToolIndexRoute
-  AuthenticatedToolsSlugIndexRoute: typeof AuthenticatedToolsSlugIndexRoute
+  AuthenticatedToolsAtChar123slugChar125IndexRoute: typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -298,7 +298,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedAtChar123usernameChar125IndexRoute,
   AuthenticatedAtChar123usernameChar125AddToolIndexRoute:
     AuthenticatedAtChar123usernameChar125AddToolIndexRoute,
-  AuthenticatedToolsSlugIndexRoute: AuthenticatedToolsSlugIndexRoute,
+  AuthenticatedToolsAtChar123slugChar125IndexRoute:
+    AuthenticatedToolsAtChar123slugChar125IndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

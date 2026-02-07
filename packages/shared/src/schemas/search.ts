@@ -7,12 +7,11 @@ export const searchQueryStringSchema = z.object({
     .min(2, "Please provide at least 2 characters.")
     .max(8192, "Please keep it under 8192 characters."),
   tab: z.enum(["all", "popular", "trending", "verified", "new"]).default("all"),
-  limit: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .default(20)
-    .transform((value) => Math.min(value, 100)),
+  limit: z.preprocess((value) => {
+    const num = typeof value === "string" ? Number(value) : value;
+    if (typeof num !== "number" || Number.isNaN(num)) return undefined;
+    return Math.min(Math.max(num, 1), 100);
+  }, z.number().optional()),
   cursor: z.string().optional(),
 });
 

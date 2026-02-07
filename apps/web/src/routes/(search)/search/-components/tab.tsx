@@ -30,7 +30,7 @@ export default function Tab({ value, label }: TabProps) {
   return (
     <Link
       to="/search"
-      search={{ ...searchParams, tab: value }}
+      search={{ ...searchParams, tab: value, limit: undefined }}
       onClick={() => {
         if (isTabChange) {
           window.scrollTo({ top: 0, behavior: "smooth" });
