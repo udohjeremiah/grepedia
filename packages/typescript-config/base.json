@@ -21,8 +21,8 @@
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
     "strict": true,
+    "strictNullChecks": true,
     "target": "ES2022"
   }
 }

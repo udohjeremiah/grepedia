@@ -1,5 +1,7 @@
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { betterAuth } from "better-auth/minimal";
+import { username } from "better-auth/plugins";
 import fp from "fastify-plugin";
 
 declare module "fastify" {
@@ -17,7 +19,51 @@ declare module "fastify" {
 export default fp(
   async (fastify) => {
     const auth = betterAuth({
+      advanced: {
+        cookiePrefix: "grepedia",
+      },
       trustedOrigins: [fastify.env.CLIENT_BASE_URL],
+      hooks: {
+        before: createAuthMiddleware(async (context) => {
+          if (context.path === "/sign-up/email") {
+            const email = context.body.email as string;
+            const emailWithoutDomain = email.split("@")[0];
+            if (!emailWithoutDomain) {
+              throw new APIError("BAD_REQUEST", {
+                message: "Invalid email address",
+              });
+            }
+
+            let username = emailWithoutDomain
+              .toLowerCase()
+              .replace(/^\d+|\d+$/g, "");
+            let response = await auth.api.isUsernameAvailable({
+              body: { username },
+            });
+
+            while (!response.available) {
+              const randomSuffix = Math.floor(Math.random() * 1_000_000_000);
+              username = `${username}${randomSuffix}`;
+              response = await auth.api.isUsernameAvailable({
+                body: { username },
+              });
+            }
+
+            return {
+              context: {
+                ...context,
+                body: {
+                  ...context.body,
+                  username: username,
+                  displayUsername: username,
+                },
+              },
+            };
+          }
+
+          return;
+        }),
+      },
       emailAndPassword: {
         enabled: true,
         autoSignIn: false,
@@ -42,6 +88,7 @@ export default fp(
           });
         },
       },
+      plugins: [username()],
       database: mongodbAdapter(fastify.getDatabase()),
       experimental: { joins: true },
       user: {
@@ -50,8 +97,12 @@ export default fp(
             type: "string",
             unique: true,
             required: true,
-            defaultValue: "",
-            input: false,
+            input: true,
+          },
+          displayUsername: {
+            type: "string",
+            required: true,
+            input: true,
           },
           role: {
             type: ["guest", "contributor", "moderator"],
@@ -64,29 +115,6 @@ export default fp(
             required: true,
             defaultValue: "active",
             input: false,
-          },
-        },
-      },
-      databaseHooks: {
-        user: {
-          create: {
-            before: async (user) => {
-              const users = fastify.getUserCollection();
-
-              const baseUsername = (user.email.split("@")[0] ?? "user").replace(
-                /^\d+|\d+$/g,
-                "",
-              );
-
-              let username = baseUsername;
-              let suffix = 0;
-              while (await users.findOne({ username })) {
-                suffix += 1;
-                username = `${baseUsername}${suffix}`;
-              }
-
-              return { data: { ...user, username } };
-            },
           },
         },
       },
