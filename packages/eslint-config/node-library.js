@@ -5,4 +5,19 @@ import { baseConfig } from "./base.js";
  *
  * @type {import("eslint").Linter.Config}
  * */
-export const nodeLibrary = [...baseConfig];
+export const nodeLibrary = [
+  ...baseConfig,
+  {
+    rules: {
+      "unicorn/prevent-abbreviations": [
+        "error",
+        {
+          replacements: {
+            env: false,
+            params: false,
+          },
+        },
+      ],
+    },
+  },
+];

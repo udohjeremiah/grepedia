@@ -4,24 +4,67 @@ import fp from "fastify-plugin";
 declare module "fastify" {
   export interface FastifyInstance {
     env: {
+      APP_NAME: string;
+      CLIENT_BASE_URL: string;
+      EMAIL_AUTH: string;
+      MONGODB_COLL_TOOL: string;
+      MONGODB_COLL_USER: string;
+      MONGODB_DATABASE: string;
+      MONGODB_URL: string;
       NODE_ENV: "development" | "production";
       PORT: number;
-      APP_NAME: string;
-      MONGODB_URL: string;
-      MONGODB_DATABASE: string;
-      MONGODB_COLL_USER: string;
-      MONGODB_COLL_TOOL: string;
       RESEND_API_KEY: string;
-      EMAIL_AUTH: string;
-      CLIENT_BASE_URL: string;
     };
   }
 }
 
 const options: FastifyEnvOptions = {
   confKey: "env",
+  data: process.env,
+  dotenv: true,
   schema: {
-    type: "object",
+    properties: {
+      APP_NAME: {
+        default: "api",
+        type: "string",
+      },
+      CLIENT_BASE_URL: {
+        default: "*",
+        type: "string",
+      },
+      EMAIL_AUTH: {
+        default: "Grepedia <auth@resend.dev>",
+        type: "string",
+      },
+      MONGODB_COLL_TOOL: {
+        default: "my-tool",
+        type: "string",
+      },
+      MONGODB_COLL_USER: {
+        default: "my-user",
+        type: "string",
+      },
+      MONGODB_DATABASE: {
+        default: "my-db",
+        type: "string",
+      },
+      MONGODB_URL: {
+        default: "mongodb://localhost:27017",
+        type: "string",
+      },
+      NODE_ENV: {
+        default: "development",
+        type: "string",
+      },
+      PORT: {
+        default: 4000,
+        type: "number",
+      },
+      RESEND_API_KEY: {
+        default: "re_xxxxxxxxx",
+        type: "string",
+      },
+    },
     required: [
       "NODE_ENV",
       "PORT",
@@ -34,51 +77,8 @@ const options: FastifyEnvOptions = {
       "EMAIL_AUTH",
       "CLIENT_BASE_URL",
     ],
-    properties: {
-      NODE_ENV: {
-        type: "string",
-        default: "development",
-      },
-      PORT: {
-        type: "number",
-        default: 4000,
-      },
-      APP_NAME: {
-        type: "string",
-        default: "api",
-      },
-      MONGODB_URL: {
-        type: "string",
-        default: "mongodb://localhost:27017",
-      },
-      MONGODB_DATABASE: {
-        type: "string",
-        default: "my-db",
-      },
-      MONGODB_COLL_USER: {
-        type: "string",
-        default: "my-user",
-      },
-      MONGODB_COLL_TOOL: {
-        type: "string",
-        default: "my-tool",
-      },
-      RESEND_API_KEY: {
-        type: "string",
-        default: "re_xxxxxxxxx",
-      },
-      EMAIL_AUTH: {
-        type: "string",
-        default: "Grepedia <auth@resend.dev>",
-      },
-      CLIENT_BASE_URL: {
-        type: "string",
-        default: "*",
-      },
-    },
+    type: "object",
   },
-  dotenv: true,
-  data: process.env,
 };
 
 /**

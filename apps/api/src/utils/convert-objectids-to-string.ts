@@ -22,33 +22,34 @@ export type ConvertObjectIdsToStrings<T> = T extends ObjectId
  * const result = convertObjectIdsToStrings(user);
  */
 export function convertObjectIdsToStrings<T>(
-  obj: T,
+  object: T,
 ): ConvertObjectIdsToStrings<T> {
   // Not an object or null, return as is
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (obj === null || typeof obj !== "object") return obj as any;
+  if (object === null || typeof object !== "object") return object as any;
 
   // Single ObjectId
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (obj instanceof ObjectId) return obj.toString() as any;
+  if (object instanceof ObjectId) return object.toString() as any;
 
   // Array
-  if (Array.isArray(obj)) {
+  if (Array.isArray(object)) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return obj.map((item) => convertObjectIdsToStrings(item)) as any;
+    return object.map((item) => convertObjectIdsToStrings(item)) as any;
   }
 
   // Object
   const result: Record<string, unknown> = {};
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      const value = (obj as Record<string, unknown>)[key];
-      result[key] =
-        value instanceof ObjectId
-          ? value.toString()
-          : value && typeof value === "object"
-            ? convertObjectIdsToStrings(value)
-            : value;
+  for (const key in object) {
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      const value = (object as Record<string, unknown>)[key];
+      if (value instanceof ObjectId) {
+        result[key] = value.toString();
+      } else if (value && typeof value === "object") {
+        result[key] = convertObjectIdsToStrings(value);
+      } else {
+        result[key] = value;
+      }
     }
   }
 

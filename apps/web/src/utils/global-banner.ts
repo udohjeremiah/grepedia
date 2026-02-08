@@ -1,8 +1,8 @@
 import type { GlobalBanner } from "@/providers/global-banner-provider";
 
 export type GlobalBannerAction =
-  | { type: "add"; banner: Omit<GlobalBanner, "id" | "timestamp"> }
-  | { type: "remove"; id: string };
+  | { banner: Omit<GlobalBanner, "id" | "timestamp">; type: "add" }
+  | { id: string; type: "remove" };
 
 type Listener = (action: GlobalBannerAction) => void;
 
@@ -16,17 +16,18 @@ export const globalBanner = {
         const timestamp = new Date();
         const fullBanner: GlobalBanner = { id, timestamp, ...action.banner };
 
-        listeners.forEach((listener) =>
-          listener({ type: "add", banner: fullBanner }),
-        );
+        for (const listener of listeners) {
+          listener({ banner: fullBanner, type: "add" });
+        }
 
         return id;
       }
 
       case "remove": {
-        listeners.forEach((listener) =>
-          listener({ type: "remove", id: action.id }),
-        );
+        for (const listener of listeners) {
+          listener({ id: action.id, type: "remove" });
+        }
+
         return;
       }
 

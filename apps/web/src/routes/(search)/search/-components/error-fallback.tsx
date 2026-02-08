@@ -1,3 +1,5 @@
+import type { FallbackProps } from "react-error-boundary";
+
 import { Button } from "@workspace/ui/components/button";
 import {
   Empty,
@@ -8,7 +10,6 @@ import {
   EmptyTitle,
 } from "@workspace/ui/components/empty";
 import { BugIcon } from "lucide-react";
-import type { FallbackProps } from "react-error-boundary";
 
 export function ErrorFallback({ resetErrorBoundary }: FallbackProps) {
   return (
@@ -26,9 +27,9 @@ export function ErrorFallback({ resetErrorBoundary }: FallbackProps) {
         </EmptyHeader>
         <EmptyContent>
           <Button
-            variant="destructive"
-            onClick={resetErrorBoundary}
             className="w-full"
+            onClick={resetErrorBoundary}
+            variant="destructive"
           >
             Try again
           </Button>

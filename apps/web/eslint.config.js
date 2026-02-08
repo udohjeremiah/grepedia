@@ -1,4 +1,2 @@
-import { tanstackStartConfig } from "@workspace/eslint-config/tanstack-start";
-
 /** @type {import("eslint").Linter.Config} */
-export default tanstackStartConfig;
+export { tanstackStartConfig as default } from "@workspace/eslint-config/tanstack-start";

@@ -8,7 +8,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@workspace/ui/utils/cn";
 import { ArrowUpIcon, SearchIcon } from "lucide-react";
 import { type ComponentProps, useRef } from "react";
 
@@ -25,22 +25,22 @@ export default function SearchForm({
     defaultValues: {
       query: "",
     },
-    validators: {
-      onSubmit: formSchema,
-    },
     onSubmit: ({ value }) => {
       navigate({
+        search: { limit: undefined, query: value.query },
         to: "/search",
-        search: { query: value.query, limit: undefined },
       });
+    },
+    validators: {
+      onSubmit: formSchema,
     },
   });
 
   return (
     <search className={cn(className)} {...props}>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
+        onSubmit={(event) => {
+          event.preventDefault();
           form.handleSubmit();
         }}
       >
@@ -59,31 +59,33 @@ export default function SearchForm({
                       <SearchIcon />
                     </InputGroupAddon>
                     <InputGroupInput
-                      ref={inputRef}
+                      aria-invalid={isInvalid}
                       aria-label="Ask Grepedia Search"
-                      autoFocus={true}
                       autoCapitalize="off"
                       autoComplete="off"
                       autoCorrect="off"
-                      spellCheck={false}
-                      aria-invalid={isInvalid}
-                      minLength={2}
+                      autoFocus={true}
                       maxLength={8192}
-                      placeholder="Ask Grepedia Search"
+                      minLength={2}
                       name={field.name}
-                      value={field.state.value}
-                      required={true}
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      placeholder="Ask Grepedia Search"
+                      ref={inputRef}
+                      required={true}
+                      spellCheck={false}
+                      value={field.state.value}
                     />
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
                         aria-label="Send"
+                        className="ms-auto rounded-full"
+                        disabled={!canSend}
+                        size="icon-sm"
                         type="submit"
                         variant="default"
-                        size="icon-sm"
-                        disabled={!canSend}
-                        className="ms-auto rounded-full"
                       >
                         <ArrowUpIcon />
                       </InputGroupButton>

@@ -1,4 +1,3 @@
-import { globalBanner } from "@/utils/global-banner";
 import {
   DefaultOptions,
   defaultShouldDehydrateQuery,
@@ -8,15 +7,12 @@ import {
 } from "@tanstack/react-query";
 import { createIsomorphicFn } from "@tanstack/react-start";
 
-let browserQueryClient: QueryClient | undefined = undefined;
+import { globalBanner } from "@/utils/global-banner";
+
+let browserQueryClient: QueryClient | undefined;
 
 function makeQueryClient() {
   const defaultOptions: DefaultOptions = {
-    queries: {
-      // With SSR, we usually want to set some default staleTime
-      // above 0 to avoid refetching immediately on the client
-      staleTime: 5 * 60 * 1000,
-    },
     dehydrate: {
       shouldDehydrateQuery: (query) => {
         // Include pending queries in dehydration, so the client can avoid
@@ -30,37 +26,27 @@ function makeQueryClient() {
         return shouldDehydrate;
       },
     },
+    queries: {
+      // With SSR, we usually want to set some default staleTime
+      // above 0 to avoid refetching immediately on the client
+      staleTime: 5 * 60 * 1000,
+    },
   };
 
   const queryCache = new QueryCache({
-    onSuccess: (_data, query) => {
-      // Remove any previous associated global banner when data is successfully fetched
-      const bannerId = query.meta?.bannerId;
-      if (bannerId) {
-        globalBanner.emit({ type: "remove", id: bannerId });
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        queryClient.setQueryData(query.queryKey, (oldData: any) => {
-          const { meta, ...rest } = oldData ?? {};
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { bannerId: _, ...newMeta } = meta;
-          return { ...rest, meta: newMeta };
-        });
-      }
-    },
     onError: (_error, query) => {
       // Show a global banner if we already have data in the cache which
       // indicates a failed background update
       if (query.state.data !== undefined) {
         const bannerId = globalBanner.emit({
-          type: "add",
           banner: {
-            variant: "critical",
-            title: "Couldn't refresh results",
+            autoDismiss: false,
             description:
               "We ran into an issue while updating this data. You're seeing the most recent saved results, which may be slightly out of date.",
-            autoDismiss: false,
+            title: "Couldn't refresh results",
+            variant: "critical",
           },
+          type: "add",
         });
 
         // Store the bannerId in the query context for later removal
@@ -69,6 +55,21 @@ function makeQueryClient() {
           return oldData
             ? { ...oldData, meta: { ...oldData.meta, bannerId } }
             : oldData;
+        });
+      }
+    },
+    onSuccess: (_data, query) => {
+      // Remove any previous associated global banner when data is successfully fetched
+      const bannerId = query.meta?.bannerId;
+      if (bannerId) {
+        globalBanner.emit({ id: bannerId, type: "remove" });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        queryClient.setQueryData(query.queryKey, (oldData: any) => {
+          const { meta, ...rest } = oldData ?? {};
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { bannerId, ...newMeta } = meta;
+          return { ...rest, meta: newMeta };
         });
       }
     },
@@ -87,8 +88,8 @@ function makeQueryClient() {
 
   const queryClient = new QueryClient({
     defaultOptions,
-    queryCache,
     mutationCache,
+    queryCache,
   });
 
   return queryClient;

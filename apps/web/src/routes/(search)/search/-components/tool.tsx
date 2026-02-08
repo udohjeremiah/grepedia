@@ -1,4 +1,3 @@
-import { getInitials } from "@/utils/get-initials";
 import { Link, useSearch } from "@tanstack/react-router";
 import {
   Avatar,
@@ -27,38 +26,39 @@ import {
   StarIcon,
 } from "lucide-react";
 import { useState } from "react";
+
+import { getInitials } from "@/utils/get-initials";
+
 import { useSearchTools } from "../-queries/search";
 
 type ToolProps = ReturnType<typeof useSearchTools>["data"][number];
 
-const formatReleasedAt = (releasedAt: string | null) =>
-  releasedAt
-    ? new Date(releasedAt).toLocaleDateString("en-US", {
-        month: "short",
-        year: "numeric",
-      })
-    : "New";
-
 const statConfigByTab = {
   all: {
-    icon: SearchIcon,
     getValue: () => "All",
-  },
-  popular: {
-    icon: StarIcon,
-    getValue: (tool: ToolProps) => tool.stats.upvotes - tool.stats.downvotes,
-  },
-  trending: {
-    icon: MessageCircleIcon,
-    getValue: (tool: ToolProps) => tool.stats.comments,
-  },
-  verified: {
-    icon: BadgeCheckIcon,
-    getValue: () => "verified",
+    icon: SearchIcon,
   },
   new: {
+    getValue: (tool: ToolProps) =>
+      tool.released_at
+        ? new Date(tool.released_at).toLocaleDateString("en-US", {
+            month: "short",
+            year: "numeric",
+          })
+        : "New",
     icon: CalendarIcon,
-    getValue: (tool: ToolProps) => formatReleasedAt(tool.released_at),
+  },
+  popular: {
+    getValue: (tool: ToolProps) => tool.stats.upvotes - tool.stats.downvotes,
+    icon: StarIcon,
+  },
+  trending: {
+    getValue: (tool: ToolProps) => tool.stats.comments,
+    icon: MessageCircleIcon,
+  },
+  verified: {
+    getValue: () => "verified",
+    icon: BadgeCheckIcon,
   },
 } as const;
 
@@ -72,22 +72,22 @@ export default function Tool(tool: ToolProps) {
   return (
     <Button
       asChild
-      variant="outline"
       className="size-full gap-3 rounded-2xl p-2"
+      variant="outline"
     >
       <div>
         <Avatar className="size-15 rounded-2xl">
           <AvatarImage
-            src={tool.image ?? ""}
             alt={tool.name}
             className="rounded-2xl"
+            src={tool.image ?? ""}
           />
           <AvatarFallback className="rounded-2xl text-base">
             {getInitials(tool.name)}
           </AvatarFallback>
         </Avatar>
         <div className="flex min-w-0 flex-1 flex-col">
-          <Link to="/tools/@{$slug}" params={{ slug: tool.slug }}>
+          <Link params={{ slug: tool.slug }} to="/tools/@{$slug}">
             <hgroup className="flex flex-col">
               <h3 className="truncate tracking-tight">{tool.name}</h3>
               <p className="truncate text-muted-foreground">
@@ -113,7 +113,7 @@ function MoreInfoSheet(tool: ToolProps) {
 
   const handleShare = async () => {
     try {
-      const url = `${window.location.origin}/tools/@${tool.slug}`;
+      const url = `${globalThis.location.origin}/tools/@${tool.slug}`;
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
@@ -125,14 +125,14 @@ function MoreInfoSheet(tool: ToolProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="secondary" size="icon-xs">
+        <Button size="icon-xs" variant="secondary">
           <EllipsisVerticalIcon />
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className="flex flex-row items-start gap-3">
           <Avatar size="lg">
-            <AvatarImage src={tool.image ?? ""} alt={tool.name} />
+            <AvatarImage alt={tool.name} src={tool.image ?? ""} />
             <AvatarFallback>{getInitials(tool.name)}</AvatarFallback>
           </Avatar>
           <hgroup>
@@ -144,7 +144,7 @@ function MoreInfoSheet(tool: ToolProps) {
           <div className="flex items-center justify-between gap-4">
             <h3 className="text-base">{tool.name}</h3>
             <Button asChild size="sm">
-              <Link to="/tools/@{$slug}" params={{ slug: tool.slug }}>
+              <Link params={{ slug: tool.slug }} to="/tools/@{$slug}">
                 Learn More
               </Link>
             </Button>

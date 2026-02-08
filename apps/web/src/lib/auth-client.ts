@@ -1,9 +1,10 @@
-import { env } from "@/env";
 import {
   inferAdditionalFields,
   usernameClient,
 } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+
+import { env } from "@/env";
 
 export const authClient = createAuthClient({
   baseURL: env.VITE_SERVER_BASE_URL,
@@ -11,10 +12,10 @@ export const authClient = createAuthClient({
     usernameClient(),
     inferAdditionalFields({
       user: {
-        username: { type: "string", input: false },
-        displayUsername: { type: "string", input: false },
-        role: { type: ["guest", "contributor", "moderator"], input: false },
-        status: { type: ["active", "restricted", "banned"], input: false },
+        displayUsername: { input: false, type: "string" },
+        role: { input: false, type: ["guest", "contributor", "moderator"] },
+        status: { input: false, type: ["active", "restricted", "banned"] },
+        username: { input: false, type: "string" },
       },
     }),
   ],

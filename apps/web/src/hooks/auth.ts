@@ -1,5 +1,6 @@
-import { authClient } from "@/lib/auth-client";
 import { createAuthHooks } from "@daveyplate/better-auth-tanstack";
+
+import { authClient } from "@/lib/auth-client";
 
 type AuthClient = typeof authClient;
 type AuthHooks = ReturnType<typeof createAuthHooks<AuthClient>>;

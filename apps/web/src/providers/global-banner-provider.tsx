@@ -1,4 +1,3 @@
-import { globalBanner, GlobalBannerAction } from "@/utils/global-banner";
 import {
   Alert,
   AlertAction,
@@ -22,23 +21,27 @@ import {
   useState,
 } from "react";
 
-export type GlobalBannerVariant = "info" | "success" | "warning" | "critical";
+import { globalBanner, GlobalBannerAction } from "@/utils/global-banner";
 
 export type GlobalBanner = {
-  id: string;
-  variant: GlobalBannerVariant;
-  title: string;
-  description: string;
-  timestamp: Date;
   autoDismiss?: boolean;
   autoDismissMs?: number;
+  description: string;
+  id: string;
+  timestamp: Date;
+  title: string;
+  variant: GlobalBannerVariant;
 };
+
+export type GlobalBannerVariant = "critical" | "info" | "success" | "warning";
 
 type GlobalBannerContextType = {
   banners: GlobalBanner[];
 };
 
-const GlobalBannerContext = createContext<GlobalBannerContextType | null>(null);
+const GlobalBannerContext = createContext<GlobalBannerContextType | undefined>(
+  undefined,
+);
 
 interface GlobalBannerProviderProps {
   children: ReactNode;
@@ -49,34 +52,34 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
 
   const addBanner = useCallback(
     (banner: Omit<GlobalBanner, "id" | "timestamp">) => {
-      setBanners((prev) => {
+      setBanners((previous) => {
         if (
-          prev.some(
+          previous.some(
             (b) =>
               b.variant === banner.variant &&
               b.title === banner.title &&
               b.description === banner.description,
           )
         ) {
-          return prev;
+          return previous;
         }
 
         const newBanner = {
-          id: crypto.randomUUID(),
-          timestamp: new Date(),
           autoDismiss: banner.autoDismiss ?? true,
           autoDismissMs: banner.autoDismissMs ?? 7000,
+          id: crypto.randomUUID(),
+          timestamp: new Date(),
           ...banner,
         };
 
-        return [...prev, newBanner];
+        return [...previous, newBanner];
       });
     },
     [],
   );
 
   const removeBanner = useCallback((id: string) => {
-    setBanners((prev) => prev.filter((banner) => banner.id !== id));
+    setBanners((previous) => previous.filter((banner) => banner.id !== id));
   }, []);
 
   useEffect(() => {
@@ -93,34 +96,41 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
   }, [addBanner, removeBanner]);
 
   useEffect(() => {
-    const timers: Record<string, number> = {};
+    const timers: Record<string, ReturnType<typeof setTimeout>> = {};
 
-    banners.forEach((banner) => {
+    for (const banner of banners) {
       if (banner.autoDismiss && !timers[banner.id]) {
-        timers[banner.id] = window.setTimeout(() => {
+        timers[banner.id] = globalThis.setTimeout(() => {
           removeBanner(banner.id);
           delete timers[banner.id];
         }, banner.autoDismissMs ?? 7000);
       }
-    });
+    }
 
     return () => {
-      Object.values(timers).forEach(clearTimeout);
+      for (const timer of Object.values(timers)) {
+        clearTimeout(timer);
+      }
     };
   }, [banners, removeBanner]);
 
   const getIcon = (variant: GlobalBannerVariant) => {
     switch (variant) {
-      case "info":
-        return <InfoIcon />;
-      case "success":
-        return <CircleCheckIcon />;
-      case "warning":
-        return <CircleAlertIcon />;
-      case "critical":
+      case "critical": {
         return <OctagonAlertIcon />;
-      default:
-        return null;
+      }
+      case "info": {
+        return <InfoIcon />;
+      }
+      case "success": {
+        return <CircleCheckIcon />;
+      }
+      case "warning": {
+        return <CircleAlertIcon />;
+      }
+      default: {
+        throw new Error("Invalid banner variant");
+      }
     }
   };
 
@@ -130,22 +140,22 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
         <div className="flex w-full flex-col gap-2">
           {banners.map((banner) => (
             <Alert
+              className="rounded-none"
               key={banner.id}
               variant={banner.variant}
-              className="rounded-none"
             >
               {getIcon(banner.variant)}
               <div>
                 <AlertTitle className="sr-only">{banner.title}</AlertTitle>
                 <time
-                  dateTime={banner.timestamp.toISOString()}
                   className="text-xs text-muted-foreground"
+                  dateTime={banner.timestamp.toISOString()}
                 >
                   {new Intl.DateTimeFormat("default", {
                     hour: "2-digit",
+                    hour12: false,
                     minute: "2-digit",
                     second: "2-digit",
-                    hour12: false,
                   }).format(banner.timestamp)}
                 </time>{" "}
                 <AlertDescription>{banner.description}</AlertDescription>
@@ -153,9 +163,9 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
               <AlertAction>
                 <Button
                   aria-label="Dismiss alert"
-                  variant="ghost"
-                  size="icon-xs"
                   onClick={() => removeBanner(banner.id)}
+                  size="icon-xs"
+                  variant="ghost"
                 >
                   <XIcon />
                 </Button>

@@ -1,4 +1,3 @@
-import { auth } from "@/hooks/auth";
 import { Link, useSearch } from "@tanstack/react-router";
 import { Button } from "@workspace/ui/components/button";
 import {
@@ -10,6 +9,8 @@ import {
   EmptyTitle,
 } from "@workspace/ui/components/empty";
 import { SearchXIcon } from "lucide-react";
+
+import { auth } from "@/hooks/auth";
 
 export default function EmptyTools() {
   const searchParams = useSearch({ from: "/(search)/search/" });
@@ -32,16 +33,16 @@ export default function EmptyTools() {
       <EmptyContent className="flex-row justify-center gap-2">
         <Button asChild>
           <Link
+            search={{ ...searchParams, limit: undefined, tab: "all" }}
             to="/search"
-            search={{ ...searchParams, tab: "all", limit: undefined }}
           >
             View All Tools
           </Link>
         </Button>
         <Button asChild variant="outline">
           <Link
-            to="/@{$username}/add-tool"
             params={{ username: sessionData?.user.username ?? "" }}
+            to="/@{$username}/add-tool"
           >
             Add a Tool
           </Link>

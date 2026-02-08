@@ -11,5 +11,5 @@ export default fp<FastifySwaggerUiOptions>(
   async (fastify) => {
     fastify.register(swaggerUi);
   },
-  { name: "swagger-ui", dependencies: ["swagger"] },
+  { dependencies: ["swagger"], name: "swagger-ui" },
 );

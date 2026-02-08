@@ -10,10 +10,10 @@
  * @returns A new object without the specified keys
  */
 export function omitKeys<T extends object, K extends keyof T>(
-  obj: T,
+  object: T,
   keys: readonly K[],
 ): Omit<T, K> {
-  const result = { ...obj };
+  const result = { ...object };
 
   for (const key of keys) {
     delete result[key];

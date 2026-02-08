@@ -9,12 +9,12 @@ import fp from "fastify-plugin";
 export default fp<FastifyCorsOptions>(
   async (fastify) => {
     fastify.register(cors, {
-      origin: [fastify.env.CLIENT_BASE_URL],
-      methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
       credentials: true,
-      maxAge: 86400,
+      maxAge: 86_400,
+      methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+      origin: [fastify.env.CLIENT_BASE_URL],
     });
   },
-  { name: "cors", dependencies: ["env"] },
+  { dependencies: ["env"], name: "cors" },
 );

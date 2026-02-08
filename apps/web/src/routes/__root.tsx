@@ -1,18 +1,20 @@
+import type { QueryClient } from "@tanstack/react-query";
+import type { ReactNode } from "react";
+
+import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+
 import { GlobalBannerProvider } from "@/providers/global-banner-provider";
 import { TanStackQueryProvider } from "@/providers/tanstack-query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import appCss from "@/styles/globals.css?url";
-import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
-import { TanStackDevtools } from "@tanstack/react-devtools";
-import type { QueryClient } from "@tanstack/react-query";
-import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
-import {
-  HeadContent,
-  Scripts,
-  createRootRouteWithContext,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import type { ReactNode } from "react";
 
 export interface MyRouterContext {
   queryClient: QueryClient;
@@ -20,28 +22,28 @@ export interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
+    links: [
+      {
+        href: appCss,
+        rel: "stylesheet",
+      },
+    ],
     meta: [
       {
-        charSet: "utf-8",
+        charSet: "utf8",
       },
       {
-        name: "viewport",
         content: "width=device-width, initial-scale=1",
+        name: "viewport",
       },
       {
         title:
           "Grepedia — the encyclopedia of tools powered by collective wisdom",
       },
       {
-        name: "description",
         content:
           "Grepedia — the encyclopedia of tools powered by collective wisdom. Search and explore tools curated by the community.",
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
+        name: "description",
       },
     ],
   }),

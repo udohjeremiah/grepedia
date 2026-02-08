@@ -1,45 +1,22 @@
-import type { ToolWithObjectIds } from "@/schemas/tool.js";
-import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+
 import { omitKeys } from "@workspace/shared/omit-keys";
 import {
   search200ResponseSchema,
   searchQueryStringSchema,
 } from "@workspace/shared/schemas/search";
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 
-type CursorPayload =
-  | { type: "id"; id: string }
-  | { type: "score"; score: number; id: string }
-  | { type: "date"; date: string; id: string };
+import type { ToolWithObjectIds } from "@/schemas/tool.js";
+
+import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
+import { decodeCursor, encodeCursor } from "@/utils/cursor-codec.js";
 
 const search: FastifyPluginAsyncZod = async (fastify) => {
-  const encodeCursor = (cursor: CursorPayload) => {
-    return Buffer.from(JSON.stringify(cursor)).toString("base64url");
-  };
-
-  const decodeCursor = (cursor?: string): CursorPayload | null => {
-    if (!cursor) return null;
-    return JSON.parse(Buffer.from(cursor, "base64url").toString("utf8"));
-  };
-
   fastify.route({
-    method: "GET",
-    url: "/search",
-    schema: {
-      querystring: searchQueryStringSchema,
-      response: {
-        default: z.object({
-          success: z.boolean(),
-          message: z.string(),
-          data: z.unknown().optional(),
-        }),
-        200: search200ResponseSchema,
-      },
-    },
     handler: async (request, reply) => {
-      const { query, tab, limit = 20, cursor } = request.query;
+      const { cursor, limit = 20, query, tab } = request.query;
       const decodedCursor = decodeCursor(cursor);
       const tools = fastify.getToolCollection();
 
@@ -49,7 +26,6 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         .map((w) => new RegExp(w, "i"));
 
       const baseFilter = {
-        status: "published",
         $or: [
           { name: { $in: words } },
           { short_description: { $in: words } },
@@ -57,12 +33,13 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
           { categories: { $in: words } },
           { tags: { $in: words } },
         ],
+        status: "published",
       };
 
       const idCursorMatch =
         decodedCursor?.type === "id"
           ? { _id: { $lt: new ObjectId(decodedCursor.id) } }
-          : null;
+          : undefined;
 
       const scoreCursorMatch =
         decodedCursor?.type === "score"
@@ -70,12 +47,12 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
               $or: [
                 { score: { $lt: decodedCursor.score } },
                 {
-                  score: decodedCursor.score,
                   _id: { $lt: new ObjectId(decodedCursor.id) },
+                  score: decodedCursor.score,
                 },
               ],
             }
-          : null;
+          : undefined;
 
       const dateCursorMatch =
         decodedCursor?.type === "date"
@@ -83,18 +60,24 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
               $or: [
                 { released_at: { $lt: new Date(decodedCursor.date) } },
                 {
-                  released_at: new Date(decodedCursor.date),
                   _id: { $lt: new ObjectId(decodedCursor.id) },
+                  released_at: new Date(decodedCursor.date),
                 },
               ],
             }
-          : null;
+          : undefined;
 
       const pipelines = {
         all: [
           { $match: baseFilter },
           ...(idCursorMatch ? [{ $match: idCursorMatch }] : []),
           { $sort: { _id: -1 } },
+          { $limit: limit },
+        ],
+        new: [
+          { $match: baseFilter },
+          ...(dateCursorMatch ? [{ $match: dateCursorMatch }] : []),
+          { $sort: { _id: -1, released_at: -1 } },
           { $limit: limit },
         ],
         popular: [
@@ -105,25 +88,20 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
             },
           },
           ...(scoreCursorMatch ? [{ $match: scoreCursorMatch }] : []),
-          { $sort: { score: -1, _id: -1 } },
+          { $sort: { _id: -1, score: -1 } },
           { $limit: limit },
         ],
         trending: [
           { $match: baseFilter },
           ...(idCursorMatch ? [{ $match: idCursorMatch }] : []),
-          { $sort: { "stats.comments": -1, _id: -1 } },
+          { $sort: { _id: -1, "stats.comments": -1 } },
           { $limit: limit },
         ],
         verified: [
+          // eslint-disable-next-line unicorn/no-null
           { $match: { ...baseFilter, owner: { $ne: null } } },
           ...(idCursorMatch ? [{ $match: idCursorMatch }] : []),
           { $sort: { _id: -1 } },
-          { $limit: limit },
-        ],
-        new: [
-          { $match: baseFilter },
-          ...(dateCursorMatch ? [{ $match: dateCursorMatch }] : []),
-          { $sort: { released_at: -1, _id: -1 } },
           { $limit: limit },
         ],
       };
@@ -140,35 +118,49 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       const last = result.at(-1);
-      let nextCursor: string | null = null;
+      // eslint-disable-next-line unicorn/no-null
+      let nextCursor: null | string = null;
 
       if (last) {
         if (tab === "popular") {
           nextCursor = encodeCursor({
-            type: "score",
-            score: last.stats.upvotes - last.stats.downvotes,
             id: last._id!.toString(),
+            score: last.stats.upvotes - last.stats.downvotes,
+            type: "score",
           });
         } else if (tab === "new" && last.released_at) {
           nextCursor = encodeCursor({
-            type: "date",
             date: last.released_at,
             id: last._id!.toString(),
+            type: "date",
           });
         } else {
           nextCursor = encodeCursor({
-            type: "id",
             id: last._id!.toString(),
+            type: "id",
           });
         }
       }
 
       return reply.send({
-        success: true,
+        data: { nextCursor, tools: searchResults },
         message: "Search results retrieved successfully",
-        data: { tools: searchResults, nextCursor },
+        success: true,
       });
     },
+    method: "GET",
+    schema: {
+      querystring: searchQueryStringSchema,
+      response: {
+        200: search200ResponseSchema,
+        default: z.object({
+          data: z.unknown().optional(),
+          message: z.string(),
+          success: z.boolean(),
+        }),
+      },
+    },
+    url: "/search",
   });
 };
 

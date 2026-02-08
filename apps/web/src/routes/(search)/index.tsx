@@ -1,5 +1,3 @@
-import AppLink from "@/components/app-link";
-import { auth } from "@/hooks/auth";
 import {
   dehydrate,
   HydrationBoundary,
@@ -10,6 +8,10 @@ import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+
+import AppLink from "@/components/app-link";
+import { auth } from "@/hooks/auth";
+
 import SearchForm from "./-components/search-form";
 import ToolsCount from "./-components/tools-count";
 import { toolsCountQueryOptions } from "./-queries/tools-count";
@@ -29,7 +31,7 @@ function RouteComponent() {
     <HydrationBoundary state={dehydrate(queryClient)}>
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-6 p-4 md:p-6">
         <div className="flex flex-col items-center justify-center gap-2">
-          <img src="/favicon.svg" alt="Grepedia" width={64} height={64} />
+          <img alt="Grepedia" height={64} src="/favicon.svg" width={64} />
           <h1 className="text-2xl font-bold">Grepedia</h1>
         </div>
         <SearchForm className="w-full" />
@@ -46,21 +48,21 @@ function RouteComponent() {
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
-                onReset={reset}
                 FallbackComponent={() => (
                   <div className="flex flex-col items-center">
                     <p className="text-sm/relaxed">
                       Couldn&apos;t display result.
                     </p>
                     <Button
-                      variant="destructive"
-                      onClick={reset}
                       className="w-full"
+                      onClick={reset}
+                      variant="destructive"
                     >
                       Try again
                     </Button>
                   </div>
                 )}
+                onReset={reset}
               >
                 <ToolsCount />
               </ErrorBoundary>
@@ -70,23 +72,23 @@ function RouteComponent() {
         <div className="flex flex-wrap items-center justify-center gap-1">
           {sessionData ? (
             <AppLink
-              to="/@{$username}"
-              params={{ username: sessionData?.user.username }}
               className="text-xs"
+              params={{ username: sessionData?.user.username }}
+              to="/@{$username}"
             >
               Your Profile
             </AppLink>
           ) : (
-            <AppLink to="/signin" className="text-xs">
+            <AppLink className="text-xs" to="/signin">
               Sign in
             </AppLink>
           )}
           <span className="text-xs text-muted-foreground">•</span>
-          <AppLink to="/terms-of-service" className="text-xs">
+          <AppLink className="text-xs" to="/terms-of-service">
             Terms of Service
           </AppLink>
           <span className="text-xs text-muted-foreground">•</span>
-          <AppLink to="/privacy-policy" className="text-xs">
+          <AppLink className="text-xs" to="/privacy-policy">
             Privacy Policy
           </AppLink>
         </div>

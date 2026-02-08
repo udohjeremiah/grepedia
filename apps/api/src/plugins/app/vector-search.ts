@@ -3,16 +3,14 @@ import fp from "fastify-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
-    embedder: FeatureExtractionPipeline | null;
+    embedder?: FeatureExtractionPipeline;
     generateVectorEmbeddings(text: string): Promise<number[]>;
-    cosineSimilarity(a: number[], b: number[]): number;
   }
 }
 
 /**
  * This plugin provides utilities for generating
- * vector embeddings and performing similarity
- * calculations for semantic search.
+ * vector embeddings for semantic search.
  *
  * @see https://redis.io/blog/vector-search-guide
  * @see https://www.mongodb.com/docs/atlas/atlas-vector-search
@@ -20,7 +18,7 @@ declare module "fastify" {
  */
 export default fp(
   async (fastify) => {
-    let loading: Promise<void> | null = null;
+    let loading: Promise<void> | undefined;
 
     const loadModel = async () => {
       if (fastify.embedder) return;
@@ -55,36 +53,15 @@ export default fp(
       }
 
       const output = await fastify.embedder(text, {
-        pooling: "mean",
         normalize: true,
+        pooling: "mean",
       });
 
-      return Array.from(output.data);
+      return [...output.data];
     };
 
-    const cosineSimilarity = (a: number[], b: number[]) => {
-      if (a.length !== b.length) {
-        throw new Error("Vectors must have the same length");
-      }
-
-      let dot = 0;
-      let normA = 0;
-      let normB = 0;
-
-      for (let i = 0; i < a.length; i++) {
-        dot += a[i]! * b[i]!;
-        normA += a[i]! ** 2;
-        normB += b[i]! ** 2;
-      }
-
-      if (normA === 0 || normB === 0) return 0;
-
-      return dot / (Math.sqrt(normA) * Math.sqrt(normB));
-    };
-
-    fastify.decorate("embedder", null);
+    fastify.decorate("embedder");
     fastify.decorate("generateVectorEmbeddings", generateVectorEmbeddings);
-    fastify.decorate("cosineSimilarity", cosineSimilarity);
 
     fastify.addHook("onReady", async () => {
       await loadModel();

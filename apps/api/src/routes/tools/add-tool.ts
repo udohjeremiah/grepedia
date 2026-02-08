@@ -1,30 +1,20 @@
-import type { ToolWithObjectIds } from "@/schemas/tool.js";
-import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+
 import { slugifyWithCounter } from "@sindresorhus/slugify";
 import { omitKeys } from "@workspace/shared/omit-keys";
 import {
   addTool201ResponseSchema,
   addToolBodySchema,
 } from "@workspace/shared/schemas/add-tool";
-import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 
+import type { ToolWithObjectIds } from "@/schemas/tool.js";
+
+import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
+
 const addTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
-    method: "POST",
-    url: "/",
-    schema: {
-      body: addToolBodySchema,
-      response: {
-        default: z.object({
-          success: z.boolean(),
-          message: z.string(),
-          data: z.unknown().optional(),
-        }),
-        201: addTool201ResponseSchema,
-      },
-    },
     handler: async function (request, reply) {
       if (!request.user) {
         throw new Error("User not authenticated");
@@ -52,15 +42,18 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
 
       const tool: Omit<ToolWithObjectIds, "_id"> = {
         ...body,
-        slug,
-        owner: null,
-        vectorEmbeddings: [],
-        added_by: new ObjectId(request.user.id),
         added_at: new Date().toISOString(),
-        updated_by: null,
-        updated_at: null,
-        stats: { upvotes: 0, downvotes: 0, comments: 0 },
+        added_by: new ObjectId(request.user.id),
+        // eslint-disable-next-line unicorn/no-null
+        owner: null,
+        slug,
+        stats: { comments: 0, downvotes: 0, upvotes: 0 },
         status: "published",
+        // eslint-disable-next-line unicorn/no-null
+        updated_at: null,
+        // eslint-disable-next-line unicorn/no-null
+        updated_by: null,
+        vectorEmbeddings: [],
       };
 
       const result = await tools.insertOne(tool);
@@ -70,11 +63,24 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       return reply.code(201).send({
-        success: true,
-        message: "Tool added successfully",
         data: { tool: toolWithStringIds },
+        message: "Tool added successfully",
+        success: true,
       });
     },
+    method: "POST",
+    schema: {
+      body: addToolBodySchema,
+      response: {
+        201: addTool201ResponseSchema,
+        default: z.object({
+          data: z.unknown().optional(),
+          message: z.string(),
+          success: z.boolean(),
+        }),
+      },
+    },
+    url: "/",
   });
 };
 

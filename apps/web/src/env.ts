@@ -2,23 +2,17 @@ import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
 export const env = createEnv({
+  client: {
+    VITE_BASE_URL: z.url().min(1),
+    VITE_SERVER_API_URL: z.url().min(1),
+    VITE_SERVER_BASE_URL: z.url().min(1),
+  },
+
   /**
    * The prefix that client-side variables must have. This is enforced both at
    * a type-level and at runtime.
    */
   clientPrefix: "VITE_",
-
-  client: {
-    VITE_BASE_URL: z.url().min(1),
-    VITE_SERVER_BASE_URL: z.url().min(1),
-    VITE_SERVER_API_URL: z.url().min(1),
-  },
-
-  /**
-   * What object holds the environment variables at runtime. This is usually
-   * `process.env` or `import.meta.env`.
-   */
-  runtimeEnv: import.meta.env,
 
   /**
    * By default, this library will feed the environment variables directly to
@@ -34,4 +28,10 @@ export const env = createEnv({
    * explicitly specify this option as true.
    */
   emptyStringAsUndefined: true,
+
+  /**
+   * What object holds the environment variables at runtime. This is usually
+   * `process.env` or `import.meta.env`.
+   */
+  runtimeEnv: import.meta.env,
 });

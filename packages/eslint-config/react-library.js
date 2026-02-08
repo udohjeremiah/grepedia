@@ -1,6 +1,7 @@
 import pluginReact from "eslint-plugin-react";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
+
 import { baseConfig } from "./base.js";
 
 /**
@@ -23,12 +24,23 @@ export const reactLibraryConfig = [
     plugins: {
       "react-hooks": pluginReactHooks,
     },
-    settings: { react: { version: "detect" } },
     rules: {
       ...pluginReactHooks.configs.recommended.rules,
+      "react/prop-types": "off",
       // React scope no longer necessary with new JSX transform.
       "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
+      "unicorn/prevent-abbreviations": [
+        "error",
+        {
+          replacements: {
+            env: false,
+            params: false,
+            props: false,
+            ref: false,
+          },
+        },
+      ],
     },
+    settings: { react: { version: "detect" } },
   },
 ];

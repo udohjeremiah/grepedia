@@ -11,15 +11,15 @@ export default fp<FastifyMongodbOptions>(
   async (fastify) => {
     fastify.register(mongodb, {
       appName: fastify.env.APP_NAME,
-      url: fastify.env.MONGODB_URL,
       database: fastify.env.MONGODB_DATABASE,
-      serverApi: {
-        version: "1",
-        strict: true,
-        deprecationErrors: true,
-      },
       forceClose: true,
+      serverApi: {
+        deprecationErrors: true,
+        strict: true,
+        version: "1",
+      },
+      url: fastify.env.MONGODB_URL,
     });
   },
-  { name: "mongodb", dependencies: ["env"] },
+  { dependencies: ["env"], name: "mongodb" },
 );

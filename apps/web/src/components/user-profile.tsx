@@ -1,5 +1,3 @@
-import { auth } from "@/hooks/auth";
-import { getInitials } from "@/utils/get-initials";
 import { Link } from "@tanstack/react-router";
 import {
   Avatar,
@@ -9,8 +7,11 @@ import {
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
+import { auth } from "@/hooks/auth";
+import { getInitials } from "@/utils/get-initials";
+
 export default function UserProfile() {
-  const { isPending, data: sessionData } = auth.useSession();
+  const { data: sessionData, isPending } = auth.useSession();
 
   if (isPending) {
     return <Skeleton className="size-8 rounded-full" />;
@@ -29,9 +30,9 @@ export default function UserProfile() {
   const fullName = sessionData.user.name;
 
   return (
-    <Link to="/@{$username}" params={{ username }}>
+    <Link params={{ username }} to="/@{$username}">
       <Avatar>
-        <AvatarImage src={image} alt={username} />
+        <AvatarImage alt={username} src={image} />
         <AvatarFallback>{getInitials(fullName)}</AvatarFallback>
       </Avatar>
     </Link>

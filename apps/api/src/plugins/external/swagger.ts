@@ -13,9 +13,9 @@ export default fp<FastifySwaggerOptions>(
     fastify.register(swagger, {
       openapi: {
         info: {
-          title: "Grepedia API",
           description:
             "The encyclopedia of tools powered by collective wisdom.",
+          title: "Grepedia API",
           version: "1.0.0",
         },
         servers: [],
@@ -23,5 +23,5 @@ export default fp<FastifySwaggerOptions>(
       transform: jsonSchemaTransform,
     });
   },
-  { name: "swagger", dependencies: ["type-provider-zod"] },
+  { dependencies: ["type-provider-zod"], name: "swagger" },
 );

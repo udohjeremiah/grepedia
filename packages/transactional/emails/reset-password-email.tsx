@@ -14,14 +14,14 @@ import {
 
 interface ResetPasswordEmailProps {
   logo: string;
+  resetLink: string;
   username: string;
-  resetPasswordLink: string;
 }
 
 export default function ResetPasswordEmail({
   logo,
+  resetLink,
   username,
-  resetPasswordLink,
 }: ResetPasswordEmailProps) {
   return (
     <Html>
@@ -30,7 +30,7 @@ export default function ResetPasswordEmail({
         <Body className="bg-[#f4f4f5] py-2.5">
           <Preview>Grepedia — reset your password</Preview>
           <Container className="border border-solid border-[#e4e4e7] bg-white p-11.25">
-            <Img src={logo} alt="Grepedia" width="40" height="40" />
+            <Img alt="Grepedia" height="40" src={logo} width="40" />
             <Section>
               <Text className="text-base leading-6.5 font-light text-[#404040]">
                 Hi {username},
@@ -42,7 +42,7 @@ export default function ResetPasswordEmail({
               </Text>
               <Button
                 className="block w-52.5 rounded bg-[#0085c8] px-1.75 py-3.5 text-center text-[15px] text-white no-underline"
-                href={resetPasswordLink}
+                href={resetLink}
               >
                 Reset Password
               </Button>
@@ -64,6 +64,6 @@ export default function ResetPasswordEmail({
 
 ResetPasswordEmail.PreviewProps = {
   logo: "http://localhost:3000/favicon-96x96.png",
+  resetLink: "http://localhost:3000/reset-password",
   username: "alanturing",
-  resetPasswordLink: "http://localhost:3000/reset-password",
 } as ResetPasswordEmailProps;

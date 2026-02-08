@@ -19,5 +19,5 @@ export default fp(
 
     fastify.decorate("resend", resend);
   },
-  { name: "resend", dependencies: ["env"] },
+  { dependencies: ["env"], name: "resend" },
 );

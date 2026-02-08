@@ -1,20 +1,16 @@
 import type { User } from "better-auth";
 import type { FastifyReply, FastifyRequest } from "fastify";
+
 import fp from "fastify-plugin";
 
 type AppUser = User & {
+  role: "contributor" | "guest" | "moderator";
+  status: "active" | "banned" | "restricted";
   username: string;
-  role: "guest" | "contributor" | "moderator";
-  status: "active" | "restricted" | "banned";
 };
 
 declare module "fastify" {
   interface FastifyInstance {
-    requireUser: (
-      request: FastifyRequest,
-      reply: FastifyReply,
-    ) => Promise<void>;
-
     requireRole: (
       role: AppUser["role"],
     ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
@@ -22,6 +18,11 @@ declare module "fastify" {
     requireStatus: (
       status: AppUser["status"],
     ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+
+    requireUser: (
+      request: FastifyRequest,
+      reply: FastifyReply,
+    ) => Promise<void>;
   }
 
   interface FastifyRequest {
@@ -55,8 +56,8 @@ export default fp(
 
       if (!session?.user) {
         return reply.code(401).send({
-          success: false,
           message: "Unauthorized",
+          success: false,
         });
       }
 
@@ -69,8 +70,8 @@ export default fp(
         await requireUser(request, reply);
         if (request.user?.role !== role) {
           return reply.code(403).send({
-            success: false,
             message: "Forbidden",
+            success: false,
           });
         }
       };
@@ -81,8 +82,8 @@ export default fp(
         await requireUser(request, reply);
         if (request.user?.status !== status) {
           return reply.code(403).send({
-            success: false,
             message: "Forbidden",
+            success: false,
           });
         }
       };
@@ -91,5 +92,5 @@ export default fp(
     fastify.decorate("requireRole", requireRole);
     fastify.decorate("requireStatus", requireStatus);
   },
-  { name: "authorization", dependencies: ["auth"] },
+  { dependencies: ["auth"], name: "authorization" },
 );

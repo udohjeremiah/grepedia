@@ -1,19 +1,22 @@
-import { search } from "@/services/search";
+import type { SearchQueryString } from "@workspace/shared/schemas/search";
+
 import {
   infiniteQueryOptions,
   useSuspenseInfiniteQuery,
 } from "@tanstack/react-query";
 import { omitKeys } from "@workspace/shared/omit-keys";
-import type { SearchQueryString } from "@workspace/shared/schemas/search";
+
+import { search } from "@/services/search";
 
 export const searchQueryOptions = (params: SearchQueryString) => {
-  const normalizedParams = omitKeys(params, ["cursor"]);
+  const normalizedParams = omitKeys(params, ["cursor", "limit"]);
 
   return infiniteQueryOptions({
-    queryKey: ["tools", normalizedParams],
-    queryFn: ({ pageParam }) =>
-      search({ ...normalizedParams, cursor: pageParam }),
     initialPageParam: "",
+    queryFn: ({ pageParam }) =>
+      search({ ...normalizedParams, cursor: pageParam, limit: params.limit }),
+    queryKey: ["tools", normalizedParams],
+    // eslint-disable-next-line perfectionist/sort-objects
     getNextPageParam: (lastPage) => lastPage.data.nextCursor,
   });
 };

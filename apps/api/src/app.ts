@@ -1,21 +1,21 @@
 // See this example if you want to run the application as a standalone Fastify executable:
 // https://github.com/fastify/demo/blob/main/src/server.ts
 
-import * as path from "node:path";
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { FastifyPluginAsync } from "fastify";
-import { fileURLToPath } from "node:url";
 import {
   hasZodFastifySchemaValidationErrors,
   isResponseSerializationError,
 } from "fastify-type-provider-zod";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export type AppOptions = {
+export type AppOptions = Partial<AutoloadPluginOptions> & {
   // Place your custom options for app below here.
-} & Partial<AutoloadPluginOptions>;
+};
 
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {};
@@ -30,15 +30,15 @@ const app: FastifyPluginAsync<AppOptions> = async (
   fastify.setErrorHandler((error, request, reply) => {
     if (hasZodFastifySchemaValidationErrors(error)) {
       return reply.code(400).send({
-        success: false,
         message: "Request doesn't match the schema",
+        success: false,
       });
     }
 
     if (isResponseSerializationError(error)) {
       return reply.code(500).send({
-        success: false,
         message: "Response doesn't match the schema",
+        success: false,
       });
     }
 
@@ -52,8 +52,8 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // might depend on them.
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, "plugins/external"),
-    options: { ...options, prefix: "/api" },
     forceESM: true,
+    options: { ...options, prefix: "/api" },
   });
 
   // This loads all plugins defined in plugins/app.
@@ -61,16 +61,16 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // throughout your application.
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, "plugins/app"),
-    options: { ...options, prefix: "/api" },
     forceESM: true,
+    options: { ...options, prefix: "/api" },
   });
 
   // This loads all plugins defined in routes
   // define your routes in one of these
-  void fastify.register(AutoLoad, {
+  fastify.register(AutoLoad, {
     dir: path.join(__dirname, "routes"),
-    options: { ...options, prefix: "/api" },
     forceESM: true,
+    options: { ...options, prefix: "/api" },
   });
 };
 

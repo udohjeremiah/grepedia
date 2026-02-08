@@ -1,6 +1,3 @@
-import AppLink from "@/components/app-link";
-import { env } from "@/env";
-import { requestPasswordReset } from "@/services/auth/request-password-reset";
 import { useForm } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
 import {
@@ -25,53 +22,56 @@ import { CircleCheckIcon, MailIcon, OctagonAlertIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
+import AppLink from "@/components/app-link";
+import { env } from "@/env";
+import { requestPasswordReset } from "@/services/auth/request-password-reset";
+
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
 });
 
 type SubmissionStatus = {
-  status: "success" | "error";
-  title: string;
   description: string;
+  status: "error" | "success";
+  title: string;
 };
 
 export default function RequestPasswordResetForm() {
-  const [submissionStatus, setSubmissionStatus] =
-    useState<SubmissionStatus | null>(null);
+  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
 
   const form = useForm({
     defaultValues: {
       email: "",
     },
-    validators: {
-      onSubmit: formSchema,
-    },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(null);
+      setSubmissionStatus(undefined);
 
       void requestPasswordReset(
         { ...value, redirectTo: `${env.VITE_BASE_URL}/reset-password` },
         {
-          onSuccess: () => {
-            form.reset();
-            setSubmissionStatus({
-              status: "success",
-              title: "Check your email",
-              description:
-                "If an account exists for this email, a password reset link has been sent.",
-            });
-          },
           onError: (context) => {
             setSubmissionStatus({
-              status: "error",
-              title: "Unable to send reset email",
               description:
                 context.error.message ??
                 "Something went wrong while sending the reset email. Please try again.",
+              status: "error",
+              title: "Unable to send reset email",
+            });
+          },
+          onSuccess: () => {
+            form.reset();
+            setSubmissionStatus({
+              description:
+                "If an account exists for this email, a password reset link has been sent.",
+              status: "success",
+              title: "Check your email",
             });
           },
         },
       );
+    },
+    validators: {
+      onSubmit: formSchema,
     },
   });
 
@@ -79,11 +79,11 @@ export default function RequestPasswordResetForm() {
     <div className="flex flex-col gap-12">
       <Link to="/">
         <img
-          src="/favicon.svg"
           alt="Grepedia"
-          width={48}
-          height={48}
           className="size-8"
+          height={48}
+          src="/favicon.svg"
+          width={48}
         />
       </Link>
       <div>
@@ -93,8 +93,8 @@ export default function RequestPasswordResetForm() {
         </p>
       </div>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
+        onSubmit={(event) => {
+          event.preventDefault();
           form.handleSubmit();
         }}
       >
@@ -114,12 +114,14 @@ export default function RequestPasswordResetForm() {
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
-                      type="email"
                       name={field.name}
-                      value={field.state.value}
-                      required={true}
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      required={true}
+                      type="email"
+                      value={field.state.value}
                     />
                   </InputGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -128,7 +130,7 @@ export default function RequestPasswordResetForm() {
             }}
           </form.Field>
           <Field>
-            <Button type="submit" disabled={form.state.isSubmitting}>
+            <Button disabled={form.state.isSubmitting} type="submit">
               {form.state.isSubmitting ? (
                 <>
                   <Spinner /> Sending...

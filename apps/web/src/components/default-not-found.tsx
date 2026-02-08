@@ -13,8 +13,8 @@ import { MehIcon } from "lucide-react";
 export default function DefaultNotFound() {
   return (
     <div
-      role="alert"
       className="flex h-svh flex-col items-center justify-center p-6 md:p-10"
+      role="alert"
     >
       <Empty className="border border-dashed">
         <EmptyHeader>

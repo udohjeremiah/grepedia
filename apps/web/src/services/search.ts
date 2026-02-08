@@ -1,8 +1,9 @@
-import { apiClient } from "@/lib/api-client";
 import {
   search200ResponseSchema,
   type SearchQueryString,
 } from "@workspace/shared/schemas/search";
+
+import { apiClient } from "@/lib/api-client";
 
 export async function search(params: SearchQueryString) {
   const searchParams = new URLSearchParams(

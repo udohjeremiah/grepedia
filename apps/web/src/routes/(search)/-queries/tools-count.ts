@@ -1,10 +1,11 @@
-import { getToolsCount } from "@/services/tools/get-tools-count";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
+import { getToolsCount } from "@/services/tools/get-tools-count";
 
 export const toolsCountQueryOptions = () => {
   return queryOptions({
-    queryKey: ["tools", "count"],
     queryFn: getToolsCount,
+    queryKey: ["tools", "count"],
   });
 };
 

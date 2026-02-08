@@ -1,6 +1,3 @@
-import AppLink from "@/components/app-link";
-import { env } from "@/env";
-import { signUp } from "@/services/auth/sign-up";
 import { useForm } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
 import {
@@ -35,58 +32,61 @@ import {
 import { useState } from "react";
 import { z } from "zod";
 
+import AppLink from "@/components/app-link";
+import { env } from "@/env";
+import { signUp } from "@/services/auth/sign-up";
+
 const formSchema = z.object({
-  name: z.string().min(2, "Please provide at least 2 characters."),
   email: z.email("Please provide a valid email address."),
+  name: z.string().min(2, "Please provide at least 2 characters."),
   password: z.string().min(8, "Please provide at least 8 characters."),
 });
 
 type SubmissionStatus = {
-  status: "success" | "error";
-  title: string;
   description: string;
+  status: "error" | "success";
+  title: string;
 };
 
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [submissionStatus, setSubmissionStatus] =
-    useState<SubmissionStatus | null>(null);
+  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
 
   const form = useForm({
     defaultValues: {
-      name: "",
       email: "",
+      name: "",
       password: "",
     },
-    validators: {
-      onSubmit: formSchema,
-    },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(null);
+      setSubmissionStatus(undefined);
 
       void signUp(
         { ...value, callbackURL: `${env.VITE_BASE_URL}/signin` },
         {
-          onSuccess: () => {
-            form.reset();
-            setSubmissionStatus({
-              status: "success",
-              title: "Account created successfully",
-              description:
-                "Check your email to verify your account before signing in.",
-            });
-          },
           onError: (context) => {
             setSubmissionStatus({
-              status: "error",
-              title: "Unable to create your account",
               description:
                 context.error.message ??
                 "Please check your details and try again.",
+              status: "error",
+              title: "Unable to create your account",
+            });
+          },
+          onSuccess: () => {
+            form.reset();
+            setSubmissionStatus({
+              description:
+                "Check your email to verify your account before signing in.",
+              status: "success",
+              title: "Account created successfully",
             });
           },
         },
       );
+    },
+    validators: {
+      onSubmit: formSchema,
     },
   });
 
@@ -94,11 +94,11 @@ export default function SignupForm() {
     <div className="flex flex-col gap-12">
       <Link to="/">
         <img
-          src="/favicon.svg"
           alt="Grepedia"
-          width={48}
-          height={48}
           className="size-8"
+          height={48}
+          src="/favicon.svg"
+          width={48}
         />
       </Link>
       <div>
@@ -108,8 +108,8 @@ export default function SignupForm() {
         </p>
       </div>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
+        onSubmit={(event) => {
+          event.preventDefault();
           form.handleSubmit();
         }}
       >
@@ -129,10 +129,12 @@ export default function SignupForm() {
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
-                      value={field.state.value}
-                      required={true}
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      required={true}
+                      value={field.state.value}
                     />
                   </InputGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -155,11 +157,13 @@ export default function SignupForm() {
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      required={true}
                       type="email"
                       value={field.state.value}
-                      required={true}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
                     />
                   </InputGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -182,17 +186,19 @@ export default function SignupForm() {
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      required={true}
                       type={showPassword ? "text" : "password"}
                       value={field.state.value}
-                      required={true}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
-                        variant="outline"
+                        onClick={() => setShowPassword((previous) => !previous)}
                         size="icon-xs"
-                        onClick={() => setShowPassword((prev) => !prev)}
+                        variant="outline"
                       >
                         {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                       </InputGroupButton>
@@ -204,7 +210,7 @@ export default function SignupForm() {
             }}
           </form.Field>
           <Field>
-            <Button type="submit" disabled={form.state.isSubmitting}>
+            <Button disabled={form.state.isSubmitting} type="submit">
               {form.state.isSubmitting ? (
                 <>
                   <Spinner /> Creating account...

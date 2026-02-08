@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
+
 import ResetPasswordForm from "./-components/reset-password-form";
 
 const searchParamsValidator = zodValidator(
@@ -11,13 +12,13 @@ const searchParamsValidator = zodValidator(
 );
 
 export const Route = createFileRoute("/(auth)/reset-password/")({
-  validateSearch: searchParamsValidator,
   beforeLoad: ({ search }) => {
     if (search.error || !search.token) {
       throw notFound();
     }
   },
   component: RouteComponent,
+  validateSearch: searchParamsValidator,
 });
 
 function RouteComponent() {

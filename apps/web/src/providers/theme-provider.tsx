@@ -3,6 +3,7 @@ import { createClientOnlyFn, createIsomorphicFn } from "@tanstack/react-start";
 import { createContext, type ReactNode, use, useEffect, useState } from "react";
 import { z } from "zod";
 
+// eslint-disable-next-line unicorn/prefer-top-level-await
 const ThemeSchema = z.enum(["light", "dark", "system"]).catch("system");
 export type Theme = z.infer<typeof ThemeSchema>;
 
@@ -24,7 +25,7 @@ const resolveTheme = createIsomorphicFn()
   .server((theme: Theme): Theme => (theme === "system" ? "light" : theme))
   .client((theme: Theme): Theme => {
     if (theme !== "system") return theme;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
+    return globalThis.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
   });
@@ -42,56 +43,53 @@ const handleThemeChange = createClientOnlyFn((theme: Theme) => {
 });
 
 const setupPreferredListener = createClientOnlyFn(() => {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const handler = () => handleThemeChange("system");
   mediaQuery.addEventListener("change", handler);
   return () => mediaQuery.removeEventListener("change", handler);
 });
 
-const themeScript = (storageKey: string) => {
-  function themeFn(storageKey: string) {
-    try {
-      const stored = localStorage.getItem(storageKey) || "system";
-      const theme = ["light", "dark"].includes(stored) ? stored : "system";
+const themeFunction = (storageKey: string) => {
+  const prefersDark = globalThis.matchMedia(
+    "(prefers-color-scheme: dark)",
+  ).matches;
+  const resolvedByPreference = prefersDark ? "dark" : "light";
 
-      const resolved =
-        theme === "system" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : theme === "system"
-            ? "light"
-            : theme;
+  try {
+    const stored = localStorage.getItem(storageKey) || "system";
+    const theme = ["dark", "light"].includes(stored) ? stored : "system";
+    const resolved = theme === "system" ? resolvedByPreference : theme;
 
-      const root = document.documentElement;
-      root.classList.remove("light", "dark");
-      root.classList.add(resolved);
-    } catch {
-      const root = document.documentElement;
-      const resolved = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-      root.classList.add(resolved);
-    }
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(resolved);
+  } catch {
+    const root = document.documentElement;
+    const resolved = resolvedByPreference;
+    root.classList.add(resolved);
   }
+};
 
-  return `(${themeFn.toString()})(${JSON.stringify(storageKey)});`;
+const themeScript = (storageKey: string) => {
+  return `(${themeFunction.toString()})(${JSON.stringify(storageKey)});`;
 };
 
 type ThemeContextType = {
-  theme: Theme;
   setTheme: (theme: Theme) => void;
+  theme: Theme;
 };
 
-const ThemeContext = createContext<ThemeContextType | null>(null);
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 interface ThemeProviderProps {
-  storageKey?: string;
   children: ReactNode;
+  storageKey?: string;
 }
 
 export function ThemeProvider({
-  storageKey = "ui-theme",
   children,
+  storageKey = "ui-theme",
 }: ThemeProviderProps) {
   const [userTheme, setUserTheme] = useState<Theme>("system");
 
@@ -110,10 +108,8 @@ export function ThemeProvider({
     handleThemeChange(validated);
   };
 
-  const theme = resolveTheme(userTheme);
-
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ setTheme, theme: userTheme }}>
       <ScriptOnce>{themeScript(storageKey)}</ScriptOnce>
       {children}
     </ThemeContext.Provider>

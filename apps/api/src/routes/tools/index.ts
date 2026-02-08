@@ -1,4 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
+
 import addTool from "./add-tool.js";
 import getToolsCount from "./get-tools-count.js";
 

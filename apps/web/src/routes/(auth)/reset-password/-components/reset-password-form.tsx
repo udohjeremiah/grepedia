@@ -1,4 +1,3 @@
-import { resetPassword } from "@/services/auth/reset-password";
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { omitKeys } from "@workspace/shared/omit-keys";
@@ -31,69 +30,70 @@ import {
 import { useState } from "react";
 import { z } from "zod";
 
+import { resetPassword } from "@/services/auth/reset-password";
+
 const formSchema = z
   .object({
-    newPassword: z.string().min(8, "Please provide at least 8 characters."),
     confirmPassword: z.string().min(8, "Please provide at least 8 characters."),
+    newPassword: z.string().min(8, "Please provide at least 8 characters."),
     token: z.string().min(1),
   })
-  .superRefine(({ newPassword, confirmPassword }, context) => {
+  .superRefine(({ confirmPassword, newPassword }, context) => {
     if (newPassword !== confirmPassword) {
       context.addIssue({
-        path: ["confirmPassword"],
         code: "custom",
         message: "Passwords do not match.",
+        path: ["confirmPassword"],
       });
     }
   });
-
-type SubmissionStatus = {
-  status: "success" | "error";
-  title: string;
-  description: string;
-};
 
 interface ResetPasswordFormProps {
   token: string;
 }
 
+type SubmissionStatus = {
+  description: string;
+  status: "error" | "success";
+  title: string;
+};
+
 export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [submissionStatus, setSubmissionStatus] =
-    useState<SubmissionStatus | null>(null);
+  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
   const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
-      newPassword: "",
       confirmPassword: "",
+      newPassword: "",
       token,
     },
-    validators: {
-      onSubmit: formSchema,
-    },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(null);
+      setSubmissionStatus(undefined);
 
       void resetPassword(
         { ...omitKeys(value, ["confirmPassword"]) },
         {
+          onError: (context) => {
+            setSubmissionStatus({
+              description:
+                context.error.message ??
+                "This reset link may be invalid or expired. Please request a new one and try again.",
+              status: "error",
+              title: "Unable to reset password",
+            });
+          },
           onSuccess: () => {
             form.reset();
             navigate({ to: "/signin" });
           },
-          onError: (context) => {
-            setSubmissionStatus({
-              status: "error",
-              title: "Unable to reset password",
-              description:
-                context.error.message ??
-                "This reset link may be invalid or expired. Please request a new one and try again.",
-            });
-          },
         },
       );
+    },
+    validators: {
+      onSubmit: formSchema,
     },
   });
 
@@ -101,11 +101,11 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     <div className="flex flex-col gap-12">
       <Link to="/">
         <img
-          src="/favicon.svg"
           alt="Grepedia"
-          width={48}
-          height={48}
           className="size-8"
+          height={48}
+          src="/favicon.svg"
+          width={48}
         />
       </Link>
       <div>
@@ -115,8 +115,8 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         </p>
       </div>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
+        onSubmit={(event) => {
+          event.preventDefault();
           form.handleSubmit();
         }}
       >
@@ -136,18 +136,22 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
-                      type={showNewPassword ? "text" : "password"}
                       name={field.name}
-                      value={field.state.value}
-                      required={true}
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      required={true}
+                      type={showNewPassword ? "text" : "password"}
+                      value={field.state.value}
                     />
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
-                        variant="outline"
+                        onClick={() =>
+                          setShowNewPassword((previous) => !previous)
+                        }
                         size="icon-xs"
-                        onClick={() => setShowNewPassword((prev) => !prev)}
+                        variant="outline"
                       >
                         {showNewPassword ? <EyeOffIcon /> : <EyeIcon />}
                       </InputGroupButton>
@@ -173,18 +177,22 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
-                      type={showConfirmPassword ? "text" : "password"}
                       name={field.name}
-                      value={field.state.value}
-                      required={true}
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      required={true}
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={field.state.value}
                     />
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
-                        variant="outline"
+                        onClick={() =>
+                          setShowConfirmPassword((previous) => !previous)
+                        }
                         size="icon-xs"
-                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        variant="outline"
                       >
                         {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
                       </InputGroupButton>
@@ -196,7 +204,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
             }}
           </form.Field>
           <Field>
-            <Button type="submit" disabled={form.state.isSubmitting}>
+            <Button disabled={form.state.isSubmitting} type="submit">
               {form.state.isSubmitting ? (
                 <>
                   <Spinner /> Resetting password...

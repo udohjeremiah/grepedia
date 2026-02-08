@@ -1,6 +1,3 @@
-import AppLink from "@/components/app-link";
-import { Session } from "@/lib/auth-client";
-import { signIn } from "@/services/auth/sign-in";
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
@@ -36,6 +33,10 @@ import {
 import { useState } from "react";
 import { z } from "zod";
 
+import AppLink from "@/components/app-link";
+import { Session } from "@/lib/auth-client";
+import { signIn } from "@/services/auth/sign-in";
+
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
   password: z.string().min(8, "Please provide at least 8 characters."),
@@ -43,15 +44,14 @@ const formSchema = z.object({
 });
 
 type SubmissionStatus = {
-  status: "success" | "error";
-  title: string;
   description: string;
+  status: "error" | "success";
+  title: string;
 };
 
 export default function SigninForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [submissionStatus, setSubmissionStatus] =
-    useState<SubmissionStatus | null>(null);
+  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
   const navigate = useNavigate();
 
   const form = useForm({
@@ -60,31 +60,31 @@ export default function SigninForm() {
       password: "",
       rememberMe: false,
     },
-    validators: {
-      onSubmit: formSchema,
-    },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(null);
+      setSubmissionStatus(undefined);
 
       void signIn(
         { ...value },
         {
-          onSuccess: (context) => {
-            form.reset();
-            const username = (context.data as Session).user.username;
-            navigate({ to: "/@{$username}", params: { username } });
-          },
           onError: (context) => {
             setSubmissionStatus({
-              status: "error",
-              title: "Unable to sign in",
               description:
                 context.error.message ??
                 "Please check your details and try again.",
+              status: "error",
+              title: "Unable to sign in",
             });
+          },
+          onSuccess: (context) => {
+            form.reset();
+            const username = (context.data as Session).user.username;
+            navigate({ params: { username }, to: "/@{$username}" });
           },
         },
       );
+    },
+    validators: {
+      onSubmit: formSchema,
     },
   });
 
@@ -92,11 +92,11 @@ export default function SigninForm() {
     <div className="flex flex-col gap-12">
       <Link to="/">
         <img
-          src="/favicon.svg"
           alt="Grepedia"
-          width={48}
-          height={48}
           className="size-8"
+          height={48}
+          src="/favicon.svg"
+          width={48}
         />
       </Link>
       <div>
@@ -106,8 +106,8 @@ export default function SigninForm() {
         </p>
       </div>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
+        onSubmit={(event) => {
+          event.preventDefault();
           form.handleSubmit();
         }}
       >
@@ -127,11 +127,13 @@ export default function SigninForm() {
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      required={true}
                       type="email"
                       value={field.state.value}
-                      required={true}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
                     />
                   </InputGroup>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -159,17 +161,19 @@ export default function SigninForm() {
                     <InputGroupInput
                       aria-invalid={isInvalid}
                       id={field.name}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      required={true}
                       type={showPassword ? "text" : "password"}
                       value={field.state.value}
-                      required={true}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
                     />
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
-                        variant="outline"
+                        onClick={() => setShowPassword((previous) => !previous)}
                         size="icon-xs"
-                        onClick={() => setShowPassword((prev) => !prev)}
+                        variant="outline"
                       >
                         {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                       </InputGroupButton>
@@ -183,12 +187,12 @@ export default function SigninForm() {
           <form.Field name="rememberMe">
             {(field) => (
               <Field
-                orientation="horizontal"
                 className="rounded-xl border p-3 has-aria-checked:border-primary/50 has-aria-checked:bg-primary/10"
+                orientation="horizontal"
               >
                 <Checkbox
-                  id="rememberMe"
                   checked={field.state.value}
+                  id="rememberMe"
                   onCheckedChange={(checked) =>
                     field.handleChange(Boolean(checked))
                   }
@@ -204,7 +208,7 @@ export default function SigninForm() {
             )}
           </form.Field>
           <Field>
-            <Button type="submit" disabled={form.state.isSubmitting}>
+            <Button disabled={form.state.isSubmitting} type="submit">
               {form.state.isSubmitting ? (
                 <>
                   <Spinner /> Logging in...

@@ -17,9 +17,9 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { cn } from "@workspace/ui/lib/utils";
+import { cn } from "@workspace/ui/utils/cn";
 import { SearchIcon, XIcon } from "lucide-react";
-import { useState, type ComponentProps } from "react";
+import { type ComponentProps, useState } from "react";
 
 export default function Search() {
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function Search() {
   return (
     <>
       <SearchForm className="max-md:hidden" />
-      <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog onOpenChange={setDialogOpen} open={isDialogOpen}>
         <DialogTrigger asChild className="md:hidden">
           <Button size="icon-sm">
             <SearchIcon />
@@ -64,26 +64,26 @@ function SearchForm({ className, onSubmitted, ...props }: SearchFormProps) {
     defaultValues: {
       query: searchParams.query,
     },
-    validators: {
-      onSubmit: formSchema,
-    },
     onSubmit: ({ value }) => {
       navigate({
+        search: { limit: undefined, query: value.query, tab },
         to: "/search",
-        search: { query: value.query, tab, limit: undefined },
       });
       if (value.query !== searchParams.query) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ behavior: "smooth", top: 0 });
       }
       onSubmitted?.();
+    },
+    validators: {
+      onSubmit: formSchema,
     },
   });
 
   return (
     <search className={cn("w-full max-w-2xl", className)} {...props}>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
+        onSubmit={(event) => {
+          event.preventDefault();
           form.handleSubmit();
         }}
       >
@@ -100,38 +100,40 @@ function SearchForm({ className, onSubmitted, ...props }: SearchFormProps) {
                 <Field data-invalid={isInvalid}>
                   <InputGroup className="h-full rounded-xl border-none bg-muted">
                     <InputGroupInput
+                      aria-invalid={isInvalid}
                       aria-label="Search anything"
                       autoCapitalize="off"
                       autoComplete="off"
                       autoCorrect="off"
-                      spellCheck={false}
-                      aria-invalid={isInvalid}
-                      minLength={2}
-                      maxLength={8192}
-                      placeholder="Search anything..."
-                      name={field.name}
-                      value={field.state.value}
-                      required
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
                       className="md:text-base"
+                      maxLength={8192}
+                      minLength={2}
+                      name={field.name}
+                      onBlur={field.handleBlur}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      placeholder="Search anything..."
+                      required
+                      spellCheck={false}
+                      value={field.state.value}
                     />
                     <InputGroupAddon align="inline-end">
                       <InputGroupButton
                         aria-label="Clear"
-                        size="icon-sm"
+                        className="rounded-full"
                         disabled={!canClear}
                         onClick={() => form.reset({ query: "" })}
-                        className="rounded-full"
+                        size="icon-sm"
                       >
                         <XIcon />
                       </InputGroupButton>
                       <InputGroupButton
                         aria-label="Search"
-                        type="submit"
-                        size="icon-sm"
-                        disabled={!canSend}
                         className="ms-auto rounded-full"
+                        disabled={!canSend}
+                        size="icon-sm"
+                        type="submit"
                       >
                         <SearchIcon />
                       </InputGroupButton>
