@@ -154,9 +154,8 @@ function MoreInfoSheet(tool: ToolProps) {
         <SheetFooter>
           <p className="text-muted-foreground">
             This is a search result, not an ad. If you are the owner or
-            maintainer of this project and want to claim it, update it, or
-            remove it, you can create an account and submit an edit request for
-            review.
+            maintainer of this tool and want to claim or update it, you can
+            create an account and submit an edit request for review.
           </p>
           <Button disabled={copied} onClick={handleShare}>
             {copied ? (
