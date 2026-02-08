@@ -1,3 +1,4 @@
+import AppLink from "@/components/app-link";
 import { Session } from "@/lib/auth-client";
 import { signIn } from "@/services/auth/sign-in";
 import { useForm } from "@tanstack/react-form";
@@ -89,20 +90,19 @@ export default function SigninForm() {
 
   return (
     <div className="flex flex-col gap-12">
-      <img
-        src="/favicon.svg"
-        alt="Grepedia"
-        width={48}
-        height={48}
-        className="size-8"
-      />
+      <Link to="/">
+        <img
+          src="/favicon.svg"
+          alt="Grepedia"
+          width={48}
+          height={48}
+          className="size-8"
+        />
+      </Link>
       <div>
         <h1 className="text-2xl font-medium">Sign in to Grepedia</h1>
         <p className="text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Button asChild variant="link" className="size-fit p-0">
-            <Link to="/signup">Sign up</Link>
-          </Button>
+          Don&apos;t have an account? <AppLink to="/signup">Sign up</AppLink>
         </p>
       </div>
       <form
@@ -148,9 +148,9 @@ export default function SigninForm() {
                 <Field data-invalid={isInvalid}>
                   <div className="flex justify-between gap-4">
                     <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                    <Button asChild variant="link" className="p-0">
-                      <Link to="/request-password-reset">Forgot Password?</Link>
-                    </Button>
+                    <AppLink to="/request-password-reset">
+                      Forgot Password?
+                    </AppLink>
                   </div>
                   <InputGroup>
                     <InputGroupAddon>
@@ -231,6 +231,11 @@ export default function SigninForm() {
               </Alert>
             )}
           </Field>
+          <FieldDescription>
+            By signing in, you agree to the{" "}
+            <AppLink to="/terms-of-service">Terms of Service</AppLink> and{" "}
+            <AppLink to="/privacy-policy">Privacy Policy</AppLink>.
+          </FieldDescription>
         </FieldGroup>
       </form>
     </div>

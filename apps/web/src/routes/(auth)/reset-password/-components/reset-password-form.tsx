@@ -1,6 +1,6 @@
 import { resetPassword } from "@/services/auth/reset-password";
 import { useForm } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { omitKeys } from "@workspace/shared/omit-keys";
 import {
   Alert,
@@ -99,13 +99,15 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
 
   return (
     <div className="flex flex-col gap-12">
-      <img
-        src="/favicon.svg"
-        alt="Grepedia"
-        width={48}
-        height={48}
-        className="size-8"
-      />
+      <Link to="/">
+        <img
+          src="/favicon.svg"
+          alt="Grepedia"
+          width={48}
+          height={48}
+          className="size-8"
+        />
+      </Link>
       <div>
         <h1 className="text-2xl font-medium">Reset password</h1>
         <p className="text-sm text-muted-foreground">

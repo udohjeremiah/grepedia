@@ -1,3 +1,4 @@
+import AppLink from "@/components/app-link";
 import { env } from "@/env";
 import { signUp } from "@/services/auth/sign-up";
 import { useForm } from "@tanstack/react-form";
@@ -10,6 +11,7 @@ import {
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -90,20 +92,19 @@ export default function SignupForm() {
 
   return (
     <div className="flex flex-col gap-12">
-      <img
-        src="/favicon.svg"
-        alt="Grepedia"
-        width={48}
-        height={48}
-        className="size-8"
-      />
+      <Link to="/">
+        <img
+          src="/favicon.svg"
+          alt="Grepedia"
+          width={48}
+          height={48}
+          className="size-8"
+        />
+      </Link>
       <div>
         <h1 className="text-2xl font-medium">Welcome to Grepedia</h1>
         <p className="text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Button asChild variant="link" className="size-fit p-0">
-            <Link to="/signin">Sign in</Link>
-          </Button>
+          Already have an account? <AppLink to="/signin">Sign in</AppLink>
         </p>
       </div>
       <form
@@ -230,6 +231,11 @@ export default function SignupForm() {
               </Alert>
             )}
           </Field>
+          <FieldDescription>
+            By signing up, you agree to the{" "}
+            <AppLink to="/terms-of-service">Terms of Service</AppLink> and{" "}
+            <AppLink to="/privacy-policy">Privacy Policy</AppLink>.
+          </FieldDescription>
         </FieldGroup>
       </form>
     </div>

@@ -1,10 +1,11 @@
+import AppLink from "@/components/app-link";
 import { auth } from "@/hooks/auth";
 import {
   dehydrate,
   HydrationBoundary,
   QueryErrorResetBoundary,
 } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
@@ -67,26 +68,27 @@ function RouteComponent() {
           </QueryErrorResetBoundary>
         </Suspense>
         <div className="flex flex-wrap items-center justify-center gap-1">
-          <Button asChild variant="link" size="xs" className="size-fit p-0">
-            {sessionData ? (
-              <Link
-                to="/@{$username}"
-                params={{ username: sessionData?.user.username }}
-              >
-                Your Profile
-              </Link>
-            ) : (
-              <Link to="/signin">Sign in</Link>
-            )}
-          </Button>
+          {sessionData ? (
+            <AppLink
+              to="/@{$username}"
+              params={{ username: sessionData?.user.username }}
+              className="text-xs"
+            >
+              Your Profile
+            </AppLink>
+          ) : (
+            <AppLink to="/signin" className="text-xs">
+              Sign in
+            </AppLink>
+          )}
           <span className="text-xs text-muted-foreground">•</span>
-          <Button asChild variant="link" size="xs" className="size-fit p-0">
-            <Link to="/terms-of-service">Terms of Service</Link>
-          </Button>
+          <AppLink to="/terms-of-service" className="text-xs">
+            Terms of Service
+          </AppLink>
           <span className="text-xs text-muted-foreground">•</span>
-          <Button asChild variant="link" size="xs" className="size-fit p-0">
-            <Link to="/privacy-policy">Privacy Policy</Link>
-          </Button>
+          <AppLink to="/privacy-policy" className="text-xs">
+            Privacy Policy
+          </AppLink>
         </div>
       </footer>
     </HydrationBoundary>

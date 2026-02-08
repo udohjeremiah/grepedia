@@ -1,3 +1,4 @@
+import AppLink from "@/components/app-link";
 import { env } from "@/env";
 import { requestPasswordReset } from "@/services/auth/request-password-reset";
 import { useForm } from "@tanstack/react-form";
@@ -76,24 +77,19 @@ export default function RequestPasswordResetForm() {
 
   return (
     <div className="flex flex-col gap-12">
-      <img
-        src="/favicon.svg"
-        alt="Grepedia"
-        width={48}
-        height={48}
-        className="size-8"
-      />
+      <Link to="/">
+        <img
+          src="/favicon.svg"
+          alt="Grepedia"
+          width={48}
+          height={48}
+          className="size-8"
+        />
+      </Link>
       <div>
         <h1 className="text-2xl font-medium">Request password reset</h1>
         <p className="text-sm text-muted-foreground">
-          Remember your password?{" "}
-          <Button
-            asChild
-            variant="link"
-            className="size-fit gap-1 self-end p-0"
-          >
-            <Link to="/signin">Sign in</Link>
-          </Button>
+          Remember your password? <AppLink to="/signin">Sign in</AppLink>
         </p>
       </div>
       <form
