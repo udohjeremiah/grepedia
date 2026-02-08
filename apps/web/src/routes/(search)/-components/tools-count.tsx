@@ -6,7 +6,9 @@ export default function ToolsCount() {
   return (
     <hgroup className="flex flex-col items-center">
       <h3 className="text-xs text-muted-foreground">Tools in Grepedia</h3>
-      <p className="text-base font-medium">{toolsCount}</p>
+      <p className="text-base font-medium">
+        {new Intl.NumberFormat().format(toolsCount)}
+      </p>
     </hgroup>
   );
 }
