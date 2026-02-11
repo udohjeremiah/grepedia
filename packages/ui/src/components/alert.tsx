@@ -13,11 +13,9 @@ const alertVariants = cva(
         critical: "bg-destructive/10 text-destructive",
         default:
           "bg-card text-card-foreground *:data-[slot=alert-description]:text-muted-foreground",
-        info: "bg-sky-600/10 text-sky-600 dark:bg-sky-400/10 dark:text-sky-400",
-        success:
-          "bg-green-600/10 text-green-600 dark:bg-green-400/10 dark:text-green-400",
-        warning:
-          "bg-amber-600/10 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400",
+        info: "bg-info/10 text-info",
+        success: "bg-success/10 text-success",
+        warning: "bg-warning/10 text-warning",
       },
     },
   },
