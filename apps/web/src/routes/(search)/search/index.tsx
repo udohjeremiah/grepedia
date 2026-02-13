@@ -9,19 +9,17 @@ import { searchQueryStringSchema } from "@workspace/shared/schemas/search";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { ErrorFallback } from "./-components/error-fallback";
 import Header from "./-components/header";
-import LoadingSkeleton from "./-components/loading-skeleton";
 import Tools from "./-components/tools";
+import ToolsErrorFallback from "./-components/tools-error-fallback";
+import ToolsSkeleton from "./-components/tools-skeleton";
 import { searchQueryOptions } from "./-queries/search";
 
 const searchParamsValidator = zodValidator(searchQueryStringSchema);
 
 export const Route = createFileRoute("/(search)/search/")({
   beforeLoad: async ({ context, search }) => {
-    if (!search.query) {
-      throw redirect({ replace: true, to: "/" });
-    }
+    if (!search.query) throw redirect({ replace: true, to: "/" });
 
     await context.queryClient.prefetchInfiniteQuery(searchQueryOptions(search));
   },
@@ -35,10 +33,13 @@ function RouteComponent() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Header />
-      <Suspense fallback={<LoadingSkeleton />}>
+      <Suspense fallback={<ToolsSkeleton />}>
         <QueryErrorResetBoundary>
           {({ reset }) => (
-            <ErrorBoundary FallbackComponent={ErrorFallback} onReset={reset}>
+            <ErrorBoundary
+              FallbackComponent={ToolsErrorFallback}
+              onReset={reset}
+            >
               <Tools />
             </ErrorBoundary>
           )}

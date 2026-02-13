@@ -4,8 +4,6 @@ import {
   QueryErrorResetBoundary,
 } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Button } from "@workspace/ui/components/button";
-import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -14,6 +12,8 @@ import { auth } from "@/hooks/auth";
 
 import SearchForm from "./-components/search-form";
 import ToolsCount from "./-components/tools-count";
+import ToolsCountErrorFallback from "./-components/tools-count-error-fallback";
+import ToolsCountSkeleton from "./-components/tools-count-skeleton";
 import { toolsCountQueryOptions } from "./-queries/tools-count";
 
 export const Route = createFileRoute("/(search)/")({
@@ -37,31 +37,11 @@ function RouteComponent() {
         <SearchForm className="w-full" />
       </main>
       <footer className="flex flex-col items-center p-4 md:p-6">
-        <Suspense
-          fallback={
-            <div className="flex flex-col items-center justify-center gap-1">
-              <Skeleton className="h-4 w-28" />
-              <Skeleton className="h-4 w-56" />
-            </div>
-          }
-        >
+        <Suspense fallback={<ToolsCountSkeleton />}>
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
-                FallbackComponent={() => (
-                  <div className="flex flex-col items-center">
-                    <p className="text-sm/relaxed">
-                      Couldn&apos;t display result.
-                    </p>
-                    <Button
-                      className="w-full"
-                      onClick={reset}
-                      variant="destructive"
-                    >
-                      Try again
-                    </Button>
-                  </div>
-                )}
+                FallbackComponent={ToolsCountErrorFallback}
                 onReset={reset}
               >
                 <ToolsCount />

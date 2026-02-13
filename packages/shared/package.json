@@ -8,25 +8,49 @@
       "types": "./dist/omit-keys.d.ts",
       "default": "./dist/omit-keys.js"
     },
-    "./schemas/add-tool": {
-      "types": "./dist/schemas/add-tool.d.ts",
-      "default": "./dist/schemas/add-tool.js"
+    "./schemas/tools/add-tool": {
+      "types": "./dist/schemas/tools/add-tool.d.ts",
+      "default": "./dist/schemas/tools/add-tool.js"
     },
-    "./schemas/get-tools-count": {
-      "types": "./dist/schemas/get-tools-count.d.ts",
-      "default": "./dist/schemas/get-tools-count.js"
+    "./schemas/tools/get-tools-count": {
+      "types": "./dist/schemas/tools/get-tools-count.d.ts",
+      "default": "./dist/schemas/tools/get-tools-count.js"
+    },
+    "./schemas/tools/tool": {
+      "types": "./dist/schemas/tools/tool.d.ts",
+      "default": "./dist/schemas/tools/tool.js"
+    },
+    "./schemas/tools/tool-comment": {
+      "types": "./dist/schemas/tools/tool-comment.d.ts",
+      "default": "./dist/schemas/tools/tool-comment.js"
+    },
+    "./schemas/tools/tool-comment-reaction": {
+      "types": "./dist/schemas/tools/tool-comment-reaction.d.ts",
+      "default": "./dist/schemas/tools/tool-comment-reaction.js"
+    },
+    "./schemas/tools/tool-reaction": {
+      "types": "./dist/schemas/tools/tool-reaction.d.ts",
+      "default": "./dist/schemas/tools/tool-reaction.js"
     },
     "./schemas/search": {
       "types": "./dist/schemas/search.d.ts",
       "default": "./dist/schemas/search.js"
     },
-    "./schemas/tool": {
-      "types": "./dist/schemas/tool.d.ts",
-      "default": "./dist/schemas/tool.js"
+    "./schemas/users/get-user-details": {
+      "types": "./dist/schemas/users/get-user-details.d.ts",
+      "default": "./dist/schemas/users/get-user-details.js"
     },
-    "./schemas/user": {
-      "types": "./dist/schemas/user.d.ts",
-      "default": "./dist/schemas/user.js"
+    "./schemas/users/get-user-summary": {
+      "types": "./dist/schemas/users/get-user-summary.d.ts",
+      "default": "./dist/schemas/users/get-user-summary.js"
+    },
+    "./schemas/users/user": {
+      "types": "./dist/schemas/users/user.d.ts",
+      "default": "./dist/schemas/users/user.js"
+    },
+    "./schemas/users/user-bookmark": {
+      "types": "./dist/schemas/users/user-bookmark.d.ts",
+      "default": "./dist/schemas/users/user-bookmark.js"
     }
   },
   "scripts": {

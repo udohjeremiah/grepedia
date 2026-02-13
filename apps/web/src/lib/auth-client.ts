@@ -12,9 +12,10 @@ export const authClient = createAuthClient({
     usernameClient(),
     inferAdditionalFields({
       user: {
+        bio: { input: true, required: false, type: "string" },
         displayUsername: { input: false, type: "string" },
-        role: { input: false, type: ["guest", "contributor", "moderator"] },
-        status: { input: false, type: ["active", "restricted", "banned"] },
+        role: { input: false, type: ["member", "contributor", "moderator"] },
+        status: { input: false, type: ["active", "suspended", "deactivated"] },
         username: { input: false, type: "string" },
       },
     }),

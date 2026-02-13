@@ -34,6 +34,7 @@ export const reactLibraryConfig = [
         {
           replacements: {
             env: false,
+            param: false,
             params: false,
             props: false,
             ref: false,

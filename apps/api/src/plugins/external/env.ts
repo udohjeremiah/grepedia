@@ -8,7 +8,11 @@ declare module "fastify" {
       CLIENT_BASE_URL: string;
       EMAIL_AUTH: string;
       MONGODB_COLL_TOOL: string;
+      MONGODB_COLL_TOOL_COMMENT: string;
+      MONGODB_COLL_TOOL_COMMENT_REACTION: string;
+      MONGODB_COLL_TOOL_REACTION: string;
       MONGODB_COLL_USER: string;
+      MONGODB_COLL_USER_BOOKMARK: string;
       MONGODB_DATABASE: string;
       MONGODB_URL: string;
       NODE_ENV: "development" | "production";
@@ -40,8 +44,24 @@ const options: FastifyEnvOptions = {
         default: "my-tool",
         type: "string",
       },
+      MONGODB_COLL_TOOL_COMMENT: {
+        default: "my-tool-comment",
+        type: "string",
+      },
+      MONGODB_COLL_TOOL_COMMENT_REACTION: {
+        default: "my-tool-comment-reaction",
+        type: "string",
+      },
+      MONGODB_COLL_TOOL_REACTION: {
+        default: "my-tool-reaction",
+        type: "string",
+      },
       MONGODB_COLL_USER: {
         default: "my-user",
+        type: "string",
+      },
+      MONGODB_COLL_USER_BOOKMARK: {
+        default: "my-user-bookmark",
         type: "string",
       },
       MONGODB_DATABASE: {
@@ -72,7 +92,11 @@ const options: FastifyEnvOptions = {
       "MONGODB_URL",
       "MONGODB_DATABASE",
       "MONGODB_COLL_USER",
+      "MONGODB_COLL_USER_BOOKMARK",
       "MONGODB_COLL_TOOL",
+      "MONGODB_COLL_TOOL_COMMENT",
+      "MONGODB_COLL_TOOL_COMMENT_REACTION",
+      "MONGODB_COLL_TOOL_REACTION",
       "RESEND_API_KEY",
       "EMAIL_AUTH",
       "CLIENT_BASE_URL",

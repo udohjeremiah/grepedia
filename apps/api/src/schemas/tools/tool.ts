@@ -1,16 +1,16 @@
-import { toolSchema } from "@workspace/shared/schemas/tool";
+import { toolSchema } from "@workspace/shared/schemas/tools/tool";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 
 export const toolWithVectorEmbeddingsSchema = toolSchema.extend({
-  vectorEmbeddings: z.array(z.number()),
+  vectorEmbeddings: z.array(z.number()).optional(),
 });
 
 export const toolWithObjectIdsSchema = toolWithVectorEmbeddingsSchema.extend({
   _id: z.instanceof(ObjectId).optional(),
   added_by: z.instanceof(ObjectId),
-  owner: z.instanceof(ObjectId).nullable(),
-  updated_by: z.instanceof(ObjectId).nullable(),
+  owner: z.instanceof(ObjectId).optional(),
+  updated_by: z.instanceof(ObjectId).optional(),
 });
 
 export type ToolWithObjectIds = z.infer<typeof toolWithObjectIdsSchema>;

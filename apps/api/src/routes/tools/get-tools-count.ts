@@ -1,7 +1,6 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
-import { getToolsCount200ResponseSchema } from "@workspace/shared/schemas/get-tools-count";
-import { z } from "zod";
+import { getToolsCountResponseSchemas } from "@workspace/shared/schemas/tools/get-tools-count";
 
 const getToolsCount: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
@@ -17,14 +16,8 @@ const getToolsCount: FastifyPluginAsyncZod = async (fastify) => {
     },
     method: "GET",
     schema: {
-      response: {
-        200: getToolsCount200ResponseSchema,
-        default: z.object({
-          data: z.unknown().optional(),
-          message: z.string(),
-          success: z.boolean(),
-        }),
-      },
+      response: getToolsCountResponseSchemas,
+      tags: ["Tools"],
     },
     url: "/count",
   });

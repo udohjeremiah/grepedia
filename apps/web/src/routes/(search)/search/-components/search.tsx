@@ -33,7 +33,7 @@ export default function Search() {
             <SearchIcon />
           </Button>
         </DialogTrigger>
-        <DialogContent className="w-full max-w-md p-4">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Search</DialogTitle>
             <DialogDescription>

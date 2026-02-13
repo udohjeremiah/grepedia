@@ -11,9 +11,11 @@ import {
 } from "@workspace/ui/components/empty";
 import { BugIcon } from "lucide-react";
 
-export function ErrorFallback({ resetErrorBoundary }: FallbackProps) {
+export default function NavErrorFallback({
+  resetErrorBoundary,
+}: FallbackProps) {
   return (
-    <div className="flex flex-1 p-4 sm:p-8 md:px-16">
+    <div className="p-4 sm:px-8 md:px-0 md:py-6">
       <Empty className="border border-dashed">
         <EmptyHeader>
           <EmptyMedia variant="icon">
@@ -21,8 +23,8 @@ export function ErrorFallback({ resetErrorBoundary }: FallbackProps) {
           </EmptyMedia>
           <EmptyTitle>Something Went Wrong</EmptyTitle>
           <EmptyDescription>
-            Something unexpected happened, so we couldn&apos;t load the search
-            results. Click the button below to try again.
+            Something unexpected happened, so we couldn&apos;t load the
+            navigation. Click the button below to try again.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

@@ -5,5 +5,11 @@ export const Route = createFileRoute("/_authenticated/@{$username}/add-tool/")({
 });
 
 function RouteComponent() {
-  return <div>Hello "/_authenticated/@$username/add-tool/"!</div>;
+  return (
+    <div>
+      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolor maxime et
+      quas saepe incidunt officia possimus sapiente, sit dolorum excepturi ipsum
+      inventore ab maiores sint facere. Corrupti laboriosam neque deserunt.
+    </div>
+  );
 }

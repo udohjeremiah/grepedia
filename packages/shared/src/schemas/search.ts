@@ -1,13 +1,15 @@
 import { z } from "zod";
 
-import { toolSchema } from "@/schemas/tool.js";
+import { toolSchema } from "@/schemas/tools/tool.js";
+
+import { defaultResponse } from "./default-response.js";
 
 export const searchQueryStringSchema = z.object({
   cursor: z.string().optional(),
   limit: z.preprocess((value) => {
     const limit = typeof value === "string" ? Number(value) : value;
     if (typeof limit !== "number" || Number.isNaN(limit)) return;
-    return Math.min(Math.max(limit, 1), 100);
+    return Math.min(Math.max(Math.round(limit), 1), 100);
   }, z.number().optional()),
   query: z
     .string()
@@ -18,11 +20,14 @@ export const searchQueryStringSchema = z.object({
 
 export type SearchQueryString = z.infer<typeof searchQueryStringSchema>;
 
-export const search200ResponseSchema = z.object({
-  data: z.object({
-    nextCursor: z.string().nullable(),
-    tools: z.array(toolSchema),
+export const searchResponseSchemas = {
+  200: z.object({
+    data: z.object({
+      nextCursor: z.string().optional(),
+      tools: z.array(toolSchema),
+    }),
+    message: z.string(),
+    success: z.boolean(),
   }),
-  message: z.string(),
-  success: z.boolean(),
-});
+  default: defaultResponse,
+};

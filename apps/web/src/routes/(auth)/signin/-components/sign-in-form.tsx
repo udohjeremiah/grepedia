@@ -1,13 +1,15 @@
 import { useForm } from "@tanstack/react-form";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
 } from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
+import { Checkbox } from "@workspace/ui/components/checkbox";
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
@@ -27,19 +29,18 @@ import {
   LockIcon,
   MailIcon,
   OctagonAlertIcon,
-  UserRoundIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
-import { env } from "@/env";
-import { signUp } from "@/services/auth/sign-up";
+import { Session } from "@/lib/auth-client";
+import { signIn } from "@/services/auth/sign-in";
 
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
-  name: z.string().min(2, "Please provide at least 2 characters."),
   password: z.string().min(8, "Please provide at least 8 characters."),
+  rememberMe: z.boolean(),
 });
 
 type SubmissionStatus = {
@@ -48,21 +49,22 @@ type SubmissionStatus = {
   title: string;
 };
 
-export default function SignupForm() {
+export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
       email: "",
-      name: "",
       password: "",
+      rememberMe: false,
     },
     onSubmit: async ({ value }) => {
       setSubmissionStatus(undefined);
 
-      void signUp(
-        { ...value, callbackURL: `${env.VITE_BASE_URL}/signin` },
+      void signIn(
+        { ...value },
         {
           onError: (context) => {
             setSubmissionStatus({
@@ -70,16 +72,16 @@ export default function SignupForm() {
                 context.error.message ??
                 "Please check your details and try again.",
               status: "error",
-              title: "Unable to create your account",
+              title: "Unable to sign in",
             });
           },
-          onSuccess: () => {
+          onSuccess: (context) => {
             form.reset();
-            setSubmissionStatus({
-              description:
-                "Check your email to verify your account before signing in.",
-              status: "success",
-              title: "Account created successfully",
+            const username = (context.data as Session).user.username;
+            navigate({
+              params: { username },
+              reloadDocument: true,
+              to: "/@{$username}",
             });
           },
         },
@@ -102,9 +104,9 @@ export default function SignupForm() {
         />
       </Link>
       <div>
-        <h1 className="text-2xl font-medium">Welcome to Grepedia</h1>
+        <h1 className="text-2xl font-medium">Sign in to Grepedia</h1>
         <p className="text-sm text-muted-foreground">
-          Already have an account? <AppLink to="/signin">Sign in</AppLink>
+          Don&apos;t have an account? <AppLink to="/signup">Sign up</AppLink>
         </p>
       </div>
       <form
@@ -114,34 +116,6 @@ export default function SignupForm() {
         }}
       >
         <FieldGroup>
-          <form.Field name="name">
-            {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <UserRoundIcon />
-                    </InputGroupAddon>
-                    <InputGroupInput
-                      aria-invalid={isInvalid}
-                      id={field.name}
-                      onBlur={field.handleBlur}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value)
-                      }
-                      required={true}
-                      value={field.state.value}
-                    />
-                  </InputGroup>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          </form.Field>
           <form.Field name="email">
             {(field) => {
               const isInvalid =
@@ -178,7 +152,12 @@ export default function SignupForm() {
 
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                  <div className="flex justify-between gap-4">
+                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                    <AppLink to="/request-password-reset">
+                      Forgot Password?
+                    </AppLink>
+                  </div>
                   <InputGroup>
                     <InputGroupAddon>
                       <LockIcon />
@@ -209,14 +188,37 @@ export default function SignupForm() {
               );
             }}
           </form.Field>
+          <form.Field name="rememberMe">
+            {(field) => (
+              <Field
+                className="rounded-xl border p-3 has-aria-checked:border-primary/50 has-aria-checked:bg-primary/10"
+                orientation="horizontal"
+              >
+                <Checkbox
+                  checked={field.state.value}
+                  id="rememberMe"
+                  onCheckedChange={(checked) =>
+                    field.handleChange(Boolean(checked))
+                  }
+                />
+                <FieldContent>
+                  <FieldLabel htmlFor="rememberMe">Remember Me</FieldLabel>
+                  <FieldDescription>
+                    Save your login so you stay signed in after closing your
+                    browser.
+                  </FieldDescription>
+                </FieldContent>
+              </Field>
+            )}
+          </form.Field>
           <Field>
             <Button disabled={form.state.isSubmitting} type="submit">
               {form.state.isSubmitting ? (
                 <>
-                  <Spinner /> Creating account...
+                  <Spinner /> Logging in...
                 </>
               ) : (
-                "Create Account"
+                "Login"
               )}
             </Button>
             {submissionStatus && (
@@ -232,13 +234,13 @@ export default function SignupForm() {
                 )}
                 <AlertTitle>{submissionStatus.title}</AlertTitle>
                 <AlertDescription>
-                  <p>{submissionStatus.description}</p>
+                  {submissionStatus.description}
                 </AlertDescription>
               </Alert>
             )}
           </Field>
           <FieldDescription>
-            By signing up, you agree to the{" "}
+            By signing in, you agree to the{" "}
             <AppLink to="/terms-of-service">Terms of Service</AppLink> and{" "}
             <AppLink to="/privacy-policy">Privacy Policy</AppLink>.
           </FieldDescription>

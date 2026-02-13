@@ -2,16 +2,15 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 import { omitKeys } from "@workspace/shared/omit-keys";
 import {
-  search200ResponseSchema,
   searchQueryStringSchema,
+  searchResponseSchemas,
 } from "@workspace/shared/schemas/search";
 import { ObjectId } from "mongodb";
-import { z } from "zod";
 
-import type { ToolWithObjectIds } from "@/schemas/tool.js";
+import type { ToolWithObjectIds } from "@/schemas/tools/tool.js";
 
-import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
 import { decodeCursor, encodeCursor } from "@/utils/cursor-codec.js";
+import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
 const search: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
@@ -38,7 +37,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
 
       const idCursorMatch =
         decodedCursor?.type === "id"
-          ? { _id: { $lt: new ObjectId(decodedCursor.id) } }
+          ? { _id: { $lt: ObjectId.createFromHexString(decodedCursor.id) } }
           : undefined;
 
       const scoreCursorMatch =
@@ -47,7 +46,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
               $or: [
                 { score: { $lt: decodedCursor.score } },
                 {
-                  _id: { $lt: new ObjectId(decodedCursor.id) },
+                  _id: { $lt: ObjectId.createFromHexString(decodedCursor.id) },
                   score: decodedCursor.score,
                 },
               ],
@@ -60,7 +59,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
               $or: [
                 { released_at: { $lt: new Date(decodedCursor.date) } },
                 {
-                  _id: { $lt: new ObjectId(decodedCursor.id) },
+                  _id: { $lt: ObjectId.createFromHexString(decodedCursor.id) },
                   released_at: new Date(decodedCursor.date),
                 },
               ],
@@ -98,8 +97,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
           { $limit: limit },
         ],
         verified: [
-          // eslint-disable-next-line unicorn/no-null
-          { $match: { ...baseFilter, owner: { $ne: null } } },
+          { $match: { ...baseFilter, owner: { $exists: true } } },
           ...(idCursorMatch ? [{ $match: idCursorMatch }] : []),
           { $sort: { _id: -1 } },
           { $limit: limit },
@@ -111,15 +109,14 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         .toArray();
 
       const searchResults = result.map((tool) => {
-        const converted = convertObjectIdsToStrings(
+        const converted = serializeMongoTypes(
           omitKeys(tool, ["vectorEmbeddings"]),
         );
-        return { ...converted, _id: converted._id! };
+        return { ...converted, _id: converted["_id"] };
       });
 
       const last = result.at(-1);
-      // eslint-disable-next-line unicorn/no-null
-      let nextCursor: null | string = null;
+      let nextCursor: string | undefined;
 
       if (last) {
         if (tab === "popular") {
@@ -151,14 +148,8 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
     method: "GET",
     schema: {
       querystring: searchQueryStringSchema,
-      response: {
-        200: search200ResponseSchema,
-        default: z.object({
-          data: z.unknown().optional(),
-          message: z.string(),
-          success: z.boolean(),
-        }),
-      },
+      response: searchResponseSchemas,
+      tags: ["Search"],
     },
     url: "/search",
   });

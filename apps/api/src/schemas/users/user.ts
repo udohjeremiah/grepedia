@@ -1,4 +1,4 @@
-import { userSchema } from "@workspace/shared/schemas/user";
+import { userSchema } from "@workspace/shared/schemas/users/user";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 

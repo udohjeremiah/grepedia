@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import SigninForm from "./-components/signin-form";
+import SignInForm from "./-components/sign-in-form";
 
 export const Route = createFileRoute("/(auth)/signin/")({
   component: RouteComponent,
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/(auth)/signin/")({
 function RouteComponent() {
   return (
     <main className="w-full max-w-sm">
-      <SigninForm />
+      <SignInForm />
     </main>
   );
 }

@@ -12,6 +12,15 @@ export default fp<FastifySwaggerOptions>(
   async (fastify) => {
     fastify.register(swagger, {
       openapi: {
+        components: {
+          securitySchemes: {
+            sessionCookie: {
+              in: "cookie",
+              name: "grepedia.session_token",
+              type: "apiKey",
+            },
+          },
+        },
         info: {
           description:
             "The encyclopedia of tools powered by collective wisdom.",

@@ -40,6 +40,9 @@ const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
       }
     },
     method: ["GET", "POST"],
+    schema: {
+      tags: ["Authentication"],
+    },
     url: "/auth/*",
   });
 };

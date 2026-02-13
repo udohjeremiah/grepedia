@@ -4,8 +4,9 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 
 type AppUser = User & {
-  role: "contributor" | "guest" | "moderator";
-  status: "active" | "banned" | "restricted";
+  displayName: string;
+  role: "contributor" | "member" | "moderator";
+  status: "active" | "deactivated" | "suspended";
   username: string;
 };
 
@@ -68,6 +69,8 @@ export default fp(
       (role: AppUser["role"]) =>
       async (request: FastifyRequest, reply: FastifyReply) => {
         await requireUser(request, reply);
+        if (reply.sent) return;
+
         if (request.user?.role !== role) {
           return reply.code(403).send({
             message: "Forbidden",
@@ -80,6 +83,8 @@ export default fp(
       (status: AppUser["status"]) =>
       async (request: FastifyRequest, reply: FastifyReply) => {
         await requireUser(request, reply);
+        if (reply.sent) return;
+
         if (request.user?.status !== status) {
           return reply.code(403).send({
             message: "Forbidden",

@@ -151,9 +151,7 @@ export default function RequestPasswordResetForm() {
                   <OctagonAlertIcon />
                 )}
                 <AlertTitle>{submissionStatus.title}</AlertTitle>
-                <AlertDescription>
-                  <p>{submissionStatus.status}</p>
-                </AlertDescription>
+                <AlertDescription>{submissionStatus.status}</AlertDescription>
               </Alert>
             )}
           </Field>

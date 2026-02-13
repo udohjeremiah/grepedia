@@ -1,16 +1,17 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import { getAuthSession } from "@/utils/get-auth-session";
+import { getSession } from "@/utils/get-session";
 
 import Footer from "./-components/footer";
 import Header from "./-components/header";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
-    const authSession = await getAuthSession();
-    if (!authSession) {
-      throw redirect({ replace: true, to: "/signin" });
-    }
+    const session = await getSession();
+    if (!session) throw redirect({ replace: true, to: "/signin" });
+
+    const userId = session.user.id;
+    return { userId };
   },
   component: LayoutComponent,
 });

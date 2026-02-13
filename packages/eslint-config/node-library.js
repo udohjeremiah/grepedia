@@ -14,6 +14,7 @@ export const nodeLibrary = [
         {
           replacements: {
             env: false,
+            param: false,
             params: false,
           },
         },

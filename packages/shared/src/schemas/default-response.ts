@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export const getToolsCount200ResponseSchema = z.object({
-  data: z.number(),
+export const defaultResponse = z.object({
+  data: z.unknown().optional(),
   message: z.string(),
   success: z.boolean(),
 });

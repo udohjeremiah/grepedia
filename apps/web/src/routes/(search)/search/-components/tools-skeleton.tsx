@@ -3,7 +3,7 @@ import { useRef } from "react";
 
 import { useItemsCount } from "@/hooks/use-items-count";
 
-export default function LoadingSkeleton() {
+export default function ToolsSkeleton() {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemsCount = useItemsCount(containerRef, { gap: 16, rowHeight: 70 });
 

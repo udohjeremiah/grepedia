@@ -98,22 +98,27 @@ export default fp(
       trustedOrigins: [fastify.env.CLIENT_BASE_URL],
       user: {
         additionalFields: {
+          bio: {
+            input: true,
+            required: false,
+            type: "string",
+          },
           displayUsername: {
             input: true,
             required: true,
             type: "string",
           },
           role: {
-            defaultValue: "guest",
+            defaultValue: "member",
             input: false,
             required: true,
-            type: ["guest", "contributor", "moderator"],
+            type: ["member", "contributor", "moderator"],
           },
           status: {
             defaultValue: "active",
             input: false,
             required: true,
-            type: ["active", "restricted", "banned"],
+            type: ["active", "suspended", "deactivated"],
           },
           username: {
             input: true,

@@ -1,31 +1,9 @@
 import { Link, useSearch } from "@tanstack/react-router";
-import {
-  BadgeCheckIcon,
-  type LucideIcon,
-  MessageCircleIcon,
-  SearchIcon,
-  SparklesIcon,
-  StarIcon,
-} from "lucide-react";
 
-import type { TabLabel, TabValue } from "./tabs";
+import type { Tab } from "./tabs";
 
-interface TabProps {
-  label: TabLabel;
-  value: TabValue;
-}
-
-export const TAB_ICONS: Record<TabValue, LucideIcon> = {
-  all: SearchIcon,
-  new: SparklesIcon,
-  popular: StarIcon,
-  trending: MessageCircleIcon,
-  verified: BadgeCheckIcon,
-};
-
-export default function Tab({ label, value }: TabProps) {
+export default function Tab({ icon: Icon, label, value }: Tab) {
   const searchParams = useSearch({ from: "/(search)/search/" });
-  const Icon = TAB_ICONS[value];
   const isTabChange = value !== searchParams.tab;
 
   return (

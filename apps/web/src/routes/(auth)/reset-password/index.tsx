@@ -13,9 +13,7 @@ const searchParamsValidator = zodValidator(
 
 export const Route = createFileRoute("/(auth)/reset-password/")({
   beforeLoad: ({ search }) => {
-    if (search.error || !search.token) {
-      throw notFound();
-    }
+    if (search.error || !search.token) throw notFound();
   },
   component: RouteComponent,
   validateSearch: searchParamsValidator,

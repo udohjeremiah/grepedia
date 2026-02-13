@@ -3,22 +3,18 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { slugifyWithCounter } from "@sindresorhus/slugify";
 import { omitKeys } from "@workspace/shared/omit-keys";
 import {
-  addTool201ResponseSchema,
   addToolBodySchema,
-} from "@workspace/shared/schemas/add-tool";
+  addToolResponseSchemas,
+} from "@workspace/shared/schemas/tools/add-tool";
 import { ObjectId } from "mongodb";
-import { z } from "zod";
 
-import type { ToolWithObjectIds } from "@/schemas/tool.js";
-
-import { convertObjectIdsToStrings } from "@/utils/convert-objectids-to-string.js";
+import { ToolWithObjectIds } from "@/schemas/tools/tool.js";
+import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
 const addTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
-      if (!request.user) {
-        throw new Error("User not authenticated");
-      }
+      if (!request.user) throw new Error("User not authenticated");
 
       const body = request.body;
       const tools = fastify.getToolCollection();
@@ -43,21 +39,14 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       const tool: Omit<ToolWithObjectIds, "_id"> = {
         ...body,
         added_at: new Date().toISOString(),
-        added_by: new ObjectId(request.user.id),
-        // eslint-disable-next-line unicorn/no-null
-        owner: null,
+        added_by: ObjectId.createFromHexString(request.user.id),
         slug,
         stats: { comments: 0, downvotes: 0, upvotes: 0 },
         status: "published",
-        // eslint-disable-next-line unicorn/no-null
-        updated_at: null,
-        // eslint-disable-next-line unicorn/no-null
-        updated_by: null,
-        vectorEmbeddings: [],
       };
 
       const result = await tools.insertOne(tool);
-      const toolWithStringIds = convertObjectIdsToStrings({
+      const toolWithStringIds = serializeMongoTypes({
         ...omitKeys(tool, ["vectorEmbeddings"]),
         _id: result.insertedId,
       });
@@ -69,16 +58,12 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "POST",
+    onRequest: fastify.requireUser,
     schema: {
       body: addToolBodySchema,
-      response: {
-        201: addTool201ResponseSchema,
-        default: z.object({
-          data: z.unknown().optional(),
-          message: z.string(),
-          success: z.boolean(),
-        }),
-      },
+      response: addToolResponseSchemas,
+      security: [{ sessionCookie: [] }],
+      tags: ["Tools"],
     },
     url: "/",
   });
