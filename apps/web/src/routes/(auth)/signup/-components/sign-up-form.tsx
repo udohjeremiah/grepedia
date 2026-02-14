@@ -39,7 +39,10 @@ import { signUp } from "@/services/auth/sign-up";
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
   name: z.string().min(2, "Please provide at least 2 characters."),
-  password: z.string().min(8, "Please provide at least 8 characters."),
+  password: z
+    .string()
+    .min(8, "Please provide at least 8 characters.")
+    .max(128, "Please provide no more than 128 characters."),
 });
 
 type SubmissionStatus = {
@@ -79,7 +82,7 @@ export default function SignUpForm() {
               description:
                 "Check your email to verify your account before signing in.",
               status: "success",
-              title: "Account created successfully",
+              title: "Account created",
             });
           },
         },

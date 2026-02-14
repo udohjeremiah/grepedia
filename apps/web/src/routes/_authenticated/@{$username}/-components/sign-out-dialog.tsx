@@ -13,7 +13,7 @@ import {
 import { Button } from "@workspace/ui/components/button";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import { Label } from "@workspace/ui/components/label";
-import { AlertTriangleIcon, LogOutIcon } from "lucide-react";
+import { LogOutIcon } from "lucide-react";
 import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
@@ -21,21 +21,18 @@ import { signOut } from "@/services/auth/sign-out";
 
 export default function SignOutDialog() {
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [revokeAll, setRevokeAll] = useState(false);
-  const { data: sessions } = auth.useListSessions();
+  const [revokeAllSessions, setRevokeAllSessions] = useState(false);
   const { refetch } = auth.useSession();
   const { mutate: revokeSessions } = auth.useRevokeSessions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const sessionCount = sessions ? sessions.length : 0;
-  const hasOtherSessions = sessionCount > 1;
-  const signOutText = revokeAll ? "Sign Out Everywhere" : "Sign Out";
+  const signOutText = revokeAllSessions ? "Sign Out Everywhere" : "Sign Out";
 
   const handleSignOut = async () => {
     setIsSubmitting(true);
 
-    if (revokeAll) {
+    if (revokeAllSessions) {
       revokeSessions({
         fetchOptions: {
           onError: () => {
@@ -69,11 +66,7 @@ export default function SignOutDialog() {
   return (
     <AlertDialog onOpenChange={setDialogOpen} open={isDialogOpen}>
       <AlertDialogTrigger asChild>
-        <Button
-          onClick={() => setDialogOpen(true)}
-          size="sm"
-          variant="destructive"
-        >
+        <Button size="sm" variant="destructive">
           <LogOutIcon />
           Sign Out
         </Button>
@@ -88,43 +81,31 @@ export default function SignOutDialog() {
             You are about to sign out of your current session.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        {hasOtherSessions && (
-          <div className="space-y-2 rounded-md border bg-secondary/50 p-3">
-            <div className="flex gap-3">
-              <Checkbox
-                checked={revokeAll}
-                className="mt-0.5"
-                id="signout-revoke"
-                onCheckedChange={(checked) => setRevokeAll(checked === true)}
-              />
-              <div>
-                <Label
-                  className="text-sm font-medium text-foreground"
-                  htmlFor="signout-revoke"
-                >
-                  Also sign out of all other devices
-                </Label>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  You have {sessionCount - 1} other active{" "}
-                  {sessionCount - 1 === 1 ? "session" : "sessions"}.
-                </p>
-              </div>
-            </div>
-            {revokeAll && (
-              <div className="flex gap-2 rounded-md border border-info/20 bg-info/10 p-2">
-                <AlertTriangleIcon className="mt-0.5 size-3 shrink-0 text-info" />
-                <p className="text-xs text-info">
-                  Session revocation for other devices will take effect within 5
-                  minutes.
-                </p>
-              </div>
-            )}
+        <div className="flex gap-2 rounded-xl border p-3 has-aria-checked:border-primary/50 has-aria-checked:bg-primary/10">
+          <Checkbox
+            checked={revokeAllSessions}
+            className="mt-0.5"
+            id="revokeAllSessions"
+            onCheckedChange={(checked) =>
+              setRevokeAllSessions(checked === true)
+            }
+          />
+          <div>
+            <Label
+              className="text-sm font-medium text-foreground"
+              htmlFor="revokeAllSessions"
+            >
+              Also sign out of all other devices
+            </Label>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Revocation will take effect within 5 minutes.
+            </p>
           </div>
-        )}
+        </div>
         <AlertDialogFooter>
           <AlertDialogCancel
             disabled={isSubmitting}
-            onClick={() => setRevokeAll(false)}
+            onClick={() => setRevokeAllSessions(false)}
           >
             Cancel
           </AlertDialogCancel>

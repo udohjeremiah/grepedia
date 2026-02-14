@@ -127,6 +127,17 @@ export default fp(
             unique: true,
           },
         },
+        changeEmail: {
+          enabled: true,
+          sendChangeEmailConfirmation: async ({ newEmail, url, user }) => {
+            fastify.resend.emails.send({
+              from: fastify.env.EMAIL_AUTH,
+              subject: "Approve email change",
+              text: `Click the link to approve the change to ${newEmail}: ${url}`,
+              to: user.email,
+            });
+          },
+        },
       },
     });
 

@@ -39,7 +39,10 @@ import { signIn } from "@/services/auth/sign-in";
 
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
-  password: z.string().min(8, "Please provide at least 8 characters."),
+  password: z
+    .string()
+    .min(8, "Please provide at least 8 characters.")
+    .max(128, "Please provide no more than 128 characters."),
   rememberMe: z.boolean(),
 });
 

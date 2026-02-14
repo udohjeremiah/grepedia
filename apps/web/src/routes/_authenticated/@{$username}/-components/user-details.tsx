@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 
 import { useRouteContext } from "@tanstack/react-router";
 import { Badge } from "@workspace/ui/components/badge";
-import { Separator } from "@workspace/ui/components/separator";
 import {
   CalendarIcon,
   ClockIcon,
@@ -40,8 +39,8 @@ export default function UserDetails() {
 
   return (
     <div className="flex flex-1 flex-col gap-6">
-      <div className="flex flex-col gap-5 rounded-lg border p-6">
-        <div className="flex gap-4">
+      <div className="flex flex-col gap-4 rounded-lg border p-6">
+        <div className="flex gap-4 border-b pb-4">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
             <UserIcon className="size-8" />
           </div>
@@ -57,7 +56,6 @@ export default function UserDetails() {
             <SignOutDialog />
           </div>
         </div>
-        <Separator />
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <ShieldIcon className="size-4 text-muted-foreground" />
@@ -85,10 +83,10 @@ export default function UserDetails() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-5 rounded-lg border p-6">
-        <div className="flex w-full justify-between gap-4 max-sm:flex-col">
+      <div className="flex flex-col gap-4 rounded-lg border p-6">
+        <div className="flex w-full justify-between gap-4 border-b pb-4 max-sm:flex-col">
           <div className="flex flex-col gap-1">
-            <h3 className="text-base font-semibold text-foreground">
+            <h3 className="font-semibold text-foreground">
               Account Information
             </h3>
             <p className="text-sm text-muted-foreground">
@@ -97,7 +95,6 @@ export default function UserDetails() {
           </div>
           <EditDetailsDialog />
         </div>
-        <Separator />
         <div className="flex flex-col gap-4">
           <InfoRow
             icon={<UserIcon className="size-4" />}

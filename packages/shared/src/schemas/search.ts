@@ -14,7 +14,7 @@ export const searchQueryStringSchema = z.object({
   query: z
     .string()
     .min(2, "Please provide at least 2 characters.")
-    .max(8192, "Please keep it under 8192 characters."),
+    .max(8192, "Please provide no more than 8192 characters."),
   tab: z.enum(["all", "popular", "trending", "verified", "new"]).default("all"),
 });
 

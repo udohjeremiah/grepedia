@@ -44,14 +44,14 @@ const formSchema = z.object({
     z
       .string()
       .min(10, "Please provide at least 10 characters.")
-      .max(160, "Bio must be less than 160 characters."),
+      .max(160, "Please provide no more than 160 characters."),
     z.undefined(),
   ]),
   name: z.string().min(2, "Please provide at least 2 characters."),
   username: z
     .string()
     .min(3, "Please provide at least 3 characters.")
-    .max(30, "Username must be less than 30 characters."),
+    .max(30, "Please provide no more than 30 characters."),
 });
 
 type SubmissionStatus = {
@@ -90,6 +90,7 @@ export default function EditDetailsDialog() {
           },
 
           onSuccess: () => {
+            form.reset();
             setSubmissionStatus({
               description:
                 "Your account details have been updated successfully.",
@@ -100,7 +101,6 @@ export default function EditDetailsDialog() {
               params: { username: value.username },
               to: "/@{$username}",
             });
-            form.reset();
           },
         },
       );

@@ -34,8 +34,14 @@ import { resetPassword } from "@/services/auth/reset-password";
 
 const formSchema = z
   .object({
-    confirmPassword: z.string().min(8, "Please provide at least 8 characters."),
-    newPassword: z.string().min(8, "Please provide at least 8 characters."),
+    confirmPassword: z
+      .string()
+      .min(8, "Please provide at least 8 characters.")
+      .max(128, "Please provide no more than 128 characters."),
+    newPassword: z
+      .string()
+      .min(8, "Please provide at least 8 characters.")
+      .max(128, "Please provide no more than 128 characters."),
     token: z.string().min(1),
   })
   .superRefine(({ confirmPassword, newPassword }, context) => {
