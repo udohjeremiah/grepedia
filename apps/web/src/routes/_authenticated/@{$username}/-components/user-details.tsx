@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { useRouteContext } from "@tanstack/react-router";
 import { Badge } from "@workspace/ui/components/badge";
+import { format } from "date-fns";
 import {
   CalendarIcon,
   ClockIcon,
@@ -39,8 +40,8 @@ export default function UserDetails() {
 
   return (
     <div className="flex flex-1 flex-col gap-6">
-      <div className="flex flex-col gap-4 rounded-lg border p-6">
-        <div className="flex gap-4 border-b pb-4">
+      <div className="flex flex-col gap-6 rounded-lg border p-6">
+        <div className="flex gap-4 border-b pb-6">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
             <UserIcon className="size-8" />
           </div>
@@ -83,8 +84,8 @@ export default function UserDetails() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 rounded-lg border p-6">
-        <div className="flex w-full justify-between gap-4 border-b pb-4 max-sm:flex-col">
+      <div className="flex flex-col gap-6 rounded-lg border p-6">
+        <div className="flex w-full justify-between gap-4 border-b pb-6 max-sm:flex-col">
           <div className="flex flex-col gap-1">
             <h3 className="font-semibold text-foreground">
               Account Information
@@ -114,12 +115,12 @@ export default function UserDetails() {
           <InfoRow
             icon={<CalendarIcon className="size-4" />}
             label="Member Since"
-            value={formatDate(user.createdAt)}
+            value={format(new Date(user.createdAt), "MMMM d, yyyy")}
           />
           <InfoRow
             icon={<ClockIcon className="size-4" />}
             label="Last Updated"
-            value={formatDate(user.updatedAt)}
+            value={format(new Date(user.updatedAt), "MMMM d, yyyy")}
           />
           <div className="space-y-1 rounded-md border p-3">
             <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
@@ -133,14 +134,6 @@ export default function UserDetails() {
       </div>
     </div>
   );
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
 }
 
 function InfoRow({

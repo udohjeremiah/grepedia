@@ -4,7 +4,6 @@ import {
   QueryErrorResetBoundary,
 } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-adapter";
 import { searchQueryStringSchema } from "@workspace/shared/schemas/search";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -15,8 +14,6 @@ import ToolsErrorFallback from "./-components/tools-error-fallback";
 import ToolsSkeleton from "./-components/tools-skeleton";
 import { searchQueryOptions } from "./-queries/search";
 
-const searchParamsValidator = zodValidator(searchQueryStringSchema);
-
 export const Route = createFileRoute("/(search)/search/")({
   beforeLoad: async ({ context, search }) => {
     if (!search.query) throw redirect({ replace: true, to: "/" });
@@ -24,7 +21,7 @@ export const Route = createFileRoute("/(search)/search/")({
     await context.queryClient.prefetchInfiniteQuery(searchQueryOptions(search));
   },
   component: RouteComponent,
-  validateSearch: searchParamsValidator,
+  validateSearch: searchQueryStringSchema,
 });
 
 function RouteComponent() {

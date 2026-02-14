@@ -105,12 +105,12 @@ export default function ChangePasswordDialog() {
             });
           },
           onSuccess: () => {
+            form.reset();
             setSubmissionStatus({
               description: "Your password have been updated successfully.",
               status: "success",
               title: "Password updated",
             });
-            form.reset();
           },
         },
       );
@@ -294,7 +294,7 @@ export default function ChangePasswordDialog() {
                       Revoke Other Sessions
                     </FieldLabel>
                     <FieldDescription>
-                      Revocation will take effect within 5 minutes.
+                      Other devices will be signed out within 5 minutes.
                     </FieldDescription>
                   </FieldContent>
                 </Field>

@@ -6,8 +6,8 @@ import { useEffect, useRef } from "react";
 import { useItemsCount } from "@/hooks/use-items-count";
 
 import { useSearchTools } from "../-queries/search";
-import EmptyTools from "./empty-tools";
 import Tool from "./tool";
+import ToolsEmpty from "./tools-empty";
 
 export default function Tools() {
   const searchParams = useSearch({ from: "/(search)/search/" });
@@ -57,7 +57,7 @@ export default function Tools() {
           ))}
         </ul>
       ) : (
-        <EmptyTools />
+        <ToolsEmpty />
       )}
       <div
         className={cn(

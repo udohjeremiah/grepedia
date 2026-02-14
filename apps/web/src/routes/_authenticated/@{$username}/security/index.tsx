@@ -1,15 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/_authenticated/@{$username}/security/")({
-  component: RouteComponent,
-});
-
 import { AlertTriangleIcon, LockIcon, MailIcon } from "lucide-react";
 
 import { securityTips } from "@/constants/security-tips";
 
 import ChangeEmailDialog from "./-components/change-email-dialog";
 import ChangePasswordDialog from "./-components/change-password-dialog";
+
+export const Route = createFileRoute("/_authenticated/@{$username}/security/")({
+  component: RouteComponent,
+});
 
 function RouteComponent() {
   return (
@@ -47,9 +46,9 @@ function RouteComponent() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-4 rounded-lg border p-6">
-          <div className="flex gap-4 border-b pb-4">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-chart-4/10 text-chart-4">
+        <div className="flex flex-col gap-6 rounded-lg border p-6">
+          <div className="flex gap-4 border-b pb-6">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <AlertTriangleIcon className="size-5" />
             </div>
             <div className="flex flex-col gap-1">

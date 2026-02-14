@@ -5,6 +5,7 @@ import {
   AlertTitle,
 } from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
+import { format } from "date-fns";
 import {
   CircleAlertIcon,
   CircleCheckIcon,
@@ -151,12 +152,7 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
                   className="text-xs text-muted-foreground"
                   dateTime={banner.timestamp.toISOString()}
                 >
-                  {new Intl.DateTimeFormat("default", {
-                    hour: "2-digit",
-                    hour12: false,
-                    minute: "2-digit",
-                    second: "2-digit",
-                  }).format(banner.timestamp)}
+                  {format(banner.timestamp, "HH:mm:ss")}
                 </time>{" "}
                 <AlertDescription>{banner.description}</AlertDescription>
               </div>

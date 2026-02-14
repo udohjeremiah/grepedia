@@ -62,7 +62,7 @@ type SubmissionStatus = {
 
 export default function EditDetailsDialog() {
   const { data: sessionData } = auth.useSession();
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
   const { mutate: updateUser } = auth.useUpdateUser();
   const navigate = useNavigate();
@@ -111,7 +111,7 @@ export default function EditDetailsDialog() {
   });
 
   return (
-    <Dialog onOpenChange={setDialogOpen} open={isDialogOpen}>
+    <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2" size="sm" variant="outline">
           <PencilIcon />

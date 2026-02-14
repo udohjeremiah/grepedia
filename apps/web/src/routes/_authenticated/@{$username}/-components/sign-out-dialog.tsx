@@ -20,9 +20,8 @@ import { auth } from "@/hooks/auth";
 import { signOut } from "@/services/auth/sign-out";
 
 export default function SignOutDialog() {
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [revokeAllSessions, setRevokeAllSessions] = useState(false);
-  const { refetch } = auth.useSession();
   const { mutate: revokeSessions } = auth.useRevokeSessions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -40,8 +39,8 @@ export default function SignOutDialog() {
           },
           onSuccess: () => {
             setIsSubmitting(false);
-            setDialogOpen(false);
-            navigate({ to: "/signin" });
+            setIsDialogOpen(false);
+            navigate({ reloadDocument: true, to: "/signin" });
           },
         },
       });
@@ -55,16 +54,15 @@ export default function SignOutDialog() {
         },
         onSuccess: () => {
           setIsSubmitting(false);
-          setDialogOpen(false);
-          refetch();
-          navigate({ to: "/signin" });
+          setIsDialogOpen(false);
+          navigate({ reloadDocument: true, to: "/signin" });
         },
       },
     });
   };
 
   return (
-    <AlertDialog onOpenChange={setDialogOpen} open={isDialogOpen}>
+    <AlertDialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
       <AlertDialogTrigger asChild>
         <Button size="sm" variant="destructive">
           <LogOutIcon />
@@ -98,7 +96,7 @@ export default function SignOutDialog() {
               Also sign out of all other devices
             </Label>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              Revocation will take effect within 5 minutes.
+              Other devices will be signed out within 5 minutes.
             </p>
           </div>
         </div>

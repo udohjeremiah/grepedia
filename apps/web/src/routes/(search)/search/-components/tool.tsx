@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@workspace/ui/components/sheet";
+import { format } from "date-fns";
 import {
   BadgeCheckIcon,
   CalendarIcon,
@@ -40,12 +41,7 @@ const statConfigByTab = {
   },
   new: {
     getValue: (tool: ToolProps) =>
-      tool.released_at
-        ? new Date(tool.released_at).toLocaleDateString("en-US", {
-            month: "short",
-            year: "numeric",
-          })
-        : "New",
+      tool.released_at ? format(new Date(tool.released_at), "MMM yyyy") : "New",
     icon: CalendarIcon,
   },
   popular: {

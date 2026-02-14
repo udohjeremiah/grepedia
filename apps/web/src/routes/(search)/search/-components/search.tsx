@@ -22,12 +22,12 @@ import { SearchIcon, XIcon } from "lucide-react";
 import { type ComponentProps, useState } from "react";
 
 export default function Search() {
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <>
       <SearchForm className="max-md:hidden" />
-      <Dialog onOpenChange={setDialogOpen} open={isDialogOpen}>
+      <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
         <DialogTrigger asChild className="md:hidden">
           <Button size="icon-sm">
             <SearchIcon />
@@ -41,7 +41,7 @@ export default function Search() {
               submit.
             </DialogDescription>
           </DialogHeader>
-          <SearchForm onSubmitted={() => setDialogOpen(false)} />
+          <SearchForm onSubmitted={() => setIsDialogOpen(false)} />
         </DialogContent>
       </Dialog>
     </>

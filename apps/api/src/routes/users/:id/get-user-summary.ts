@@ -33,7 +33,7 @@ const getUserSummary: FastifyPluginAsyncZod = async (fastify) => {
         upvotes,
         downvotes,
         comments,
-        listedSessions,
+        sessions,
         bookmarks,
       ] = await Promise.all([
         tools.countDocuments({ owner: user._id }),
@@ -48,13 +48,12 @@ const getUserSummary: FastifyPluginAsyncZod = async (fastify) => {
 
       const activities =
         toolsOwned + toolsAdded + toolsUpdated + upvotes + downvotes + comments;
-      const sessions = listedSessions.length;
 
       return reply.code(200).send({
         data: {
           activities,
           bookmarks,
-          sessions,
+          sessions: sessions.length,
         },
         message: "User summary retrieved successfully",
         success: true,
