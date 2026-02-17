@@ -4,7 +4,9 @@ import { defaultResponse } from "../default-response.js";
 
 export const getToolsCountResponseSchemas = {
   200: z.object({
-    data: z.int(),
+    data: z.object({
+      count: z.int(),
+    }),
     message: z.string(),
     success: z.boolean(),
   }),

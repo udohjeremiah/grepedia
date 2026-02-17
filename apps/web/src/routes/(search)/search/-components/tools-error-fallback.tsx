@@ -23,7 +23,7 @@ export default function ToolsErrorFallback({
           </EmptyMedia>
           <EmptyTitle>Something Went Wrong</EmptyTitle>
           <EmptyDescription>
-            Something unexpected happened, so we couldn&apos;t load the search
+            Something unexpected happened, so we couldn&apos;t load your search
             results. Click the button below to try again.
           </EmptyDescription>
         </EmptyHeader>

@@ -3,15 +3,17 @@ import { z } from "zod";
 import { defaultResponse } from "../default-response.js";
 import { userSchema } from "./user.js";
 
-export const getUserDetailsParamsSchema = z.object({
-  id: z.string(),
+export const getUserParamsSchema = z.object({
+  userId: z.string(),
 });
 
-export type GetUserDetailsParams = z.infer<typeof getUserDetailsParamsSchema>;
+export type GetUserParams = z.infer<typeof getUserParamsSchema>;
 
-export const getUserDetailsResponseSchemas = {
+export const getUserResponseSchemas = {
   200: z.object({
-    data: userSchema,
+    data: z.object({
+      user: userSchema,
+    }),
     message: z.string(),
     success: z.boolean(),
   }),

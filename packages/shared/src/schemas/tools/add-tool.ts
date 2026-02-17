@@ -5,10 +5,10 @@ import { toolSchema } from "@/schemas/tools/tool.js";
 import { defaultResponse } from "../default-response.js";
 
 export const addToolBodySchema = z.object({
-  categories: z.array(z.string()),
-  cover_image: z.url().optional(),
+  categories: z.array(z.string()).max(4),
   external_urls: z
     .array(z.object({ type: z.string(), url: z.url() }))
+    .max(4)
     .optional(),
   image: z.url().optional(),
   long_description: z.string().min(1),
@@ -16,7 +16,7 @@ export const addToolBodySchema = z.object({
   official_url: z.url(),
   released_at: z.iso.datetime().optional(),
   short_description: z.string().min(1),
-  tags: z.array(z.string()),
+  tags: z.array(z.string()).max(8),
 });
 
 export const addToolResponseSchemas = {

@@ -4,7 +4,7 @@ import { defaultResponse } from "../default-response.js";
 import { userAccountExportPackageSchema } from "./get-user-recovery-package.js";
 
 export const recoverUserAccountParamsSchema = z.object({
-  id: z.string(),
+  userId: z.string(),
 });
 
 export type RecoverUserAccountParams = z.infer<

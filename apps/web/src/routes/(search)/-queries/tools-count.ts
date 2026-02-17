@@ -12,6 +12,6 @@ export const toolsCountQueryOptions = () => {
 export const useToolsCount = () => {
   return useSuspenseQuery({
     ...toolsCountQueryOptions(),
-    select: (data) => data.data,
+    select: (data) => data.data.count,
   });
 };

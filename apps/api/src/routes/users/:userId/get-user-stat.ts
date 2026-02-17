@@ -1,15 +1,15 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 import {
-  getUserSummaryParamsSchema,
-  getUserSummaryResponseSchemas,
-} from "@workspace/shared/schemas/users/get-user-summary";
+  getUserStatParamsSchema,
+  getUserStatResponseSchemas,
+} from "@workspace/shared/schemas/users/get-user-stat";
 import { ObjectId } from "mongodb";
 
-const getUserSummary: FastifyPluginAsyncZod = async (fastify) => {
+const getUserStat: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
-      const { id } = request.params;
+      const { userId } = request.params;
 
       const users = fastify.getUserCollection();
       const userBookmarks = fastify.getUserBookmarkCollection();
@@ -17,8 +17,8 @@ const getUserSummary: FastifyPluginAsyncZod = async (fastify) => {
       const toolReactions = fastify.getToolReactionCollection();
       const toolComments = fastify.getToolCommentCollection();
 
-      const userId = ObjectId.createFromHexString(id);
-      const user = await users.findOne({ _id: userId });
+      const userObjectId = ObjectId.createFromHexString(userId);
+      const user = await users.findOne({ _id: userObjectId });
       if (!user) {
         return reply.code(404).send({
           message: "User not found",
@@ -46,29 +46,34 @@ const getUserSummary: FastifyPluginAsyncZod = async (fastify) => {
         userBookmarks.countDocuments({ userId: user._id }),
       ]);
 
-      const activities =
-        toolsOwned + toolsAdded + toolsUpdated + upvotes + downvotes + comments;
+      const stat = {
+        bookmarks,
+        sessions: sessions.length,
+        tools:
+          toolsOwned +
+          toolsAdded +
+          toolsUpdated +
+          upvotes +
+          downvotes +
+          comments,
+      };
 
       return reply.code(200).send({
-        data: {
-          activities,
-          bookmarks,
-          sessions: sessions.length,
-        },
-        message: "User summary retrieved successfully",
+        data: { stat },
+        message: "User stat retrieved successfully",
         success: true,
       });
     },
     method: "GET",
     onRequest: [fastify.requireUserId()],
     schema: {
-      params: getUserSummaryParamsSchema,
-      response: getUserSummaryResponseSchemas,
+      params: getUserStatParamsSchema,
+      response: getUserStatResponseSchemas,
       security: [{ sessionCookie: [] }],
       tags: ["Users"],
     },
-    url: "/summary",
+    url: "/stat",
   });
 };
 
-export default getUserSummary;
+export default getUserStat;

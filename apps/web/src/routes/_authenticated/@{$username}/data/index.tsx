@@ -16,7 +16,7 @@ import { userRecoveryPackageQueryOptions } from "./-queries/user-recovery-packag
 export const Route = createFileRoute("/_authenticated/@{$username}/data/")({
   beforeLoad: async ({ context }) => {
     await context.queryClient.prefetchQuery(
-      userRecoveryPackageQueryOptions({ id: context.userId }),
+      userRecoveryPackageQueryOptions({ userId: context.userId }),
     );
   },
   component: RouteComponent,

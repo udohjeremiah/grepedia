@@ -30,7 +30,7 @@ export default function ToolsEmpty() {
           Try viewing all tools or add a new one if you know it.
         </EmptyDescription>
       </EmptyHeader>
-      <EmptyContent className="flex-row justify-center gap-2">
+      <EmptyContent className="flex-row flex-wrap justify-center gap-2">
         <Button asChild>
           <Link
             search={{ ...searchParams, limit: undefined, tab: "all" }}

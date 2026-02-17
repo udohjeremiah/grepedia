@@ -46,7 +46,7 @@ declare module "fastify" {
  *
  * Available guards:
  * - requireUser: ensures the request is authenticated
- * - requireUserId: ensures the user id matches a route param id (defaults to `id`)
+ * - requireUserId: ensures the user id matches a route param id (defaults to `userId`)
  * - requireRole: ensures the user has a specific role
  * - requireStatus: ensures the user has a required account status
  */
@@ -71,7 +71,7 @@ export default fp(
     };
 
     const requireUserId =
-      (paramKey = "id") =>
+      (paramKey = "userId") =>
       async (request: FastifyRequest, reply: FastifyReply) => {
         await requireUser(request, reply);
         if (reply.sent) return;

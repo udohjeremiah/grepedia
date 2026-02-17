@@ -7,15 +7,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import UserDetails from "./-components/user-details";
-import UserDetailsErrorFallback from "./-components/user-details-error-fallback";
-import UserDetailsSkeleton from "./-components/user-details-skeleton";
-import { userDetailsQueryOptions } from "./-queries/user-details";
+import User from "./-components/user";
+import UserErrorFallback from "./-components/user-error-fallback";
+import UserSkeleton from "./-components/user-skeleton";
+import { userQueryOptions } from "./-queries/user";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/")({
   beforeLoad: async ({ context }) => {
     await context.queryClient.prefetchQuery(
-      userDetailsQueryOptions({ id: context.userId }),
+      userQueryOptions({ userId: context.userId }),
     );
   },
   component: RouteComponent,
@@ -27,14 +27,14 @@ function RouteComponent() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <main className="flex p-4 sm:px-8 md:px-0 md:py-6">
-        <Suspense fallback={<UserDetailsSkeleton />}>
+        <Suspense fallback={<UserSkeleton />}>
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
-                FallbackComponent={UserDetailsErrorFallback}
+                FallbackComponent={UserErrorFallback}
                 onReset={reset}
               >
-                <UserDetails />
+                <User />
               </ErrorBoundary>
             )}
           </QueryErrorResetBoundary>

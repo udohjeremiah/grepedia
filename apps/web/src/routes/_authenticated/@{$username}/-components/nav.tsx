@@ -1,19 +1,19 @@
 import { useRouteContext } from "@tanstack/react-router";
 import {
-  ActivityIcon,
   BookmarkIcon,
   DatabaseIcon,
   MonitorIcon,
   ShieldIcon,
   UserIcon,
+  WrenchIcon,
 } from "lucide-react";
 
-import { useUserSummary } from "../-queries/user-summary";
+import { useUserStat } from "../-queries/user-stat";
 import NavItem from "./nav-item";
 
 export const navItems = [
   { icon: UserIcon, label: "Profile", value: "profile" },
-  { icon: ActivityIcon, label: "Activity", value: "activity" },
+  { icon: WrenchIcon, label: "Tools", value: "tools" },
   { icon: ShieldIcon, label: "Security", value: "security" },
   { icon: MonitorIcon, label: "Sessions", value: "sessions" },
   { icon: BookmarkIcon, label: "Bookmarks", value: "bookmarks" },
@@ -24,12 +24,12 @@ export type Nav = (typeof navItems)[number];
 
 export default function Nav() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const { data: userSummary } = useUserSummary({ id: userId });
+  const { data: userStat } = useUserStat({ userId });
 
   const countsByValue: Partial<Record<Nav["value"], number>> = {
-    activity: userSummary?.activities,
-    bookmarks: userSummary?.bookmarks,
-    sessions: userSummary?.sessions,
+    bookmarks: userStat?.bookmarks,
+    sessions: userStat?.sessions,
+    tools: userStat?.tools,
   };
 
   return (

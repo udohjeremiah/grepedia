@@ -1,22 +1,22 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 import {
-  getUserDetailsParamsSchema,
-  getUserDetailsResponseSchemas,
-} from "@workspace/shared/schemas/users/get-user-details";
+  getUserParamsSchema,
+  getUserResponseSchemas,
+} from "@workspace/shared/schemas/users/get-user";
 import { ObjectId } from "mongodb";
 
 import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
-const getUserDetails: FastifyPluginAsyncZod = async (fastify) => {
+const getUser: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
-      const { id } = request.params;
+      const { userId } = request.params;
 
       const users = fastify.getUserCollection();
 
-      const userId = ObjectId.createFromHexString(id);
-      const user = await users.findOne({ _id: userId });
+      const userObjectId = ObjectId.createFromHexString(userId);
+      const user = await users.findOne({ _id: userObjectId });
       if (!user) {
         return reply.code(404).send({
           message: "User not found",
@@ -27,21 +27,21 @@ const getUserDetails: FastifyPluginAsyncZod = async (fastify) => {
       const userWithStringIds = serializeMongoTypes(user);
 
       return reply.code(200).send({
-        data: userWithStringIds,
-        message: "User details retrieved successfully",
+        data: { user: userWithStringIds },
+        message: "User retrieved successfully",
         success: true,
       });
     },
     method: "GET",
     onRequest: [fastify.requireUserId()],
     schema: {
-      params: getUserDetailsParamsSchema,
-      response: getUserDetailsResponseSchemas,
+      params: getUserParamsSchema,
+      response: getUserResponseSchemas,
       security: [{ sessionCookie: [] }],
       tags: ["Users"],
     },
-    url: "/details",
+    url: "/",
   });
 };
 
-export default getUserDetails;
+export default getUser;

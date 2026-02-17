@@ -40,21 +40,33 @@
       "types": "./dist/schemas/search.d.ts",
       "default": "./dist/schemas/search.js"
     },
+    "./schemas/users/add-user-bookmark": {
+      "types": "./dist/schemas/users/add-user-bookmark.d.ts",
+      "default": "./dist/schemas/users/add-user-bookmark.js"
+    },
+    "./schemas/users/get-user": {
+      "types": "./dist/schemas/users/get-user.d.ts",
+      "default": "./dist/schemas/users/get-user.js"
+    },
+    "./schemas/users/get-user-bookmarks": {
+      "types": "./dist/schemas/users/get-user-bookmarks.d.ts",
+      "default": "./dist/schemas/users/get-user-bookmarks.js"
+    },
     "./schemas/users/get-user-recovery-package": {
       "types": "./dist/schemas/users/get-user-recovery-package.d.ts",
       "default": "./dist/schemas/users/get-user-recovery-package.js"
     },
-    "./schemas/users/get-user-details": {
-      "types": "./dist/schemas/users/get-user-details.d.ts",
-      "default": "./dist/schemas/users/get-user-details.js"
-    },
-    "./schemas/users/get-user-summary": {
-      "types": "./dist/schemas/users/get-user-summary.d.ts",
-      "default": "./dist/schemas/users/get-user-summary.js"
+    "./schemas/users/get-user-stat": {
+      "types": "./dist/schemas/users/get-user-stat.d.ts",
+      "default": "./dist/schemas/users/get-user-stat.js"
     },
     "./schemas/users/recover-user-account": {
       "types": "./dist/schemas/users/recover-user-account.d.ts",
       "default": "./dist/schemas/users/recover-user-account.js"
+    },
+    "./schemas/users/remove-user-bookmark": {
+      "types": "./dist/schemas/users/remove-user-bookmark.d.ts",
+      "default": "./dist/schemas/users/remove-user-bookmark.js"
     },
     "./schemas/users/user": {
       "types": "./dist/schemas/users/user.d.ts",

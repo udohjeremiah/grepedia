@@ -47,7 +47,7 @@ const formSchema = z.object({
     .max(30, "Please provide no more than 30 characters."),
 });
 
-export default function EditDetailsDialog() {
+export default function EditUserDialog() {
   const { data: sessionData } = auth.useSession();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
@@ -70,7 +70,7 @@ export default function EditDetailsDialog() {
             setSubmissionStatus({
               description:
                 error.message ??
-                "An error occurred while updating your account details. Please try again.",
+                "An error occurred while updating your account. Please try again.",
               status: "error",
               title: "Update failed",
             });
@@ -79,8 +79,7 @@ export default function EditDetailsDialog() {
           onSuccess: () => {
             form.reset();
             setSubmissionStatus({
-              description:
-                "Your account details have been updated successfully.",
+              description: "Your account have been updated successfully.",
               status: "success",
               title: "Account updated",
             });
@@ -117,8 +116,8 @@ export default function EditDetailsDialog() {
         <DialogHeader>
           <DialogTitle>Update Account</DialogTitle>
           <DialogDescription>
-            Update your profile details here. To change your email address or
-            password, visit your{" "}
+            Update your profile here. To change your email address or password,
+            visit your{" "}
             <AppLink
               params={{ username: sessionData?.user.username ?? "" }}
               to="/@{$username}/security"

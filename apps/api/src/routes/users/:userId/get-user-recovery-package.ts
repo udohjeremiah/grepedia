@@ -13,7 +13,7 @@ import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
-      const { id } = request.params;
+      const { userId } = request.params;
 
       const users = fastify.getUserCollection();
       const userBookmarks = fastify.getUserBookmarkCollection();
@@ -22,7 +22,7 @@ const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
       const toolComments = fastify.getToolCommentCollection();
       const toolCommentReactions = fastify.getToolCommentReactionCollection();
 
-      const userId = ObjectId.createFromHexString(id);
+      const userObjectId = ObjectId.createFromHexString(userId);
       const [
         user,
         bookmarkDocuments,
@@ -31,20 +31,20 @@ const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
         commentDocuments,
         commentReactionDocuments,
       ] = await Promise.all([
-        users.findOne({ _id: userId }),
-        userBookmarks.find({ userId }).toArray(),
+        users.findOne({ _id: userObjectId }),
+        userBookmarks.find({ userId: userObjectId }).toArray(),
         tools
           .find({
             $or: [
-              { added_by: userId },
-              { owner: userId },
-              { updated_by: userId },
+              { added_by: userObjectId },
+              { owner: userObjectId },
+              { updated_by: userObjectId },
             ],
           })
           .toArray(),
-        toolReactions.find({ userId }).toArray(),
-        toolComments.find({ userId }).toArray(),
-        toolCommentReactions.find({ userId }).toArray(),
+        toolReactions.find({ userId: userObjectId }).toArray(),
+        toolComments.find({ userId: userObjectId }).toArray(),
+        toolCommentReactions.find({ userId: userObjectId }).toArray(),
       ]);
 
       if (!user) {
@@ -73,7 +73,7 @@ const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
         expiresAt: expiresAt.toISOString(),
         exportId: randomUUID(),
         issuedAt: issuedAt.toISOString(),
-        userId: id,
+        userId,
         version: 1 as const,
       };
 

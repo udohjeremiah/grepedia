@@ -5,12 +5,12 @@ import { Button } from "@workspace/ui/components/button";
 import type { Nav } from "./nav";
 
 const navRoutes: Record<Nav["value"], string> = {
-  activity: "/@{$username}/activity",
   bookmarks: "/@{$username}/bookmarks",
   data: "/@{$username}/data",
   profile: "/@{$username}",
   security: "/@{$username}/security",
   sessions: "/@{$username}/sessions",
+  tools: "/@{$username}/tools",
 } as const;
 
 type NavItemProps = Nav & { count: number | undefined };

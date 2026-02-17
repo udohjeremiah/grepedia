@@ -11,7 +11,7 @@ import RecoverAccountDialog from "./recover-account-dialog";
 export default function UserData() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
   const { data: sessionData } = auth.useSession();
-  const { data: userRecoveryPackage } = useUserRecoveryPackage({ id: userId });
+  const { data: userRecoveryPackage } = useUserRecoveryPackage({ userId });
 
   const exportJson = JSON.stringify(
     userRecoveryPackage.recoveryPackage,

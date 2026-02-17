@@ -11,7 +11,7 @@ import {
 } from "@workspace/ui/components/empty";
 import { BugIcon } from "lucide-react";
 
-export default function UserDataErrorFallback({
+export default function UserBookmarksErrorFallback({
   resetErrorBoundary,
 }: FallbackProps) {
   return (
@@ -22,8 +22,8 @@ export default function UserDataErrorFallback({
         </EmptyMedia>
         <EmptyTitle>Something Went Wrong</EmptyTitle>
         <EmptyDescription>
-          Something unexpected happened, so we couldn&apos;t load your recovery
-          package. Click the button below to try again.
+          Something unexpected happened, so we couldn&apos;t load your
+          bookmarks. Click the button below to try again.
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>

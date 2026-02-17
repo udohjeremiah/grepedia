@@ -14,11 +14,11 @@ type RecoverUserAccount = {
 };
 
 export async function recoverUserAccount({ body, params }: RecoverUserAccount) {
-  const { id } = recoverUserAccountParamsSchema.parse(params);
+  const { userId } = recoverUserAccountParamsSchema.parse(params);
   const parsedBody = recoverUserAccountBodySchema.parse(body);
 
   const response = await apiClient.post(
-    `/users/${id}/recover-account`,
+    `/users/${userId}/recover-account`,
     parsedBody,
     requestWithAuth(),
   );

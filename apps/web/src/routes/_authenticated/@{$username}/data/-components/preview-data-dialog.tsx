@@ -17,7 +17,7 @@ import { useUserRecoveryPackage } from "../-queries/user-recovery-package";
 
 export default function PreviewDataDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const { data: userRecoveryPackage } = useUserRecoveryPackage({ id: userId });
+  const { data: userRecoveryPackage } = useUserRecoveryPackage({ userId });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 

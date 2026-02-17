@@ -1,5 +1,6 @@
+import type { GetUserRecoveryPackageParams } from "@workspace/shared/schemas/users/get-user-recovery-package";
+
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { GetUserRecoveryPackageParams } from "@workspace/shared/schemas/users/get-user-recovery-package";
 
 import { getUserRecoveryPackage } from "@/services/users/get-user-recovery-package";
 
@@ -8,7 +9,7 @@ export const userRecoveryPackageQueryOptions = (
 ) => {
   return queryOptions({
     queryFn: () => getUserRecoveryPackage(params),
-    queryKey: ["user", params.id, "recovery-package"],
+    queryKey: ["user", params.userId, "recovery-package"],
   });
 };
 

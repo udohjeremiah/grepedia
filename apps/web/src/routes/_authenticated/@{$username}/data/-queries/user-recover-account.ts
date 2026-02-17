@@ -7,7 +7,7 @@ import { userRecoveryPackageQueryOptions } from "./user-recovery-package";
 export const userRecoverAccountMutationOptions = (userId: string) =>
   mutationOptions({
     mutationFn: recoverUserAccount,
-    mutationKey: userRecoveryPackageQueryOptions({ id: userId }).queryKey,
+    mutationKey: userRecoveryPackageQueryOptions({ userId }).queryKey,
   });
 
 export const useUserRecoverAccount = (userId: string) => {

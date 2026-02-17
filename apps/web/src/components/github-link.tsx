@@ -10,6 +10,7 @@ export default function GitHubLink() {
         target="_blank"
       >
         <SiGithub />
+        <span className="sr-only">Visit Github repo</span>
       </a>
     </Button>
   );

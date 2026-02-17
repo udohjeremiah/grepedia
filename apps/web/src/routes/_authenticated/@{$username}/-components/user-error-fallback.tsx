@@ -11,7 +11,7 @@ import {
 } from "@workspace/ui/components/empty";
 import { BugIcon } from "lucide-react";
 
-export default function UserDetailsErrorFallback({
+export default function UserErrorFallback({
   resetErrorBoundary,
 }: FallbackProps) {
   return (
@@ -22,8 +22,8 @@ export default function UserDetailsErrorFallback({
         </EmptyMedia>
         <EmptyTitle>Something Went Wrong</EmptyTitle>
         <EmptyDescription>
-          Something unexpected happened, so we couldn&apos;t load the user
-          details. Click the button below to try again.
+          Something unexpected happened, so we couldn&apos;t load your profile.
+          Click the button below to try again.
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>

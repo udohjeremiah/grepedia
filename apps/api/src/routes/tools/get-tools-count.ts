@@ -9,7 +9,7 @@ const getToolsCount: FastifyPluginAsyncZod = async (fastify) => {
       const count = await tools.estimatedDocumentCount();
 
       return reply.code(200).send({
-        data: count,
+        data: { count },
         message: "Tools count retrieved successfully",
         success: true,
       });

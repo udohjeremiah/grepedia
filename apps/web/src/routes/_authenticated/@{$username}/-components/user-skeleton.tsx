@@ -1,6 +1,6 @@
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
-export default function UserDetailsSkeleton() {
+export default function UserSkeleton() {
   return (
     <div className="flex flex-1 flex-col gap-6">
       <Skeleton className="h-80 w-full rounded-lg" />

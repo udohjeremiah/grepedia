@@ -27,7 +27,7 @@ export default function RecoverAccountDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [payload, setPayload] = useState("");
-  const recoverAccount = useUserRecoverAccount(userId);
+  const { isPending, mutate: recoverAccount } = useUserRecoverAccount(userId);
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
 
   const handleRecover = async () => {
@@ -77,29 +77,30 @@ export default function RecoverAccountDialog() {
       return;
     }
 
-    try {
-      await recoverAccount.mutateAsync({
+    recoverAccount(
+      {
         body: { recoveryPackage },
-        params: { id: userId },
-      });
-
-      setSubmissionStatus({
-        description: "Your account was recovered successfully.",
-        status: "success",
-        title: "Recovery complete",
-      });
-      setPayload("");
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "An error occurred while recovering your account.";
-      setSubmissionStatus({
-        description: message,
-        status: "error",
-        title: "Recovery failed",
-      });
-    }
+        params: { userId },
+      },
+      {
+        onError: (error) => {
+          setSubmissionStatus({
+            description:
+              error.message ??
+              "An error occurred while recovering your account. Please try again.",
+            status: "error",
+            title: "Recovery failed",
+          });
+        },
+        onSuccess: () => {
+          setSubmissionStatus({
+            description: "Your account was recovered successfully.",
+            status: "success",
+            title: "Recovery complete",
+          });
+        },
+      },
+    );
   };
 
   return (
@@ -149,8 +150,8 @@ export default function RecoverAccountDialog() {
               Cancel
             </Button>
           </DialogClose>
-          <Button disabled={recoverAccount.isPending} onClick={handleRecover}>
-            {recoverAccount.isPending ? (
+          <Button disabled={isPending} onClick={handleRecover}>
+            {isPending ? (
               <>
                 <Spinner /> Recovering...
               </>

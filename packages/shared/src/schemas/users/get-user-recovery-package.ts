@@ -9,7 +9,7 @@ import { userBookmarkSchema } from "./user-bookmark.js";
 import { userSchema } from "./user.js";
 
 export const getUserRecoveryPackageParamsSchema = z.object({
-  id: z.string(),
+  userId: z.string(),
 });
 
 export type GetUserRecoveryPackageParams = z.infer<

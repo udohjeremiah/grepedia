@@ -17,7 +17,7 @@ import type { UserBookmarkWithObjectIds } from "@/schemas/users/user-bookmark.js
 const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
-      const { id } = request.params;
+      const { userId } = request.params;
       const { recoveryPackage } = request.body;
 
       if (recoveryPackage.format !== "grepedia-recovery/v1") {
@@ -62,7 +62,7 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const currentUserId = ObjectId.createFromHexString(id);
+      const currentUserId = ObjectId.createFromHexString(userId);
       const previousUserId = ObjectId.createFromHexString(
         recoveryPackage.payload.userId,
       );

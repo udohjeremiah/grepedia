@@ -10,12 +10,12 @@ import { ErrorBoundary } from "react-error-boundary";
 import Nav from "./-components/nav";
 import NavErrorFallback from "./-components/nav-error-fallback";
 import NavSkeleton from "./-components/nav-skeleton";
-import { userSummaryQueryOptions } from "./-queries/user-summary";
+import { userStatQueryOptions } from "./-queries/user-stat";
 
 export const Route = createFileRoute("/_authenticated/@{$username}")({
   beforeLoad: async ({ context }) => {
     await context.queryClient.prefetchQuery(
-      userSummaryQueryOptions({ id: context.userId }),
+      userStatQueryOptions({ userId: context.userId }),
     );
   },
   component: LayoutComponent,

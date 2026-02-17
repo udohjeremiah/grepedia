@@ -15,8 +15,8 @@ import {
 import { roleInfo } from "@/constants/role-info";
 import { statusInfo } from "@/constants/status-info";
 
-import { useUserDetails } from "../-queries/user-details";
-import EditDetailsDialog from "./edit-details-dialog";
+import { useUser } from "../-queries/user";
+import EditUserDialog from "./edit-user-dialog";
 import SignOutDialog from "./sign-out-dialog";
 
 const roleVariants = {
@@ -31,12 +31,12 @@ const statusVariants = {
   suspended: "warning",
 } as const;
 
-export default function UserDetails() {
+export default function User() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const { data: userDetails } = useUserDetails({ id: userId });
+  const { data: user } = useUser({ userId });
 
-  const role = roleInfo[userDetails.role];
-  const status = statusInfo[userDetails.status];
+  const role = roleInfo[user.role];
+  const status = statusInfo[user.status];
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -48,10 +48,10 @@ export default function UserDetails() {
           <div className="flex w-full min-w-0 justify-between gap-4 max-sm:flex-col">
             <div className="flex flex-col gap-1">
               <h2 className="text-xl font-semibold text-foreground">
-                {userDetails.name}
+                {user.name}
               </h2>
               <p className="truncate text-sm text-muted-foreground">
-                {userDetails.email}
+                {user.email}
               </p>
             </div>
             <SignOutDialog />
@@ -61,14 +61,12 @@ export default function UserDetails() {
           <div className="flex items-center gap-2">
             <ShieldIcon className="size-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">Role</span>
-            <Badge variant={roleVariants[userDetails.role]}>{role.label}</Badge>
+            <Badge variant={roleVariants[user.role]}>{role.label}</Badge>
           </div>
           <div className="flex items-center gap-2">
             <InfoIcon className="size-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">Status</span>
-            <Badge variant={statusVariants[userDetails.status]}>
-              {status.label}
-            </Badge>
+            <Badge variant={statusVariants[user.status]}>{status.label}</Badge>
           </div>
         </div>
         <div className="grid gap-3 md:grid-cols-2">
@@ -80,9 +78,7 @@ export default function UserDetails() {
           </div>
           <div className="space-y-1 rounded-lg border p-3">
             <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
-              {userDetails.status === "active"
-                ? "Next Steps"
-                : "Status Details"}
+              {user.status === "active" ? "Next Steps" : "Status Details"}
             </p>
             <p className="text-sm text-foreground">{status.nextStep}</p>
           </div>
@@ -98,40 +94,40 @@ export default function UserDetails() {
               Your personal account details.
             </p>
           </div>
-          <EditDetailsDialog />
+          <EditUserDialog />
         </div>
         <div className="flex flex-col gap-4">
           <InfoRow
             icon={<UserIcon className="size-4" />}
             label="Full Name"
-            value={userDetails.name}
+            value={user.name}
           />
           <InfoRow
             icon={<MailIcon className="size-4" />}
             label="Email"
-            value={userDetails.email}
+            value={user.email}
           />
           <InfoRow
             icon={<UserIcon className="size-4" />}
             label="Username"
-            value={`@${userDetails.displayUsername}`}
+            value={`@${user.displayUsername}`}
           />
           <InfoRow
             icon={<CalendarIcon className="size-4" />}
             label="Member Since"
-            value={format(new Date(userDetails.createdAt), "MMMM d, yyyy")}
+            value={format(new Date(user.createdAt), "MMMM d, yyyy")}
           />
           <InfoRow
             icon={<ClockIcon className="size-4" />}
             label="Last Updated"
-            value={format(new Date(userDetails.updatedAt), "MMMM d, yyyy")}
+            value={format(new Date(user.updatedAt), "MMMM d, yyyy")}
           />
           <div className="space-y-1 rounded-md border p-3">
             <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
               Bio
             </p>
             <p className="text-sm leading-relaxed text-foreground">
-              {userDetails.bio ?? "You haven't added a bio yet."}
+              {user.bio ?? "You haven't added a bio yet."}
             </p>
           </div>
         </div>
