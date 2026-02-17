@@ -1,10 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -27,16 +22,14 @@ import {
   InputGroupText,
 } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
-import {
-  CircleCheckIcon,
-  OctagonAlertIcon,
-  PencilIcon,
-  UserRoundIcon,
-} from "lucide-react";
+import { PencilIcon, UserRoundIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
+import SubmissionStatusAlert, {
+  type SubmissionStatus,
+} from "@/components/submission-status-alert";
 import { auth } from "@/hooks/auth";
 
 const formSchema = z.object({
@@ -53,12 +46,6 @@ const formSchema = z.object({
     .min(3, "Please provide at least 3 characters.")
     .max(30, "Please provide no more than 30 characters."),
 });
-
-type SubmissionStatus = {
-  description: string;
-  status: "error" | "success";
-  title: string;
-};
 
 export default function EditDetailsDialog() {
   const { data: sessionData } = auth.useSession();
@@ -247,25 +234,7 @@ export default function EditDetailsDialog() {
                   "Update Account"
                 )}
               </Button>
-              {submissionStatus && (
-                <Alert
-                  variant={
-                    submissionStatus.status === "success"
-                      ? "success"
-                      : "critical"
-                  }
-                >
-                  {submissionStatus.status === "success" ? (
-                    <CircleCheckIcon />
-                  ) : (
-                    <OctagonAlertIcon />
-                  )}
-                  <AlertTitle>{submissionStatus.title}</AlertTitle>
-                  <AlertDescription>
-                    {submissionStatus.description}
-                  </AlertDescription>
-                </Alert>
-              )}
+              <SubmissionStatusAlert submissionStatus={submissionStatus} />
             </Field>
           </FieldGroup>
         </form>

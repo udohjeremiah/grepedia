@@ -1,10 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import {
@@ -22,18 +17,14 @@ import {
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
-import {
-  CircleCheckIcon,
-  EyeIcon,
-  EyeOffIcon,
-  LockIcon,
-  MailIcon,
-  OctagonAlertIcon,
-} from "lucide-react";
+import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
+import SubmissionStatusAlert, {
+  type SubmissionStatus,
+} from "@/components/submission-status-alert";
 import { Session } from "@/lib/auth-client";
 import { signIn } from "@/services/auth/sign-in";
 
@@ -45,12 +36,6 @@ const formSchema = z.object({
     .max(128, "Please provide no more than 128 characters."),
   rememberMe: z.boolean(),
 });
-
-type SubmissionStatus = {
-  description: string;
-  status: "error" | "success";
-  title: string;
-};
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -224,23 +209,7 @@ export default function SignInForm() {
                 "Login"
               )}
             </Button>
-            {submissionStatus && (
-              <Alert
-                variant={
-                  submissionStatus.status === "success" ? "success" : "critical"
-                }
-              >
-                {submissionStatus.status === "success" ? (
-                  <CircleCheckIcon />
-                ) : (
-                  <OctagonAlertIcon />
-                )}
-                <AlertTitle>{submissionStatus.title}</AlertTitle>
-                <AlertDescription>
-                  {submissionStatus.description}
-                </AlertDescription>
-              </Alert>
-            )}
+            <SubmissionStatusAlert submissionStatus={submissionStatus} />
           </Field>
           <FieldDescription>
             By signing in, you agree to the{" "}

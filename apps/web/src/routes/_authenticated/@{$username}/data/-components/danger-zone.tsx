@@ -1,9 +1,4 @@
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -19,23 +14,15 @@ import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Spinner } from "@workspace/ui/components/spinner";
-import {
-  AlertTriangleIcon,
-  CircleCheckIcon,
-  OctagonAlertIcon,
-  Trash2Icon,
-} from "lucide-react";
+import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
+import SubmissionStatusAlert, {
+  type SubmissionStatus,
+} from "@/components/submission-status-alert";
 import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { deleteUser } from "@/services/auth/delete-user";
-
-type SubmissionStatus = {
-  description: string;
-  status: "error" | "success";
-  title: string;
-};
 
 export default function DangerZone() {
   const { data: sessionData, isPending } = auth.useSession();
@@ -76,7 +63,7 @@ export default function DangerZone() {
           setSubmissionStatus({
             description:
               "A confirmation link has been sent to your email address.",
-            status: "success",
+            status: "info",
             title: "Check your email",
           });
         },
@@ -176,23 +163,7 @@ export default function DangerZone() {
                 value={deleteConfirmText}
               />
             </div>
-            {submissionStatus && (
-              <Alert
-                variant={
-                  submissionStatus.status === "success" ? "success" : "critical"
-                }
-              >
-                {submissionStatus.status === "success" ? (
-                  <CircleCheckIcon />
-                ) : (
-                  <OctagonAlertIcon />
-                )}
-                <AlertTitle>{submissionStatus.title}</AlertTitle>
-                <AlertDescription>
-                  {submissionStatus.description}
-                </AlertDescription>
-              </Alert>
-            )}
+            <SubmissionStatusAlert submissionStatus={submissionStatus} />
             <AlertDialogFooter>
               <AlertDialogCancel
                 onClick={() => {

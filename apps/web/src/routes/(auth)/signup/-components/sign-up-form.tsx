@@ -1,10 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
@@ -21,18 +16,19 @@ import {
 } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
 import {
-  CircleCheckIcon,
   EyeIcon,
   EyeOffIcon,
   LockIcon,
   MailIcon,
-  OctagonAlertIcon,
   UserRoundIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
+import SubmissionStatusAlert, {
+  type SubmissionStatus,
+} from "@/components/submission-status-alert";
 import { env } from "@/env";
 import { signUp } from "@/services/auth/sign-up";
 
@@ -44,12 +40,6 @@ const formSchema = z.object({
     .min(8, "Please provide at least 8 characters.")
     .max(128, "Please provide no more than 128 characters."),
 });
-
-type SubmissionStatus = {
-  description: string;
-  status: "error" | "success";
-  title: string;
-};
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -222,23 +212,7 @@ export default function SignUpForm() {
                 "Create Account"
               )}
             </Button>
-            {submissionStatus && (
-              <Alert
-                variant={
-                  submissionStatus.status === "success" ? "success" : "critical"
-                }
-              >
-                {submissionStatus.status === "success" ? (
-                  <CircleCheckIcon />
-                ) : (
-                  <OctagonAlertIcon />
-                )}
-                <AlertTitle>{submissionStatus.title}</AlertTitle>
-                <AlertDescription>
-                  {submissionStatus.description}
-                </AlertDescription>
-              </Alert>
-            )}
+            <SubmissionStatusAlert submissionStatus={submissionStatus} />
           </Field>
           <FieldDescription>
             By signing up, you agree to the{" "}

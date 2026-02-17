@@ -1,10 +1,5 @@
 import { useRouteContext } from "@tanstack/react-router";
 import { recoverUserAccountBodySchema } from "@workspace/shared/schemas/users/recover-user-account";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -19,16 +14,14 @@ import {
 import { Label } from "@workspace/ui/components/label";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { Textarea } from "@workspace/ui/components/textarea";
-import { CircleCheckIcon, OctagonAlertIcon, RotateCcwIcon } from "lucide-react";
+import { RotateCcwIcon } from "lucide-react";
 import { useState } from "react";
 
-import { useUserRecoverAccount } from "../-queries/user-recover-account";
+import SubmissionStatusAlert, {
+  type SubmissionStatus,
+} from "@/components/submission-status-alert";
 
-type SubmissionStatus = {
-  description: string;
-  status: "error" | "success";
-  title: string;
-};
+import { useUserRecoverAccount } from "../-queries/user-recover-account";
 
 export default function RecoverAccountDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
@@ -136,21 +129,7 @@ export default function RecoverAccountDialog() {
             value={payload}
           />
         </div>
-        {submissionStatus && (
-          <Alert
-            variant={
-              submissionStatus.status === "success" ? "success" : "critical"
-            }
-          >
-            {submissionStatus.status === "success" ? (
-              <CircleCheckIcon />
-            ) : (
-              <OctagonAlertIcon />
-            )}
-            <AlertTitle>{submissionStatus.title}</AlertTitle>
-            <AlertDescription>{submissionStatus.description}</AlertDescription>
-          </Alert>
-        )}
+        <SubmissionStatusAlert submissionStatus={submissionStatus} />
         <DialogFooter>
           <DialogClose asChild>
             <Button

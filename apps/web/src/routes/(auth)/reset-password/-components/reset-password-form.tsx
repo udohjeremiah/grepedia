@@ -1,11 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { omitKeys } from "@workspace/shared/omit-keys";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
@@ -20,16 +15,13 @@ import {
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
-import {
-  CircleCheckIcon,
-  EyeIcon,
-  EyeOffIcon,
-  LockIcon,
-  OctagonAlertIcon,
-} from "lucide-react";
+import { EyeIcon, EyeOffIcon, LockIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
+import SubmissionStatusAlert, {
+  type SubmissionStatus,
+} from "@/components/submission-status-alert";
 import { resetPassword } from "@/services/auth/reset-password";
 
 const formSchema = z
@@ -57,12 +49,6 @@ const formSchema = z
 interface ResetPasswordFormProps {
   token: string;
 }
-
-type SubmissionStatus = {
-  description: string;
-  status: "error" | "success";
-  title: string;
-};
 
 export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -219,21 +205,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                 "Reset Password"
               )}
             </Button>
-            {submissionStatus && (
-              <Alert
-                variant={
-                  submissionStatus.status === "success" ? "success" : "critical"
-                }
-              >
-                {submissionStatus.status === "success" ? (
-                  <CircleCheckIcon />
-                ) : (
-                  <OctagonAlertIcon />
-                )}
-                <AlertTitle>{submissionStatus.title}</AlertTitle>
-                <AlertDescription>{submissionStatus.status}</AlertDescription>
-              </Alert>
-            )}
+            <SubmissionStatusAlert submissionStatus={submissionStatus} />
           </Field>
         </FieldGroup>
       </form>

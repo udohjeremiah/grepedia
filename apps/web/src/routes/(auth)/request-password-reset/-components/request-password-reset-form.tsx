@@ -1,10 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { Link } from "@tanstack/react-router";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
@@ -18,23 +13,20 @@ import {
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
-import { CircleCheckIcon, MailIcon, OctagonAlertIcon } from "lucide-react";
+import { MailIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
+import SubmissionStatusAlert, {
+  type SubmissionStatus,
+} from "@/components/submission-status-alert";
 import { env } from "@/env";
 import { requestPasswordReset } from "@/services/auth/request-password-reset";
 
 const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
 });
-
-type SubmissionStatus = {
-  description: string;
-  status: "error" | "success";
-  title: string;
-};
 
 export default function RequestPasswordResetForm() {
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
@@ -63,7 +55,7 @@ export default function RequestPasswordResetForm() {
             setSubmissionStatus({
               description:
                 "If an account exists for this email, a password reset link has been sent.",
-              status: "success",
+              status: "info",
               title: "Check your email",
             });
           },
@@ -139,21 +131,7 @@ export default function RequestPasswordResetForm() {
                 "Send Password Reset Link"
               )}
             </Button>
-            {submissionStatus && (
-              <Alert
-                variant={
-                  submissionStatus.status === "success" ? "success" : "critical"
-                }
-              >
-                {submissionStatus.status === "success" ? (
-                  <CircleCheckIcon />
-                ) : (
-                  <OctagonAlertIcon />
-                )}
-                <AlertTitle>{submissionStatus.title}</AlertTitle>
-                <AlertDescription>{submissionStatus.status}</AlertDescription>
-              </Alert>
-            )}
+            <SubmissionStatusAlert submissionStatus={submissionStatus} />
           </Field>
         </FieldGroup>
       </form>

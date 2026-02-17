@@ -1,9 +1,4 @@
 import { useForm } from "@tanstack/react-form";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@workspace/ui/components/alert";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -25,22 +20,19 @@ import {
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
-import { CircleCheckIcon, MailIcon, OctagonAlertIcon } from "lucide-react";
+import { MailIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
+import SubmissionStatusAlert, {
+  type SubmissionStatus,
+} from "@/components/submission-status-alert";
 import { env } from "@/env";
 import { changeEmail } from "@/services/auth/change-email";
 
 const formSchema = z.object({
   newEmail: z.email("Please provide a valid email address."),
 });
-
-type SubmissionStatus = {
-  description: string;
-  status: "error" | "success";
-  title: string;
-};
 
 export default function ChangeEmailDialog() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -70,7 +62,7 @@ export default function ChangeEmailDialog() {
             setSubmissionStatus({
               description:
                 "A confirmation link has been sent to your current email address.",
-              status: "success",
+              status: "info",
               title: "Check your email",
             });
           },
@@ -149,25 +141,7 @@ export default function ChangeEmailDialog() {
                   "Update Email"
                 )}
               </Button>
-              {submissionStatus && (
-                <Alert
-                  variant={
-                    submissionStatus.status === "success"
-                      ? "success"
-                      : "critical"
-                  }
-                >
-                  {submissionStatus.status === "success" ? (
-                    <CircleCheckIcon />
-                  ) : (
-                    <OctagonAlertIcon />
-                  )}
-                  <AlertTitle>{submissionStatus.title}</AlertTitle>
-                  <AlertDescription>
-                    {submissionStatus.description}
-                  </AlertDescription>
-                </Alert>
-              )}
+              <SubmissionStatusAlert submissionStatus={submissionStatus} />
             </Field>
           </FieldGroup>
         </form>
