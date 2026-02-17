@@ -138,6 +138,17 @@ export default fp(
             });
           },
         },
+        deleteUser: {
+          enabled: true,
+          sendDeleteAccountVerification: async ({ url, user }) => {
+            fastify.resend.emails.send({
+              from: fastify.env.EMAIL_AUTH,
+              subject: "Verify account deletion",
+              text: `Click the link to verify deleting your account: ${url}`,
+              to: user.email,
+            });
+          },
+        },
       },
     });
 

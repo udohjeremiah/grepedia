@@ -24,6 +24,10 @@ declare module "fastify" {
       request: FastifyRequest,
       reply: FastifyReply,
     ) => Promise<void>;
+
+    requireUserId: (
+      paramKey?: string,
+    ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
   }
 
   interface FastifyRequest {
@@ -42,6 +46,7 @@ declare module "fastify" {
  *
  * Available guards:
  * - requireUser: ensures the request is authenticated
+ * - requireUserId: ensures the user id matches a route param id (defaults to `id`)
  * - requireRole: ensures the user has a specific role
  * - requireStatus: ensures the user has a required account status
  */
@@ -64,6 +69,24 @@ export default fp(
 
       request.user = session.user as AppUser;
     };
+
+    const requireUserId =
+      (paramKey = "id") =>
+      async (request: FastifyRequest, reply: FastifyReply) => {
+        await requireUser(request, reply);
+        if (reply.sent) return;
+
+        const params = request.params as Record<string, unknown> | undefined;
+        const id =
+          typeof params?.[paramKey] === "string" ? params[paramKey] : undefined;
+
+        if (!id || request.user?.id !== id) {
+          return reply.code(403).send({
+            message: "Forbidden",
+            success: false,
+          });
+        }
+      };
 
     const requireRole =
       (role: AppUser["role"]) =>
@@ -96,6 +119,7 @@ export default fp(
     fastify.decorate("requireUser", requireUser);
     fastify.decorate("requireRole", requireRole);
     fastify.decorate("requireStatus", requireStatus);
+    fastify.decorate("requireUserId", requireUserId);
   },
   { dependencies: ["auth"], name: "authorization" },
 );

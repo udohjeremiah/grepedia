@@ -18,6 +18,7 @@ declare module "fastify" {
       NODE_ENV: "development" | "production";
       PORT: number;
       RESEND_API_KEY: string;
+      USER_DATA_EXPORT_SIGNING_SECRET: string;
     };
   }
 }
@@ -84,6 +85,10 @@ const options: FastifyEnvOptions = {
         default: "re_xxxxxxxxx",
         type: "string",
       },
+      USER_DATA_EXPORT_SIGNING_SECRET: {
+        default: "dev-user-data-export-signing-secret-change-me",
+        type: "string",
+      },
     },
     required: [
       "NODE_ENV",
@@ -97,6 +102,7 @@ const options: FastifyEnvOptions = {
       "MONGODB_COLL_TOOL_COMMENT",
       "MONGODB_COLL_TOOL_COMMENT_REACTION",
       "MONGODB_COLL_TOOL_REACTION",
+      "USER_DATA_EXPORT_SIGNING_SECRET",
       "RESEND_API_KEY",
       "EMAIL_AUTH",
       "CLIENT_BASE_URL",

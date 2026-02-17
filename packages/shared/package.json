@@ -4,6 +4,10 @@
   "type": "module",
   "private": true,
   "exports": {
+    "./canonical-stringify": {
+      "types": "./dist/canonical-stringify.d.ts",
+      "default": "./dist/canonical-stringify.js"
+    },
     "./omit-keys": {
       "types": "./dist/omit-keys.d.ts",
       "default": "./dist/omit-keys.js"
@@ -36,6 +40,10 @@
       "types": "./dist/schemas/search.d.ts",
       "default": "./dist/schemas/search.js"
     },
+    "./schemas/users/get-user-recovery-package": {
+      "types": "./dist/schemas/users/get-user-recovery-package.d.ts",
+      "default": "./dist/schemas/users/get-user-recovery-package.js"
+    },
     "./schemas/users/get-user-details": {
       "types": "./dist/schemas/users/get-user-details.d.ts",
       "default": "./dist/schemas/users/get-user-details.js"
@@ -43,6 +51,10 @@
     "./schemas/users/get-user-summary": {
       "types": "./dist/schemas/users/get-user-summary.d.ts",
       "default": "./dist/schemas/users/get-user-summary.js"
+    },
+    "./schemas/users/recover-user-account": {
+      "types": "./dist/schemas/users/recover-user-account.d.ts",
+      "default": "./dist/schemas/users/recover-user-account.js"
     },
     "./schemas/users/user": {
       "types": "./dist/schemas/users/user.d.ts",

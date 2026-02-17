@@ -112,7 +112,7 @@ function MoreInfoSheet(tool: ToolProps) {
       const url = `${globalThis.location.origin}/tools/@${tool.slug}`;
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
+      setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       console.error("Failed to copy link:", error);
     }

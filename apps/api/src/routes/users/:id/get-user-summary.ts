@@ -12,10 +12,10 @@ const getUserSummary: FastifyPluginAsyncZod = async (fastify) => {
       const { id } = request.params;
 
       const users = fastify.getUserCollection();
-      const usersBookmarks = fastify.getUserBookmarkCollection();
+      const userBookmarks = fastify.getUserBookmarkCollection();
       const tools = fastify.getToolCollection();
-      const toolsReactions = fastify.getToolReactionCollection();
-      const toolsComments = fastify.getToolCommentCollection();
+      const toolReactions = fastify.getToolReactionCollection();
+      const toolComments = fastify.getToolCommentCollection();
 
       const userId = ObjectId.createFromHexString(id);
       const user = await users.findOne({ _id: userId });
@@ -39,11 +39,11 @@ const getUserSummary: FastifyPluginAsyncZod = async (fastify) => {
         tools.countDocuments({ owner: user._id }),
         tools.countDocuments({ added_by: user._id }),
         tools.countDocuments({ updated_by: user._id }),
-        toolsReactions.countDocuments({ userId: user._id, value: 1 }),
-        toolsReactions.countDocuments({ userId: user._id, value: -1 }),
-        toolsComments.countDocuments({ userId: user._id }),
+        toolReactions.countDocuments({ userId: user._id, value: 1 }),
+        toolReactions.countDocuments({ userId: user._id, value: -1 }),
+        toolComments.countDocuments({ userId: user._id }),
         fastify.auth.api.listSessions({ headers: request.headers }),
-        usersBookmarks.countDocuments({ userId: user._id }),
+        userBookmarks.countDocuments({ userId: user._id }),
       ]);
 
       const activities =
@@ -60,7 +60,7 @@ const getUserSummary: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: fastify.requireUser,
+    onRequest: [fastify.requireUserId()],
     schema: {
       params: getUserSummaryParamsSchema,
       response: getUserSummaryResponseSchemas,

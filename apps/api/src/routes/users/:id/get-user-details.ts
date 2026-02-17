@@ -33,7 +33,7 @@ const getUserDetails: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: fastify.requireUser,
+    onRequest: [fastify.requireUserId()],
     schema: {
       params: getUserDetailsParamsSchema,
       response: getUserDetailsResponseSchemas,
