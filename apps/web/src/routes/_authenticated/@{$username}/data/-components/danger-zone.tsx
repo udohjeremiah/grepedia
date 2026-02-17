@@ -122,7 +122,15 @@ export default function DangerZone() {
             </li>
           </ul>
         </div>
-        <AlertDialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+        <AlertDialog
+          onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) {
+              setSubmissionStatus(undefined);
+            }
+          }}
+          open={isDialogOpen}
+        >
           <AlertDialogTrigger asChild>
             <Button size="sm" variant="destructive">
               <Trash2Icon />

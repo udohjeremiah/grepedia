@@ -103,7 +103,15 @@ export default function RecoverAccountDialog() {
   };
 
   return (
-    <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+    <Dialog
+      onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setSubmissionStatus(undefined);
+        }
+      }}
+      open={isDialogOpen}
+    >
       <DialogTrigger asChild>
         <Button>
           <RotateCcwIcon />

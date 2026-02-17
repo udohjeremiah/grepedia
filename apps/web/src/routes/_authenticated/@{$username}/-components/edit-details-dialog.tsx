@@ -98,7 +98,15 @@ export default function EditDetailsDialog() {
   });
 
   return (
-    <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+    <Dialog
+      onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setSubmissionStatus(undefined);
+        }
+      }}
+      open={isDialogOpen}
+    >
       <DialogTrigger asChild>
         <Button className="gap-2" size="sm" variant="outline">
           <PencilIcon />
