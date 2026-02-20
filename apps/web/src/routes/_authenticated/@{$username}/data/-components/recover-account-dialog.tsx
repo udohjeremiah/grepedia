@@ -128,15 +128,15 @@ export default function RecoverAccountDialog() {
             signature and re-link your past contributions to this account.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-2">
+        <div className="flex min-w-0 flex-col gap-2">
           <Label htmlFor="recovery-package">Recovery Package</Label>
           <Textarea
-            className="max-h-90"
+            className="max-h-96 font-mono text-xs"
             id="recovery-package"
             onChange={(event) => setPayload(event.target.value)}
             placeholder="Paste the recovery package JSON here..."
-            rows={10}
             value={payload}
+            wrap="off"
           />
         </div>
         <SubmissionStatusAlert submissionStatus={submissionStatus} />
