@@ -35,12 +35,19 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       const addedAt = new Date().toISOString();
       const insertResult = await tools.insertOne({
         ...body,
-        addedAt: new Date().toISOString(),
+        addedAt,
         addedBy: ObjectId.createFromHexString(request.user.id),
         slug,
         stats: { comments: 0, downvotes: 0, upvotes: 0 },
         status: "published",
       });
+
+      if (!insertResult.acknowledged) {
+        return reply.code(500).send({
+          message: "Internal server error",
+          success: false,
+        });
+      }
 
       return reply.code(201).send({
         data: {

@@ -36,6 +36,13 @@ const removeUserBookmark: FastifyPluginAsyncZod = async (fastify) => {
         userId: userObjectId,
       });
 
+      if (!deleteResult.acknowledged) {
+        return reply.code(500).send({
+          message: "Internal server error",
+          success: false,
+        });
+      }
+
       if (deleteResult.deletedCount === 0) {
         return reply.code(404).send({
           message: "Bookmark not found",

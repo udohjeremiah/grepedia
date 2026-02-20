@@ -61,6 +61,13 @@ const addUserBookmark: FastifyPluginAsyncZod = async (fastify) => {
         userId: userObjectId,
       });
 
+      if (!insertResult.acknowledged) {
+        return reply.code(500).send({
+          message: "Internal server error",
+          success: false,
+        });
+      }
+
       return reply.code(201).send({
         data: {
           bookmarkedAt,

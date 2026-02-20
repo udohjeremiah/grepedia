@@ -73,15 +73,7 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
       const toolComments = fastify.getToolCommentCollection();
       const toolCommentReactions = fastify.getToolCommentReactionCollection();
 
-      const [
-        toolsAddedByResult,
-        toolsOwnedResult,
-        toolsUpdatedByResult,
-        commentsResult,
-        toolReactionsResult,
-        commentReactionsResult,
-        bookmarksResult,
-      ] = await Promise.all([
+      const writeResults = await Promise.all([
         tools.updateMany(
           { addedBy: previousUserId },
           { $set: { addedBy: currentUserId } },
@@ -113,7 +105,39 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
           currentUserId,
           userBookmarks,
         }),
-      ]);
+      ]).catch((error) => {
+        fastify.log.error("Failed to recover user account:", error);
+        return reply.code(500).send({
+          message: "Internal server error",
+          success: false,
+        });
+      });
+
+      const [
+        toolsAddedByResult,
+        toolsOwnedResult,
+        toolsUpdatedByResult,
+        commentsResult,
+        toolReactionsResult,
+        commentReactionsResult,
+        bookmarksResult,
+      ] = writeResults;
+
+      if (
+        !isMongoWriteAcknowledged(toolsAddedByResult) ||
+        !isMongoWriteAcknowledged(toolsOwnedResult) ||
+        !isMongoWriteAcknowledged(toolsUpdatedByResult) ||
+        !isMongoWriteAcknowledged(commentsResult) ||
+        !isMongoWriteAcknowledged(toolReactionsResult) ||
+        !isMongoWriteAcknowledged(commentReactionsResult) ||
+        !isMongoWriteAcknowledged(bookmarksResult)
+      ) {
+        fastify.log.error("Failed to recover user account");
+        return reply.code(500).send({
+          message: "Internal server error",
+          success: false,
+        });
+      }
 
       const relinked = {
         bookmarks: bookmarksResult.upsertedCount,
@@ -147,6 +171,18 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
 
 export default recoverUserAccount;
 
+function isMongoWriteAcknowledged(result: unknown) {
+  if (typeof result !== "object" || result === null) {
+    return false;
+  }
+
+  if (!("acknowledged" in result)) {
+    return true;
+  }
+
+  return result.acknowledged === true;
+}
+
 async function relinkCommentReactions({
   commentReactions,
   currentUserId,
@@ -177,10 +213,14 @@ async function relinkCommentReactions({
 
   const conflictCommentIds = conflicts.map((reaction) => reaction.commentId);
   if (conflictCommentIds.length > 0) {
-    await commentReactions.deleteMany({
+    const deleteResult = await commentReactions.deleteMany({
       commentId: { $in: conflictCommentIds },
       userId: previousUserId,
     });
+
+    if (!deleteResult.acknowledged) {
+      throw new Error("Failed to delete conflicting comment reactions");
+    }
   }
 
   return commentReactions.updateMany(
@@ -219,10 +259,14 @@ async function relinkToolReactions({
 
   const conflictToolIds = conflicts.map((reaction) => reaction.toolId);
   if (conflictToolIds.length > 0) {
-    await toolReactions.deleteMany({
+    const deleteResult = await toolReactions.deleteMany({
       toolId: { $in: conflictToolIds },
       userId: previousUserId,
     });
+
+    if (!deleteResult.acknowledged) {
+      throw new Error("Failed to delete conflicting tool reactions");
+    }
   }
 
   return toolReactions.updateMany(
@@ -244,7 +288,7 @@ async function restoreBookmarks({
   userBookmarks: Collection<UserBookmarkWithObjectIds>;
 }) {
   if (bookmarks.length === 0) {
-    return { upsertedCount: 0 };
+    return { acknowledged: true, upsertedCount: 0 };
   }
 
   const operations = bookmarks.map((bookmark) => {
@@ -264,5 +308,9 @@ async function restoreBookmarks({
     };
   });
 
-  return userBookmarks.bulkWrite(operations, { ordered: false });
+  const bulkWriteResult = await userBookmarks.bulkWrite(operations, {
+    ordered: false,
+  });
+
+  return bulkWriteResult;
 }
