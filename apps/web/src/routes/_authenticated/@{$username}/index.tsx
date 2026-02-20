@@ -7,8 +7,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
+import ErrorFallback from "@/components/error-fallback";
+
 import User from "./-components/user";
-import UserErrorFallback from "./-components/user-error-fallback";
 import UserSkeleton from "./-components/user-skeleton";
 import { userQueryOptions } from "./-queries/user";
 
@@ -31,7 +32,12 @@ function RouteComponent() {
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
-                FallbackComponent={UserErrorFallback}
+                FallbackComponent={({ resetErrorBoundary }) => (
+                  <ErrorFallback
+                    description="Something unexpected happened, so we couldn't load your profile. Click the button below to try again."
+                    onRetry={resetErrorBoundary}
+                  />
+                )}
                 onReset={reset}
               >
                 <User />

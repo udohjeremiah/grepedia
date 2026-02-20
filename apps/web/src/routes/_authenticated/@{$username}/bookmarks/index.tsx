@@ -7,8 +7,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
+import ErrorFallback from "@/components/error-fallback";
+
 import UserBookmarks from "./-components/user-bookmarks";
-import UserBookmarksErrorFallback from "./-components/user-bookmarks-error-fallback";
 import UserBookmarksSkeleton from "./-components/user-bookmarks-skeleton";
 import { userBookmarksQueryOptions } from "./-queries/user-bookmarks";
 
@@ -33,7 +34,12 @@ function RouteComponent() {
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
-                FallbackComponent={UserBookmarksErrorFallback}
+                FallbackComponent={({ resetErrorBoundary }) => (
+                  <ErrorFallback
+                    description="Something unexpected happened, so we couldn't load your bookmarks. Click the button below to try again."
+                    onRetry={resetErrorBoundary}
+                  />
+                )}
                 onReset={reset}
               >
                 <UserBookmarks />

@@ -8,8 +8,9 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { z } from "zod";
 
+import ErrorFallback from "@/components/error-fallback";
+
 import UserTools from "./-components/user-tools";
-import UserToolsErrorFallback from "./-components/user-tools-error-fallback";
 import UserToolsSkeleton from "./-components/user-tools-skeleton";
 import { userToolsQueryOptions } from "./-queries/user-tools";
 
@@ -35,7 +36,12 @@ function RouteComponent() {
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
-                FallbackComponent={UserToolsErrorFallback}
+                FallbackComponent={({ resetErrorBoundary }) => (
+                  <ErrorFallback
+                    description="Something unexpected happened, so we couldn't load your tools. Click the button below to try again."
+                    onRetry={resetErrorBoundary}
+                  />
+                )}
                 onReset={reset}
               >
                 <UserTools />

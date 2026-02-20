@@ -7,8 +7,9 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
+import ErrorFallback from "@/components/error-fallback";
+
 import Nav from "./-components/nav";
-import NavErrorFallback from "./-components/nav-error-fallback";
 import NavSkeleton from "./-components/nav-skeleton";
 import { userStatQueryOptions } from "./-queries/user-stats";
 
@@ -32,7 +33,14 @@ function LayoutComponent() {
             <QueryErrorResetBoundary>
               {({ reset }) => (
                 <ErrorBoundary
-                  FallbackComponent={NavErrorFallback}
+                  FallbackComponent={({ resetErrorBoundary }) => (
+                    <div className="p-4 sm:px-8 md:px-0 md:py-6">
+                      <ErrorFallback
+                        description="Something unexpected happened, so we couldn't load the navigation. Click the button below to try again."
+                        onRetry={resetErrorBoundary}
+                      />
+                    </div>
+                  )}
                   onReset={reset}
                 >
                   <Nav />

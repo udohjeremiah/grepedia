@@ -8,11 +8,11 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import AppLink from "@/components/app-link";
+import ErrorFallback from "@/components/error-fallback";
 import { auth } from "@/hooks/auth";
 
 import SearchForm from "./-components/search-form";
 import ToolsCount from "./-components/tools-count";
-import ToolsCountErrorFallback from "./-components/tools-count-error-fallback";
 import ToolsCountSkeleton from "./-components/tools-count-skeleton";
 import { toolsCountQueryOptions } from "./-queries/tools-count";
 
@@ -41,7 +41,13 @@ function RouteComponent() {
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
-                FallbackComponent={ToolsCountErrorFallback}
+                FallbackComponent={({ resetErrorBoundary }) => (
+                  <ErrorFallback
+                    description="Couldn't load tools count."
+                    onRetry={resetErrorBoundary}
+                    variant="compact"
+                  />
+                )}
                 onReset={reset}
               >
                 <ToolsCount />

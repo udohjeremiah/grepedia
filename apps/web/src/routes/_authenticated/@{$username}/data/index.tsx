@@ -7,9 +7,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
+import ErrorFallback from "@/components/error-fallback";
+
 import DangerZone from "./-components/danger-zone";
 import UserData from "./-components/user-data";
-import UserDataErrorFallback from "./-components/user-data-error-fallback";
 import UserDataSkeleton from "./-components/user-data-skeleton";
 import { userRecoveryPackageQueryOptions } from "./-queries/user-recovery-package";
 
@@ -33,7 +34,12 @@ function RouteComponent() {
             <QueryErrorResetBoundary>
               {({ reset }) => (
                 <ErrorBoundary
-                  FallbackComponent={UserDataErrorFallback}
+                  FallbackComponent={({ resetErrorBoundary }) => (
+                    <ErrorFallback
+                      description="Something unexpected happened, so we couldn't load your recovery package. Click the button below to try again."
+                      onRetry={resetErrorBoundary}
+                    />
+                  )}
                   onReset={reset}
                 >
                   <UserData />

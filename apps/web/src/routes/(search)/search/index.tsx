@@ -8,9 +8,10 @@ import { searchQueryStringSchema } from "@workspace/shared/schemas/search";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
+import ErrorFallback from "@/components/error-fallback";
+
 import Header from "./-components/header";
 import Tools from "./-components/tools";
-import ToolsErrorFallback from "./-components/tools-error-fallback";
 import ToolsSkeleton from "./-components/tools-skeleton";
 import { searchQueryOptions } from "./-queries/search";
 
@@ -34,7 +35,14 @@ function RouteComponent() {
         <QueryErrorResetBoundary>
           {({ reset }) => (
             <ErrorBoundary
-              FallbackComponent={ToolsErrorFallback}
+              FallbackComponent={({ resetErrorBoundary }) => (
+                <div className="flex flex-1 p-4 sm:p-8 md:px-16">
+                  <ErrorFallback
+                    description="Something unexpected happened, so we couldn't load your search results. Click the button below to try again."
+                    onRetry={resetErrorBoundary}
+                  />
+                </div>
+              )}
               onReset={reset}
             >
               <Tools />
