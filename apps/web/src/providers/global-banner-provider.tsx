@@ -138,7 +138,7 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
   return (
     <GlobalBannerContext.Provider value={{ banners }}>
       {banners.length > 0 && (
-        <div className="flex w-full flex-col gap-2">
+        <div>
           {banners.map((banner) => (
             <Alert
               className="rounded-none"
@@ -146,16 +146,13 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
               variant={banner.variant}
             >
               {getIcon(banner.variant)}
-              <div>
-                <AlertTitle className="sr-only">{banner.title}</AlertTitle>
-                <time
-                  className="text-xs text-muted-foreground"
-                  dateTime={banner.timestamp.toISOString()}
-                >
+              <AlertTitle className="sr-only">{banner.title}</AlertTitle>
+              <AlertDescription>
+                <time dateTime={banner.timestamp.toISOString()}>
                   {format(banner.timestamp, "HH:mm:ss")}
                 </time>{" "}
-                <AlertDescription>{banner.description}</AlertDescription>
-              </div>
+                {banner.description}
+              </AlertDescription>
               <AlertAction>
                 <Button
                   aria-label="Dismiss alert"

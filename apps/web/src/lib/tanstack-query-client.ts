@@ -12,6 +12,8 @@ import { globalBanner } from "@/utils/global-banner";
 let browserQueryClient: QueryClient | undefined;
 
 function makeQueryClient() {
+  const queryBannerIds = new Map<string, string>();
+
   const defaultOptions: DefaultOptions = {
     dehydrate: {
       shouldDehydrateQuery: (query) => {
@@ -38,39 +40,31 @@ function makeQueryClient() {
       // Show a global banner if we already have data in the cache which
       // indicates a failed background update
       if (query.state.data !== undefined) {
+        const existingBannerId = queryBannerIds.get(query.queryHash);
+        if (existingBannerId) return;
+
         const bannerId = globalBanner.emit({
           banner: {
             autoDismiss: false,
             description:
-              "We ran into an issue while updating this data. You're seeing the most recent saved results, which may be slightly out of date.",
-            title: "Couldn't refresh results",
-            variant: "critical",
+              "We couldn't fetch the latest update for this section. The data currently shown is the last successfully loaded version and may be out of date.",
+            title: "Showing previously loaded data",
+            variant: "warning",
           },
           type: "add",
         });
 
-        // Store the bannerId in the query context for later removal
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        queryClient.setQueryData(query.queryKey, (oldData: any) => {
-          return oldData
-            ? { ...oldData, meta: { ...oldData.meta, bannerId } }
-            : oldData;
-        });
+        if (bannerId) {
+          queryBannerIds.set(query.queryHash, bannerId);
+        }
       }
     },
     onSuccess: (_data, query) => {
       // Remove any previous associated global banner when data is successfully fetched
-      const bannerId = query.meta?.bannerId;
+      const bannerId = queryBannerIds.get(query.queryHash);
       if (bannerId) {
         globalBanner.emit({ id: bannerId, type: "remove" });
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        queryClient.setQueryData(query.queryKey, (oldData: any) => {
-          const { meta, ...rest } = oldData ?? {};
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { bannerId, ...newMeta } = meta;
-          return { ...rest, meta: newMeta };
-        });
+        queryBannerIds.delete(query.queryHash);
       }
     },
   });
