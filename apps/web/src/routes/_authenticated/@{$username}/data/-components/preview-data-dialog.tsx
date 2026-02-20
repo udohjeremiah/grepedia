@@ -44,7 +44,7 @@ export default function PreviewDataDialog() {
       <DialogTrigger asChild>
         <Button variant="outline">Preview Data</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Account Data Preview</DialogTitle>
           <DialogDescription className="flex flex-col gap-1">

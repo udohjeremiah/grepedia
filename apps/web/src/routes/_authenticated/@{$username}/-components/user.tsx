@@ -6,12 +6,14 @@ import { format } from "date-fns";
 import {
   CalendarIcon,
   ClockIcon,
+  FlagIcon,
   InfoIcon,
   MailIcon,
   ShieldIcon,
   UserIcon,
 } from "lucide-react";
 
+import { countryOptions } from "@/constants/country-options";
 import { roleInfo } from "@/constants/role-info";
 import { statusInfo } from "@/constants/status-info";
 
@@ -31,12 +33,25 @@ const statusVariants = {
   suspended: "warning",
 } as const;
 
+const genderLabel = {
+  female: "Female",
+  male: "Male",
+  nonBinary: "Non-binary",
+  other: "Other",
+  preferNotToSay: "Prefer not to say",
+} as const;
+
 export default function User() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
   const { data: user } = useUser({ userId });
 
   const role = roleInfo[user.role];
   const status = statusInfo[user.status];
+  const countryLabel =
+    countryOptions.find((country) => country.value === user.country)?.label ??
+    user.country ??
+    "Not set";
+  const userGender = user.gender ? genderLabel[user.gender] : "Not set";
 
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-6">
@@ -111,6 +126,16 @@ export default function User() {
             icon={<UserIcon className="size-4" />}
             label="Username"
             value={`@${user.displayUsername}`}
+          />
+          <InfoRow
+            icon={<FlagIcon className="size-4" />}
+            label="Country"
+            value={countryLabel}
+          />
+          <InfoRow
+            icon={<UserIcon className="size-4" />}
+            label="Gender"
+            value={userGender}
           />
           <InfoRow
             icon={<CalendarIcon className="size-4" />}

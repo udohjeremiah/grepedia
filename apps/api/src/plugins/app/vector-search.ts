@@ -64,7 +64,7 @@ export default fp(
     fastify.decorate("generateVectorEmbeddings", generateVectorEmbeddings);
 
     fastify.addHook("onReady", async () => {
-      await loadModel();
+      loadModel();
     });
   },
   { name: "vector-search" },

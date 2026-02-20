@@ -221,7 +221,7 @@ export default function ToolDirectory({
         open={selectedTool !== undefined}
       >
         {selectedTool && (
-          <DialogContent className="max-w-md">
+          <DialogContent>
             <DialogHeader className="min-w-0 flex-row items-center gap-3">
               <Avatar size="lg">
                 <AvatarImage alt={selectedTool.name} src={selectedTool.image} />

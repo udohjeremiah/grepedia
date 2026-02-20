@@ -103,10 +103,20 @@ export default fp(
             required: false,
             type: "string",
           },
+          country: {
+            input: true,
+            required: false,
+            type: "string",
+          },
           displayUsername: {
             input: true,
             required: true,
             type: "string",
+          },
+          gender: {
+            input: true,
+            required: false,
+            type: ["male", "female", "nonBinary", "other", "preferNotToSay"],
           },
           role: {
             defaultValue: "member",
