@@ -39,15 +39,15 @@ export default function User() {
   const status = statusInfo[user.status];
 
   return (
-    <div className="flex flex-1 flex-col gap-6">
+    <div className="flex min-w-0 flex-1 flex-col gap-6">
       <div className="flex flex-col gap-6 rounded-lg border p-6">
         <div className="flex gap-4 border-b pb-6">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
             <UserIcon className="size-8" />
           </div>
           <div className="flex w-full min-w-0 justify-between gap-4 max-sm:flex-col">
-            <div className="flex flex-col gap-1">
-              <h2 className="text-xl font-semibold text-foreground">
+            <div className="flex min-w-0 flex-col gap-1">
+              <h2 className="truncate text-xl font-semibold text-foreground">
                 {user.name}
               </h2>
               <p className="truncate text-sm text-muted-foreground">
@@ -148,11 +148,11 @@ function InfoRow({
   return (
     <div className="flex items-center gap-3">
       <div className="text-muted-foreground">{icon}</div>
-      <div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-3">
-        <span className="min-w-30 text-sm font-medium text-muted-foreground">
+      <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-3">
+        <span className="text-sm font-medium text-muted-foreground sm:min-w-30">
           {label}
         </span>
-        <span className="text-sm text-foreground">{value}</span>
+        <span className="truncate text-sm text-foreground">{value}</span>
       </div>
     </div>
   );
