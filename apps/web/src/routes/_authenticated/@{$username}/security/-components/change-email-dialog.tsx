@@ -28,6 +28,7 @@ import SubmissionStatusAlert, {
   type SubmissionStatus,
 } from "@/components/submission-status-alert";
 import { env } from "@/env";
+import { useDialogState } from "@/hooks/use-dialog-state";
 import { changeEmail } from "@/services/auth/change-email";
 
 const formSchema = z.object({
@@ -35,7 +36,6 @@ const formSchema = z.object({
 });
 
 export default function ChangeEmailDialog() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
 
   const form = useForm({
@@ -54,7 +54,7 @@ export default function ChangeEmailDialog() {
                 context.error.message ??
                 "An error occurred while sending the email change link. Please try again.",
               status: "error",
-              title: "Update failed",
+              title: "Couldn't update email",
             });
           },
           onSuccess: () => {
@@ -74,16 +74,15 @@ export default function ChangeEmailDialog() {
     },
   });
 
+  const { handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: () => {
+      form.reset();
+      setSubmissionStatus(undefined);
+    },
+  });
+
   return (
-    <Dialog
-      onOpenChange={(open) => {
-        setIsDialogOpen(open);
-        if (!open) {
-          setSubmissionStatus(undefined);
-        }
-      }}
-      open={isDialogOpen}
-    >
+    <Dialog onOpenChange={handleOpenChange} open={isOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2" size="sm" variant="outline">
           <MailIcon />

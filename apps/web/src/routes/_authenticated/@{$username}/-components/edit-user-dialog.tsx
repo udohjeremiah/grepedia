@@ -31,6 +31,7 @@ import SubmissionStatusAlert, {
   type SubmissionStatus,
 } from "@/components/submission-status-alert";
 import { auth } from "@/hooks/auth";
+import { useDialogState } from "@/hooks/use-dialog-state";
 
 const formSchema = z.object({
   bio: z.union([
@@ -49,7 +50,6 @@ const formSchema = z.object({
 
 export default function EditUserDialog() {
   const { data: sessionData } = auth.useSession();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
   const { mutate: updateUser } = auth.useUpdateUser();
   const navigate = useNavigate();
@@ -72,13 +72,13 @@ export default function EditUserDialog() {
                 error.message ??
                 "An error occurred while updating your account. Please try again.",
               status: "error",
-              title: "Update failed",
+              title: "Couldn't update account",
             });
           },
           onSuccess: () => {
             form.reset();
             setSubmissionStatus({
-              description: "Your account have been updated successfully.",
+              description: "Your account has been updated successfully.",
               status: "success",
               title: "Account updated",
             });
@@ -95,16 +95,15 @@ export default function EditUserDialog() {
     },
   });
 
+  const { handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: () => {
+      form.reset();
+      setSubmissionStatus(undefined);
+    },
+  });
+
   return (
-    <Dialog
-      onOpenChange={(open) => {
-        setIsDialogOpen(open);
-        if (!open) {
-          setSubmissionStatus(undefined);
-        }
-      }}
-      open={isDialogOpen}
-    >
+    <Dialog onOpenChange={handleOpenChange} open={isOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2" size="sm" variant="outline">
           <PencilIcon />

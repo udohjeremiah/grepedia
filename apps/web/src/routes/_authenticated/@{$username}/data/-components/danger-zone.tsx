@@ -22,14 +22,21 @@ import SubmissionStatusAlert, {
 } from "@/components/submission-status-alert";
 import { env } from "@/env";
 import { auth } from "@/hooks/auth";
+import { useDialogState } from "@/hooks/use-dialog-state";
 import { deleteUser } from "@/services/auth/delete-user";
 
 export default function DangerZone() {
   const { data: sessionData, isPending } = auth.useSession();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: () => {
+      setDeleteConfirmText("");
+      setIsSubmitting(false);
+      setSubmissionStatus(undefined);
+    },
+  });
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== sessionData?.user.username) {
@@ -54,7 +61,7 @@ export default function DangerZone() {
               context.error.message ??
               "An error occurred while deleting your account. Please try again.",
             status: "error",
-            title: "Deletion failed",
+            title: "Couldn't delete account",
           });
         },
         onSuccess: () => {
@@ -122,17 +129,7 @@ export default function DangerZone() {
             </li>
           </ul>
         </div>
-        <AlertDialog
-          onOpenChange={(open) => {
-            setIsDialogOpen(open);
-            if (!open) {
-              setDeleteConfirmText("");
-              setSubmissionStatus(undefined);
-              setIsSubmitting(false);
-            }
-          }}
-          open={isDialogOpen}
-        >
+        <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
           <AlertDialogTrigger asChild>
             <Button size="sm" variant="destructive">
               <Trash2Icon />

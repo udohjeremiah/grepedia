@@ -17,14 +17,20 @@ import { LogOutIcon } from "lucide-react";
 import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
+import { useDialogState } from "@/hooks/use-dialog-state";
 import { signOut } from "@/services/auth/sign-out";
 
 export default function SignOutDialog() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [revokeAllSessions, setRevokeAllSessions] = useState(false);
   const { mutate: revokeSessions } = auth.useRevokeSessions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { closeDialog, handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: () => {
+      setIsSubmitting(false);
+      setRevokeAllSessions(false);
+    },
+  });
 
   const signOutText = revokeAllSessions ? "Sign Out Everywhere" : "Sign Out";
 
@@ -38,8 +44,7 @@ export default function SignOutDialog() {
             setIsSubmitting(false);
           },
           onSuccess: () => {
-            setIsSubmitting(false);
-            setIsDialogOpen(false);
+            closeDialog();
             navigate({ reloadDocument: true, to: "/signin" });
           },
         },
@@ -53,8 +58,7 @@ export default function SignOutDialog() {
           setIsSubmitting(false);
         },
         onSuccess: () => {
-          setIsSubmitting(false);
-          setIsDialogOpen(false);
+          closeDialog();
           navigate({ reloadDocument: true, to: "/signin" });
         },
       },
@@ -62,16 +66,7 @@ export default function SignOutDialog() {
   };
 
   return (
-    <AlertDialog
-      onOpenChange={(open) => {
-        setIsDialogOpen(open);
-        if (!open) {
-          setRevokeAllSessions(false);
-          setIsSubmitting(false);
-        }
-      }}
-      open={isDialogOpen}
-    >
+    <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
       <AlertDialogTrigger asChild>
         <Button size="sm" variant="destructive">
           <LogOutIcon />

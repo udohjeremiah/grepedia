@@ -32,14 +32,19 @@ import {
 import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
+import { useDialogState } from "@/hooks/use-dialog-state";
 
 import type { ActiveSession } from "./active-sessions";
 
 export default function ActiveSession(session: ActiveSession) {
   const DeviceIcon = getDeviceIcon(session.device);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { mutate: revokeSession } = auth.useRevokeSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { handleOpenChange, isOpen, setIsOpen } = useDialogState({
+    onCloseReset: () => {
+      setIsSubmitting(false);
+    },
+  });
 
   const handleRevokeSession = async () => {
     setIsSubmitting(true);
@@ -51,7 +56,7 @@ export default function ActiveSession(session: ActiveSession) {
         },
         onSuccess: () => {
           setIsSubmitting(false);
-          setIsDialogOpen(false);
+          setIsOpen(false);
         },
       },
       token: session.token,
@@ -101,15 +106,7 @@ export default function ActiveSession(session: ActiveSession) {
           </div>
         </div>
         {!session.isCurrent && (
-          <AlertDialog
-            onOpenChange={(open) => {
-              setIsDialogOpen(open);
-              if (!open) {
-                setIsSubmitting(false);
-              }
-            }}
-            open={isDialogOpen}
-          >
+          <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
             <AlertDialogTrigger asChild>
               <Button size="sm" variant="destructive">
                 <Trash2Icon />

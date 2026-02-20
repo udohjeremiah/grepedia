@@ -13,13 +13,19 @@ import {
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 
+import { useDialogState } from "@/hooks/use-dialog-state";
+
 import { useUserRecoveryPackage } from "../-queries/user-recovery-package";
 
 export default function PreviewDataDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
   const { data: userRecoveryPackage } = useUserRecoveryPackage({ userId });
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: () => {
+      setCopied(false);
+    },
+  });
 
   const exportJson = JSON.stringify(
     userRecoveryPackage.recoveryPackage,
@@ -34,7 +40,7 @@ export default function PreviewDataDialog() {
   }
 
   return (
-    <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+    <Dialog onOpenChange={handleOpenChange} open={isOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Preview Data</Button>
       </DialogTrigger>

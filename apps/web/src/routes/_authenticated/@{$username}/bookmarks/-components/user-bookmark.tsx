@@ -20,6 +20,7 @@ import AppLink from "@/components/app-link";
 import SubmissionStatusAlert, {
   type SubmissionStatus,
 } from "@/components/submission-status-alert";
+import { useDialogState } from "@/hooks/use-dialog-state";
 
 import { useUserBookmarks } from "../-queries/user-bookmarks";
 import { useUserRemoveBookmark } from "../-queries/user-remove-bookmark";
@@ -30,9 +31,13 @@ const categoryVariants = ["success", "info", "warning", "destructive"] as const;
 
 export default function UserBookmark(bookmark: UserBookmarkProps) {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { isPending, mutate: removeBookmark } = useUserRemoveBookmark(userId);
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { handleOpenChange, isOpen, setIsOpen } = useDialogState({
+    onCloseReset: () => {
+      setSubmissionStatus(undefined);
+    },
+  });
 
   function handleRemoveBookmark() {
     setSubmissionStatus(undefined);
@@ -46,11 +51,11 @@ export default function UserBookmark(bookmark: UserBookmarkProps) {
               error.message ??
               "An error occurred while removing this bookmark. Please try again.",
             status: "error",
-            title: "Removal failed",
+            title: "Couldn't remove bookmark",
           });
         },
         onSuccess: () => {
-          setIsDialogOpen(false);
+          setIsOpen(false);
         },
       },
     );
@@ -93,15 +98,7 @@ export default function UserBookmark(bookmark: UserBookmarkProps) {
               <span className="sr-only">Visit {bookmark.name}</span>
             </a>
           </Button>
-          <AlertDialog
-            onOpenChange={(open) => {
-              setIsDialogOpen(open);
-              if (!open) {
-                setSubmissionStatus(undefined);
-              }
-            }}
-            open={isDialogOpen}
-          >
+          <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
             <AlertDialogTrigger asChild>
               <Button disabled={isPending} size="sm" variant="ghost">
                 <Trash2Icon />

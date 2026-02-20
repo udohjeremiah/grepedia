@@ -20,12 +20,12 @@ import { useState } from "react";
 import SubmissionStatusAlert, {
   type SubmissionStatus,
 } from "@/components/submission-status-alert";
+import { useDialogState } from "@/hooks/use-dialog-state";
 
 import { useUserRecoverAccount } from "../-queries/user-recover-account";
 
 export default function RecoverAccountDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [payload, setPayload] = useState("");
   const { isPending, mutate: recoverAccount } = useUserRecoverAccount(userId);
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
@@ -89,7 +89,7 @@ export default function RecoverAccountDialog() {
               error.message ??
               "An error occurred while recovering your account. Please try again.",
             status: "error",
-            title: "Recovery failed",
+            title: "Couldn't recover account",
           });
         },
         onSuccess: () => {
@@ -97,23 +97,22 @@ export default function RecoverAccountDialog() {
           setSubmissionStatus({
             description: "Your account was recovered successfully.",
             status: "success",
-            title: "Recovery complete",
+            title: "Account recovered",
           });
         },
       },
     );
   };
 
+  const { handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: () => {
+      setPayload("");
+      setSubmissionStatus(undefined);
+    },
+  });
+
   return (
-    <Dialog
-      onOpenChange={(open) => {
-        setIsDialogOpen(open);
-        if (!open) {
-          setSubmissionStatus(undefined);
-        }
-      }}
-      open={isDialogOpen}
-    >
+    <Dialog onOpenChange={handleOpenChange} open={isOpen}>
       <DialogTrigger asChild>
         <Button>
           <RotateCcwIcon />

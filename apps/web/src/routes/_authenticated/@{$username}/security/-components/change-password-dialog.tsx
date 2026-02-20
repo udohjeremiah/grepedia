@@ -32,6 +32,7 @@ import { z } from "zod";
 import SubmissionStatusAlert, {
   type SubmissionStatus,
 } from "@/components/submission-status-alert";
+import { useDialogState } from "@/hooks/use-dialog-state";
 import { changePassword } from "@/services/auth/change-password";
 
 const formSchema = z
@@ -61,7 +62,6 @@ const formSchema = z
   });
 
 export default function ChangePasswordDialog() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -86,13 +86,13 @@ export default function ChangePasswordDialog() {
                 context.error.message ??
                 "An error occurred while updating your password. Please try again.",
               status: "error",
-              title: "Update failed",
+              title: "Couldn't update password",
             });
           },
           onSuccess: () => {
             form.reset();
             setSubmissionStatus({
-              description: "Your password have been updated successfully.",
+              description: "Your password has been updated successfully.",
               status: "success",
               title: "Password updated",
             });
@@ -105,16 +105,18 @@ export default function ChangePasswordDialog() {
     },
   });
 
+  const { handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: () => {
+      form.reset();
+      setShowConfirmPassword(false);
+      setShowCurrentPassword(false);
+      setShowNewPassword(false);
+      setSubmissionStatus(undefined);
+    },
+  });
+
   return (
-    <Dialog
-      onOpenChange={(open) => {
-        setIsDialogOpen(open);
-        if (!open) {
-          setSubmissionStatus(undefined);
-        }
-      }}
-      open={isDialogOpen}
-    >
+    <Dialog onOpenChange={handleOpenChange} open={isOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2" size="sm" variant="outline">
           <KeyRoundIcon />

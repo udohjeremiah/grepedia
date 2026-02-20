@@ -14,13 +14,18 @@ import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
+import { useDialogState } from "@/hooks/use-dialog-state";
 
 export default function RevokeOtherSessionsDialog() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: sessionData } = auth.useSession();
   const { data: sessions } = auth.useListSessions();
   const { mutate: revokeOtherSessions } = auth.useRevokeOtherSessions();
+  const { handleOpenChange, isOpen, setIsOpen } = useDialogState({
+    onCloseReset: () => {
+      setIsSubmitting(false);
+    },
+  });
 
   const sessionList = sessions ?? [];
   const currentSessionId = sessionData?.session.id;
@@ -38,22 +43,14 @@ export default function RevokeOtherSessionsDialog() {
         },
         onSuccess: () => {
           setIsSubmitting(false);
-          setIsDialogOpen(false);
+          setIsOpen(false);
         },
       },
     });
   };
 
   return (
-    <AlertDialog
-      onOpenChange={(open) => {
-        setIsDialogOpen(open);
-        if (!open) {
-          setIsSubmitting(false);
-        }
-      }}
-      open={isDialogOpen}
-    >
+    <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
       <AlertDialogTrigger asChild>
         <Button
           disabled={otherSessions.length === 0}
