@@ -50,11 +50,11 @@ function InputGroupAddon({
       className={cn(inputGroupAddonVariants({ align }), className)}
       data-align={align}
       data-slot="input-group-addon"
-      onClick={(e) => {
-        if ((e.target as HTMLElement).closest("button")) {
+      onClick={(event) => {
+        if ((event.target as HTMLElement).closest("button")) {
           return;
         }
-        e.currentTarget.parentElement?.querySelector("input")?.focus();
+        event.currentTarget.parentElement?.querySelector("input")?.focus();
       }}
       role="group"
       {...props}
