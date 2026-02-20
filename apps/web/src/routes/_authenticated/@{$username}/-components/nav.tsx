@@ -8,7 +8,7 @@ import {
   WrenchIcon,
 } from "lucide-react";
 
-import { useUserStat } from "../-queries/user-stat";
+import { useUserStats } from "../-queries/user-stats";
 import NavItem from "./nav-item";
 
 export const navItems = [
@@ -24,12 +24,12 @@ export type Nav = (typeof navItems)[number];
 
 export default function Nav() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const { data: userStat } = useUserStat({ userId });
+  const { data: userStats } = useUserStats({ userId });
 
   const countsByValue: Partial<Record<Nav["value"], number>> = {
-    bookmarks: userStat?.bookmarks,
-    sessions: userStat?.sessions,
-    tools: userStat?.tools,
+    bookmarks: userStats?.bookmarks,
+    sessions: userStats?.sessions,
+    tools: userStats?.tools,
   };
 
   return (

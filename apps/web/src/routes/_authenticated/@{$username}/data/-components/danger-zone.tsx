@@ -126,7 +126,9 @@ export default function DangerZone() {
           onOpenChange={(open) => {
             setIsDialogOpen(open);
             if (!open) {
+              setDeleteConfirmText("");
               setSubmissionStatus(undefined);
+              setIsSubmitting(false);
             }
           }}
           open={isDialogOpen}
@@ -175,7 +177,6 @@ export default function DangerZone() {
             <AlertDialogFooter>
               <AlertDialogCancel
                 onClick={() => {
-                  setSubmissionStatus(undefined);
                   setIsSubmitting(false);
                 }}
               >

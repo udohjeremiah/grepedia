@@ -1,7 +1,9 @@
 import { z } from "zod";
 
+import { objectIdSchema } from "../object-id-schema.js";
+
 export const userSchema = z.object({
-  _id: z.string(),
+  _id: objectIdSchema,
   bio: z.string().optional(),
   createdAt: z.iso.datetime(),
   displayUsername: z.string(),

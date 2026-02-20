@@ -62,7 +62,16 @@ export default function SignOutDialog() {
   };
 
   return (
-    <AlertDialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+    <AlertDialog
+      onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setRevokeAllSessions(false);
+          setIsSubmitting(false);
+        }
+      }}
+      open={isDialogOpen}
+    >
       <AlertDialogTrigger asChild>
         <Button size="sm" variant="destructive">
           <LogOutIcon />
@@ -83,7 +92,7 @@ export default function SignOutDialog() {
           <Checkbox
             checked={revokeAllSessions}
             className="mt-0.5"
-            id="revokeAllSessions"
+            id="revoke-all-sessions"
             onCheckedChange={(checked) =>
               setRevokeAllSessions(checked === true)
             }
@@ -91,7 +100,7 @@ export default function SignOutDialog() {
           <div>
             <Label
               className="text-sm font-medium text-foreground"
-              htmlFor="revokeAllSessions"
+              htmlFor="revoke-all-sessions"
             >
               Also sign out of all other devices
             </Label>
@@ -101,12 +110,7 @@ export default function SignOutDialog() {
           </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel
-            disabled={isSubmitting}
-            onClick={() => setRevokeAllSessions(false)}
-          >
-            Cancel
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             disabled={isSubmitting}
             onClick={(event) => {

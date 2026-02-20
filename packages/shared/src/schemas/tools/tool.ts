@@ -1,21 +1,23 @@
 import { z } from "zod";
 
+import { objectIdSchema } from "../object-id-schema.js";
+
 export const toolSchema = z.object({
-  _id: z.string(),
-  added_at: z.iso.datetime(),
-  added_by: z.string(),
-  categories: z.array(z.string()).max(4),
-  external_urls: z
-    .array(z.object({ type: z.string(), url: z.url() }))
+  _id: objectIdSchema,
+  addedAt: z.iso.datetime(),
+  addedBy: z.string(),
+  categories: z.array(z.string()).min(1).max(4),
+  externalUrls: z
+    .array(z.object({ platform: z.string(), url: z.url() }))
     .max(4)
     .optional(),
   image: z.url().optional(),
-  long_description: z.string(),
+  longDescription: z.string(),
   name: z.string(),
-  official_url: z.url(),
+  officialUrl: z.url(),
   owner: z.string().optional(),
-  released_at: z.iso.datetime().optional(),
-  short_description: z.string(),
+  releasedAt: z.iso.datetime().optional(),
+  shortDescription: z.string(),
   slug: z.string(),
   stats: z.object({
     comments: z.int().min(0),
@@ -23,9 +25,9 @@ export const toolSchema = z.object({
     upvotes: z.int().min(0),
   }),
   status: z.enum(["pending", "published", "flagged"]),
-  tags: z.array(z.string()).max(8),
-  updated_at: z.iso.datetime().optional(),
-  updated_by: z.string().optional(),
+  tags: z.array(z.string()).min(1).max(8),
+  updatedAt: z.iso.datetime().optional(),
+  updatedBy: z.string().optional(),
 });
 
 export type Tool = z.infer<typeof toolSchema>;

@@ -1,16 +1,18 @@
 import { z } from "zod";
 
+import { objectIdSchema } from "../object-id-schema.js";
+
 export const toolCommentSchema = z.object({
-  _id: z.string(),
+  _id: objectIdSchema,
   content: z.string(),
-  created_at: z.iso.datetime(),
+  createdAt: z.iso.datetime(),
   stats: z.object({
     downvotes: z.int().min(0),
     upvotes: z.int().min(0),
   }),
-  toolId: z.string(),
-  updated_at: z.string(),
-  userId: z.string(),
+  toolId: objectIdSchema,
+  updatedAt: z.string(),
+  userId: objectIdSchema,
 });
 
 export type ToolComment = z.infer<typeof toolCommentSchema>;

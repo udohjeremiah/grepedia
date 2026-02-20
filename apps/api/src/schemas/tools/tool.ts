@@ -8,9 +8,9 @@ export const toolWithVectorEmbeddingsSchema = toolSchema.extend({
 
 export const toolWithObjectIdsSchema = toolWithVectorEmbeddingsSchema.extend({
   _id: z.instanceof(ObjectId).optional(),
-  added_by: z.instanceof(ObjectId),
+  addedBy: z.instanceof(ObjectId),
   owner: z.instanceof(ObjectId).optional(),
-  updated_by: z.instanceof(ObjectId).optional(),
+  updatedBy: z.instanceof(ObjectId).optional(),
 });
 
 export type ToolWithObjectIds = z.infer<typeof toolWithObjectIdsSchema>;

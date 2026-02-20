@@ -17,6 +17,7 @@ export default function ToolsEmpty() {
   const { data: sessionData } = auth.useSession();
 
   const tab = searchParams.tab;
+  const username = sessionData?.user.username ?? "";
 
   return (
     <Empty className="border border-dashed">
@@ -41,8 +42,9 @@ export default function ToolsEmpty() {
         </Button>
         <Button asChild variant="outline">
           <Link
-            params={{ username: sessionData?.user.username ?? "" }}
-            to="/@{$username}/add-tool"
+            params={{ username }}
+            search={{ modal: "add-tool" }}
+            to="/@{$username}/tools"
           >
             Add a Tool
           </Link>

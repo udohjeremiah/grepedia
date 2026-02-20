@@ -21,7 +21,7 @@ const getUserBookmarks: FastifyPluginAsyncZod = async (fastify) => {
         userBookmarks
           .find({ userId: userObjectId })
           // eslint-disable-next-line unicorn/no-array-sort
-          .sort({ created_at: -1 })
+          .sort({ createdAt: -1 })
           .toArray(),
       ]);
 
@@ -54,8 +54,8 @@ const getUserBookmarks: FastifyPluginAsyncZod = async (fastify) => {
               _id: 1,
               categories: 1,
               name: 1,
-              official_url: 1,
-              short_description: 1,
+              officialUrl: 1,
+              shortDescription: 1,
               slug: 1,
             },
           },
@@ -73,11 +73,11 @@ const getUserBookmarks: FastifyPluginAsyncZod = async (fastify) => {
         return [
           {
             _id: bookmark._id.toString(),
-            bookmarkedAt: new Date(bookmark.created_at).toISOString(),
-            categories: tool.categories.slice(0, 4),
+            bookmarkedAt: new Date(bookmark.createdAt).toISOString(),
+            categories: tool.categories,
             name: tool.name,
-            officialUrl: tool.official_url,
-            shortDescription: tool.short_description,
+            officialUrl: tool.officialUrl,
+            shortDescription: tool.shortDescription,
             slug: tool.slug,
           },
         ];

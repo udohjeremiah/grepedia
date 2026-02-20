@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
+import { objectIdSchema } from "../object-id-schema.js";
 
 export const getUserBookmarksParamsSchema = z.object({
-  userId: z.string(),
+  userId: objectIdSchema,
 });
 
 export type GetUserBookmarksParams = z.infer<
@@ -15,9 +16,9 @@ export const getUserBookmarksResponseSchemas = {
     data: z.object({
       bookmarks: z.array(
         z.object({
-          _id: z.string(),
+          _id: objectIdSchema,
           bookmarkedAt: z.iso.datetime(),
-          categories: z.array(z.string()).max(4),
+          categories: z.array(z.string()),
           name: z.string(),
           officialUrl: z.url(),
           shortDescription: z.string(),

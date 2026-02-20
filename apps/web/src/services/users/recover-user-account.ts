@@ -6,7 +6,7 @@ import {
   recoverUserAccountResponseSchemas,
 } from "@workspace/shared/schemas/users/recover-user-account";
 
-import { apiClient, requestWithAuth } from "@/lib/api-client";
+import { apiClient } from "@/lib/api-client";
 
 type RecoverUserAccount = {
   body: RecoverUserAccountBody;
@@ -16,12 +16,9 @@ type RecoverUserAccount = {
 export async function recoverUserAccount({ body, params }: RecoverUserAccount) {
   const { userId } = recoverUserAccountParamsSchema.parse(params);
   const parsedBody = recoverUserAccountBodySchema.parse(body);
-
   const response = await apiClient.post(
     `/users/${userId}/recover-account`,
     parsedBody,
-    requestWithAuth(),
   );
-
   return recoverUserAccountResponseSchemas[200].parse(response.data);
 }

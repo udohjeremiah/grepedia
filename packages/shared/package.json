@@ -12,6 +12,10 @@
       "types": "./dist/omit-keys.d.ts",
       "default": "./dist/omit-keys.js"
     },
+    "./schemas/object-id-schema": {
+      "types": "./dist/schemas/object-id-schema.d.ts",
+      "default": "./dist/schemas/object-id-schema.js"
+    },
     "./schemas/tools/add-tool": {
       "types": "./dist/schemas/tools/add-tool.d.ts",
       "default": "./dist/schemas/tools/add-tool.js"
@@ -56,9 +60,13 @@
       "types": "./dist/schemas/users/get-user-recovery-package.d.ts",
       "default": "./dist/schemas/users/get-user-recovery-package.js"
     },
-    "./schemas/users/get-user-stat": {
-      "types": "./dist/schemas/users/get-user-stat.d.ts",
-      "default": "./dist/schemas/users/get-user-stat.js"
+    "./schemas/users/get-user-stats": {
+      "types": "./dist/schemas/users/get-user-stats.d.ts",
+      "default": "./dist/schemas/users/get-user-stats.js"
+    },
+    "./schemas/users/get-user-tools": {
+      "types": "./dist/schemas/users/get-user-tools.d.ts",
+      "default": "./dist/schemas/users/get-user-tools.js"
     },
     "./schemas/users/recover-user-account": {
       "types": "./dist/schemas/users/recover-user-account.d.ts",

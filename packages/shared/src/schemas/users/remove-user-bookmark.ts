@@ -1,10 +1,11 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
+import { objectIdSchema } from "../object-id-schema.js";
 
 export const removeUserBookmarkParamsSchema = z.object({
-  bookmarkId: z.string(),
-  userId: z.string(),
+  bookmarkId: objectIdSchema,
+  userId: objectIdSchema,
 });
 
 export type RemoveUserBookmarkParams = z.infer<
@@ -14,7 +15,7 @@ export type RemoveUserBookmarkParams = z.infer<
 export const removeUserBookmarkResponseSchemas = {
   200: z.object({
     data: z.object({
-      bookmarkId: z.string(),
+      bookmarkId: objectIdSchema,
     }),
     message: z.string(),
     success: z.boolean(),

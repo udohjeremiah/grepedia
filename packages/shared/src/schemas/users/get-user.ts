@@ -1,10 +1,11 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
+import { objectIdSchema } from "../object-id-schema.js";
 import { userSchema } from "./user.js";
 
 export const getUserParamsSchema = z.object({
-  userId: z.string(),
+  userId: objectIdSchema,
 });
 
 export type GetUserParams = z.infer<typeof getUserParamsSchema>;

@@ -184,13 +184,13 @@ export default function SignInForm() {
               >
                 <Checkbox
                   checked={field.state.value}
-                  id="rememberMe"
+                  id="remember-me"
                   onCheckedChange={(checked) =>
                     field.handleChange(Boolean(checked))
                   }
                 />
                 <FieldContent>
-                  <FieldLabel htmlFor="rememberMe">Remember Me</FieldLabel>
+                  <FieldLabel htmlFor="remember-me">Remember Me</FieldLabel>
                   <FieldDescription>
                     Save your login so you stay signed in after closing your
                     browser.

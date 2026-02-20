@@ -56,7 +56,7 @@ const addUserBookmark: FastifyPluginAsyncZod = async (fastify) => {
 
       const bookmarkedAt = new Date().toISOString();
       const insertResult = await userBookmarks.insertOne({
-        created_at: bookmarkedAt,
+        createdAt: bookmarkedAt,
         toolId: toolObjectId,
         userId: userObjectId,
       });

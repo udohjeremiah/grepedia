@@ -10,7 +10,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import Nav from "./-components/nav";
 import NavErrorFallback from "./-components/nav-error-fallback";
 import NavSkeleton from "./-components/nav-skeleton";
-import { userStatQueryOptions } from "./-queries/user-stat";
+import { userStatQueryOptions } from "./-queries/user-stats";
 
 export const Route = createFileRoute("/_authenticated/@{$username}")({
   beforeLoad: async ({ context }) => {

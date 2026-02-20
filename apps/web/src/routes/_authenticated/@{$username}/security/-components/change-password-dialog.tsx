@@ -277,13 +277,13 @@ export default function ChangePasswordDialog() {
                 >
                   <Checkbox
                     checked={field.state.value}
-                    id="revokeOtherSessions"
+                    id="revoke-other-sessions"
                     onCheckedChange={(checked) =>
                       field.handleChange(Boolean(checked))
                     }
                   />
                   <FieldContent>
-                    <FieldLabel htmlFor="revokeOtherSessions">
+                    <FieldLabel htmlFor="revoke-other-sessions">
                       Revoke Other Sessions
                     </FieldLabel>
                     <FieldDescription>

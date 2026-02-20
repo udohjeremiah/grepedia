@@ -1,11 +1,13 @@
 import { z } from "zod";
 
+import { objectIdSchema } from "../object-id-schema.js";
+
 export const toolCommentReactionSchema = z.object({
-  _id: z.string(),
-  commentId: z.string(),
-  created_at: z.iso.datetime(),
-  updated_at: z.iso.datetime(),
-  userId: z.string(),
+  _id: objectIdSchema,
+  commentId: objectIdSchema,
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
+  userId: objectIdSchema,
   value: z.union([z.literal(1), z.literal(-1)]),
 });
 

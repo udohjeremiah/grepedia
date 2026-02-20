@@ -27,8 +27,8 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       const baseFilter = {
         $or: [
           { name: { $in: words } },
-          { short_description: { $in: words } },
-          { long_description: { $in: words } },
+          { shortDescription: { $in: words } },
+          { longDescription: { $in: words } },
           { categories: { $in: words } },
           { tags: { $in: words } },
         ],
@@ -57,10 +57,10 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         decodedCursor?.type === "date"
           ? {
               $or: [
-                { released_at: { $lt: new Date(decodedCursor.date) } },
+                { releasedAt: { $lt: new Date(decodedCursor.date) } },
                 {
                   _id: { $lt: ObjectId.createFromHexString(decodedCursor.id) },
-                  released_at: new Date(decodedCursor.date),
+                  releasedAt: new Date(decodedCursor.date),
                 },
               ],
             }
@@ -76,7 +76,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         new: [
           { $match: baseFilter },
           ...(dateCursorMatch ? [{ $match: dateCursorMatch }] : []),
-          { $sort: { _id: -1, released_at: -1 } },
+          { $sort: { _id: -1, releasedAt: -1 } },
           { $limit: limit },
         ],
         popular: [
@@ -112,7 +112,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         const converted = serializeMongoTypes(
           omitKeys(tool, ["vectorEmbeddings"]),
         );
-        return { ...converted, _id: converted["_id"] };
+        return converted;
       });
 
       const last = result.at(-1);
@@ -125,9 +125,9 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
             score: last.stats.upvotes - last.stats.downvotes,
             type: "score",
           });
-        } else if (tab === "new" && last.released_at) {
+        } else if (tab === "new" && last.releasedAt) {
           nextCursor = encodeCursor({
-            date: last.released_at,
+            date: last.releasedAt,
             id: last._id!.toString(),
             type: "date",
           });

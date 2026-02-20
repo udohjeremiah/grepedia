@@ -93,6 +93,7 @@ export default function RecoverAccountDialog() {
           });
         },
         onSuccess: () => {
+          setPayload("");
           setSubmissionStatus({
             description: "Your account was recovered successfully.",
             status: "success",
@@ -141,14 +142,7 @@ export default function RecoverAccountDialog() {
         <SubmissionStatusAlert submissionStatus={submissionStatus} />
         <DialogFooter>
           <DialogClose asChild>
-            <Button
-              onClick={() => {
-                setSubmissionStatus(undefined);
-              }}
-              variant="outline"
-            >
-              Cancel
-            </Button>
+            <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button disabled={isPending} onClick={handleRecover}>
             {isPending ? (

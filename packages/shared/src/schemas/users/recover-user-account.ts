@@ -1,10 +1,11 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
+import { objectIdSchema } from "../object-id-schema.js";
 import { userAccountExportPackageSchema } from "./get-user-recovery-package.js";
 
 export const recoverUserAccountParamsSchema = z.object({
-  userId: z.string(),
+  userId: objectIdSchema,
 });
 
 export type RecoverUserAccountParams = z.infer<
@@ -23,11 +24,11 @@ export const recoverUserAccountResponseSchemas = {
   200: z.object({
     data: z.object({
       relinked: z.object({
-        bookmarks: z.int().min(0),
-        commentReactions: z.int().min(0),
-        comments: z.int().min(0),
-        toolReactions: z.int().min(0),
-        tools: z.int().min(0),
+        bookmarks: z.int(),
+        commentReactions: z.int(),
+        comments: z.int(),
+        toolReactions: z.int(),
+        tools: z.int(),
       }),
     }),
     message: z.string(),

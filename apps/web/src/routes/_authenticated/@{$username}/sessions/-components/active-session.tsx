@@ -101,7 +101,15 @@ export default function ActiveSession(session: ActiveSession) {
           </div>
         </div>
         {!session.isCurrent && (
-          <AlertDialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+          <AlertDialog
+            onOpenChange={(open) => {
+              setIsDialogOpen(open);
+              if (!open) {
+                setIsSubmitting(false);
+              }
+            }}
+            open={isDialogOpen}
+          >
             <AlertDialogTrigger asChild>
               <Button size="sm" variant="destructive">
                 <Trash2Icon />

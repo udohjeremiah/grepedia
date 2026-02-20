@@ -36,9 +36,9 @@ const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
         tools
           .find({
             $or: [
-              { added_by: userObjectId },
+              { addedBy: userObjectId },
               { owner: userObjectId },
-              { updated_by: userObjectId },
+              { updatedBy: userObjectId },
             ],
           })
           .toArray(),

@@ -75,7 +75,6 @@ export default function EditUserDialog() {
               title: "Update failed",
             });
           },
-
           onSuccess: () => {
             form.reset();
             setSubmissionStatus({

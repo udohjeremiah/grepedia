@@ -41,7 +41,7 @@ const statConfigByTab = {
   },
   new: {
     getValue: (tool: ToolProps) =>
-      tool.released_at ? format(new Date(tool.released_at), "MMM yyyy") : "New",
+      tool.releasedAt ? format(new Date(tool.releasedAt), "MMM yyyy") : "New",
     icon: CalendarIcon,
   },
   popular: {
@@ -87,7 +87,7 @@ export default function Tool(tool: ToolProps) {
             <hgroup className="flex flex-col">
               <h3 className="truncate tracking-tight">{tool.name}</h3>
               <p className="truncate text-muted-foreground">
-                {tool.short_description}
+                {tool.shortDescription}
               </p>
             </hgroup>
           </Link>
@@ -133,7 +133,7 @@ function MoreInfoSheet(tool: ToolProps) {
           </Avatar>
           <hgroup>
             <SheetTitle>{tool.name}</SheetTitle>
-            <SheetDescription>{tool.short_description}</SheetDescription>
+            <SheetDescription>{tool.shortDescription}</SheetDescription>
           </hgroup>
         </SheetHeader>
         <div className="no-scrollbar space-y-4 overflow-y-auto px-4">
@@ -145,7 +145,7 @@ function MoreInfoSheet(tool: ToolProps) {
               </Link>
             </Button>
           </div>
-          <p className="text-muted-foreground">{tool.long_description}</p>
+          <p className="text-muted-foreground">{tool.longDescription}</p>
         </div>
         <SheetFooter>
           <p className="text-muted-foreground">

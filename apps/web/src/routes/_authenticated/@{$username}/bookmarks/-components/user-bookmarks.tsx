@@ -13,7 +13,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
-import { BookmarkIcon, SearchIcon, XIcon } from "lucide-react";
+import { BookmarkIcon, SearchIcon, SearchXIcon, XIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { useUserBookmarks } from "../-queries/user-bookmarks";
@@ -63,7 +63,7 @@ export default function UserBookmarks() {
         </InputGroupAddon>
         <InputGroupInput
           onChange={(event) => setSearchQuery(event.target.value)}
-          placeholder="Search bookmarks..."
+          placeholder="Search bookmarks by name, description, or category..."
           value={searchQuery}
         />
         <InputGroupAddon align="inline-end">
@@ -83,7 +83,7 @@ export default function UserBookmarks() {
           <EmptyHeader>
             <EmptyMedia variant="icon">
               {searchQuery.trim() ? (
-                <SearchIcon className="text-muted-foreground" />
+                <SearchXIcon className="text-muted-foreground" />
               ) : (
                 <XIcon className="text-muted-foreground" />
               )}
@@ -95,7 +95,7 @@ export default function UserBookmarks() {
             </EmptyTitle>
             <EmptyDescription>
               {searchQuery.trim()
-                ? "Try a different keyword for tool name, description, or category."
+                ? "Try a different keyword for tool names, descriptions, or categories."
                 : "Save tools to your bookmarks to find them quickly later."}
             </EmptyDescription>
           </EmptyHeader>

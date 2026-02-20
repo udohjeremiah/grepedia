@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
+import { objectIdSchema } from "../object-id-schema.js";
 import { toolCommentReactionSchema } from "../tools/tool-comment-reaction.js";
 import { toolCommentSchema } from "../tools/tool-comment.js";
 import { toolReactionSchema } from "../tools/tool-reaction.js";
@@ -9,7 +10,7 @@ import { userBookmarkSchema } from "./user-bookmark.js";
 import { userSchema } from "./user.js";
 
 export const getUserRecoveryPackageParamsSchema = z.object({
-  userId: z.string(),
+  userId: objectIdSchema,
 });
 
 export type GetUserRecoveryPackageParams = z.infer<
@@ -37,9 +38,9 @@ export const userAccountExportPackageSchema = z.object({
     app: z.literal("grepedia"),
     data: userAccountExportSnapshotSchema,
     expiresAt: z.iso.datetime(),
-    exportId: z.string(),
+    exportId: z.uuidv4(),
     issuedAt: z.iso.datetime(),
-    userId: z.string(),
+    userId: objectIdSchema,
     version: z.literal(1),
   }),
   proof: userAccountExportProofSchema,

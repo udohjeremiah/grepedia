@@ -1,17 +1,18 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
+import { objectIdSchema } from "../object-id-schema.js";
 
-export const getUserStatParamsSchema = z.object({
-  userId: z.string(),
+export const getUserStatsParamsSchema = z.object({
+  userId: objectIdSchema,
 });
 
-export type GetUserStatParams = z.infer<typeof getUserStatParamsSchema>;
+export type GetUserStatsParams = z.infer<typeof getUserStatsParamsSchema>;
 
-export const getUserStatResponseSchemas = {
+export const getUserStatsResponseSchemas = {
   200: z.object({
     data: z.object({
-      stat: z.object({
+      stats: z.object({
         bookmarks: z.int(),
         sessions: z.int(),
         tools: z.int(),

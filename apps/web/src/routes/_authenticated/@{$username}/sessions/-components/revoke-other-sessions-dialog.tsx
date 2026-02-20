@@ -45,7 +45,15 @@ export default function RevokeOtherSessionsDialog() {
   };
 
   return (
-    <AlertDialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+    <AlertDialog
+      onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setIsSubmitting(false);
+        }
+      }}
+      open={isDialogOpen}
+    >
       <AlertDialogTrigger asChild>
         <Button
           disabled={otherSessions.length === 0}

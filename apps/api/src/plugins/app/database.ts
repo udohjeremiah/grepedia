@@ -1,3 +1,5 @@
+/* eslint-disable perfectionist/sort-objects */
+
 import type { Collection, Db } from "mongodb";
 
 import fp from "fastify-plugin";
@@ -62,33 +64,22 @@ export default fp(
       );
 
     await Promise.all([
-      userCollection.createIndex({ username: 1 }, { unique: true }),
-
       userBookmarkCollection.createIndex(
-        // eslint-disable-next-line perfectionist/sort-objects
         { userId: 1, toolId: 1 },
         { unique: true },
       ),
-      // eslint-disable-next-line perfectionist/sort-objects
       userBookmarkCollection.createIndex({ userId: 1, createdAt: -1 }),
 
-      // eslint-disable-next-line perfectionist/sort-objects
       toolCollection.createIndex({ status: 1, _id: -1 }),
-      // eslint-disable-next-line perfectionist/sort-objects
-      toolCollection.createIndex({ status: 1, released_at: -1, _id: -1 }),
-      // eslint-disable-next-line perfectionist/sort-objects
+      toolCollection.createIndex({ status: 1, releasedAt: -1, _id: -1 }),
       toolCollection.createIndex({ status: 1, "stats.comments": -1, _id: -1 }),
       toolCollection.createIndex({
         status: 1,
-        // eslint-disable-next-line perfectionist/sort-objects
         "stats.upvotes": -1,
-        // eslint-disable-next-line perfectionist/sort-objects
         "stats.downvotes": -1,
-        // eslint-disable-next-line perfectionist/sort-objects
         _id: -1,
       }),
       toolCollection.createIndex({ _id: -1, "stats.comments": -1, status: 1 }),
-      // eslint-disable-next-line perfectionist/sort-objects
       toolCollection.createIndex({ status: 1, _id: -1, owner: 1 }),
 
       toolReactionCollection.createIndex(
@@ -97,9 +88,7 @@ export default fp(
       ),
       toolReactionCollection.createIndex({ toolId: 1, value: 1 }),
 
-      // eslint-disable-next-line perfectionist/sort-objects
       toolCommentCollection.createIndex({ toolId: 1, createdAt: -1 }),
-      // eslint-disable-next-line perfectionist/sort-objects
       toolCommentCollection.createIndex({ userId: 1, createdAt: -1 }),
 
       toolCommentReactionCollection.createIndex(

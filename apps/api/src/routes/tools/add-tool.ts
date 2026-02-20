@@ -1,15 +1,11 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 import { slugifyWithCounter } from "@sindresorhus/slugify";
-import { omitKeys } from "@workspace/shared/omit-keys";
 import {
   addToolBodySchema,
   addToolResponseSchemas,
 } from "@workspace/shared/schemas/tools/add-tool";
 import { ObjectId } from "mongodb";
-
-import { ToolWithObjectIds } from "@/schemas/tools/tool.js";
-import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
 const addTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
@@ -28,37 +24,36 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       // Future vector embeddings implementation:
       // const textToEmbed = `
       //   ${body.name}
-      //   ${body.short_description}
-      //   ${body.long_description}
+      //   ${body.shortDescription}
+      //   ${body.longDescription}
       //   Categories: ${body.categories.join(", ")}
       //   Tags: ${body.tags.join(", ")}
-      //   Released at: ${body.released_at ?? "N/A"}
+      //   Released at: ${body.releasedAt ?? "N/A"}
       // `;
       // const vecEmbed = await fastify.generateVectorEmbeddings(textToEmbed);
 
-      const tool: Omit<ToolWithObjectIds, "_id"> = {
+      const addedAt = new Date().toISOString();
+      const insertResult = await tools.insertOne({
         ...body,
-        added_at: new Date().toISOString(),
-        added_by: ObjectId.createFromHexString(request.user.id),
+        addedAt: new Date().toISOString(),
+        addedBy: ObjectId.createFromHexString(request.user.id),
         slug,
         stats: { comments: 0, downvotes: 0, upvotes: 0 },
         status: "published",
-      };
-
-      const result = await tools.insertOne(tool);
-      const toolWithStringIds = serializeMongoTypes({
-        ...omitKeys(tool, ["vectorEmbeddings"]),
-        _id: result.insertedId,
       });
 
       return reply.code(201).send({
-        data: { tool: toolWithStringIds },
+        data: {
+          addedAt,
+          toolId: insertResult.insertedId.toString(),
+          toolSlug: slug,
+        },
         message: "Tool added successfully",
         success: true,
       });
     },
     method: "POST",
-    onRequest: fastify.requireUser,
+    onRequest: [fastify.requireUser],
     schema: {
       body: addToolBodySchema,
       response: addToolResponseSchemas,

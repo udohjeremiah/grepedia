@@ -1,0 +1,191 @@
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+
+import {
+  getUserToolsParamsSchema,
+  getUserToolsResponseSchemas,
+} from "@workspace/shared/schemas/users/get-user-tools";
+import { ObjectId } from "mongodb";
+
+const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
+  fastify.route({
+    handler: async function (request, reply) {
+      const { userId } = request.params;
+
+      const users = fastify.getUserCollection();
+      const tools = fastify.getToolCollection();
+      const toolReactions = fastify.getToolReactionCollection();
+      const toolComments = fastify.getToolCommentCollection();
+
+      const userObjectId = ObjectId.createFromHexString(userId);
+      const user = await users.findOne({ _id: userObjectId });
+
+      if (!user) {
+        return reply.code(404).send({
+          message: "User not found",
+          success: false,
+        });
+      }
+
+      const [toolsOwned, toolsAdded, toolsUpdated, toolsReactions, comments] =
+        await Promise.all([
+          tools.find({ owner: user._id }, { projection: { _id: 1 } }).toArray(),
+          tools
+            .find({ addedBy: user._id }, { projection: { _id: 1 } })
+            .toArray(),
+          tools
+            .find({ updatedBy: user._id }, { projection: { _id: 1 } })
+            .toArray(),
+          toolReactions
+            .find({ userId: user._id }, { projection: { toolId: 1, value: 1 } })
+            .toArray(),
+          toolComments
+            .find({ userId: user._id }, { projection: { toolId: 1 } })
+            .toArray(),
+        ]);
+
+      const upvotedToolIds = toolsReactions
+        .filter((r) => r.value === 1)
+        .map((r) => r.toolId);
+
+      const downvotedToolIds = toolsReactions
+        .filter((r) => r.value === -1)
+        .map((r) => r.toolId);
+
+      const commentedToolIds = comments.map((c) => c.toolId);
+
+      const mergedToolIds: ObjectId[] = [
+        ...toolsOwned.map((tool) => tool._id),
+        ...toolsAdded.map((tool) => tool._id),
+        ...toolsUpdated.map((tool) => tool._id),
+        ...upvotedToolIds,
+        ...downvotedToolIds,
+        ...commentedToolIds,
+      ];
+
+      const toolIdMap = new Map<string, ObjectId>(
+        mergedToolIds.map((id) => [id.toHexString(), id]),
+      );
+
+      const allToolObjectIds = [...toolIdMap.values()];
+
+      const allTool =
+        allToolObjectIds.length > 0
+          ? await tools
+              .find(
+                { _id: { $in: allToolObjectIds } },
+                {
+                  projection: {
+                    addedAt: 1,
+                    categories: 1,
+                    image: 1,
+                    name: 1,
+                    owner: 1,
+                    shortDescription: 1,
+                    slug: 1,
+                    stats: 1,
+                    updatedAt: 1,
+                  },
+                },
+              )
+              .toArray()
+          : [];
+
+      const ownerIds = [
+        ...new Set(
+          allTool
+            .map((tool) => tool.owner)
+            .filter((owner): owner is ObjectId => owner instanceof ObjectId)
+            .map((owner) => owner.toHexString()),
+        ),
+      ].map((ownerId) => ObjectId.createFromHexString(ownerId));
+
+      const ownerDocuments =
+        ownerIds.length > 0
+          ? await users
+              .find(
+                { _id: { $in: ownerIds } },
+                { projection: { _id: 1, username: 1 } },
+              )
+              .toArray()
+          : [];
+
+      const ownerUsernameById = new Map(
+        ownerDocuments.map((owner) => [
+          owner._id.toHexString(),
+          owner.username,
+        ]),
+      );
+
+      const ownedSet = new Set(
+        toolsOwned.map((tool) => tool._id.toHexString()),
+      );
+      const addedSet = new Set(
+        toolsAdded.map((tool) => tool._id.toHexString()),
+      );
+      const updatedSet = new Set(
+        toolsUpdated.map((tool) => tool._id.toHexString()),
+      );
+      const upvotedSet = new Set(upvotedToolIds.map((id) => id.toHexString()));
+      const downvotedSet = new Set(
+        downvotedToolIds.map((id) => id.toHexString()),
+      );
+      const commentedSet = new Set(
+        commentedToolIds.map((id) => id.toHexString()),
+      );
+
+      const toolsResponse = allTool.map((tool) => {
+        const idHex = tool._id.toHexString();
+
+        return {
+          _id: idHex,
+          addedAt: tool.addedAt,
+          categories: tool.categories,
+          image: tool.image,
+          name: tool.name,
+          owner: tool.owner
+            ? ownerUsernameById.get(tool.owner.toHexString())
+            : undefined,
+          relations: {
+            added: addedSet.has(idHex),
+            commented: commentedSet.has(idHex),
+            downvoted: downvotedSet.has(idHex),
+            owned: ownedSet.has(idHex),
+            updated: updatedSet.has(idHex),
+            upvoted: upvotedSet.has(idHex),
+          },
+          shortDescription: tool.shortDescription,
+          slug: tool.slug,
+          stats: tool.stats,
+          updatedAt: tool.updatedAt ?? tool.addedAt,
+        };
+      });
+
+      return reply.code(200).send({
+        data: {
+          stats: {
+            added: addedSet.size,
+            commented: commentedSet.size,
+            downvoted: downvotedSet.size,
+            owned: ownedSet.size,
+            updated: updatedSet.size,
+            upvoted: upvotedSet.size,
+          },
+          tools: toolsResponse,
+        },
+        message: "User tools retrieved successfully",
+        success: true,
+      });
+    },
+    method: "GET",
+    onRequest: [fastify.requireUserId()],
+    schema: {
+      params: getUserToolsParamsSchema,
+      response: getUserToolsResponseSchemas,
+      security: [{ sessionCookie: [] }],
+      tags: ["Users"],
+    },
+    url: "/tools",
+  });
+};
+
+export default getUserTools;

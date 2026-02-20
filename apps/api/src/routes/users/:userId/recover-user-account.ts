@@ -83,16 +83,16 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
         bookmarksResult,
       ] = await Promise.all([
         tools.updateMany(
-          { added_by: previousUserId },
-          { $set: { added_by: currentUserId } },
+          { addedBy: previousUserId },
+          { $set: { addedBy: currentUserId } },
         ),
         tools.updateMany(
           { owner: previousUserId },
           { $set: { owner: currentUserId } },
         ),
         tools.updateMany(
-          { updated_by: previousUserId },
-          { $set: { updated_by: currentUserId } },
+          { updatedBy: previousUserId },
+          { $set: { updatedBy: currentUserId } },
         ),
         toolComments.updateMany(
           { userId: previousUserId },
@@ -237,7 +237,7 @@ async function restoreBookmarks({
   userBookmarks,
 }: {
   bookmarks: Array<{
-    created_at: string;
+    createdAt: string;
     toolId: string;
   }>;
   currentUserId: ObjectId;
@@ -254,7 +254,7 @@ async function restoreBookmarks({
         filter: { toolId, userId: currentUserId },
         update: {
           $setOnInsert: {
-            created_at: new Date(bookmark.created_at).toISOString(),
+            createdAt: new Date(bookmark.createdAt).toISOString(),
             toolId,
             userId: currentUserId,
           },
