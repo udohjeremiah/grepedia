@@ -4,13 +4,10 @@ import {
   getUserBookmarksResponseSchemas,
 } from "@workspace/shared/schemas/users/get-user-bookmarks";
 
-import { apiClient, requestWithAuth } from "@/lib/api-client";
+import { apiClient } from "@/lib/api-client";
 
 export async function getUserBookmarks(params: GetUserBookmarksParams) {
   const { userId } = getUserBookmarksParamsSchema.parse(params);
-  const response = await apiClient.get(
-    `/users/${userId}/bookmarks`,
-    requestWithAuth(),
-  );
+  const response = await apiClient.get(`/users/${userId}/bookmarks`);
   return getUserBookmarksResponseSchemas[200].parse(response.data);
 }

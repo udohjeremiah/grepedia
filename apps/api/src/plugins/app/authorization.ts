@@ -45,10 +45,10 @@ declare module "fastify" {
  * `preHandler` hooks.
  *
  * Available guards:
- * - requireUser: ensures the request is authenticated
- * - requireUserId: ensures the user id matches a route param id (defaults to `userId`)
- * - requireRole: ensures the user has a specific role
- * - requireStatus: ensures the user has a required account status
+ * - `requireUser`: ensures the request is authenticated
+ * - `requireUserId`: ensures the user id matches a route param id (defaults to `userId`)
+ * - `requireRole`: ensures the user has a specific role
+ * - `requireStatus`: ensures the user has a required account status
  */
 export default fp(
   async (fastify) => {

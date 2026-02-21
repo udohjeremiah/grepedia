@@ -26,8 +26,6 @@ declare module "fastify" {
 /**
  * This plugin initializes MongoDB collections,
  * and exposes typed collection accessors.
- *
- * @see {@link https://zod.dev}
  */
 export default fp(
   async (fastify) => {
@@ -64,38 +62,136 @@ export default fp(
       );
 
     await Promise.all([
-      userBookmarkCollection.createIndex(
-        { userId: 1, toolId: 1 },
-        { unique: true },
-      ),
-      userBookmarkCollection.createIndex({ userId: 1, createdAt: -1 }),
-
-      toolCollection.createIndex({ status: 1, _id: -1 }),
-      toolCollection.createIndex({ status: 1, releasedAt: -1, _id: -1 }),
-      toolCollection.createIndex({ status: 1, "stats.comments": -1, _id: -1 }),
-      toolCollection.createIndex({
-        status: 1,
-        "stats.upvotes": -1,
-        "stats.downvotes": -1,
-        _id: -1,
+      fastify.syncIndexes({
+        collection: userBookmarkCollection,
+        mode: "reconcile",
+        specs: [
+          {
+            key: { userId: 1, toolId: 1 },
+            options: {
+              name: "grepedia__user_bookmark__userId_toolId",
+              unique: true,
+            },
+          },
+          {
+            key: { userId: 1, createdAt: -1 },
+            options: { name: "grepedia__user_bookmark__userId_createdAt_desc" },
+          },
+        ],
       }),
-      toolCollection.createIndex({ _id: -1, "stats.comments": -1, status: 1 }),
-      toolCollection.createIndex({ status: 1, _id: -1, owner: 1 }),
-
-      toolReactionCollection.createIndex(
-        { toolId: 1, userId: 1 },
-        { unique: true },
-      ),
-      toolReactionCollection.createIndex({ toolId: 1, value: 1 }),
-
-      toolCommentCollection.createIndex({ toolId: 1, createdAt: -1 }),
-      toolCommentCollection.createIndex({ userId: 1, createdAt: -1 }),
-
-      toolCommentReactionCollection.createIndex(
-        { commentId: 1, userId: 1 },
-        { unique: true },
-      ),
-      toolCommentReactionCollection.createIndex({ commentId: 1, value: 1 }),
+      fastify.syncIndexes({
+        collection: toolCollection,
+        mode: "reconcile",
+        specs: [
+          {
+            key: { status: 1, _id: -1 },
+            options: { name: "grepedia__tool__status_id_desc" },
+          },
+          {
+            key: { status: 1, releasedAt: -1, _id: -1 },
+            options: { name: "grepedia__tool__status_releasedAt_desc_id_desc" },
+          },
+          {
+            key: { status: 1, "stats.comments": -1, _id: -1 },
+            options: { name: "grepedia__tool__status_comments_desc_id_desc" },
+          },
+          {
+            key: {
+              status: 1,
+              "stats.upvotes": -1,
+              "stats.downvotes": -1,
+              _id: -1,
+            },
+            options: {
+              name: "grepedia__tool__status_upvotes_desc_downvotes_desc_id_desc",
+            },
+          },
+          {
+            key: { status: 1, owner: 1, _id: -1 },
+            options: { name: "grepedia__tool__status_owner_id_desc" },
+          },
+          {
+            key: { owner: 1 },
+            options: { name: "grepedia__tool__owner" },
+          },
+          {
+            key: { addedBy: 1 },
+            options: { name: "grepedia__tool__addedBy" },
+          },
+          {
+            key: { updatedBy: 1 },
+            options: { name: "grepedia__tool__updatedBy" },
+          },
+          {
+            key: { slug: 1 },
+            options: { name: "grepedia__tool__slug_unique", unique: true },
+          },
+        ],
+      }),
+      fastify.syncIndexes({
+        collection: toolReactionCollection,
+        mode: "reconcile",
+        specs: [
+          {
+            key: { toolId: 1, userId: 1 },
+            options: {
+              name: "grepedia__tool_reaction__toolId_userId",
+              unique: true,
+            },
+          },
+          {
+            key: { toolId: 1, value: 1 },
+            options: { name: "grepedia__tool_reaction__toolId_value" },
+          },
+          {
+            key: { userId: 1, value: 1 },
+            options: { name: "grepedia__tool_reaction__userId_value" },
+          },
+          {
+            key: { userId: 1, toolId: 1 },
+            options: { name: "grepedia__tool_reaction__userId_toolId" },
+          },
+        ],
+      }),
+      fastify.syncIndexes({
+        collection: toolCommentCollection,
+        mode: "reconcile",
+        specs: [
+          {
+            key: { toolId: 1, createdAt: -1 },
+            options: { name: "grepedia__tool_comment__toolId_createdAt_desc" },
+          },
+          {
+            key: { userId: 1, createdAt: -1 },
+            options: { name: "grepedia__tool_comment__userId_createdAt_desc" },
+          },
+        ],
+      }),
+      fastify.syncIndexes({
+        collection: toolCommentReactionCollection,
+        mode: "reconcile",
+        specs: [
+          {
+            key: { commentId: 1, userId: 1 },
+            options: {
+              name: "grepedia__tool_comment_reaction__commentId_userId",
+              unique: true,
+            },
+          },
+          {
+            key: { commentId: 1, value: 1 },
+            options: {
+              name: "grepedia__tool_comment_reaction__commentId_value",
+            },
+          },
+          {
+            key: { userId: 1, commentId: 1 },
+            options: {
+              name: "grepedia__tool_comment_reaction__userId_commentId",
+            },
+          },
+        ],
+      }),
     ]);
 
     fastify.decorate("getDatabase", () => database);
@@ -109,5 +205,5 @@ export default fp(
       () => toolCommentReactionCollection,
     );
   },
-  { dependencies: ["mongodb"], name: "database" },
+  { dependencies: ["mongodb", "sync-indexes"], name: "database" },
 );
