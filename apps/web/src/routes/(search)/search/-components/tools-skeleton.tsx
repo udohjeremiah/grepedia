@@ -14,7 +14,7 @@ export default function ToolsSkeleton() {
     >
       {Array.from({ length: itemsCount }).map((_, index) => (
         <div className="flex items-center gap-3" key={index}>
-          <Skeleton className="size-15 shrink-0 rounded-2xl" />
+          <Skeleton className="size-15 shrink-0 rounded-full" />
           <div className="flex-1 space-y-1">
             <Skeleton className="h-4 w-40" />
             <Skeleton className="h-4 w-56" />

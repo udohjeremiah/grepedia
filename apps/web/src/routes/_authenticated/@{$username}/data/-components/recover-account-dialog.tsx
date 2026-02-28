@@ -17,10 +17,9 @@ import { Textarea } from "@workspace/ui/components/textarea";
 import { RotateCcwIcon } from "lucide-react";
 import { useState } from "react";
 
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
 import { useDialogState } from "@/hooks/use-dialog-state";
+import { useSubmission } from "@/hooks/use-submission";
 
 import { useUserRecoverAccount } from "../-queries/user-recover-account";
 
@@ -28,17 +27,13 @@ export default function RecoverAccountDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
   const [payload, setPayload] = useState("");
   const { isPending, mutate: recoverAccount } = useUserRecoverAccount(userId);
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { resetStatus, setError, setSuccess, status } = useSubmission();
 
-  const handleRecover = async () => {
-    setSubmissionStatus(undefined);
+  const handleRecover = () => {
+    resetStatus();
 
     if (!payload.trim()) {
-      setSubmissionStatus({
-        description: "Paste your recovery package to continue.",
-        status: "error",
-        title: "Missing data",
-      });
+      setError("Missing data", "Paste your recovery package to continue.");
       return;
     }
 
@@ -46,11 +41,7 @@ export default function RecoverAccountDialog() {
     try {
       parsed = JSON.parse(payload);
     } catch {
-      setSubmissionStatus({
-        description: "The recovery package must be valid JSON.",
-        status: "error",
-        title: "Invalid JSON",
-      });
+      setError("Invalid JSON", "The recovery package must be valid JSON.");
       return;
     }
 
@@ -69,11 +60,7 @@ export default function RecoverAccountDialog() {
         recoveryPackage: recoveryPackageCandidate,
       }).recoveryPackage;
     } catch {
-      setSubmissionStatus({
-        description: "The recovery package format is invalid.",
-        status: "error",
-        title: "Invalid package",
-      });
+      setError("Invalid package", "The recovery package format is invalid.");
       return;
     }
 
@@ -84,21 +71,18 @@ export default function RecoverAccountDialog() {
       },
       {
         onError: (error) => {
-          setSubmissionStatus({
-            description:
-              error.message ??
+          setError(
+            "Couldn't recover account",
+            error.message ??
               "An error occurred while recovering your account. Please try again.",
-            status: "error",
-            title: "Couldn't recover account",
-          });
+          );
         },
         onSuccess: () => {
           setPayload("");
-          setSubmissionStatus({
-            description: "Your account was recovered successfully.",
-            status: "success",
-            title: "Account recovered",
-          });
+          setSuccess(
+            "Account recovered",
+            "Your account was recovered successfully.",
+          );
         },
       },
     );
@@ -107,7 +91,7 @@ export default function RecoverAccountDialog() {
   const { handleOpenChange, isOpen } = useDialogState({
     onCloseReset: () => {
       setPayload("");
-      setSubmissionStatus(undefined);
+      resetStatus();
     },
   });
 
@@ -134,16 +118,20 @@ export default function RecoverAccountDialog() {
             id="recovery-package"
             onChange={(event) => setPayload(event.target.value)}
             placeholder="Paste the recovery package JSON here..."
+            required={true}
             value={payload}
             wrap="off"
           />
         </div>
-        <SubmissionStatusAlert submissionStatus={submissionStatus} />
+        <SubmissionAlert status={status} />
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button disabled={isPending} onClick={handleRecover}>
+          <Button
+            disabled={!payload.trim() || isPending}
+            onClick={handleRecover}
+          >
             {isPending ? (
               <>
                 <Spinner /> Recovering...

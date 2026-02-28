@@ -32,11 +32,12 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       // `;
       // const vecEmbed = await fastify.generateVectorEmbeddings(textToEmbed);
 
-      const addedAt = new Date().toISOString();
+      const addedAt = new Date();
       const insertResult = await tools.insertOne({
         ...body,
         addedAt,
         addedBy: ObjectId.createFromHexString(request.user.id),
+        releasedAt: body.releasedAt ? new Date(body.releasedAt) : undefined,
         slug,
         stats: { comments: 0, downvotes: 0, upvotes: 0 },
         status: "published",
@@ -51,7 +52,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
 
       return reply.code(201).send({
         data: {
-          addedAt,
+          addedAt: addedAt.toISOString(),
           toolId: insertResult.insertedId.toString(),
           toolSlug: slug,
         },

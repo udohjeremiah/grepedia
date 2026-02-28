@@ -162,6 +162,18 @@ export default fp(
             options: { name: "grepedia__tool_comment__toolId_createdAt_desc" },
           },
           {
+            key: { toolId: 1, parentCommentId: 1, createdAt: -1, _id: -1 },
+            options: {
+              name: "grepedia__tool_comment__toolId_parentCommentId_createdAt_desc_id_desc",
+            },
+          },
+          {
+            key: { parentCommentId: 1, createdAt: -1, _id: -1 },
+            options: {
+              name: "grepedia__tool_comment__parentCommentId_createdAt_desc_id_desc",
+            },
+          },
+          {
             key: { userId: 1, createdAt: -1 },
             options: { name: "grepedia__tool_comment__userId_createdAt_desc" },
           },

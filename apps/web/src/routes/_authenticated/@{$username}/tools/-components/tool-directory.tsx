@@ -31,17 +31,16 @@ import {
   FileCode2Icon,
   FolderIcon,
   FolderOpenIcon,
-  type LucideIcon,
   MessageSquareIcon,
-  PackageIcon,
-  PenLineIcon,
-  PlusIcon,
   SearchXIcon,
   ThumbsDownIcon,
   ThumbsUpIcon,
   XIcon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+
+import { categoryVariants } from "@/constants/category";
+import { formatCompactNumber } from "@/utils/format-compact-number";
 
 import { useUserTools } from "../-queries/user-tools";
 
@@ -55,19 +54,16 @@ interface ToolDirectoryProps {
 type UserTool = ReturnType<typeof useUserTools>["data"]["tools"][number];
 
 const relationGroups: Array<{
-  icon: LucideIcon;
   key: RelationKey;
   label: string;
 }> = [
-  { icon: PackageIcon, key: "owned", label: "Owned" },
-  { icon: PlusIcon, key: "added", label: "Added" },
-  { icon: PenLineIcon, key: "updated", label: "Updated" },
-  { icon: ThumbsUpIcon, key: "upvoted", label: "Upvoted" },
-  { icon: ThumbsDownIcon, key: "downvoted", label: "Downvoted" },
-  { icon: MessageSquareIcon, key: "commented", label: "Commented" },
+  { key: "owned", label: "Owned" },
+  { key: "added", label: "Added" },
+  { key: "updated", label: "Updated" },
+  { key: "upvoted", label: "Upvoted" },
+  { key: "downvoted", label: "Downvoted" },
+  { key: "commented", label: "Commented" },
 ];
-
-const categoryVariants = ["success", "info", "warning", "destructive"] as const;
 
 export default function ToolDirectory({
   searchQuery,
@@ -144,7 +140,7 @@ export default function ToolDirectory({
 
   return (
     <>
-      <div className="rounded-lg border">
+      <div className="overflow-hidden rounded-lg border">
         {groupedByCategory.map((group, groupIndex) => {
           const isExpanded = effectiveExpanded.has(group.category);
 
@@ -168,9 +164,7 @@ export default function ToolDirectory({
                     <FolderIcon className="size-4 text-info" />
                   </>
                 )}
-                <span className="text-sm font-medium text-foreground">
-                  {group.category}
-                </span>
+                <span className="text-sm font-medium">{group.category}</span>
                 <span className="ml-auto text-xs text-muted-foreground">
                   {group.tools.length}{" "}
                   {group.tools.length === 1 ? "tool" : "tools"}
@@ -188,21 +182,21 @@ export default function ToolDirectory({
                         onClick={() => setSelectedTool(tool)}
                       >
                         <FileCode2Icon className="size-3.5 shrink-0 text-muted-foreground" />
-                        <span className="flex-1 truncate text-sm text-foreground">
+                        <span className="flex-1 truncate text-sm">
                           {tool.name}
                         </span>
                         <div className="flex items-center gap-3 text-[11px] text-muted-foreground/70">
                           <span className="flex items-center gap-1">
                             <ThumbsUpIcon className="size-3" />
-                            {tool.stats.upvotes}
+                            {formatCompactNumber(tool.stats.upvotes)}
                           </span>
                           <span className="flex items-center gap-1">
                             <ThumbsDownIcon className="size-3" />
-                            {tool.stats.downvotes}
+                            {formatCompactNumber(tool.stats.downvotes)}
                           </span>
                           <span className="flex items-center gap-1">
                             <MessageSquareIcon className="size-3" />
-                            {tool.stats.comments}
+                            {formatCompactNumber(tool.stats.comments)}
                           </span>
                         </div>
                       </button>
@@ -270,14 +264,14 @@ export default function ToolDirectory({
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Owner</span>
-                  <span className="font-mono text-foreground">
+                  <span className="font-mono">
                     {selectedTool.owner ? `@${selectedTool.owner}` : "—"}
                   </span>
                 </div>
                 <Separator />
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Added</span>
-                  <span className="text-foreground">
+                  <span>
                     {format(new Date(selectedTool.addedAt), "MMMM d, yyyy")}
                   </span>
                 </div>
@@ -286,7 +280,7 @@ export default function ToolDirectory({
                     <Separator />
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Updated</span>
-                      <span className="text-foreground">
+                      <span>
                         {format(
                           new Date(selectedTool.updatedAt),
                           "MMMM d, yyyy",
@@ -316,8 +310,8 @@ export default function ToolDirectory({
 
 function StatTile({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md border bg-secondary/50 p-3 text-center">
-      <p className="text-lg font-semibold text-foreground">{value}</p>
+    <div className="rounded-md border bg-card p-3 text-center">
+      <p className="text-lg font-semibold">{formatCompactNumber(value)}</p>
       <p className="text-[11px] text-muted-foreground">{label}</p>
     </div>
   );

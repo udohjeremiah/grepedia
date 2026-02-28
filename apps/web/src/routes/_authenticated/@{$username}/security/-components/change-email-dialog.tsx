@@ -21,14 +21,12 @@ import {
 } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { MailIcon } from "lucide-react";
-import { useState } from "react";
 import { z } from "zod";
 
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
 import { env } from "@/env";
 import { useDialogState } from "@/hooks/use-dialog-state";
+import { useSubmission } from "@/hooks/use-submission";
 import { changeEmail } from "@/services/auth/change-email";
 
 const formSchema = z.object({
@@ -36,35 +34,31 @@ const formSchema = z.object({
 });
 
 export default function ChangeEmailDialog() {
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { resetStatus, setError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
       newEmail: "",
     },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(undefined);
+      resetStatus();
 
-      void changeEmail(
+      await changeEmail(
         { ...value, callbackURL: `${env.VITE_BASE_URL}/signin` },
         {
           onError: (context) => {
-            setSubmissionStatus({
-              description:
-                context.error.message ??
+            setError(
+              "Couldn't update email",
+              context.error.message ??
                 "An error occurred while sending the email change link. Please try again.",
-              status: "error",
-              title: "Couldn't update email",
-            });
+            );
           },
           onSuccess: () => {
             form.reset();
-            setSubmissionStatus({
-              description:
-                "A confirmation link has been sent to your current email address.",
-              status: "info",
-              title: "Check your email",
-            });
+            setSuccess(
+              "Check your email",
+              "A confirmation link has been sent to your current email address.",
+            );
           },
         },
       );
@@ -77,7 +71,7 @@ export default function ChangeEmailDialog() {
   const { handleOpenChange, isOpen } = useDialogState({
     onCloseReset: () => {
       form.reset();
-      setSubmissionStatus(undefined);
+      resetStatus();
     },
   });
 
@@ -138,18 +132,20 @@ export default function ChangeEmailDialog() {
                 );
               }}
             </form.Field>
-            <Field>
-              <Button disabled={form.state.isSubmitting} type="submit">
-                {form.state.isSubmitting ? (
-                  <>
-                    <Spinner /> Updating email...
-                  </>
-                ) : (
-                  "Update Email"
-                )}
-              </Button>
-              <SubmissionStatusAlert submissionStatus={submissionStatus} />
-            </Field>
+            <form.Subscribe selector={(state) => state.isSubmitting}>
+              {(isSubmitting) => (
+                <Button disabled={isSubmitting} type="submit">
+                  {isSubmitting ? (
+                    <>
+                      <Spinner /> Updating email...
+                    </>
+                  ) : (
+                    "Update Email"
+                  )}
+                </Button>
+              )}
+            </form.Subscribe>
+            <SubmissionAlert status={status} />
           </FieldGroup>
         </form>
       </DialogContent>

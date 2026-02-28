@@ -1,18 +1,28 @@
 import type { GetUserStatsParams } from "@workspace/shared/schemas/users/get-user-stats";
 
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
+import { userQueryOptions } from "@/routes/_authenticated/@{$username}/-queries/user";
 import { getUserStats } from "@/services/users/get-user-stats";
 
 export const userStatQueryOptions = (params: GetUserStatsParams) => {
   return queryOptions({
     queryFn: () => getUserStats(params),
-    queryKey: ["user", params.userId, "stats"],
+    queryKey: [...userQueryOptions(params.userId).queryKey, "stats"],
   });
 };
 
-export const useUserStats = (params: GetUserStatsParams) =>
-  useSuspenseQuery({
+type UseUserStatsOptions = {
+  enabled?: boolean;
+};
+
+export const useUserStats = (
+  params: GetUserStatsParams,
+  options?: UseUserStatsOptions,
+) => {
+  return useQuery({
     ...userStatQueryOptions(params),
+    enabled: options?.enabled ?? true,
     select: (data) => data.data.stats,
   });
+};

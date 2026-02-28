@@ -17,33 +17,29 @@ export type GetUserRecoveryPackageParams = z.infer<
   typeof getUserRecoveryPackageParamsSchema
 >;
 
-export const userAccountExportSnapshotSchema = z.object({
-  bookmarks: z.array(userBookmarkSchema),
-  commentReactions: z.array(toolCommentReactionSchema),
-  comments: z.array(toolCommentSchema),
-  toolReactions: z.array(toolReactionSchema),
-  tools: z.array(toolSchema),
-  user: userSchema,
-});
-
-export const userAccountExportProofSchema = z.object({
-  alg: z.literal("HS256"),
-  kid: z.string(),
-  sig: z.string(),
-});
-
 export const userAccountExportPackageSchema = z.object({
   format: z.literal("grepedia-recovery/v1"),
   payload: z.object({
     app: z.literal("grepedia"),
-    data: userAccountExportSnapshotSchema,
+    data: z.object({
+      bookmarks: z.array(userBookmarkSchema),
+      commentReactions: z.array(toolCommentReactionSchema),
+      comments: z.array(toolCommentSchema),
+      toolReactions: z.array(toolReactionSchema),
+      tools: z.array(toolSchema),
+      user: userSchema,
+    }),
     expiresAt: z.iso.datetime(),
     exportId: z.uuidv4(),
     issuedAt: z.iso.datetime(),
     userId: objectIdSchema,
     version: z.literal(1),
   }),
-  proof: userAccountExportProofSchema,
+  proof: z.object({
+    alg: z.literal("HS256"),
+    kid: z.string(),
+    sig: z.string(),
+  }),
 });
 
 export const getUserRecoveryPackageResponseSchemas = {

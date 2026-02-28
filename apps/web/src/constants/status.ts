@@ -20,4 +20,21 @@ export const statusInfo: Record<
     label: "Suspended",
     nextStep: "Contact support to resolve any issues and restore access.",
   },
-};
+} as const;
+
+export const statusVariants: Record<
+  User["status"],
+  | "default"
+  | "destructive"
+  | "ghost"
+  | "info"
+  | "link"
+  | "outline"
+  | "secondary"
+  | "success"
+  | "warning"
+> = {
+  active: "success",
+  deactivated: "destructive",
+  suspended: "warning",
+} as const;

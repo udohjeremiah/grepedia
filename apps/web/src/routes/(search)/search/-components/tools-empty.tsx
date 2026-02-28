@@ -14,10 +14,7 @@ import { auth } from "@/hooks/auth";
 
 export default function ToolsEmpty() {
   const searchParams = useSearch({ from: "/(search)/search/" });
-  const { data: sessionData } = auth.useSession();
-
-  const tab = searchParams.tab;
-  const username = sessionData?.user.username ?? "";
+  const { user } = auth.useSession();
 
   return (
     <Empty className="border border-dashed">
@@ -27,8 +24,8 @@ export default function ToolsEmpty() {
         </EmptyMedia>
         <EmptyTitle>No tools matched this tab</EmptyTitle>
         <EmptyDescription>
-          We couldn&apos;t find any results in the {tab} tab for this search.
-          Try viewing all tools or add a new one if you know it.
+          We couldn&apos;t find any results in the {searchParams.tab} tab for
+          this search. Try viewing all tools or add a new one if you know it.
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent className="flex-row flex-wrap justify-center gap-2">
@@ -42,7 +39,7 @@ export default function ToolsEmpty() {
         </Button>
         <Button asChild variant="outline">
           <Link
-            params={{ username }}
+            params={{ username: user?.username ?? "" }}
             search={{ modal: "add-tool" }}
             to="/@{$username}/tools"
           >

@@ -1,5 +1,3 @@
-import type { ComponentType, SVGProps } from "react";
-
 import {
   Alert,
   AlertDescription,
@@ -8,6 +6,7 @@ import {
 import {
   CircleAlertIcon,
   CircleCheckIcon,
+  type LucideIcon,
   OctagonAlertIcon,
 } from "lucide-react";
 
@@ -17,14 +16,14 @@ export type SubmissionStatus = {
   title: string;
 };
 
-type SubmissionStatusAlertProps = {
-  submissionStatus?: SubmissionStatus;
-};
+interface SubmissionAlertProps {
+  status?: SubmissionStatus;
+}
 
 const statusConfig: Record<
   SubmissionStatus["status"],
   {
-    icon: ComponentType<SVGProps<SVGSVGElement>>;
+    icon: LucideIcon;
     variant: "critical" | "info" | "success";
   }
 > = {
@@ -42,18 +41,16 @@ const statusConfig: Record<
   },
 };
 
-export default function SubmissionStatusAlert({
-  submissionStatus,
-}: SubmissionStatusAlertProps) {
-  if (!submissionStatus) return;
+export default function SubmissionAlert({ status }: SubmissionAlertProps) {
+  if (!status) return;
 
-  const { icon: Icon, variant } = statusConfig[submissionStatus.status];
+  const { icon: Icon, variant } = statusConfig[status.status];
 
   return (
     <Alert variant={variant}>
       <Icon />
-      <AlertTitle>{submissionStatus.title}</AlertTitle>
-      <AlertDescription>{submissionStatus.description}</AlertDescription>
+      <AlertTitle>{status.title}</AlertTitle>
+      <AlertDescription>{status.description}</AlertDescription>
     </Alert>
   );
 }

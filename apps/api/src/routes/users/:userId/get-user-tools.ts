@@ -6,6 +6,8 @@ import {
 } from "@workspace/shared/schemas/users/get-user-tools";
 import { ObjectId } from "mongodb";
 
+import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
+
 const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
@@ -136,7 +138,7 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
       const toolsResponse = allTool.map((tool) => {
         const idHex = tool._id.toHexString();
 
-        return {
+        return serializeMongoTypes({
           _id: idHex,
           addedAt: tool.addedAt,
           categories: tool.categories,
@@ -156,8 +158,8 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
           shortDescription: tool.shortDescription,
           slug: tool.slug,
           stats: tool.stats,
-          updatedAt: tool.updatedAt ?? tool.addedAt,
-        };
+          updatedAt: tool.updatedAt,
+        });
       });
 
       return reply.code(200).send({

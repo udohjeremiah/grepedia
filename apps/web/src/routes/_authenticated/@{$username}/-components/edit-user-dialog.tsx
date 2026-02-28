@@ -38,16 +38,14 @@ import {
 } from "@workspace/ui/components/select";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { PencilIcon, UserRoundIcon } from "lucide-react";
-import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
 import { countryOptions } from "@/constants/country-options";
 import { auth } from "@/hooks/auth";
 import { useDialogState } from "@/hooks/use-dialog-state";
+import { useSubmission } from "@/hooks/use-submission";
 
 const formSchema = z.object({
   bio: z.union([
@@ -72,48 +70,43 @@ const formSchema = z.object({
 type Gender = z.infer<typeof formSchema>["gender"];
 
 export default function EditUserDialog() {
-  const { data: sessionData } = auth.useSession();
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
-  const { mutate: updateUser } = auth.useUpdateUser();
+  const { user } = auth.useSession();
+  const { mutateAsync: updateUser } = auth.useUpdateUser();
+  const { resetStatus, setError, setSuccess, status } = useSubmission();
   const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
-      bio: sessionData?.user.bio ?? undefined,
-      country: sessionData?.user.country ?? undefined,
-      gender: sessionData?.user.gender ?? undefined,
-      name: sessionData?.user.name ?? "",
-      username: sessionData?.user.displayUsername ?? "",
+      bio: user?.bio ?? undefined,
+      country: user?.country ?? undefined,
+      gender: user?.gender ?? undefined,
+      name: user?.name ?? "",
+      username: user?.displayUsername ?? "",
     },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(undefined);
+      resetStatus();
 
-      updateUser(
-        { ...value },
-        {
-          onError: (error) => {
-            setSubmissionStatus({
-              description:
-                error.message ??
-                "An error occurred while updating your account. Please try again.",
-              status: "error",
-              title: "Couldn't update account",
-            });
-          },
-          onSuccess: () => {
-            form.reset();
-            setSubmissionStatus({
-              description: "Your account has been updated successfully.",
-              status: "success",
-              title: "Account updated",
-            });
-            navigate({
-              params: { username: value.username },
-              to: "/@{$username}",
-            });
-          },
-        },
-      );
+      try {
+        await updateUser(value);
+
+        form.reset();
+        setSuccess(
+          "Account updated",
+          "Your account has been updated successfully.",
+        );
+
+        navigate({
+          params: { username: value.username },
+          to: "/@{$username}",
+        });
+      } catch (error) {
+        setError(
+          "Couldn't update account",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (error as any).message ??
+            "An error occurred while updating your account. Please try again.",
+        );
+      }
     },
     validators: {
       onSubmit: formSchema,
@@ -123,7 +116,7 @@ export default function EditUserDialog() {
   const { handleOpenChange, isOpen } = useDialogState({
     onCloseReset: () => {
       form.reset();
-      setSubmissionStatus(undefined);
+      resetStatus();
     },
   });
 
@@ -142,7 +135,7 @@ export default function EditUserDialog() {
             Update your profile here. To change your email address or password,
             visit your{" "}
             <AppLink
-              params={{ username: sessionData?.user.username ?? "" }}
+              params={{ username: user?.username ?? "" }}
               to="/@{$username}/security"
             >
               security
@@ -344,18 +337,20 @@ export default function EditUserDialog() {
                 );
               }}
             </form.Field>
-            <Field>
-              <Button disabled={form.state.isSubmitting} type="submit">
-                {form.state.isSubmitting ? (
-                  <>
-                    <Spinner /> Updating account...
-                  </>
-                ) : (
-                  "Update Account"
-                )}
-              </Button>
-              <SubmissionStatusAlert submissionStatus={submissionStatus} />
-            </Field>
+            <form.Subscribe selector={(state) => state.isSubmitting}>
+              {(isSubmitting) => (
+                <Button disabled={isSubmitting} type="submit">
+                  {isSubmitting ? (
+                    <>
+                      <Spinner /> Updating account...
+                    </>
+                  ) : (
+                    "Update Account"
+                  )}
+                </Button>
+              )}
+            </form.Subscribe>
+            <SubmissionAlert status={status} />
           </FieldGroup>
         </form>
       </DialogContent>

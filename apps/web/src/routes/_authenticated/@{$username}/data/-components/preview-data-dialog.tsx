@@ -10,22 +10,42 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
-import { CheckIcon, CopyIcon } from "lucide-react";
-import { useState } from "react";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { AlertTriangleIcon, CheckIcon, CopyIcon } from "lucide-react";
 
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { useDialogState } from "@/hooks/use-dialog-state";
 
 import { useUserRecoveryPackage } from "../-queries/user-recovery-package";
 
 export default function PreviewDataDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const { data: userRecoveryPackage } = useUserRecoveryPackage({ userId });
-  const [copied, setCopied] = useState(false);
+  const {
+    data: userRecoveryPackage,
+    isPending,
+    refetch,
+  } = useUserRecoveryPackage({
+    userId,
+  });
+  const { copied, copyToClipboard, resetCopied } = useCopyToClipboard();
   const { handleOpenChange, isOpen } = useDialogState({
     onCloseReset: () => {
-      setCopied(false);
+      resetCopied();
     },
   });
+
+  if (isPending) {
+    return <Skeleton className="h-9 w-28 rounded-4xl" />;
+  }
+
+  if (!userRecoveryPackage) {
+    return (
+      <Button onClick={() => refetch()} variant="destructive">
+        <AlertTriangleIcon />
+        Click to try again...
+      </Button>
+    );
+  }
 
   const exportJson = JSON.stringify(
     userRecoveryPackage.recoveryPackage,
@@ -33,10 +53,8 @@ export default function PreviewDataDialog() {
     2,
   );
 
-  function handleCopy() {
-    navigator.clipboard.writeText(exportJson);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  async function handleCopy() {
+    await copyToClipboard(exportJson);
   }
 
   return (
@@ -54,7 +72,7 @@ export default function PreviewDataDialog() {
             <span>Valid for 1 year. Do not share it.</span>
           </DialogDescription>
         </DialogHeader>
-        <pre className="max-h-96 overflow-auto rounded-md border bg-secondary/50 p-4 font-mono text-xs text-foreground">
+        <pre className="max-h-96 overflow-auto rounded-md border bg-card p-4 font-mono text-xs">
           {exportJson}
         </pre>
         <DialogFooter>

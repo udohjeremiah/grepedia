@@ -16,13 +16,45 @@
       "types": "./dist/schemas/object-id-schema.d.ts",
       "default": "./dist/schemas/object-id-schema.js"
     },
+    "./schemas/search": {
+      "types": "./dist/schemas/search.d.ts",
+      "default": "./dist/schemas/search.js"
+    },
     "./schemas/tools/add-tool": {
       "types": "./dist/schemas/tools/add-tool.d.ts",
       "default": "./dist/schemas/tools/add-tool.js"
     },
+    "./schemas/tools/add-tool-comment": {
+      "types": "./dist/schemas/tools/add-tool-comment.d.ts",
+      "default": "./dist/schemas/tools/add-tool-comment.js"
+    },
+    "./schemas/tools/get-tool": {
+      "types": "./dist/schemas/tools/get-tool.d.ts",
+      "default": "./dist/schemas/tools/get-tool.js"
+    },
+    "./schemas/tools/get-tool-comment-replies": {
+      "types": "./dist/schemas/tools/get-tool-comment-replies.d.ts",
+      "default": "./dist/schemas/tools/get-tool-comment-replies.js"
+    },
+    "./schemas/tools/get-tool-comments": {
+      "types": "./dist/schemas/tools/get-tool-comments.d.ts",
+      "default": "./dist/schemas/tools/get-tool-comments.js"
+    },
     "./schemas/tools/get-tools-count": {
       "types": "./dist/schemas/tools/get-tools-count.d.ts",
       "default": "./dist/schemas/tools/get-tools-count.js"
+    },
+    "./schemas/tools/set-tool-comment-reaction": {
+      "types": "./dist/schemas/tools/set-tool-comment-reaction.d.ts",
+      "default": "./dist/schemas/tools/set-tool-comment-reaction.js"
+    },
+    "./schemas/tools/set-tool-reaction": {
+      "types": "./dist/schemas/tools/set-tool-reaction.d.ts",
+      "default": "./dist/schemas/tools/set-tool-reaction.js"
+    },
+    "./schemas/tools/toggle-tool-bookmark": {
+      "types": "./dist/schemas/tools/toggle-tool-bookmark.d.ts",
+      "default": "./dist/schemas/tools/toggle-tool-bookmark.js"
     },
     "./schemas/tools/tool": {
       "types": "./dist/schemas/tools/tool.d.ts",
@@ -39,18 +71,6 @@
     "./schemas/tools/tool-reaction": {
       "types": "./dist/schemas/tools/tool-reaction.d.ts",
       "default": "./dist/schemas/tools/tool-reaction.js"
-    },
-    "./schemas/search": {
-      "types": "./dist/schemas/search.d.ts",
-      "default": "./dist/schemas/search.js"
-    },
-    "./schemas/users/add-user-bookmark": {
-      "types": "./dist/schemas/users/add-user-bookmark.d.ts",
-      "default": "./dist/schemas/users/add-user-bookmark.js"
-    },
-    "./schemas/users/get-user": {
-      "types": "./dist/schemas/users/get-user.d.ts",
-      "default": "./dist/schemas/users/get-user.js"
     },
     "./schemas/users/get-user-bookmarks": {
       "types": "./dist/schemas/users/get-user-bookmarks.d.ts",

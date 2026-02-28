@@ -8,8 +8,11 @@ export const toolWithVectorEmbeddingsSchema = toolSchema.extend({
 
 export const toolWithObjectIdsSchema = toolWithVectorEmbeddingsSchema.extend({
   _id: z.instanceof(ObjectId).optional(),
+  addedAt: z.date(),
   addedBy: z.instanceof(ObjectId),
   owner: z.instanceof(ObjectId).optional(),
+  releasedAt: z.date().optional(),
+  updatedAt: z.date().optional(),
   updatedBy: z.instanceof(ObjectId).optional(),
 });
 

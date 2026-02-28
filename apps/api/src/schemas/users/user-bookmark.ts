@@ -4,6 +4,7 @@ import { z } from "zod";
 
 export const userBookmarkWithObjectIdsSchema = userBookmarkSchema.extend({
   _id: z.instanceof(ObjectId).optional(),
+  createdAt: z.date(),
   toolId: z.instanceof(ObjectId),
   userId: z.instanceof(ObjectId),
 });

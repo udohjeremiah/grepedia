@@ -13,6 +13,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
+import { Separator } from "@workspace/ui/components/separator";
 import { BookmarkIcon, SearchIcon, SearchXIcon, XIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -44,12 +45,12 @@ export default function UserBookmarks() {
 
   return (
     <div className="flex flex-1 flex-col gap-6 rounded-lg border p-6">
-      <div className="flex gap-4 border-b pb-6">
+      <div className="flex gap-4">
         <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
           <BookmarkIcon className="size-5" />
         </div>
         <div className="flex flex-col gap-1">
-          <h3 className="font-semibold text-foreground">Bookmarked Tools</h3>
+          <h3 className="font-semibold">Bookmarked Tools</h3>
           <p className="text-sm text-muted-foreground">
             {userBookmarks.length}{" "}
             {userBookmarks.length === 1 ? "tool" : "tools"} saved to your
@@ -57,6 +58,7 @@ export default function UserBookmarks() {
           </p>
         </div>
       </div>
+      <Separator />
       <InputGroup>
         <InputGroupAddon>
           <SearchIcon />

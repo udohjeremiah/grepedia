@@ -6,4 +6,4 @@ export const securityTips = [
   "If you suspect unauthorized access, change your password and revoke all other sessions immediately.",
   "Be cautious of phishing attempts, and avoid clicking suspicious links.",
   "Never share one-time codes, password reset links, or verification emails with anyone.",
-];
+] as const;

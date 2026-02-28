@@ -22,12 +22,13 @@ import {
   CalendarIcon,
   CheckIcon,
   EllipsisVerticalIcon,
-  MessageCircleIcon,
+  MessageSquareIcon,
   SearchIcon,
   StarIcon,
 } from "lucide-react";
-import { useState } from "react";
 
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
+import { formatCompactNumber } from "@/utils/format-compact-number";
 import { getInitials } from "@/utils/get-initials";
 
 import { useSearchTools } from "../-queries/search";
@@ -45,12 +46,13 @@ const statConfigByTab = {
     icon: CalendarIcon,
   },
   popular: {
-    getValue: (tool: ToolProps) => tool.stats.upvotes - tool.stats.downvotes,
+    getValue: (tool: ToolProps) =>
+      formatCompactNumber(tool.stats.upvotes - tool.stats.downvotes),
     icon: StarIcon,
   },
   trending: {
-    getValue: (tool: ToolProps) => tool.stats.comments,
-    icon: MessageCircleIcon,
+    getValue: (tool: ToolProps) => formatCompactNumber(tool.stats.comments),
+    icon: MessageSquareIcon,
   },
   verified: {
     getValue: () => "verified",
@@ -72,13 +74,15 @@ export default function Tool(tool: ToolProps) {
       variant="outline"
     >
       <div>
-        <Avatar className="size-15 rounded-2xl">
+        <Avatar className="size-15">
           <AvatarImage
             alt={tool.name}
-            className="rounded-2xl"
-            src={tool.image ?? ""}
+            src={
+              tool.image ??
+              `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
+            }
           />
-          <AvatarFallback className="rounded-2xl text-base">
+          <AvatarFallback className="text-base">
             {getInitials(tool.name)}
           </AvatarFallback>
         </Avatar>
@@ -105,17 +109,11 @@ export default function Tool(tool: ToolProps) {
 }
 
 function MoreInfoSheet(tool: ToolProps) {
-  const [copied, setCopied] = useState(false);
+  const { copied, copyToClipboard } = useCopyToClipboard();
 
   const handleShare = async () => {
-    try {
-      const url = `${globalThis.location.origin}/tools/@${tool.slug}`;
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error("Failed to copy link:", error);
-    }
+    const url = `${globalThis.location.origin}/tools/@${tool.slug}`;
+    await copyToClipboard(url);
   };
 
   return (
@@ -128,7 +126,13 @@ function MoreInfoSheet(tool: ToolProps) {
       <SheetContent>
         <SheetHeader className="flex flex-row items-start gap-3">
           <Avatar size="lg">
-            <AvatarImage alt={tool.name} src={tool.image ?? ""} />
+            <AvatarImage
+              alt={tool.name}
+              src={
+                tool.image ??
+                `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
+              }
+            />
             <AvatarFallback>{getInitials(tool.name)}</AvatarFallback>
           </Avatar>
           <hgroup>

@@ -18,16 +18,17 @@ import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
 import { useDialogState } from "@/hooks/use-dialog-state";
+import { useSubmission } from "@/hooks/use-submission";
 import { signOut } from "@/services/auth/sign-out";
 
 export default function SignOutDialog() {
   const [revokeAllSessions, setRevokeAllSessions] = useState(false);
-  const { mutate: revokeSessions } = auth.useRevokeSessions();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { mutateAsync: revokeSessions } = auth.useRevokeSessions();
+  const { isSubmitting, setSubmitting } = useSubmission();
   const navigate = useNavigate();
   const { closeDialog, handleOpenChange, isOpen } = useDialogState({
     onCloseReset: () => {
-      setIsSubmitting(false);
+      setSubmitting(false);
       setRevokeAllSessions(false);
     },
   });
@@ -35,34 +36,15 @@ export default function SignOutDialog() {
   const signOutText = revokeAllSessions ? "Sign Out Everywhere" : "Sign Out";
 
   const handleSignOut = async () => {
-    setIsSubmitting(true);
+    setSubmitting(true);
 
-    if (revokeAllSessions) {
-      revokeSessions({
-        fetchOptions: {
-          onError: () => {
-            setIsSubmitting(false);
-          },
-          onSuccess: () => {
-            closeDialog();
-            navigate({ reloadDocument: true, to: "/signin" });
-          },
-        },
-      });
-      return;
+    try {
+      await (revokeAllSessions ? revokeSessions({}) : signOut());
+      closeDialog();
+      navigate({ reloadDocument: true, to: "/signin" });
+    } catch {
+      setSubmitting(false);
     }
-
-    void signOut({
-      fetchOptions: {
-        onError: () => {
-          setIsSubmitting(false);
-        },
-        onSuccess: () => {
-          closeDialog();
-          navigate({ reloadDocument: true, to: "/signin" });
-        },
-      },
-    });
   };
 
   return (
@@ -94,7 +76,7 @@ export default function SignOutDialog() {
           />
           <div>
             <Label
-              className="text-sm font-medium text-foreground"
+              className="text-sm font-medium"
               htmlFor="revoke-all-sessions"
             >
               Also sign out of all other devices

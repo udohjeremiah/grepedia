@@ -1,18 +1,7 @@
-import type { GetUserParams } from "@workspace/shared/schemas/users/get-user";
+import { queryOptions } from "@tanstack/react-query";
 
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-
-import { getUser } from "@/services/users/get-user";
-
-export const userQueryOptions = (params: GetUserParams) => {
+export const userQueryOptions = (userId: string) => {
   return queryOptions({
-    queryFn: () => getUser(params),
-    queryKey: ["user", params.userId],
+    queryKey: ["user", userId],
   });
 };
-
-export const useUser = (params: GetUserParams) =>
-  useSuspenseQuery({
-    ...userQueryOptions(params),
-    select: (data) => data.data.user,
-  });

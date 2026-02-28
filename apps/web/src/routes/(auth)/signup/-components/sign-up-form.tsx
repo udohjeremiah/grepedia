@@ -26,10 +26,9 @@ import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
 import { env } from "@/env";
+import { useSubmission } from "@/hooks/use-submission";
 import { signUp } from "@/services/auth/sign-up";
 
 const formSchema = z.object({
@@ -43,7 +42,7 @@ const formSchema = z.object({
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { resetStatus, setError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -52,28 +51,24 @@ export default function SignUpForm() {
       password: "",
     },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(undefined);
+      resetStatus();
 
-      void signUp(
+      await signUp(
         { ...value, callbackURL: `${env.VITE_BASE_URL}/signin` },
         {
           onError: (context) => {
-            setSubmissionStatus({
-              description:
-                context.error.message ??
+            setError(
+              "Unable to create your account",
+              context.error.message ??
                 "Please check your details and try again.",
-              status: "error",
-              title: "Unable to create your account",
-            });
+            );
           },
           onSuccess: () => {
             form.reset();
-            setSubmissionStatus({
-              description:
-                "Check your email to verify your account before signing in.",
-              status: "success",
-              title: "Account created",
-            });
+            setSuccess(
+              "Account created",
+              "Check your email to verify your account before signing in.",
+            );
           },
         },
       );
@@ -202,18 +197,20 @@ export default function SignUpForm() {
               );
             }}
           </form.Field>
-          <Field>
-            <Button disabled={form.state.isSubmitting} type="submit">
-              {form.state.isSubmitting ? (
-                <>
-                  <Spinner /> Creating account...
-                </>
-              ) : (
-                "Create Account"
-              )}
-            </Button>
-            <SubmissionStatusAlert submissionStatus={submissionStatus} />
-          </Field>
+          <form.Subscribe selector={(state) => state.isSubmitting}>
+            {(isSubmitting) => (
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? (
+                  <>
+                    <Spinner /> Creating account...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
+              </Button>
+            )}
+          </form.Subscribe>
+          <SubmissionAlert status={status} />
           <FieldDescription>
             By signing up, you agree to the{" "}
             <AppLink to="/terms-of-service">Terms of Service</AppLink> and{" "}

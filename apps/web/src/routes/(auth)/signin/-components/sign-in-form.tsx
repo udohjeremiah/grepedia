@@ -22,9 +22,8 @@ import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
+import { useSubmission } from "@/hooks/use-submission";
 import { Session } from "@/lib/auth-client";
 import { signIn } from "@/services/auth/sign-in";
 
@@ -39,7 +38,7 @@ const formSchema = z.object({
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { resetStatus, setError, status } = useSubmission();
   const navigate = useNavigate();
 
   const form = useForm({
@@ -49,19 +48,17 @@ export default function SignInForm() {
       rememberMe: false,
     },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(undefined);
+      resetStatus();
 
-      void signIn(
+      await signIn(
         { ...value },
         {
           onError: (context) => {
-            setSubmissionStatus({
-              description:
-                context.error.message ??
+            setError(
+              "Unable to sign in",
+              context.error.message ??
                 "Please check your details and try again.",
-              status: "error",
-              title: "Unable to sign in",
-            });
+            );
           },
           onSuccess: (context) => {
             form.reset();
@@ -199,18 +196,20 @@ export default function SignInForm() {
               </Field>
             )}
           </form.Field>
-          <Field>
-            <Button disabled={form.state.isSubmitting} type="submit">
-              {form.state.isSubmitting ? (
-                <>
-                  <Spinner /> Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
-            </Button>
-            <SubmissionStatusAlert submissionStatus={submissionStatus} />
-          </Field>
+          <form.Subscribe selector={(state) => state.isSubmitting}>
+            {(isSubmitting) => (
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? (
+                  <>
+                    <Spinner /> Logging in...
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </Button>
+            )}
+          </form.Subscribe>
+          <SubmissionAlert status={status} />
           <FieldDescription>
             By signing in, you agree to the{" "}
             <AppLink to="/terms-of-service">Terms of Service</AppLink> and{" "}

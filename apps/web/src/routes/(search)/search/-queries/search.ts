@@ -9,13 +9,10 @@ import { omitKeys } from "@workspace/shared/omit-keys";
 import { search } from "@/services/search";
 
 export const searchQueryOptions = (params: SearchQueryString) => {
-  const normalizedParams = omitKeys(params, ["cursor", "limit"]);
-
   return infiniteQueryOptions({
     initialPageParam: "",
-    queryFn: ({ pageParam }) =>
-      search({ ...normalizedParams, cursor: pageParam, limit: params.limit }),
-    queryKey: ["tools", normalizedParams],
+    queryFn: ({ pageParam }) => search({ ...params, cursor: pageParam }),
+    queryKey: ["tools", "search", omitKeys(params, ["cursor", "limit"])],
     // eslint-disable-next-line perfectionist/sort-objects
     getNextPageParam: (lastPage) => lastPage.data.nextCursor,
   });

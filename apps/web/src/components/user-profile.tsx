@@ -11,13 +11,13 @@ import { auth } from "@/hooks/auth";
 import { getInitials } from "@/utils/get-initials";
 
 export default function UserProfile() {
-  const { data: sessionData, isPending } = auth.useSession();
+  const { isPending, user } = auth.useSession();
 
   if (isPending) {
     return <Skeleton className="size-8 rounded-full" />;
   }
 
-  if (!sessionData) {
+  if (!user) {
     return (
       <Button asChild size="sm">
         <Link to="/signin">Sign in</Link>
@@ -25,15 +25,11 @@ export default function UserProfile() {
     );
   }
 
-  const username = sessionData.user.username;
-  const image = sessionData.user.image ?? "";
-  const fullName = sessionData.user.name;
-
   return (
-    <Link params={{ username }} to="/@{$username}">
+    <Link params={{ username: user.username }} to="/@{$username}">
       <Avatar>
-        <AvatarImage alt={username} src={image} />
-        <AvatarFallback>{getInitials(fullName)}</AvatarFallback>
+        <AvatarImage alt={user.username} src={user.image ?? undefined} />
+        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>
     </Link>
   );

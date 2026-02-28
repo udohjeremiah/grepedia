@@ -73,7 +73,7 @@ const getUserBookmarks: FastifyPluginAsyncZod = async (fastify) => {
         return [
           {
             _id: bookmark._id.toString(),
-            bookmarkedAt: new Date(bookmark.createdAt).toISOString(),
+            bookmarkedAt: bookmark.createdAt.toISOString(),
             categories: tool.categories,
             name: tool.name,
             officialUrl: tool.officialUrl,

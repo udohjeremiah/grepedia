@@ -6,12 +6,14 @@ export const toolCommentSchema = z.object({
   _id: objectIdSchema,
   content: z.string(),
   createdAt: z.iso.datetime(),
+  parentCommentId: objectIdSchema.optional(),
+  replyCount: z.int().min(0),
   stats: z.object({
     downvotes: z.int().min(0),
     upvotes: z.int().min(0),
   }),
   toolId: objectIdSchema,
-  updatedAt: z.string(),
+  updatedAt: z.iso.datetime(),
   userId: objectIdSchema,
 });
 

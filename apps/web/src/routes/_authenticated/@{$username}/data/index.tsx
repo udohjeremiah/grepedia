@@ -1,55 +1,83 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryErrorResetBoundary,
-} from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { Separator } from "@workspace/ui/components/separator";
+import { AlertTriangleIcon, DownloadIcon } from "lucide-react";
 
-import ErrorFallback from "@/components/error-fallback";
+import { accountDeletion } from "@/constants/account-deletion";
 
-import DangerZone from "./-components/danger-zone";
-import UserData from "./-components/user-data";
-import UserDataSkeleton from "./-components/user-data-skeleton";
+import DeleteAccountDialog from "./-components/delete-account-dialog";
+import DownloadJSON from "./-components/download-json";
+import PreviewDataDialog from "./-components/preview-data-dialog";
+import RecoverAccountDialog from "./-components/recover-account-dialog";
 import { userRecoveryPackageQueryOptions } from "./-queries/user-recovery-package";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/data/")({
-  beforeLoad: async ({ context }) => {
-    await context.queryClient.prefetchQuery(
+  component: RouteComponent,
+  loader: ({ context }) => {
+    context.queryClient.prefetchQuery(
       userRecoveryPackageQueryOptions({ userId: context.userId }),
     );
   },
-  component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { queryClient } = Route.useRouteContext();
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <main className="flex p-4 sm:px-8 md:px-0 md:py-6">
-        <div className="flex flex-col gap-6">
-          <Suspense fallback={<UserDataSkeleton />}>
-            <QueryErrorResetBoundary>
-              {({ reset }) => (
-                <ErrorBoundary
-                  FallbackComponent={({ resetErrorBoundary }) => (
-                    <ErrorFallback
-                      description="Something unexpected happened, so we couldn't load your recovery package. Click the button below to try again."
-                      onRetry={resetErrorBoundary}
-                    />
-                  )}
-                  onReset={reset}
-                >
-                  <UserData />
-                </ErrorBoundary>
-              )}
-            </QueryErrorResetBoundary>
-          </Suspense>
-          <DangerZone />
+    <main className="flex p-4 sm:px-8 md:px-0 md:py-6">
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 rounded-lg border p-6">
+          <div className="flex gap-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <DownloadIcon className="size-5" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h3 className="font-semibold">Export Recovery Package</h3>
+              <p className="text-sm text-muted-foreground">
+                Download a signed recovery package. It is valid for 1 year and
+                can be reused. If someone gets it, they can claim your
+                contributions. Keep it private and delete it after use.
+                Re-download if needed.
+              </p>
+            </div>
+          </div>
+          <Separator />
+          <div className="flex flex-wrap items-center gap-4">
+            <RecoverAccountDialog />
+            <DownloadJSON />
+            <PreviewDataDialog />
+          </div>
         </div>
-      </main>
-    </HydrationBoundary>
+        <div className="flex flex-col gap-6 rounded-lg border border-destructive/30 p-6">
+          <div className="flex gap-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+              <AlertTriangleIcon className="size-5" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h3 className="font-semibold">Danger Zone</h3>
+              <p className="text-sm text-muted-foreground">
+                Irreversible actions that affect your account permanently.
+              </p>
+            </div>
+          </div>
+          <Separator />
+          <div className="flex flex-col gap-4 rounded-md border border-destructive/20 bg-destructive/5 p-4">
+            <h4 className="text-sm font-medium">Delete Account</h4>
+            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <p>
+                Permanently delete your account and personal data. This action
+                cannot be undone.
+              </p>
+              <ul className="flex flex-col gap-1 pl-4 text-xs">
+                {accountDeletion.map((info) => (
+                  <li className="flex gap-2" key={info}>
+                    <span className="mt-1 size-1 shrink-0 rounded-full bg-muted-foreground" />
+                    {info}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <DeleteAccountDialog />
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

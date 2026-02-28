@@ -11,38 +11,27 @@ import {
 } from "@workspace/ui/components/alert-dialog";
 import { Button } from "@workspace/ui/components/button";
 import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
 import { useDialogState } from "@/hooks/use-dialog-state";
 
 export default function RevokeOtherSessionsDialog() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: sessionData } = auth.useSession();
+  const { session } = auth.useSession();
   const { data: sessions } = auth.useListSessions();
-  const { mutate: revokeOtherSessions } = auth.useRevokeOtherSessions();
-  const { handleOpenChange, isOpen, setIsOpen } = useDialogState({
-    onCloseReset: () => {
-      setIsSubmitting(false);
-    },
-  });
+  const { isPending, mutate: revokeOtherSessions } =
+    auth.useRevokeOtherSessions();
+  const { handleOpenChange, isOpen, setIsOpen } = useDialogState();
 
   const sessionList = sessions ?? [];
-  const currentSessionId = sessionData?.session.id;
+  const currentSessionId = session?.id;
   const otherSessions = currentSessionId
     ? sessionList.filter((session) => session.id !== currentSessionId)
     : [];
 
   const handleRevokeOtherSessions = () => {
-    setIsSubmitting(true);
-
     revokeOtherSessions({
       fetchOptions: {
-        onError: () => {
-          setIsSubmitting(false);
-        },
         onSuccess: () => {
-          setIsSubmitting(false);
           setIsOpen(false);
         },
       },
@@ -80,16 +69,16 @@ export default function RevokeOtherSessionsDialog() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            disabled={isSubmitting}
+            disabled={isPending}
             onClick={(event) => {
               event.preventDefault();
               handleRevokeOtherSessions();
             }}
             variant="destructive"
           >
-            {isSubmitting ? "Revoking..." : "Revoke Other Sessions"}
+            {isPending ? "Revoking..." : "Revoke Other Sessions"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

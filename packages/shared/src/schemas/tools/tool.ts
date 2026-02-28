@@ -5,7 +5,7 @@ import { objectIdSchema } from "../object-id-schema.js";
 export const toolSchema = z.object({
   _id: objectIdSchema,
   addedAt: z.iso.datetime(),
-  addedBy: z.string(),
+  addedBy: objectIdSchema,
   categories: z.array(z.string()).min(1).max(4),
   externalUrls: z
     .array(z.object({ platform: z.string(), url: z.url() }))
@@ -15,7 +15,7 @@ export const toolSchema = z.object({
   longDescription: z.string(),
   name: z.string(),
   officialUrl: z.url(),
-  owner: z.string().optional(),
+  owner: objectIdSchema.optional(),
   releasedAt: z.iso.datetime().optional(),
   shortDescription: z.string(),
   slug: z.string(),
@@ -27,7 +27,7 @@ export const toolSchema = z.object({
   status: z.enum(["pending", "published", "flagged"]),
   tags: z.array(z.string()).min(1).max(8),
   updatedAt: z.iso.datetime().optional(),
-  updatedBy: z.string().optional(),
+  updatedBy: objectIdSchema.optional(),
 });
 
 export type Tool = z.infer<typeof toolSchema>;

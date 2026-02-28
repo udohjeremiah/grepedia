@@ -10,9 +10,9 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { TooltipProvider } from "@workspace/ui/components/tooltip";
 
 import { GlobalBannerProvider } from "@/providers/global-banner-provider";
-import { TanStackQueryProvider } from "@/providers/tanstack-query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import appCss from "@/styles/globals.css?url";
 
@@ -51,21 +51,19 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootDocument({ children }: { children: ReactNode }) {
-  const { queryClient } = Route.useRouteContext();
-
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <TanStackQueryProvider queryClient={queryClient}>
-          <AuthQueryProvider>
-            <ThemeProvider>
+        <AuthQueryProvider>
+          <ThemeProvider>
+            <TooltipProvider>
               <GlobalBannerProvider>{children}</GlobalBannerProvider>
-            </ThemeProvider>
-          </AuthQueryProvider>
-        </TanStackQueryProvider>
+            </TooltipProvider>
+          </ThemeProvider>
+        </AuthQueryProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",

@@ -4,7 +4,11 @@ import { z } from "zod";
 
 export const toolCommentWithObjectIdsSchema = toolCommentSchema.extend({
   _id: z.instanceof(ObjectId).optional(),
+  createdAt: z.date(),
+  parentCommentId: z.instanceof(ObjectId).optional(),
+  replyCount: z.int().min(0),
   toolId: z.instanceof(ObjectId),
+  updatedAt: z.date(),
   userId: z.instanceof(ObjectId),
 });
 

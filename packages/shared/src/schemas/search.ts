@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-import { toolSchema } from "@/schemas/tools/tool.js";
-
 import { defaultResponse } from "./default-response.js";
+import { objectIdSchema } from "./object-id-schema.js";
 
 export const searchQueryStringSchema = z.object({
   cursor: z.string().optional(),
@@ -24,7 +23,23 @@ export const searchResponseSchemas = {
   200: z.object({
     data: z.object({
       nextCursor: z.string().optional(),
-      tools: z.array(toolSchema),
+      tools: z.array(
+        z.object({
+          _id: objectIdSchema,
+          image: z.url().optional(),
+          longDescription: z.string(),
+          name: z.string(),
+          officialUrl: z.string(),
+          releasedAt: z.iso.datetime().optional(),
+          shortDescription: z.string(),
+          slug: z.string(),
+          stats: z.object({
+            comments: z.int().min(0),
+            downvotes: z.int().min(0),
+            upvotes: z.int().min(0),
+          }),
+        }),
+      ),
     }),
     message: z.string(),
     success: z.boolean(),

@@ -298,7 +298,7 @@ async function restoreBookmarks({
         filter: { toolId, userId: currentUserId },
         update: {
           $setOnInsert: {
-            createdAt: new Date(bookmark.createdAt).toISOString(),
+            createdAt: new Date(bookmark.createdAt),
             toolId,
             userId: currentUserId,
           },

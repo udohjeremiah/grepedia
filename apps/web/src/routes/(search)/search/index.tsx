@@ -1,8 +1,4 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryErrorResetBoundary,
-} from "@tanstack/react-query";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { searchQueryStringSchema } from "@workspace/shared/schemas/search";
 import { Suspense } from "react";
@@ -16,20 +12,21 @@ import ToolsSkeleton from "./-components/tools-skeleton";
 import { searchQueryOptions } from "./-queries/search";
 
 export const Route = createFileRoute("/(search)/search/")({
-  beforeLoad: async ({ context, search }) => {
+  beforeLoad: ({ search }) => {
     if (!search.query) throw redirect({ replace: true, to: "/" });
-
-    await context.queryClient.prefetchInfiniteQuery(searchQueryOptions(search));
   },
   component: RouteComponent,
+  loaderDeps: ({ search }) => ({ query: search.query, tab: search.tab }),
+  // eslint-disable-next-line perfectionist/sort-objects
+  loader: ({ context, deps }) => {
+    context.queryClient.prefetchInfiniteQuery(searchQueryOptions(deps));
+  },
   validateSearch: searchQueryStringSchema,
 });
 
 function RouteComponent() {
-  const { queryClient } = Route.useRouteContext();
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Header />
       <Suspense fallback={<ToolsSkeleton />}>
         <QueryErrorResetBoundary>
@@ -50,6 +47,6 @@ function RouteComponent() {
           )}
         </QueryErrorResetBoundary>
       </Suspense>
-    </HydrationBoundary>
+    </>
   );
 }

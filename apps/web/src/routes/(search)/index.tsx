@@ -1,8 +1,4 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryErrorResetBoundary,
-} from "@tanstack/react-query";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -17,18 +13,17 @@ import ToolsCountSkeleton from "./-components/tools-count-skeleton";
 import { toolsCountQueryOptions } from "./-queries/tools-count";
 
 export const Route = createFileRoute("/(search)/")({
-  beforeLoad: async ({ context }) => {
-    await context.queryClient.prefetchQuery(toolsCountQueryOptions());
-  },
   component: RouteComponent,
+  loader: ({ context }) => {
+    context.queryClient.prefetchQuery(toolsCountQueryOptions());
+  },
 });
 
 function RouteComponent() {
-  const { queryClient } = Route.useRouteContext();
-  const { data: sessionData } = auth.useSession();
+  const { user } = auth.useSession();
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-6 p-4 md:p-6">
         <div className="flex flex-col items-center justify-center gap-2">
           <img alt="Grepedia" height={64} src="/favicon.svg" width={64} />
@@ -56,10 +51,10 @@ function RouteComponent() {
           </QueryErrorResetBoundary>
         </Suspense>
         <div className="flex flex-wrap items-center justify-center gap-1">
-          {sessionData ? (
+          {user ? (
             <AppLink
               className="text-xs"
-              params={{ username: sessionData?.user.username }}
+              params={{ username: user.username }}
               to="/@{$username}"
             >
               Your Profile
@@ -79,6 +74,6 @@ function RouteComponent() {
           </AppLink>
         </div>
       </footer>
-    </HydrationBoundary>
+    </>
   );
 }

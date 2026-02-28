@@ -20,6 +20,7 @@ export function useDialogState(options: UseDialogStateOptions = {}) {
   );
 
   const openDialog = useCallback(() => setIsOpen(true), []);
+
   const closeDialog = useCallback(() => {
     setIsOpen(false);
     onCloseReset?.();

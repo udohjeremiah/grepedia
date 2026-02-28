@@ -29,10 +29,9 @@ import { EyeIcon, EyeOffIcon, KeyRoundIcon, LockIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
 import { useDialogState } from "@/hooks/use-dialog-state";
+import { useSubmission } from "@/hooks/use-submission";
 import { changePassword } from "@/services/auth/change-password";
 
 const formSchema = z
@@ -65,7 +64,7 @@ export default function ChangePasswordDialog() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { resetStatus, setError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -75,27 +74,24 @@ export default function ChangePasswordDialog() {
       revokeOtherSessions: false,
     },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(undefined);
+      resetStatus();
 
-      void changePassword(
+      await changePassword(
         { ...omitKeys(value, ["confirmPassword"]) },
         {
           onError: (context) => {
-            setSubmissionStatus({
-              description:
-                context.error.message ??
+            setError(
+              "Couldn't update password",
+              context.error.message ??
                 "An error occurred while updating your password. Please try again.",
-              status: "error",
-              title: "Couldn't update password",
-            });
+            );
           },
           onSuccess: () => {
             form.reset();
-            setSubmissionStatus({
-              description: "Your password has been updated successfully.",
-              status: "success",
-              title: "Password updated",
-            });
+            setSuccess(
+              "Password updated",
+              "Your password has been updated successfully.",
+            );
           },
         },
       );
@@ -111,7 +107,7 @@ export default function ChangePasswordDialog() {
       setShowConfirmPassword(false);
       setShowCurrentPassword(false);
       setShowNewPassword(false);
-      setSubmissionStatus(undefined);
+      resetStatus();
     },
   });
 
@@ -295,18 +291,20 @@ export default function ChangePasswordDialog() {
                 </Field>
               )}
             </form.Field>
-            <Field>
-              <Button disabled={form.state.isSubmitting} type="submit">
-                {form.state.isSubmitting ? (
-                  <>
-                    <Spinner /> Updating password...
-                  </>
-                ) : (
-                  "Update Password"
-                )}
-              </Button>
-              <SubmissionStatusAlert submissionStatus={submissionStatus} />
-            </Field>
+            <form.Subscribe selector={(state) => state.isSubmitting}>
+              {(isSubmitting) => (
+                <Button disabled={isSubmitting} type="submit">
+                  {isSubmitting ? (
+                    <>
+                      <Spinner /> Updating password...
+                    </>
+                  ) : (
+                    "Update Password"
+                  )}
+                </Button>
+              )}
+            </form.Subscribe>
+            <SubmissionAlert status={status} />
           </FieldGroup>
         </form>
       </DialogContent>

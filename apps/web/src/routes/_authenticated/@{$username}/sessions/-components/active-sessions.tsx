@@ -26,10 +26,10 @@ export interface ActiveSession {
 }
 
 export default function ActiveSessions() {
-  const { data: sessionData, isPending } = auth.useSession();
-  const { data: sessions } = auth.useListSessions();
+  const { isPending: sessionPending, session } = auth.useSession();
+  const { data: sessions, isPending: sessionsPending } = auth.useListSessions();
 
-  if (isPending) {
+  if (sessionPending || sessionsPending) {
     return (
       <div className="flex flex-1 flex-col gap-3">
         <Skeleton className="h-22 w-full rounded-lg" />
@@ -40,7 +40,11 @@ export default function ActiveSessions() {
     );
   }
 
-  const sessionList = formatSessions(sessions ?? [], sessionData?.session.id);
+  if (!session || !sessions) {
+    throw new Error("Couldn't load sessions");
+  }
+
+  const sessionList = formatSessions(sessions, session.id);
 
   return (
     <>

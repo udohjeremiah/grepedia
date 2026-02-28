@@ -1,0 +1,159 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@workspace/ui/components/alert-dialog";
+import { Button } from "@workspace/ui/components/button";
+import { Input } from "@workspace/ui/components/input";
+import { Label } from "@workspace/ui/components/label";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
+
+import SubmissionAlert from "@/components/submission-alert";
+import { env } from "@/env";
+import { auth } from "@/hooks/auth";
+import { useDialogState } from "@/hooks/use-dialog-state";
+import { useSubmission } from "@/hooks/use-submission";
+import { deleteUser } from "@/services/auth/delete-user";
+
+export default function DeleteAccountDialog() {
+  const { isPending, refetch, user } = auth.useSession();
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const {
+    isSubmitting,
+    resetStatus,
+    setError,
+    setSubmitting,
+    setSuccess,
+    status,
+  } = useSubmission();
+  const { handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: () => {
+      setDeleteConfirmText("");
+      setSubmitting(false);
+      resetStatus();
+    },
+  });
+
+  if (isPending) {
+    return <Skeleton className="h-8 w-full rounded-4xl" />;
+  }
+
+  if (!user) {
+    return (
+      <Button onClick={() => refetch()} size="sm" variant="destructive">
+        <AlertTriangleIcon />
+        Click to try again...
+      </Button>
+    );
+  }
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== user.username) {
+      setError(
+        "Username mismatch",
+        "The username you entered does not match your current username.",
+      );
+      return;
+    }
+
+    setSubmitting(true);
+
+    await deleteUser({
+      callbackURL: `${env.VITE_BASE_URL}/signin`,
+      fetchOptions: {
+        onError: (context) => {
+          setSubmitting(false);
+          setError(
+            "Couldn't delete account",
+            context.error.message ??
+              "An error occurred while deleting your account. Please try again.",
+          );
+        },
+        onSuccess: () => {
+          setDeleteConfirmText("");
+          setSubmitting(false);
+          setSuccess(
+            "Check your email",
+            "A confirmation link has been sent to your email address.",
+          );
+        },
+      },
+    });
+  };
+
+  return (
+    <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
+      <AlertDialogTrigger asChild>
+        <Button size="sm" variant="destructive">
+          <Trash2Icon />
+          Delete My Account
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="flex items-center gap-2">
+            <AlertTriangleIcon className="size-5 text-destructive" />
+            Delete Your Account
+          </AlertDialogTitle>
+          <AlertDialogDescription className="flex flex-col gap-3">
+            <span>
+              This will permanently delete your account profile and bookmarks.
+              Your tools, comments, and reactions will remain on the platform.
+            </span>
+            <span className="rounded-lg border bg-info/10 p-3 text-xs text-info">
+              Export your account data first. You will need the recovery package
+              if you want to re-link your past contributions after creating a
+              new account.
+            </span>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="flex flex-col gap-2">
+          <Label className="text-sm" htmlFor="delete-confirm">
+            Type <span className="font-mono">{user.username}</span> to confirm
+          </Label>
+          <Input
+            id="delete-confirm"
+            onChange={(event) => setDeleteConfirmText(event.target.value)}
+            placeholder={user.username}
+            value={deleteConfirmText}
+          />
+        </div>
+        <SubmissionAlert status={status} />
+        <AlertDialogFooter>
+          <AlertDialogCancel
+            onClick={() => {
+              setSubmitting(false);
+            }}
+          >
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            disabled={isSubmitting}
+            onClick={(event) => {
+              event.preventDefault();
+              handleDeleteAccount();
+            }}
+            variant="destructive"
+          >
+            {isSubmitting ? (
+              <>
+                <Spinner /> Deleting...
+              </>
+            ) : (
+              "Permanently Delete Account"
+            )}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}

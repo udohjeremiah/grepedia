@@ -19,9 +19,8 @@ import { EyeIcon, EyeOffIcon, LockIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
+import { useSubmission } from "@/hooks/use-submission";
 import { resetPassword } from "@/services/auth/reset-password";
 
 const formSchema = z
@@ -53,7 +52,7 @@ interface ResetPasswordFormProps {
 export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { resetStatus, setError, status } = useSubmission();
   const navigate = useNavigate();
 
   const form = useForm({
@@ -63,19 +62,17 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       token,
     },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(undefined);
+      resetStatus();
 
-      void resetPassword(
+      await resetPassword(
         { ...omitKeys(value, ["confirmPassword"]) },
         {
           onError: (context) => {
-            setSubmissionStatus({
-              description:
-                context.error.message ??
+            setError(
+              "Unable to reset password",
+              context.error.message ??
                 "This reset link may be invalid or expired. Please request a new one and try again.",
-              status: "error",
-              title: "Unable to reset password",
-            });
+            );
           },
           onSuccess: () => {
             form.reset();
@@ -195,18 +192,20 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
               );
             }}
           </form.Field>
-          <Field>
-            <Button disabled={form.state.isSubmitting} type="submit">
-              {form.state.isSubmitting ? (
-                <>
-                  <Spinner /> Resetting password...
-                </>
-              ) : (
-                "Reset Password"
-              )}
-            </Button>
-            <SubmissionStatusAlert submissionStatus={submissionStatus} />
-          </Field>
+          <form.Subscribe selector={(state) => state.isSubmitting}>
+            {(isSubmitting) => (
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? (
+                  <>
+                    <Spinner /> Resetting password...
+                  </>
+                ) : (
+                  "Reset Password"
+                )}
+              </Button>
+            )}
+          </form.Subscribe>
+          <SubmissionAlert status={status} />
         </FieldGroup>
       </form>
     </div>

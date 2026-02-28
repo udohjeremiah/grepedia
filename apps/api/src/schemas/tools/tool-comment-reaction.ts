@@ -6,6 +6,8 @@ export const toolCommentReactionWithObjectIdsSchema =
   toolCommentReactionSchema.extend({
     _id: z.instanceof(ObjectId).optional(),
     commentId: z.instanceof(ObjectId),
+    createdAt: z.date(),
+    updatedAt: z.date(),
     userId: z.instanceof(ObjectId),
   });
 

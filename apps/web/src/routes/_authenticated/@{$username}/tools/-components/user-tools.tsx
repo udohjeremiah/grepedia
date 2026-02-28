@@ -5,6 +5,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
+import { Separator } from "@workspace/ui/components/separator";
 import { cn } from "@workspace/ui/utils/cn";
 import {
   ArrowUpRightIcon,
@@ -187,13 +188,13 @@ export default function UserTools() {
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div className="flex flex-col gap-6 rounded-lg border p-6">
-        <div className="flex gap-4 border-b pb-6">
+        <div className="flex gap-4">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <WrenchIcon className="size-5" />
           </div>
           <div className="flex w-full justify-between gap-4 max-sm:flex-col">
             <div className="flex flex-col gap-1">
-              <h3 className="font-semibold text-foreground">Your Activity</h3>
+              <h3 className="font-semibold">Your Activity</h3>
               <p className="text-sm text-muted-foreground">
                 Overview of your contributions and interactions with tools.
               </p>
@@ -201,6 +202,7 @@ export default function UserTools() {
             <AddToolDialog />
           </div>
         </div>
+        <Separator />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard {...statConfig.owned} />
           <StatCard {...statConfig.added} />
@@ -211,13 +213,13 @@ export default function UserTools() {
         </div>
       </div>
       <div className="flex flex-col gap-6 rounded-lg border p-6">
-        <div className="flex gap-4 border-b pb-6">
+        <div className="flex gap-4">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-warning/10 text-warning">
             <FolderOpenIcon className="size-5" />
           </div>
           <div className="flex w-full justify-between gap-4 max-sm:flex-col">
             <div className="flex flex-col gap-1">
-              <h3 className="font-semibold text-foreground">Tool Directory</h3>
+              <h3 className="font-semibold">Tool Directory</h3>
               <p className="text-sm text-muted-foreground">
                 Browse tools you&apos;ve contributed to or interacted with,
                 organized by relation.
@@ -228,6 +230,7 @@ export default function UserTools() {
             </Button>
           </div>
         </div>
+        <Separator />
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <InputGroup>
             <InputGroupAddon>

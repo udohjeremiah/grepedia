@@ -50,9 +50,9 @@ export default function Search() {
 
 const formSchema = searchQueryStringSchema.pick({ query: true });
 
-type SearchFormProps = ComponentProps<"search"> & {
+interface SearchFormProps extends ComponentProps<"search"> {
   onSubmitted?: () => void;
-};
+}
 
 function SearchForm({ className, onSubmitted, ...props }: SearchFormProps) {
   const searchParams = useSearch({ from: "/(search)/search/" });

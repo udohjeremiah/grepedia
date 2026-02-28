@@ -29,7 +29,6 @@ import {
   TabletIcon,
   Trash2Icon,
 } from "lucide-react";
-import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
 import { useDialogState } from "@/hooks/use-dialog-state";
@@ -38,24 +37,13 @@ import type { ActiveSession } from "./active-sessions";
 
 export default function ActiveSession(session: ActiveSession) {
   const DeviceIcon = getDeviceIcon(session.device);
-  const { mutate: revokeSession } = auth.useRevokeSession();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { handleOpenChange, isOpen, setIsOpen } = useDialogState({
-    onCloseReset: () => {
-      setIsSubmitting(false);
-    },
-  });
+  const { isPending, mutate: revokeSession } = auth.useRevokeSession();
+  const { handleOpenChange, isOpen, setIsOpen } = useDialogState();
 
-  const handleRevokeSession = async () => {
-    setIsSubmitting(true);
-
+  const handleRevokeSession = () => {
     revokeSession({
       fetchOptions: {
-        onError: () => {
-          setIsSubmitting(false);
-        },
         onSuccess: () => {
-          setIsSubmitting(false);
           setIsOpen(false);
         },
       },
@@ -67,9 +55,7 @@ export default function ActiveSession(session: ActiveSession) {
     <div
       className={cn(
         "flex gap-4 rounded-lg border p-4",
-        session.isCurrent
-          ? "border-primary/20 bg-primary/5"
-          : "bg-secondary/30",
+        session.isCurrent && "border-primary/20 bg-primary/5",
       )}
     >
       <div
@@ -85,9 +71,7 @@ export default function ActiveSession(session: ActiveSession) {
       <div className="flex w-full flex-wrap items-center justify-between gap-2">
         <div className="flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-foreground">
-              {session.device}
-            </span>
+            <span className="text-sm font-medium">{session.device}</span>
             {session.isCurrent && <Badge>Current</Badge>}
           </div>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
@@ -124,18 +108,18 @@ export default function ActiveSession(session: ActiveSession) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={isSubmitting}>
+                <AlertDialogCancel disabled={isPending}>
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction
-                  disabled={isSubmitting}
+                  disabled={isPending}
                   onClick={(event) => {
                     event.preventDefault();
                     handleRevokeSession();
                   }}
                   variant="destructive"
                 >
-                  {isSubmitting ? "Revoking..." : "Revoke Session"}
+                  {isPending ? "Revoking..." : "Revoke Session"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

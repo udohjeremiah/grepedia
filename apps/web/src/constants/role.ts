@@ -18,4 +18,21 @@ export const roleInfo: Record<
       "Can review, revert and moderate content and user submissions.",
     label: "Moderator",
   },
-};
+} as const;
+
+export const roleVariants: Record<
+  User["role"],
+  | "default"
+  | "destructive"
+  | "ghost"
+  | "info"
+  | "link"
+  | "outline"
+  | "secondary"
+  | "success"
+  | "warning"
+> = {
+  contributor: "warning",
+  member: "secondary",
+  moderator: "default",
+} as const;

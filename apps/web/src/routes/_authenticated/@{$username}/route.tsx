@@ -1,56 +1,78 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryErrorResetBoundary,
-} from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import {
+  BookmarkIcon,
+  DatabaseIcon,
+  MonitorIcon,
+  ShieldIcon,
+  UserIcon,
+  WrenchIcon,
+} from "lucide-react";
 
-import ErrorFallback from "@/components/error-fallback";
-
-import Nav from "./-components/nav";
-import NavSkeleton from "./-components/nav-skeleton";
+import NavItem from "./-components/nav-item";
 import { userStatQueryOptions } from "./-queries/user-stats";
 
+export const navItems = [
+  { icon: UserIcon, label: "Profile", link: "/@{$username}", value: "profile" },
+  {
+    icon: WrenchIcon,
+    label: "Tools",
+    link: "/@{$username}/tools",
+    value: "tools",
+  },
+  {
+    icon: ShieldIcon,
+    label: "Security",
+    link: "/@{$username}/security",
+    value: "security",
+  },
+  {
+    icon: MonitorIcon,
+    label: "Sessions",
+    link: "/@{$username}/sessions",
+    value: "sessions",
+  },
+  {
+    icon: BookmarkIcon,
+    label: "Bookmarks",
+    link: "/@{$username}/bookmarks",
+    value: "bookmarks",
+  },
+  {
+    icon: DatabaseIcon,
+    label: "Data & Privacy",
+    link: "/@{$username}/data",
+    value: "data",
+  },
+] as const;
+
+export type Nav = (typeof navItems)[number];
+
 export const Route = createFileRoute("/_authenticated/@{$username}")({
-  beforeLoad: async ({ context }) => {
-    await context.queryClient.prefetchQuery(
+  component: LayoutComponent,
+  loader: ({ context }) => {
+    context.queryClient.prefetchQuery(
       userStatQueryOptions({ userId: context.userId }),
     );
   },
-  component: LayoutComponent,
 });
 
 function LayoutComponent() {
-  const { queryClient } = Route.useRouteContext();
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex flex-1">
-        <div className="grid flex-1 grid-cols-1 grid-rows-[auto_minmax(0,1fr)] md:grid-cols-[25%_minmax(0,1fr)] md:grid-rows-none md:gap-6 md:px-16 lg:gap-8 lg:px-32">
-          <Suspense fallback={<NavSkeleton />}>
-            <QueryErrorResetBoundary>
-              {({ reset }) => (
-                <ErrorBoundary
-                  FallbackComponent={({ resetErrorBoundary }) => (
-                    <div className="p-4 sm:px-8 md:px-0 md:py-6">
-                      <ErrorFallback
-                        description="Something unexpected happened, so we couldn't load the navigation. Click the button below to try again."
-                        onRetry={resetErrorBoundary}
-                      />
-                    </div>
-                  )}
-                  onReset={reset}
-                >
-                  <Nav />
-                </ErrorBoundary>
-              )}
-            </QueryErrorResetBoundary>
-          </Suspense>
-          <Outlet />
-        </div>
+    <div className="flex flex-1">
+      <div className="grid flex-1 grid-cols-1 grid-rows-[auto_minmax(0,1fr)] md:grid-cols-[25%_minmax(0,1fr)] md:grid-rows-none md:gap-6 md:px-16 lg:gap-8 lg:px-32">
+        <nav>
+          <ul className="no-scrollbar flex gap-1 overflow-x-auto border-b p-2 sm:px-6 md:flex-col md:border-none md:px-0 md:py-6">
+            {navItems.map((item) => {
+              return (
+                <li key={item.value}>
+                  <NavItem {...item} />
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+        <Outlet />
       </div>
-    </HydrationBoundary>
+    </div>
   );
 }

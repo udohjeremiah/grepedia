@@ -14,45 +14,40 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { formatDistanceToNow } from "date-fns";
 import { ExternalLinkIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
 
 import AppLink from "@/components/app-link";
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
+import { categoryVariants } from "@/constants/category";
 import { useDialogState } from "@/hooks/use-dialog-state";
+import { useSubmission } from "@/hooks/use-submission";
 
 import { useUserBookmarks } from "../-queries/user-bookmarks";
 import { useUserRemoveBookmark } from "../-queries/user-remove-bookmark";
 
 type UserBookmarkProps = ReturnType<typeof useUserBookmarks>["data"][number];
 
-const categoryVariants = ["success", "info", "warning", "destructive"] as const;
-
 export default function UserBookmark(bookmark: UserBookmarkProps) {
   const { userId } = useRouteContext({ from: "/_authenticated" });
   const { isPending, mutate: removeBookmark } = useUserRemoveBookmark(userId);
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { resetStatus, setError, status } = useSubmission();
   const { handleOpenChange, isOpen, setIsOpen } = useDialogState({
     onCloseReset: () => {
-      setSubmissionStatus(undefined);
+      resetStatus();
     },
   });
 
   function handleRemoveBookmark() {
-    setSubmissionStatus(undefined);
+    resetStatus();
 
     removeBookmark(
       { bookmarkId: bookmark._id, userId },
       {
         onError: (error) => {
-          setSubmissionStatus({
-            description:
-              error.message ??
+          setError(
+            "Couldn't remove bookmark",
+            error.message ??
               "An error occurred while removing this bookmark. Please try again.",
-            status: "error",
-            title: "Couldn't remove bookmark",
-          });
+          );
         },
         onSuccess: () => {
           setIsOpen(false);
@@ -115,7 +110,7 @@ export default function UserBookmark(bookmark: UserBookmarkProps) {
                   Remove {bookmark.name} from your bookmarks?
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <SubmissionStatusAlert submissionStatus={submissionStatus} />
+              <SubmissionAlert status={status} />
               <AlertDialogFooter>
                 <AlertDialogCancel disabled={isPending}>
                   Cancel

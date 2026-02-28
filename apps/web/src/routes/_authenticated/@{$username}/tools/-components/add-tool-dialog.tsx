@@ -42,6 +42,7 @@ import { Spinner } from "@workspace/ui/components/spinner";
 import { format } from "date-fns";
 import {
   ChevronDownIcon,
+  FolderOpenIcon,
   GlobeIcon,
   PlusIcon,
   TagIcon,
@@ -50,9 +51,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
+import { useSubmission } from "@/hooks/use-submission";
 
 import { useAddTool } from "../-queries/user-add-tool";
 
@@ -71,8 +71,8 @@ export default function AddToolDialog() {
   const [categoryInput, setCategoryInput] = useState("");
   const [tagInput, setTagInput] = useState("");
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const { mutate: addTool } = useAddTool(userId);
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { mutateAsync: addTool } = useAddTool(userId);
+  const { resetStatus, setError, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -87,29 +87,28 @@ export default function AddToolDialog() {
       tags: [],
     } as AddToolBody,
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(undefined);
+      resetStatus();
 
-      addTool(value, {
-        onError: (error) => {
-          setSubmissionStatus({
-            description:
-              error.message ??
-              "An error occurred while submitting the tool. Please try again.",
-            status: "error",
-            title: "Submission failed",
-          });
-        },
-        onSuccess({ data }) {
-          form.reset();
-          setExternalUrlInput("");
-          setCategoryInput("");
-          setTagInput("");
-          navigate({
-            params: { slug: data.toolSlug },
-            to: "/tools/@{$slug}",
-          });
-        },
-      });
+      try {
+        const { data } = await addTool(value);
+
+        form.reset();
+        setExternalUrlInput("");
+        setCategoryInput("");
+        setTagInput("");
+
+        navigate({
+          params: { slug: data.toolSlug },
+          to: "/tools/@{$slug}",
+        });
+      } catch (error) {
+        setError(
+          "Submission failed",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (error as any).message ??
+            "An error occurred while submitting the tool. Please try again.",
+        );
+      }
     },
     validators: {
       onSubmit: formSchema,
@@ -126,7 +125,7 @@ export default function AddToolDialog() {
           to: "/@{$username}/tools",
         });
         if (!open) {
-          setSubmissionStatus(undefined);
+          resetStatus();
         }
       }}
       open={searchParams.modal === "add-tool"}
@@ -386,7 +385,7 @@ export default function AddToolDialog() {
                     <FieldLabel htmlFor="category-input">Categories</FieldLabel>
                     <InputGroup>
                       <InputGroupAddon>
-                        <TagIcon />
+                        <FolderOpenIcon />
                       </InputGroupAddon>
                       <InputGroupInput
                         aria-invalid={isInvalid}
@@ -597,18 +596,20 @@ export default function AddToolDialog() {
                 );
               }}
             </form.Field>
-            <Field>
-              <Button disabled={form.state.isSubmitting} type="submit">
-                {form.state.isSubmitting ? (
-                  <>
-                    <Spinner /> Submitting tool...
-                  </>
-                ) : (
-                  "Submit Tool"
-                )}
-              </Button>
-              <SubmissionStatusAlert submissionStatus={submissionStatus} />
-            </Field>
+            <form.Subscribe selector={(state) => state.isSubmitting}>
+              {(isSubmitting) => (
+                <Button disabled={isSubmitting} type="submit">
+                  {isSubmitting ? (
+                    <>
+                      <Spinner /> Submitting tool...
+                    </>
+                  ) : (
+                    "Submit Tool"
+                  )}
+                </Button>
+              )}
+            </form.Subscribe>
+            <SubmissionAlert status={status} />
           </FieldGroup>
         </form>
       </DialogContent>

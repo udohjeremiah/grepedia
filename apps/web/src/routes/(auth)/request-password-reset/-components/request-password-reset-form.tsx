@@ -14,14 +14,12 @@ import {
 } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { MailIcon } from "lucide-react";
-import { useState } from "react";
 import { z } from "zod";
 
 import AppLink from "@/components/app-link";
-import SubmissionStatusAlert, {
-  type SubmissionStatus,
-} from "@/components/submission-status-alert";
+import SubmissionAlert from "@/components/submission-alert";
 import { env } from "@/env";
+import { useSubmission } from "@/hooks/use-submission";
 import { requestPasswordReset } from "@/services/auth/request-password-reset";
 
 const formSchema = z.object({
@@ -29,35 +27,31 @@ const formSchema = z.object({
 });
 
 export default function RequestPasswordResetForm() {
-  const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>();
+  const { resetStatus, setError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
       email: "",
     },
     onSubmit: async ({ value }) => {
-      setSubmissionStatus(undefined);
+      resetStatus();
 
-      void requestPasswordReset(
+      await requestPasswordReset(
         { ...value, redirectTo: `${env.VITE_BASE_URL}/reset-password` },
         {
           onError: (context) => {
-            setSubmissionStatus({
-              description:
-                context.error.message ??
+            setError(
+              "Unable to send reset email",
+              context.error.message ??
                 "Something went wrong while sending the reset email. Please try again.",
-              status: "error",
-              title: "Unable to send reset email",
-            });
+            );
           },
           onSuccess: () => {
             form.reset();
-            setSubmissionStatus({
-              description:
-                "If an account exists for this email, a password reset link has been sent.",
-              status: "info",
-              title: "Check your email",
-            });
+            setSuccess(
+              "Check your email",
+              "If an account exists for this email, a password reset link has been sent.",
+            );
           },
         },
       );
@@ -121,18 +115,20 @@ export default function RequestPasswordResetForm() {
               );
             }}
           </form.Field>
-          <Field>
-            <Button disabled={form.state.isSubmitting} type="submit">
-              {form.state.isSubmitting ? (
-                <>
-                  <Spinner /> Sending...
-                </>
-              ) : (
-                "Send Password Reset Link"
-              )}
-            </Button>
-            <SubmissionStatusAlert submissionStatus={submissionStatus} />
-          </Field>
+          <form.Subscribe selector={(state) => state.isSubmitting}>
+            {(isSubmitting) => (
+              <Button disabled={isSubmitting} type="submit">
+                {isSubmitting ? (
+                  <>
+                    <Spinner /> Sending...
+                  </>
+                ) : (
+                  "Send Password Reset Link"
+                )}
+              </Button>
+            )}
+          </form.Subscribe>
+          <SubmissionAlert status={status} />
         </FieldGroup>
       </form>
     </div>
