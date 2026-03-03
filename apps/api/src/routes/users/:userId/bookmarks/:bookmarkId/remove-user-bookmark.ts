@@ -23,6 +23,7 @@ const removeUserBookmark: FastifyPluginAsyncZod = async (fastify) => {
 
       const userObjectId = ObjectId.createFromHexString(userId);
       const user = await users.findOne({ _id: userObjectId });
+
       if (!user) {
         return reply.code(404).send({
           message: "User not found",

@@ -20,10 +20,10 @@ export default function LeaderboardSkeleton() {
       <div className="flex items-center gap-3 px-3">
         <Skeleton className="h-4 w-9" />
         <Skeleton className="h-4 flex-1" />
-        <div className="hidden w-60 grid-cols-3 justify-items-end gap-6 sm:grid">
-          <Skeleton className="h-8 w-16" />
-          <Skeleton className="h-8 w-16" />
-          <Skeleton className="h-8 w-16" />
+        <div className="hidden w-72 grid-cols-3 justify-items-end gap-6 sm:grid">
+          <Skeleton className="h-8 w-20 rounded-md" />
+          <Skeleton className="h-8 w-20 rounded-md" />
+          <Skeleton className="h-8 w-20 rounded-md" />
         </div>
         <Skeleton className="h-4 w-16 sm:hidden" />
       </div>
@@ -40,10 +40,10 @@ export default function LeaderboardSkeleton() {
               <Skeleton className="h-3 w-full max-w-44" />
               <Skeleton className="h-3 w-24 sm:hidden" />
             </div>
-            <div className="hidden w-60 grid-cols-3 justify-items-end gap-6 sm:grid">
-              <Skeleton className="h-4 w-10" />
-              <Skeleton className="h-4 w-10" />
-              <Skeleton className="h-4 w-10" />
+            <div className="hidden w-72 grid-cols-3 justify-items-end gap-6 sm:grid">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-20" />
             </div>
           </div>
         ))}
