@@ -1,6 +1,6 @@
 import type { User } from "@workspace/shared/schemas/users/user";
 
-export const statusInfo: Record<
+export const statusConfig: Record<
   User["status"],
   { description: string; label: string; nextStep: string }
 > = {

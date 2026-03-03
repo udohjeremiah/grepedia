@@ -1,6 +1,6 @@
 import type { User } from "@workspace/shared/schemas/users/user";
 
-export const roleInfo: Record<
+export const roleConfig: Record<
   User["role"],
   { description: string; label: string }
 > = {

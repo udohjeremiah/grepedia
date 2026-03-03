@@ -88,6 +88,10 @@
       "types": "./dist/schemas/users/get-user-tools.d.ts",
       "default": "./dist/schemas/users/get-user-tools.js"
     },
+    "./schemas/users/get-users-leaderboard": {
+      "types": "./dist/schemas/users/get-users-leaderboard.d.ts",
+      "default": "./dist/schemas/users/get-users-leaderboard.js"
+    },
     "./schemas/users/recover-user-account": {
       "types": "./dist/schemas/users/recover-user-account.d.ts",
       "default": "./dist/schemas/users/recover-user-account.js"

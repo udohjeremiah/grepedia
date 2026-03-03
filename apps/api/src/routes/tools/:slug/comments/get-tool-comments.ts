@@ -46,7 +46,6 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       let decodedCursor: CommentsCursor | undefined;
-
       try {
         decodedCursor = decodeCursor(cursor, commentsCursorSchema);
       } catch (error) {

@@ -292,7 +292,6 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       const baseFilter = buildBaseSearchFilter(words);
 
       let decodedCursor;
-
       try {
         decodedCursor = decodeCursor(cursor, searchCursorPayloadSchema);
       } catch (error) {
@@ -333,8 +332,8 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         });
       });
 
-      const last = result.at(-1);
       let nextCursor: string | undefined;
+      const last = result.at(-1);
 
       if (last && result.length === limit) {
         const cursorPayload = getNextSearchCursor({

@@ -14,8 +14,8 @@ import {
 } from "lucide-react";
 
 import { countryOptions } from "@/constants/country-options";
-import { roleInfo, roleVariants } from "@/constants/role";
-import { statusInfo, statusVariants } from "@/constants/status";
+import { roleConfig, roleVariants } from "@/constants/role";
+import { statusConfig, statusVariants } from "@/constants/status";
 import { auth } from "@/hooks/auth";
 
 import EditUserDialog from "./edit-user-dialog";
@@ -45,8 +45,8 @@ export default function User() {
     throw new Error("Couldn't load user");
   }
 
-  const role = roleInfo[user.role];
-  const status = statusInfo[user.status];
+  const role = roleConfig[user.role];
+  const status = statusConfig[user.status];
   const countryLabel =
     countryOptions.find((country) => country.value === user.country)?.label ??
     user.country ??

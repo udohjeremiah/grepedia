@@ -10,7 +10,6 @@ import { Separator } from "@workspace/ui/components/separator";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip";
 import { cn } from "@workspace/ui/utils/cn";
@@ -104,39 +103,35 @@ export default function ToolHeader() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  disabled={isTogglingBookmark}
-                  onClick={() => toggleToolBookmark()}
-                  size="icon-sm"
-                  variant="outline"
-                >
-                  <BookmarkIcon
-                    className={cn(hasBookmarked && "fill-primary")}
-                  />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {hasBookmarked ? "Bookmarked" : "Not bookmarked"}
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button onClick={handleShare} size="icon-sm" variant="outline">
-                  {copied ? (
-                    <CheckIcon className="text-primary" />
-                  ) : (
-                    <Share2Icon />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {copied ? "Link copied!" : "Copy link"}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                disabled={isTogglingBookmark}
+                onClick={() => toggleToolBookmark()}
+                size="icon-sm"
+                variant="outline"
+              >
+                <BookmarkIcon className={cn(hasBookmarked && "fill-primary")} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {hasBookmarked ? "Bookmarked" : "Not bookmarked"}
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={handleShare} size="icon-sm" variant="outline">
+                {copied ? (
+                  <CheckIcon className="text-primary" />
+                ) : (
+                  <Share2Icon />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {copied ? "Link copied!" : "Copy link"}
+            </TooltipContent>
+          </Tooltip>
           <Button asChild className="gap-2" size="sm">
             <a href={tool.officialUrl} rel="noreferrer" target="_blank">
               <ExternalLinkIcon className="size-3.5" />
@@ -206,21 +201,15 @@ export default function ToolHeader() {
           </span>
         </div>
         <div className="ml-auto">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="gap-1.5 px-2"
-                  size="sm"
-                  variant="destructive"
-                >
-                  <FlagIcon className="size-3.5" />
-                  <span className="text-xs">Report</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Report this tool</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button className="gap-1.5 px-2" size="sm" variant="destructive">
+                <FlagIcon className="size-3.5" />
+                <span className="text-xs">Report</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Report this tool</TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>
