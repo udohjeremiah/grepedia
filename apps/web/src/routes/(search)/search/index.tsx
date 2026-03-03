@@ -20,6 +20,22 @@ export const Route = createFileRoute("/(search)/search/")({
   // eslint-disable-next-line perfectionist/sort-objects
   loader: ({ context, deps }) => {
     context.queryClient.prefetchInfiniteQuery(searchQueryOptions(deps));
+    return deps;
+  },
+  // eslint-disable-next-line perfectionist/sort-objects
+  head: ({ loaderData }) => {
+    const query = loaderData?.query;
+    return {
+      meta: [
+        { title: `${query ?? "Search"} — Search Results | Grepedia` },
+        {
+          content: query
+            ? `Search results for "${query}" on Grepedia.`
+            : "Search tools and resources on Grepedia.",
+          name: "description",
+        },
+      ],
+    };
   },
   validateSearch: searchQueryStringSchema,
 });

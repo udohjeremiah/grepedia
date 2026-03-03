@@ -12,6 +12,16 @@ import { usersLeaderboardQueryOptions } from "./-queries/users-leaderboard";
 
 export const Route = createFileRoute("/_authenticated/leaderboard/")({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      { title: "Leaderboard — Grepedia" },
+      {
+        content:
+          "Explore the Grepedia leaderboard and see top contributors by tool ownership, additions, and updates.",
+        name: "description",
+      },
+    ],
+  }),
   loader: ({ context }) => {
     context.queryClient.prefetchInfiniteQuery(usersLeaderboardQueryOptions({}));
   },

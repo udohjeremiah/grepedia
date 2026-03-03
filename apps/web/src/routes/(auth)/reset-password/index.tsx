@@ -8,6 +8,15 @@ export const Route = createFileRoute("/(auth)/reset-password/")({
     if (search.error || !search.token) throw notFound();
   },
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      { title: "Set New Password — Grepedia" },
+      {
+        content: "Set a new password for your Grepedia account.",
+        name: "description",
+      },
+    ],
+  }),
   validateSearch: z.object({
     error: z.string().optional(),
     token: z.string().optional(),

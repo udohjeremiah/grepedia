@@ -8,6 +8,15 @@ import User from "./-components/user";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/")({
   component: RouteComponent,
+  head: ({ params }) => ({
+    meta: [
+      { title: `@${params.username} — Profile | Grepedia` },
+      {
+        content: `View profile details and contribution summary for @${params.username} on Grepedia.`,
+        name: "description",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {

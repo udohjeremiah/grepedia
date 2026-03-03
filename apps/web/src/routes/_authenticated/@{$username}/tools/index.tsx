@@ -17,6 +17,16 @@ export const Route = createFileRoute("/_authenticated/@{$username}/tools/")({
       userToolsQueryOptions({ userId: context.userId }),
     );
   },
+  // eslint-disable-next-line perfectionist/sort-objects
+  head: ({ params }) => ({
+    meta: [
+      { title: `@${params.username} — Tools | Grepedia` },
+      {
+        content: `Browse tools associated with @${params.username}, including owned, added, and updated tools.`,
+        name: "description",
+      },
+    ],
+  }),
   validateSearch: z.object({
     modal: z.literal("add-tool").optional(),
   }),

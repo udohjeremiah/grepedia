@@ -18,6 +18,16 @@ export const Route = createFileRoute("/_authenticated/tools/@{$slug}/")({
       toolCommentsQueryOptions({ slug: params.slug }),
     );
   },
+  // eslint-disable-next-line perfectionist/sort-objects
+  head: ({ params }) => ({
+    meta: [
+      { title: `${params.slug} — Tool Details | Grepedia` },
+      {
+        content: `Explore tool details, stats, and community discussions for ${params.slug} on Grepedia.`,
+        name: "description",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {

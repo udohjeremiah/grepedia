@@ -14,6 +14,16 @@ import { toolsCountQueryOptions } from "./-queries/tools-count";
 
 export const Route = createFileRoute("/(search)/")({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      { title: "Grepedia — Search Tools Worldwide" },
+      {
+        content:
+          "Search Grepedia to discover tools from around the world, curated and reviewed by the community.",
+        name: "description",
+      },
+    ],
+  }),
   loader: ({ context }) => {
     context.queryClient.prefetchQuery(toolsCountQueryOptions());
   },

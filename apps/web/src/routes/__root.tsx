@@ -22,27 +22,17 @@ export interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
-    links: [
-      {
-        href: appCss,
-        rel: "stylesheet",
-      },
-    ],
+    links: [{ href: appCss, rel: "stylesheet" }],
     meta: [
-      {
-        charSet: "utf8",
-      },
-      {
-        content: "width=device-width, initial-scale=1",
-        name: "viewport",
-      },
+      { charSet: "utf8" },
+      { content: "width=device-width, initial-scale=1", name: "viewport" },
       {
         title:
-          "Grepedia — the encyclopedia of tools powered by collective wisdom",
+          "Grepedia — The Encyclopedia Of Tools Powered By Collective Wisdom",
       },
       {
         content:
-          "Grepedia — the encyclopedia of tools powered by collective wisdom. Search and explore tools curated by the community.",
+          "Grepedia is the encyclopedia of tools around the world, powered by collective wisdom. Discover, compare, and contribute trusted tool knowledge.",
         name: "description",
       },
     ],

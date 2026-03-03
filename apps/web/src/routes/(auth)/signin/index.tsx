@@ -4,6 +4,16 @@ import SignInForm from "./-components/sign-in-form";
 
 export const Route = createFileRoute("/(auth)/signin/")({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      { title: "Sign In — Grepedia" },
+      {
+        content:
+          "Sign in to Grepedia to manage your profile, tools, bookmarks, and account settings.",
+        name: "description",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {
