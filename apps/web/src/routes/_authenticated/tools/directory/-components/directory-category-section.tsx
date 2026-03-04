@@ -83,7 +83,7 @@ export default function DirectoryCategorySection({
                     to="/tools/@{$slug}"
                   >
                     <FileCode2Icon className="size-3.5 shrink-0 text-muted-foreground" />
-                    <span className="flex-1 truncate text-sm">{tool.name}</span>
+                    <span className="text-sm">{tool.name}</span>
                     <div className="ml-auto flex items-center gap-2 text-[11px] text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <ThumbsUpIcon className="size-3.5" />
