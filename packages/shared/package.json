@@ -28,6 +28,14 @@
       "types": "./dist/schemas/tools/add-tool-comment.d.ts",
       "default": "./dist/schemas/tools/add-tool-comment.js"
     },
+    "./schemas/tools/get-tools-directory": {
+      "types": "./dist/schemas/tools/get-tools-directory.d.ts",
+      "default": "./dist/schemas/tools/get-tools-directory.js"
+    },
+    "./schemas/tools/get-tools-directory-categories": {
+      "types": "./dist/schemas/tools/get-tools-directory-categories.d.ts",
+      "default": "./dist/schemas/tools/get-tools-directory-categories.js"
+    },
     "./schemas/tools/get-tool": {
       "types": "./dist/schemas/tools/get-tool.d.ts",
       "default": "./dist/schemas/tools/get-tool.js"

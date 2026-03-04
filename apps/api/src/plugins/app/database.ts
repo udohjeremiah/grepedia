@@ -111,6 +111,12 @@ export default fp(
             options: { name: "grepedia__tool__status_owner_id_desc" },
           },
           {
+            key: { status: 1, categories: 1, name: 1, _id: 1 },
+            options: {
+              name: "grepedia__tool__status_categories_name_id",
+            },
+          },
+          {
             key: { owner: 1 },
             options: { name: "grepedia__tool__owner" },
           },

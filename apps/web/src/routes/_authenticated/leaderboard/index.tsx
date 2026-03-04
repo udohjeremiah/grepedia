@@ -29,7 +29,7 @@ export const Route = createFileRoute("/_authenticated/leaderboard/")({
 
 function RouteComponent() {
   return (
-    <main className="mx-auto flex max-w-5xl flex-1 p-4 sm:px-8 md:px-16">
+    <main className="mx-auto flex max-w-6xl flex-1 p-4 sm:px-8 md:px-16">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-3">
