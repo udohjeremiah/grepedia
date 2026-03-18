@@ -2,7 +2,7 @@ import {
   GetUserRecoveryPackageParams,
   getUserRecoveryPackageParamsSchema,
   getUserRecoveryPackageResponseSchemas,
-} from "@workspace/shared/schemas/users/get-user-recovery-package";
+} from "@workspace/shared/schemas/users/recovery-package/get-user-recovery-package";
 
 import { apiClient } from "@/lib/api-client";
 

@@ -1,9 +1,13 @@
 {
   "extends": "@workspace/typescript-config/react-library.json",
   "compilerOptions": {
-    "composite": false,
-    "noEmit": true
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "@workspace/transactional/*": ["./src/*"]
+    },
+    "rootDir": "src"
   },
-  "include": ["."],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

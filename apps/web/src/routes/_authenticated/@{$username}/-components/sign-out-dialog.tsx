@@ -22,10 +22,13 @@ import { useSubmission } from "@/hooks/use-submission";
 import { signOut } from "@/services/auth/sign-out";
 
 export default function SignOutDialog() {
+  const navigate = useNavigate();
+
   const [revokeAllSessions, setRevokeAllSessions] = useState(false);
+
   const { mutateAsync: revokeSessions } = auth.useRevokeSessions();
   const { isSubmitting, setSubmitting } = useSubmission();
-  const navigate = useNavigate();
+
   const { closeDialog, handleOpenChange, isOpen } = useDialogState({
     onCloseReset: () => {
       setSubmitting(false);

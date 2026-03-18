@@ -3,7 +3,7 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import {
   getUserBookmarksParamsSchema,
   getUserBookmarksResponseSchemas,
-} from "@workspace/shared/schemas/users/get-user-bookmarks";
+} from "@workspace/shared/schemas/users/bookmarks/get-user-bookmarks";
 import { ObjectId } from "mongodb";
 
 const getUserBookmarks: FastifyPluginAsyncZod = async (fastify) => {

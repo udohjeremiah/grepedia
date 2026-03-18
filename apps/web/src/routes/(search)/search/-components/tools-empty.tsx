@@ -14,6 +14,7 @@ import { auth } from "@/hooks/auth";
 
 export default function ToolsEmpty() {
   const searchParams = useSearch({ from: "/(search)/search/" });
+
   const { user } = auth.useSession();
 
   return (

@@ -1,9 +1,9 @@
-import type { ToggleToolBookmarkParams } from "@workspace/shared/schemas/tools/toggle-tool-bookmark";
+import type { ToggleUserBookmarkParams } from "@workspace/shared/schemas/users/bookmarks/toggle-user-bookmark";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getTool } from "@/services/tools/get-tool";
-import { toggleToolBookmark } from "@/services/tools/toggle-tool-bookmark";
+import { toggleUserBookmark } from "@/services/users/toggle-user-bookmark";
 
 import { userQueryOptions } from "../../../@{$username}/-queries/user";
 import { toolQueryOptions } from "./tool";
@@ -17,12 +17,13 @@ type ToggleBookmarkContext = {
 
 export function useToolToggleBookmark(slug: string, userId: string) {
   const queryClient = useQueryClient();
-  const params: ToggleToolBookmarkParams = { slug };
-  const toolKey = toolQueryOptions(params).queryKey;
+  const params: ToggleUserBookmarkParams = { userId };
+
+  const toolKey = toolQueryOptions({ slug }).queryKey;
   const userKey = userQueryOptions(userId).queryKey;
 
   return useMutation<unknown, unknown, void, ToggleBookmarkContext>({
-    mutationFn: () => toggleToolBookmark(params),
+    mutationFn: () => toggleUserBookmark({ body: { toolSlug: slug }, params }),
     mutationKey: toolKey,
     onError: (_error, _variables, context) => {
       if (!context) return;

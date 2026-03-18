@@ -25,8 +25,9 @@ import { useSubmission } from "@/hooks/use-submission";
 import { deleteUser } from "@/services/auth/delete-user";
 
 export default function DeleteAccountDialog() {
-  const { isPending, refetch, user } = auth.useSession();
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+
+  const { isPending, refetch, user } = auth.useSession();
   const {
     isSubmitting,
     resetStatus,
@@ -35,6 +36,7 @@ export default function DeleteAccountDialog() {
     setSuccess,
     status,
   } = useSubmission();
+
   const { handleOpenChange, isOpen } = useDialogState({
     onCloseReset: () => {
       setDeleteConfirmText("");
@@ -74,7 +76,7 @@ export default function DeleteAccountDialog() {
           setSubmitting(false);
           setError(
             "Couldn't delete account",
-            context.error.message ??
+            context.error.message ||
               "An error occurred while deleting your account. Please try again.",
           );
         },

@@ -49,7 +49,7 @@ export default function ChangeEmailDialog() {
           onError: (context) => {
             setError(
               "Couldn't update email",
-              context.error.message ??
+              context.error.message ||
                 "An error occurred while sending the email change link. Please try again.",
             );
           },

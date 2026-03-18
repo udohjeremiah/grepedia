@@ -42,7 +42,7 @@ export default function RequestPasswordResetForm() {
           onError: (context) => {
             setError(
               "Unable to send reset email",
-              context.error.message ??
+              context.error.message ||
                 "Something went wrong while sending the reset email. Please try again.",
             );
           },

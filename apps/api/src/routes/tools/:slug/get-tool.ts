@@ -97,7 +97,7 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireUser],
+    onRequest: [fastify.requireStatus("active")],
     schema: {
       params: getToolParamsSchema,
       response: getToolResponseSchemas,

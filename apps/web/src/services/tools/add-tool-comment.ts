@@ -4,7 +4,7 @@ import {
   type AddToolCommentParams,
   addToolCommentParamsSchema,
   addToolCommentResponseSchemas,
-} from "@workspace/shared/schemas/tools/add-tool-comment";
+} from "@workspace/shared/schemas/tools/comments/add-tool-comment";
 
 import { apiClient } from "@/lib/api-client";
 

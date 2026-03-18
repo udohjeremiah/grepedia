@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import type { Document } from "mongodb";
 
-import { objectIdSchema } from "@workspace/shared/schemas/object-id-schema";
+import { objectIdSchema } from "@workspace/shared/schemas/object-id";
 import {
   getUsersLeaderboardQueryStringSchema,
   getUsersLeaderboardResponseSchemas,

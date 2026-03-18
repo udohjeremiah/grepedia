@@ -34,7 +34,11 @@ export type GlobalBanner = {
   variant: GlobalBannerVariant;
 };
 
-export type GlobalBannerVariant = "critical" | "info" | "success" | "warning";
+export type GlobalBannerVariant =
+  | "destructive"
+  | "info"
+  | "success"
+  | "warning";
 
 type GlobalBannerContextType = {
   banners: GlobalBanner[];
@@ -117,7 +121,7 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
 
   const getIcon = (variant: GlobalBannerVariant) => {
     switch (variant) {
-      case "critical": {
+      case "destructive": {
         return <OctagonAlertIcon />;
       }
       case "info": {
@@ -138,7 +142,7 @@ export function GlobalBannerProvider({ children }: GlobalBannerProviderProps) {
   return (
     <GlobalBannerContext.Provider value={{ banners }}>
       {banners.length > 0 && (
-        <div>
+        <div className="sticky top-0 z-60 flex flex-col bg-background">
           {banners.map((banner) => (
             <Alert
               className="rounded-none"

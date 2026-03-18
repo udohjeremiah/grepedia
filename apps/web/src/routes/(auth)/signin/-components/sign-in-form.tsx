@@ -21,10 +21,11 @@ import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
+import type { Session } from "@/lib/auth-client";
+
 import AppLink from "@/components/app-link";
 import SubmissionAlert from "@/components/submission-alert";
 import { useSubmission } from "@/hooks/use-submission";
-import { Session } from "@/lib/auth-client";
 import { signIn } from "@/services/auth/sign-in";
 
 const formSchema = z.object({
@@ -37,9 +38,11 @@ const formSchema = z.object({
 });
 
 export default function SignInForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const { resetStatus, setError, status } = useSubmission();
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { resetStatus, setError, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -56,7 +59,7 @@ export default function SignInForm() {
           onError: (context) => {
             setError(
               "Unable to sign in",
-              context.error.message ??
+              context.error.message ||
                 "Please check your details and try again.",
             );
           },

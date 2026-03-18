@@ -1,4 +1,4 @@
-import type { GetUserBookmarksParams } from "@workspace/shared/schemas/users/get-user-bookmarks";
+import type { GetUserBookmarksParams } from "@workspace/shared/schemas/users/bookmarks/get-user-bookmarks";
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 

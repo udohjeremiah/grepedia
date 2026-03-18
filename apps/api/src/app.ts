@@ -27,7 +27,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // Place here your custom code!
 
   // Set custom error handler
-  fastify.setErrorHandler((error, request, reply) => {
+  fastify.setErrorHandler((error, _request, reply) => {
     if (hasZodFastifySchemaValidationErrors(error)) {
       return reply.code(400).send({
         message: "Request doesn't match the schema",
@@ -53,7 +53,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, "plugins/external"),
     forceESM: true,
-    options: { ...options, prefix: "/api" },
+    options,
   });
 
   // This loads all plugins defined in plugins/app.
@@ -62,7 +62,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, "plugins/app"),
     forceESM: true,
-    options: { ...options, prefix: "/api" },
+    options,
   });
 
   // This loads all plugins defined in routes.

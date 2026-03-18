@@ -5,7 +5,6 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import AppLink from "@/components/app-link";
 import ErrorFallback from "@/components/error-fallback";
-import { auth } from "@/hooks/auth";
 
 import SearchForm from "./-components/search-form";
 import ToolsCount from "./-components/tools-count";
@@ -30,8 +29,6 @@ export const Route = createFileRoute("/(search)/")({
 });
 
 function RouteComponent() {
-  const { user } = auth.useSession();
-
   return (
     <>
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-6 p-4 md:p-6">
@@ -61,19 +58,9 @@ function RouteComponent() {
           </QueryErrorResetBoundary>
         </Suspense>
         <div className="flex flex-wrap items-center justify-center gap-1">
-          {user ? (
-            <AppLink
-              className="text-xs"
-              params={{ username: user.username }}
-              to="/@{$username}"
-            >
-              Your Profile
-            </AppLink>
-          ) : (
-            <AppLink className="text-xs" to="/signin">
-              Sign in
-            </AppLink>
-          )}
+          <AppLink className="text-xs" to="/tools/directory">
+            All Tools
+          </AppLink>
           <span className="text-xs text-muted-foreground">•</span>
           <AppLink className="text-xs" to="/terms-of-service">
             Terms of Service

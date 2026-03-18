@@ -1,4 +1,4 @@
-import { toolReactionSchema } from "@workspace/shared/schemas/tools/tool-reaction.js";
+import { toolReactionSchema } from "@workspace/shared/schemas/tools/reactions/tool-reaction";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 

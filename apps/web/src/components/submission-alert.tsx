@@ -24,12 +24,12 @@ const statusConfig: Record<
   SubmissionStatus["status"],
   {
     icon: LucideIcon;
-    variant: "critical" | "info" | "success";
+    variant: "destructive" | "info" | "success";
   }
 > = {
   error: {
     icon: OctagonAlertIcon,
-    variant: "critical",
+    variant: "destructive",
   },
   info: {
     icon: CircleAlertIcon,

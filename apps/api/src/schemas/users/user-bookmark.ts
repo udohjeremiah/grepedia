@@ -1,4 +1,4 @@
-import { userBookmarkSchema } from "@workspace/shared/schemas/users/user-bookmark.js";
+import { userBookmarkSchema } from "@workspace/shared/schemas/users/bookmarks/user-bookmark";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 

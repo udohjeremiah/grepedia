@@ -51,7 +51,7 @@ const formSchema = z.object({
   bio: z.union([
     z
       .string()
-      .min(10, "Please provide at least 10 characters.")
+      .min(8, "Please provide at least 8 characters.")
       .max(160, "Please provide no more than 160 characters."),
     z.undefined(),
   ]),
@@ -70,10 +70,11 @@ const formSchema = z.object({
 type Gender = z.infer<typeof formSchema>["gender"];
 
 export default function EditUserDialog() {
+  const navigate = useNavigate();
+
   const { user } = auth.useSession();
   const { mutateAsync: updateUser } = auth.useUpdateUser();
   const { resetStatus, setError, setSuccess, status } = useSubmission();
-  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
@@ -322,10 +323,8 @@ export default function EditUserDialog() {
                         id={field.name}
                         onBlur={field.handleBlur}
                         onChange={(event) => {
-                          const nextValue = event.target.value;
-                          field.handleChange(
-                            nextValue === "" ? undefined : nextValue,
-                          );
+                          const value = event.target.value.trim();
+                          field.handleChange(value || undefined);
                         }}
                         value={field.state.value ?? ""}
                       />

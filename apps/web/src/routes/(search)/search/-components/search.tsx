@@ -1,6 +1,8 @@
+import type { ComponentProps } from "react";
+
 import { useForm } from "@tanstack/react-form";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { searchQueryStringSchema } from "@workspace/shared/schemas/search";
+import { searchQueryStringSchema } from "@workspace/shared/schemas/search/search";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -19,15 +21,20 @@ import {
 } from "@workspace/ui/components/input-group";
 import { cn } from "@workspace/ui/utils/cn";
 import { SearchIcon, XIcon } from "lucide-react";
-import { type ComponentProps, useState } from "react";
+
+import { useDialogState } from "@/hooks/use-dialog-state";
+
+interface SearchFormProps extends ComponentProps<"search"> {
+  onSubmitted?: () => void;
+}
 
 export default function Search() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { handleOpenChange, isOpen, setIsOpen } = useDialogState();
 
   return (
     <>
       <SearchForm className="max-md:hidden" />
-      <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
+      <Dialog onOpenChange={handleOpenChange} open={isOpen}>
         <DialogTrigger asChild className="md:hidden">
           <Button size="icon-sm">
             <SearchIcon />
@@ -41,17 +48,11 @@ export default function Search() {
               submit.
             </DialogDescription>
           </DialogHeader>
-          <SearchForm onSubmitted={() => setIsDialogOpen(false)} />
+          <SearchForm onSubmitted={() => setIsOpen(false)} />
         </DialogContent>
       </Dialog>
     </>
   );
-}
-
-const formSchema = searchQueryStringSchema.pick({ query: true });
-
-interface SearchFormProps extends ComponentProps<"search"> {
-  onSubmitted?: () => void;
 }
 
 function SearchForm({ className, onSubmitted, ...props }: SearchFormProps) {
@@ -75,7 +76,7 @@ function SearchForm({ className, onSubmitted, ...props }: SearchFormProps) {
       onSubmitted?.();
     },
     validators: {
-      onSubmit: formSchema,
+      onSubmit: searchQueryStringSchema.pick({ query: true }),
     },
   });
 

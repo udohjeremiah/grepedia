@@ -6,7 +6,7 @@ import {
   recoverUserAccountBodySchema,
   recoverUserAccountParamsSchema,
   recoverUserAccountResponseSchemas,
-} from "@workspace/shared/schemas/users/recover-user-account";
+} from "@workspace/shared/schemas/users/recovery-package/recover-user-account";
 import { ObjectId } from "mongodb";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
@@ -72,6 +72,7 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
       const toolReactions = fastify.getToolReactionCollection();
       const toolComments = fastify.getToolCommentCollection();
       const toolCommentReactions = fastify.getToolCommentReactionCollection();
+      const moderationCases = fastify.getModerationCaseCollection();
 
       const writeResults = await Promise.all([
         tools.updateMany(
@@ -100,6 +101,18 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
           currentUserId,
           previousUserId,
         }),
+        moderationCases.updateMany(
+          { createdBy: previousUserId },
+          { $set: { createdBy: currentUserId } },
+        ),
+        moderationCases.updateMany(
+          { userId: previousUserId },
+          { $set: { userId: currentUserId } },
+        ),
+        moderationCases.updateMany(
+          { "resolution.resolvedBy": previousUserId },
+          { $set: { "resolution.resolvedBy": currentUserId } },
+        ),
         restoreBookmarks({
           bookmarks: recoveryPackage.payload.data.bookmarks,
           currentUserId,
@@ -120,6 +133,9 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
         commentsResult,
         toolReactionsResult,
         commentReactionsResult,
+        moderationCreatedByResult,
+        moderationUserIdResult,
+        moderationResolvedByResult,
         bookmarksResult,
       ] = writeResults;
 
@@ -130,6 +146,9 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
         !isMongoWriteAcknowledged(commentsResult) ||
         !isMongoWriteAcknowledged(toolReactionsResult) ||
         !isMongoWriteAcknowledged(commentReactionsResult) ||
+        !isMongoWriteAcknowledged(moderationCreatedByResult) ||
+        !isMongoWriteAcknowledged(moderationUserIdResult) ||
+        !isMongoWriteAcknowledged(moderationResolvedByResult) ||
         !isMongoWriteAcknowledged(bookmarksResult)
       ) {
         fastify.log.error("Failed to recover user account");
@@ -143,6 +162,10 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
         bookmarks: bookmarksResult.upsertedCount,
         commentReactions: commentReactionsResult.modifiedCount,
         comments: commentsResult.modifiedCount,
+        moderationCases:
+          moderationCreatedByResult.modifiedCount +
+          moderationUserIdResult.modifiedCount +
+          moderationResolvedByResult.modifiedCount,
         toolReactions: toolReactionsResult.modifiedCount,
         tools:
           toolsAddedByResult.modifiedCount +

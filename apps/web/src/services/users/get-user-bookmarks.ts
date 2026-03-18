@@ -2,7 +2,7 @@ import {
   GetUserBookmarksParams,
   getUserBookmarksParamsSchema,
   getUserBookmarksResponseSchemas,
-} from "@workspace/shared/schemas/users/get-user-bookmarks";
+} from "@workspace/shared/schemas/users/bookmarks/get-user-bookmarks";
 
 import { apiClient } from "@/lib/api-client";
 

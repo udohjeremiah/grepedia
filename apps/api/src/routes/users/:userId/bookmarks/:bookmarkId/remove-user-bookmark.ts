@@ -3,7 +3,7 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import {
   removeUserBookmarkParamsSchema,
   removeUserBookmarkResponseSchemas,
-} from "@workspace/shared/schemas/users/remove-user-bookmark";
+} from "@workspace/shared/schemas/users/bookmarks/remove-user-bookmark";
 import { ObjectId } from "mongodb";
 
 const removeUserBookmark: FastifyPluginAsyncZod = async (fastify) => {

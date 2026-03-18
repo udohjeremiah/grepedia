@@ -3,16 +3,24 @@ import {
   BookmarkIcon,
   DatabaseIcon,
   MonitorIcon,
+  ScaleIcon,
   ShieldIcon,
   UserIcon,
   WrenchIcon,
 } from "lucide-react";
 
+import { getSession } from "@/utils/get-session";
+
 import NavItem from "./-components/nav-item";
 import { userStatQueryOptions } from "./-queries/user-stats";
 
-export const navItems = [
-  { icon: UserIcon, label: "Profile", link: "/@{$username}", value: "profile" },
+const baseNavItems = [
+  {
+    icon: UserIcon,
+    label: "Profile",
+    link: "/@{$username}",
+    value: "profile",
+  },
   {
     icon: WrenchIcon,
     label: "Tools",
@@ -45,14 +53,27 @@ export const navItems = [
   },
 ] as const;
 
-export type Nav = (typeof navItems)[number];
+const moderationNavItem = {
+  icon: ScaleIcon,
+  label: "Moderation",
+  link: "/@{$username}/moderation",
+  value: "moderation",
+} as const;
+
+export type Nav = (typeof baseNavItems)[number] | typeof moderationNavItem;
 
 export const Route = createFileRoute("/_authenticated/@{$username}")({
   component: LayoutComponent,
-  loader: ({ context }) => {
+  loader: async ({ context }) => {
     context.queryClient.prefetchQuery(
       userStatQueryOptions({ userId: context.userId }),
     );
+
+    const session = await getSession();
+    const role = session?.user.role;
+    const canModerate = role === "moderator";
+
+    return { canModerate };
   },
   // eslint-disable-next-line perfectionist/sort-objects
   head: ({ params }) => ({
@@ -67,6 +88,11 @@ export const Route = createFileRoute("/_authenticated/@{$username}")({
 });
 
 function LayoutComponent() {
+  const { canModerate } = Route.useLoaderData();
+  const navItems = canModerate
+    ? [...baseNavItems, moderationNavItem]
+    : baseNavItems;
+
   return (
     <div className="flex flex-1">
       <div className="grid flex-1 grid-cols-1 grid-rows-[auto_minmax(0,1fr)] md:grid-cols-[25%_minmax(0,1fr)] md:grid-rows-none md:gap-6 md:px-16 lg:gap-8 lg:px-32">

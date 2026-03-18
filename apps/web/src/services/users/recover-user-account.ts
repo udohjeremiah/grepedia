@@ -4,7 +4,7 @@ import {
   RecoverUserAccountParams,
   recoverUserAccountParamsSchema,
   recoverUserAccountResponseSchemas,
-} from "@workspace/shared/schemas/users/recover-user-account";
+} from "@workspace/shared/schemas/users/recovery-package/recover-user-account";
 
 import { apiClient } from "@/lib/api-client";
 

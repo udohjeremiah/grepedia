@@ -1,4 +1,4 @@
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { Link, useParams, useRouteContext } from "@tanstack/react-router";
 import {
   Avatar,
   AvatarFallback,
@@ -23,12 +23,15 @@ import {
   ThumbsUpIcon,
 } from "lucide-react";
 
+import { env } from "@/env";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { getInitials } from "@/utils/get-initials";
 
 import { useTool } from "../-queries/tool";
 import { useToolSetReaction } from "../-queries/tool-set-reaction";
 import { useToolToggleBookmark } from "../-queries/tool-toggle-bookmark";
+import ClaimToolDialog from "./claim-tool-dialog";
+import UpdateToolDialog from "./update-tool-dialog";
 
 type Tool = ReturnType<typeof useTool>["data"];
 
@@ -54,13 +57,15 @@ const statusConfig: Record<
 };
 
 export default function ToolHeader() {
-  const { slug } = useParams({ from: "/_authenticated/tools/@{$slug}/" });
   const { userId } = useRouteContext({ from: "/_authenticated" });
+  const { slug } = useParams({ from: "/_authenticated/tools/@{$slug}" });
+
   const { data: tool } = useTool({ slug });
   const { isPending: isSettingToolReaction, mutate: setToolReaction } =
     useToolSetReaction(slug, userId);
   const { isPending: isTogglingBookmark, mutate: toggleToolBookmark } =
     useToolToggleBookmark(slug, userId);
+
   const { copied, copyToClipboard } = useCopyToClipboard();
 
   const status = statusConfig[tool.status];
@@ -78,18 +83,20 @@ export default function ToolHeader() {
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between gap-4 max-lg:flex-col">
         <div className="flex gap-4">
-          <Avatar className="size-15">
-            <AvatarImage
-              alt={tool.name}
-              src={
-                tool.image ??
-                `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
-              }
-            />
-            <AvatarFallback className="text-base">
-              {getInitials(tool.name)}
-            </AvatarFallback>
-          </Avatar>
+          <Link params={{ slug }} to="/tools/@{$slug}">
+            <Avatar className="size-15">
+              <AvatarImage
+                alt={tool.name}
+                src={
+                  tool.image ??
+                  `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
+                }
+              />
+              <AvatarFallback className="text-base">
+                {getInitials(tool.name)}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
           <div className="flex flex-col gap-1">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <h2 className="text-2xl font-bold tracking-tight text-balance">
@@ -200,16 +207,24 @@ export default function ToolHeader() {
             {tool.stats.comments}
           </span>
         </div>
-        <div className="ml-auto">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="gap-1.5 px-2" size="sm" variant="destructive">
-                <FlagIcon className="size-3.5" />
-                <span className="text-xs">Report</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Report this tool</TooltipContent>
-          </Tooltip>
+        <div className="ml-auto flex items-center gap-2">
+          <ClaimToolDialog />
+          <UpdateToolDialog />
+          <Button
+            asChild
+            className="gap-1.5 px-2"
+            size="sm"
+            variant="destructive"
+          >
+            <a
+              href={env.VITE_DISCORD_REPORT_URL}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <FlagIcon className="size-3.5" />
+              <span className="text-xs">Report</span>
+            </a>
+          </Button>
         </div>
       </div>
     </div>

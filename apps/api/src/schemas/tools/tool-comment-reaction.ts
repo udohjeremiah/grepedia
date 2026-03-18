@@ -1,4 +1,4 @@
-import { toolCommentReactionSchema } from "@workspace/shared/schemas/tools/tool-comment-reaction.js";
+import { toolCommentReactionSchema } from "@workspace/shared/schemas/tools/comments/tool-comment-reaction";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 

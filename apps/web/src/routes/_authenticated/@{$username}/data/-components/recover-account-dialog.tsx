@@ -1,5 +1,5 @@
 import { useRouteContext } from "@tanstack/react-router";
-import { recoverUserAccountBodySchema } from "@workspace/shared/schemas/users/recover-user-account";
+import { recoverUserAccountBodySchema } from "@workspace/shared/schemas/users/recovery-package/recover-user-account";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -25,7 +25,9 @@ import { useUserRecoverAccount } from "../-queries/user-recover-account";
 
 export default function RecoverAccountDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
+
   const [payload, setPayload] = useState("");
+
   const { isPending, mutate: recoverAccount } = useUserRecoverAccount(userId);
   const { resetStatus, setError, setSuccess, status } = useSubmission();
 
@@ -73,7 +75,7 @@ export default function RecoverAccountDialog() {
         onError: (error) => {
           setError(
             "Couldn't recover account",
-            error.message ??
+            error.message ||
               "An error occurred while recovering your account. Please try again.",
           );
         },

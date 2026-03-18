@@ -32,8 +32,8 @@ const resolveTheme = createIsomorphicFn()
 
 const applyTheme = createClientOnlyFn((resolvedTheme: Theme) => {
   const root = document.documentElement;
-  root.classList.remove("light", "dark");
-  root.classList.add(resolvedTheme);
+  root.dataset["theme"] = resolvedTheme;
+  root.dataset["colorMode"] = resolvedTheme;
 });
 
 const handleThemeChange = createClientOnlyFn((theme: Theme) => {
@@ -55,19 +55,19 @@ const themeFunction = (storageKey: string) => {
     "(prefers-color-scheme: dark)",
   ).matches;
   const resolvedByPreference = prefersDark ? "dark" : "light";
+  const root = document.documentElement;
 
   try {
     const stored = localStorage.getItem(storageKey) || "system";
     const theme = ["dark", "light"].includes(stored) ? stored : "system";
     const resolved = theme === "system" ? resolvedByPreference : theme;
 
-    const root = document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(resolved);
+    root.dataset["theme"] = resolved;
+    root.dataset["colorMode"] = resolved;
   } catch {
-    const root = document.documentElement;
     const resolved = resolvedByPreference;
-    root.classList.add(resolved);
+    root.dataset["theme"] = resolved;
+    root.dataset["colorMode"] = resolved;
   }
 };
 
@@ -89,7 +89,7 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({
   children,
-  storageKey = "ui-theme",
+  storageKey = "theme",
 }: ThemeProviderProps) {
   const [userTheme, setUserTheme] = useState<Theme>("system");
 

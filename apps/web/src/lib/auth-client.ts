@@ -21,7 +21,10 @@ export const authClient = createAuthClient({
           type: ["male", "female", "nonBinary", "other", "preferNotToSay"],
         },
         role: { input: false, type: ["member", "contributor", "moderator"] },
-        status: { input: false, type: ["active", "suspended", "deactivated"] },
+        status: {
+          input: false,
+          type: ["active", "flagged", "suspended", "deactivated"],
+        },
         username: { input: false, type: "string" },
       },
     }),

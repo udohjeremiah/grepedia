@@ -2,7 +2,7 @@ import {
   RemoveUserBookmarkParams,
   removeUserBookmarkParamsSchema,
   removeUserBookmarkResponseSchemas,
-} from "@workspace/shared/schemas/users/remove-user-bookmark";
+} from "@workspace/shared/schemas/users/bookmarks/remove-user-bookmark";
 
 import { apiClient } from "@/lib/api-client";
 

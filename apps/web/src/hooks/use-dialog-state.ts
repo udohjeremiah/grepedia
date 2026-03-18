@@ -7,6 +7,7 @@ type UseDialogStateOptions = {
 
 export function useDialogState(options: UseDialogStateOptions = {}) {
   const { initialOpen = false, onCloseReset } = options;
+
   const [isOpen, setIsOpen] = useState(initialOpen);
 
   const handleOpenChange = useCallback(

@@ -50,10 +50,12 @@ interface ResetPasswordFormProps {
 }
 
 export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
+  const navigate = useNavigate();
+
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { resetStatus, setError, status } = useSubmission();
-  const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
@@ -70,7 +72,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
           onError: (context) => {
             setError(
               "Unable to reset password",
-              context.error.message ??
+              context.error.message ||
                 "This reset link may be invalid or expired. Please request a new one and try again.",
             );
           },

@@ -4,10 +4,33 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "email dev -p 3001",
+    "dev": "email dev -d src/emails -p 3001",
+    "build": "rimraf dist && tsc && tsc-alias",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    "./build-email": {
+      "types": "./dist/build-email.d.ts",
+      "default": "./dist/build-email.js"
+    },
+    "./emails/change-email-confirmation-email": {
+      "types": "./dist/emails/change-email-confirmation-email.d.ts",
+      "default": "./dist/emails/change-email-confirmation-email.js"
+    },
+    "./emails/delete-account-verification-email": {
+      "types": "./dist/emails/delete-account-verification-email.d.ts",
+      "default": "./dist/emails/delete-account-verification-email.js"
+    },
+    "./emails/reset-password-email": {
+      "types": "./dist/emails/reset-password-email.d.ts",
+      "default": "./dist/emails/reset-password-email.js"
+    },
+    "./emails/verification-email": {
+      "types": "./dist/emails/verification-email.d.ts",
+      "default": "./dist/emails/verification-email.js"
+    }
   },
   "dependencies": {
     "@react-email/components": "1.0.4",
@@ -23,6 +46,8 @@
     "@workspace/typescript-config": "workspace:*",
     "eslint": "^9.32.0",
     "react-email": "5.2.1",
+    "rimraf": "^6.1.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
   }
 }

@@ -10,15 +10,15 @@ import { ButtonGroup } from "@workspace/ui/components/button-group";
 import { Separator } from "@workspace/ui/components/separator";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Spinner } from "@workspace/ui/components/spinner";
-import { Textarea } from "@workspace/ui/components/textarea";
 import { cn } from "@workspace/ui/utils/cn";
 import { MessageSquareIcon, SendIcon } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { MarkdownEditor } from "@/components/markdown";
 import { auth } from "@/hooks/auth";
-import { useSubmission } from "@/hooks/use-submission";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 import { getInitials } from "@/utils/get-initials";
+import { globalBanner } from "@/utils/global-banner";
 
 import { useTool } from "../-queries/tool";
 import { useToolAddComment } from "../-queries/tool-add-comment";
@@ -27,63 +27,23 @@ import ToolComment from "./tool-comment";
 
 type SortedView = "bottom" | "newest" | "top";
 
-type ToolCommentItem = ReturnType<typeof useToolComments>["data"][number];
-
 export default function ToolComments() {
-  const { slug } = useParams({ from: "/_authenticated/tools/@{$slug}/" });
+  const { slug } = useParams({ from: "/_authenticated/tools/@{$slug}" });
   const { data: tool } = useTool({ slug });
-  const { user } = auth.useSession();
+
   const trackingRef = useRef<HTMLDivElement>(null);
-
   const [sortedView, setSortedView] = useState<SortedView>("top");
-  const [sortedCommentIds, setSortedCommentIds] = useState<string[]>([]);
-
   const [newComment, setNewComment] = useState("");
+
+  const { user } = auth.useSession();
   const { isPending, mutate: addComment } = useToolAddComment(slug);
-  const { resetStatus, setError } = useSubmission();
 
   const {
     data: comments,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useToolComments({ slug });
-
-  useEffect(() => {
-    if (sortedCommentIds.length > 0 || comments.length === 0) {
-      return;
-    }
-
-    setSortedCommentIds(
-      sortComments(comments, sortedView).map((comment) => comment._id),
-    );
-  }, [comments, sortedCommentIds.length, sortedView]);
-
-  const applySortView = (view: SortedView) => {
-    setSortedView(view);
-    setSortedCommentIds(
-      sortComments(comments, view).map((comment) => comment._id),
-    );
-  };
-
-  const sortedComments = useMemo(() => {
-    const commentById = new Map(
-      comments.map((comment) => [comment._id, comment]),
-    );
-    const seen = new Set<string>();
-
-    const currentSorted = sortedCommentIds
-      .map((id) => {
-        const comment = commentById.get(id);
-        if (!comment) return;
-        seen.add(id);
-        return comment;
-      })
-      .filter((comment): comment is ToolCommentItem => comment !== undefined);
-
-    const unseenComments = comments.filter((comment) => !seen.has(comment._id));
-    return [...currentSorted, ...unseenComments];
-  }, [comments, sortedCommentIds]);
+  } = useToolComments({ slug }, { sort: sortedView });
 
   useEffect(() => {
     const sentinel = trackingRef.current;
@@ -107,34 +67,44 @@ export default function ToolComments() {
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const handleNewComment = async () => {
-    resetStatus();
-
     const content = newComment.trim();
     if (!content || !user) {
-      setError("Missing data", "Enter your comment to continue.");
+      globalBanner.emit({
+        banner: {
+          description: "Enter your comment to continue.",
+          title: "Missing data",
+          variant: "destructive",
+        },
+        type: "add",
+      });
       return;
     }
 
     addComment(
-      {
-        content,
-        user: {
-          _id: user.id,
-          image: user.image ?? undefined,
-          name: user.name,
-          username: user.username,
-        },
-      },
+      { content },
       {
         onError: () => {
-          setError(
-            "Couldn't add comment",
-            "An error occurred while posting your comment. Please try again.",
-          );
+          globalBanner.emit({
+            banner: {
+              description:
+                "An error occurred while posting your comment. Please try again.",
+              title: "Couldn't add comment",
+              variant: "destructive",
+            },
+            type: "add",
+          });
         },
         onSuccess: () => {
-          applySortView("newest");
+          setSortedView("newest");
           setNewComment("");
+          globalBanner.emit({
+            banner: {
+              description: "Your comment was posted successfully.",
+              title: "Comment added successfully",
+              variant: "success",
+            },
+            type: "add",
+          });
         },
       },
     );
@@ -152,21 +122,21 @@ export default function ToolComments() {
         </div>
         <ButtonGroup>
           <Button
-            onClick={() => applySortView("top")}
+            onClick={() => setSortedView("top")}
             size="xs"
             variant={sortedView === "top" ? "default" : "secondary"}
           >
             Top
           </Button>
           <Button
-            onClick={() => applySortView("bottom")}
+            onClick={() => setSortedView("bottom")}
             size="xs"
             variant={sortedView === "bottom" ? "default" : "secondary"}
           >
             Bottom
           </Button>
           <Button
-            onClick={() => applySortView("newest")}
+            onClick={() => setSortedView("newest")}
             size="xs"
             variant={sortedView === "newest" ? "default" : "secondary"}
           >
@@ -187,16 +157,22 @@ export default function ToolComments() {
           <Skeleton className="size-8 rounded-full" />
         )}
         <div className="flex flex-1 flex-col gap-2">
-          <Textarea
-            className="max-h-52 min-h-20 text-sm"
-            onChange={(event) => setNewComment(event.target.value)}
-            placeholder="Share your thoughts on this tool..."
-            required={true}
+          <MarkdownEditor
+            onChange={(value = "") => {
+              if (value.length > 5000) return;
+              setNewComment(value);
+            }}
+            textareaProps={{
+              maxLength: 5000,
+              minLength: 1,
+              placeholder: "Share your thoughts on this tool...",
+              required: true,
+            }}
             value={newComment}
           />
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-muted-foreground">
-              Markdown is not yet supported.
+              Markdown is supported.
             </p>
             <Button
               disabled={!newComment.trim() || isPending}
@@ -211,7 +187,7 @@ export default function ToolComments() {
       </div>
       <Separator />
       <ul className="flex flex-col gap-6 px-6 py-4">
-        {sortedComments.map((comment) => (
+        {comments.map((comment) => (
           <li key={comment._id}>
             <ToolComment {...comment} />
           </li>
@@ -234,35 +210,4 @@ export default function ToolComments() {
       />
     </div>
   );
-}
-
-function sortComments(comments: ToolCommentItem[], sortedView: SortedView) {
-  const sortedResults = [...comments];
-
-  sortedResults.sort((a, b) => {
-    const scoreA = a.stats.upvotes - a.stats.downvotes;
-    const scoreB = b.stats.upvotes - b.stats.downvotes;
-
-    switch (sortedView) {
-      case "bottom": {
-        if (scoreA !== scoreB) return scoreA - scoreB;
-        return (
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-      }
-      case "newest": {
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      }
-      case "top": {
-        if (scoreB !== scoreA) return scoreB - scoreA;
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-      }
-    }
-  });
-
-  return sortedResults;
 }

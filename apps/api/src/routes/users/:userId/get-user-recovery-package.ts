@@ -4,7 +4,7 @@ import { canonicalStringify } from "@workspace/shared/canonical-stringify";
 import {
   getUserRecoveryPackageParamsSchema,
   getUserRecoveryPackageResponseSchemas,
-} from "@workspace/shared/schemas/users/get-user-recovery-package";
+} from "@workspace/shared/schemas/users/recovery-package/get-user-recovery-package";
 import { ObjectId } from "mongodb";
 import { createHmac, randomUUID } from "node:crypto";
 

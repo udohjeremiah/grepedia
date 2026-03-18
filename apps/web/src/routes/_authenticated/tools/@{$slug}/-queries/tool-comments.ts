@@ -1,4 +1,7 @@
-import type { GetToolCommentsParams } from "@workspace/shared/schemas/tools/get-tool-comments";
+import type {
+  GetToolCommentsParams,
+  GetToolCommentsQueryString,
+} from "@workspace/shared/schemas/tools/comments/get-tool-comments";
 
 import {
   infiniteQueryOptions,
@@ -9,20 +12,40 @@ import { getToolComments } from "@/services/tools/get-tool-comments";
 
 import { toolQueryOptions } from "./tool";
 
-export const toolCommentsQueryOptions = (params: GetToolCommentsParams) => {
+type ToolCommentsQuery = {
+  params: GetToolCommentsParams;
+  queryString?: Omit<GetToolCommentsQueryString, "cursor">;
+};
+
+export const toolCommentsQueryOptions = ({
+  params,
+  queryString,
+}: ToolCommentsQuery) => {
+  const sort = queryString?.sort ?? "top";
+
   return infiniteQueryOptions({
     initialPageParam: "",
     queryFn: ({ pageParam }) =>
-      getToolComments({ slug: params.slug }, { cursor: pageParam }),
-    queryKey: [...toolQueryOptions({ slug: params.slug }).queryKey, "comments"],
+      getToolComments({
+        params,
+        queryString: { ...queryString, cursor: pageParam, sort },
+      }),
+    queryKey: [
+      ...toolQueryOptions({ slug: params.slug }).queryKey,
+      "comments",
+      sort,
+    ],
     // eslint-disable-next-line perfectionist/sort-objects
     getNextPageParam: (lastPage) => lastPage.data.nextCursor,
   });
 };
 
-export const useToolComments = (params: GetToolCommentsParams) => {
+export const useToolComments = (
+  params: ToolCommentsQuery["params"],
+  queryString?: ToolCommentsQuery["queryString"],
+) => {
   return useSuspenseInfiniteQuery({
-    ...toolCommentsQueryOptions(params),
+    ...toolCommentsQueryOptions({ params, queryString }),
     select: (data) => data.pages.flatMap((page) => page.data.comments),
   });
 };

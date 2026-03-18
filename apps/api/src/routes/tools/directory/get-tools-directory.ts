@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
-import { objectIdSchema } from "@workspace/shared/schemas/object-id-schema";
+import { objectIdSchema } from "@workspace/shared/schemas/object-id";
 import {
   getToolsDirectoryQueryStringSchema,
   getToolsDirectoryResponseSchemas,
-} from "@workspace/shared/schemas/tools/get-tools-directory";
+} from "@workspace/shared/schemas/tools/directory/get-tools-directory";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 

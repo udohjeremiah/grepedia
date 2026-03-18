@@ -42,6 +42,7 @@ const formSchema = z.object({
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
+
   const { resetStatus, setError, setSuccess, status } = useSubmission();
 
   const form = useForm({
@@ -59,7 +60,7 @@ export default function SignUpForm() {
           onError: (context) => {
             setError(
               "Unable to create your account",
-              context.error.message ??
+              context.error.message ||
                 "Please check your details and try again.",
             );
           },

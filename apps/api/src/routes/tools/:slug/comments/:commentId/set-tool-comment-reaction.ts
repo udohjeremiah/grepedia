@@ -4,7 +4,7 @@ import {
   setToolCommentReactionBodySchema,
   setToolCommentReactionParamsSchema,
   setToolCommentReactionResponseSchemas,
-} from "@workspace/shared/schemas/tools/set-tool-comment-reaction";
+} from "@workspace/shared/schemas/tools/comments/set-tool-comment-reaction";
 import { type Collection, ObjectId } from "mongodb";
 
 import type { ToolCommentReactionWithObjectIds } from "@/schemas/tools/tool-comment-reaction.js";
@@ -191,7 +191,7 @@ const setToolCommentReaction: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "POST",
-    onRequest: [fastify.requireUser],
+    onRequest: [fastify.requireStatus("active")],
     schema: {
       body: setToolCommentReactionBodySchema,
       params: setToolCommentReactionParamsSchema,

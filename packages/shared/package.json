@@ -3,6 +3,13 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "concurrently -k \"tsc -w\" \"tsc-alias -w\"",
+    "build": "rimraf dist && tsc && tsc-alias",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsc --noEmit"
+  },
   "exports": {
     "./canonical-stringify": {
       "types": "./dist/canonical-stringify.d.ts",
@@ -12,81 +19,141 @@
       "types": "./dist/omit-keys.d.ts",
       "default": "./dist/omit-keys.js"
     },
-    "./schemas/object-id-schema": {
-      "types": "./dist/schemas/object-id-schema.d.ts",
-      "default": "./dist/schemas/object-id-schema.js"
+    "./schemas/discord-url": {
+      "types": "./dist/schemas/discord-url.d.ts",
+      "default": "./dist/schemas/discord-url.js"
     },
-    "./schemas/search": {
-      "types": "./dist/schemas/search.d.ts",
-      "default": "./dist/schemas/search.js"
+    "./schemas/image": {
+      "types": "./dist/schemas/image.d.ts",
+      "default": "./dist/schemas/image.js"
+    },
+    "./schemas/moderation-case/moderator-get-user": {
+      "types": "./dist/schemas/moderation-case/moderator-get-user.d.ts",
+      "default": "./dist/schemas/moderation-case/moderator-get-user.js"
+    },
+    "./schemas/moderation-case/moderation-case": {
+      "types": "./dist/schemas/moderation-case/moderation-case.d.ts",
+      "default": "./dist/schemas/moderation-case/moderation-case.js"
+    },
+    "./schemas/moderation-case/moderator-review-case": {
+      "types": "./dist/schemas/moderation-case/moderator-review-case.d.ts",
+      "default": "./dist/schemas/moderation-case/moderator-review-case.js"
+    },
+    "./schemas/moderation-case/moderator-update-user": {
+      "types": "./dist/schemas/moderation-case/moderator-update-user.d.ts",
+      "default": "./dist/schemas/moderation-case/moderator-update-user.js"
+    },
+    "./schemas/object-id": {
+      "types": "./dist/schemas/object-id.d.ts",
+      "default": "./dist/schemas/object-id.js"
+    },
+    "./schemas/search/search": {
+      "types": "./dist/schemas/search/search.d.ts",
+      "default": "./dist/schemas/search/search.js"
+    },
+    "./schemas/slug": {
+      "types": "./dist/schemas/slug.d.ts",
+      "default": "./dist/schemas/slug.js"
     },
     "./schemas/tools/add-tool": {
       "types": "./dist/schemas/tools/add-tool.d.ts",
       "default": "./dist/schemas/tools/add-tool.js"
     },
-    "./schemas/tools/add-tool-comment": {
-      "types": "./dist/schemas/tools/add-tool-comment.d.ts",
-      "default": "./dist/schemas/tools/add-tool-comment.js"
+    "./schemas/tools/comments/add-tool-comment": {
+      "types": "./dist/schemas/tools/comments/add-tool-comment.d.ts",
+      "default": "./dist/schemas/tools/comments/add-tool-comment.js"
     },
-    "./schemas/tools/get-tools-directory": {
-      "types": "./dist/schemas/tools/get-tools-directory.d.ts",
-      "default": "./dist/schemas/tools/get-tools-directory.js"
+    "./schemas/tools/comments/get-tool-comment-replies": {
+      "types": "./dist/schemas/tools/comments/get-tool-comment-replies.d.ts",
+      "default": "./dist/schemas/tools/comments/get-tool-comment-replies.js"
     },
-    "./schemas/tools/get-tools-directory-categories": {
-      "types": "./dist/schemas/tools/get-tools-directory-categories.d.ts",
-      "default": "./dist/schemas/tools/get-tools-directory-categories.js"
+    "./schemas/tools/comments/get-tool-comments": {
+      "types": "./dist/schemas/tools/comments/get-tool-comments.d.ts",
+      "default": "./dist/schemas/tools/comments/get-tool-comments.js"
+    },
+    "./schemas/tools/comments/set-tool-comment-reaction": {
+      "types": "./dist/schemas/tools/comments/set-tool-comment-reaction.d.ts",
+      "default": "./dist/schemas/tools/comments/set-tool-comment-reaction.js"
+    },
+    "./schemas/tools/comments/tool-comment": {
+      "types": "./dist/schemas/tools/comments/tool-comment.d.ts",
+      "default": "./dist/schemas/tools/comments/tool-comment.js"
+    },
+    "./schemas/tools/comments/tool-comment-reaction": {
+      "types": "./dist/schemas/tools/comments/tool-comment-reaction.d.ts",
+      "default": "./dist/schemas/tools/comments/tool-comment-reaction.js"
+    },
+    "./schemas/tools/comments/update-tool-comment": {
+      "types": "./dist/schemas/tools/comments/update-tool-comment.d.ts",
+      "default": "./dist/schemas/tools/comments/update-tool-comment.js"
+    },
+    "./schemas/tools/directory/get-tools-directory": {
+      "types": "./dist/schemas/tools/directory/get-tools-directory.d.ts",
+      "default": "./dist/schemas/tools/directory/get-tools-directory.js"
+    },
+    "./schemas/tools/directory/get-tools-directory-categories": {
+      "types": "./dist/schemas/tools/directory/get-tools-directory-categories.d.ts",
+      "default": "./dist/schemas/tools/directory/get-tools-directory-categories.js"
     },
     "./schemas/tools/get-tool": {
       "types": "./dist/schemas/tools/get-tool.d.ts",
       "default": "./dist/schemas/tools/get-tool.js"
     },
-    "./schemas/tools/get-tool-comment-replies": {
-      "types": "./dist/schemas/tools/get-tool-comment-replies.d.ts",
-      "default": "./dist/schemas/tools/get-tool-comment-replies.js"
-    },
-    "./schemas/tools/get-tool-comments": {
-      "types": "./dist/schemas/tools/get-tool-comments.d.ts",
-      "default": "./dist/schemas/tools/get-tool-comments.js"
-    },
     "./schemas/tools/get-tools-count": {
       "types": "./dist/schemas/tools/get-tools-count.d.ts",
       "default": "./dist/schemas/tools/get-tools-count.js"
     },
-    "./schemas/tools/set-tool-comment-reaction": {
-      "types": "./dist/schemas/tools/set-tool-comment-reaction.d.ts",
-      "default": "./dist/schemas/tools/set-tool-comment-reaction.js"
+    "./schemas/tools/revisions/get-tool-revisions": {
+      "types": "./dist/schemas/tools/revisions/get-tool-revisions.d.ts",
+      "default": "./dist/schemas/tools/revisions/get-tool-revisions.js"
     },
-    "./schemas/tools/set-tool-reaction": {
-      "types": "./dist/schemas/tools/set-tool-reaction.d.ts",
-      "default": "./dist/schemas/tools/set-tool-reaction.js"
+    "./schemas/tools/revisions/revert-tool-revision": {
+      "types": "./dist/schemas/tools/revisions/revert-tool-revision.d.ts",
+      "default": "./dist/schemas/tools/revisions/revert-tool-revision.js"
     },
-    "./schemas/tools/toggle-tool-bookmark": {
-      "types": "./dist/schemas/tools/toggle-tool-bookmark.d.ts",
-      "default": "./dist/schemas/tools/toggle-tool-bookmark.js"
+    "./schemas/tools/revisions/tool-revision": {
+      "types": "./dist/schemas/tools/revisions/tool-revision.d.ts",
+      "default": "./dist/schemas/tools/revisions/tool-revision.js"
+    },
+    "./schemas/tools/submit-tool-claim": {
+      "types": "./dist/schemas/tools/submit-tool-claim.d.ts",
+      "default": "./dist/schemas/tools/submit-tool-claim.js"
+    },
+    "./schemas/tools/proposals/get-tool-proposals": {
+      "types": "./dist/schemas/tools/proposals/get-tool-proposals.d.ts",
+      "default": "./dist/schemas/tools/proposals/get-tool-proposals.js"
+    },
+    "./schemas/tools/reactions/set-tool-reaction": {
+      "types": "./dist/schemas/tools/reactions/set-tool-reaction.d.ts",
+      "default": "./dist/schemas/tools/reactions/set-tool-reaction.js"
+    },
+    "./schemas/tools/reactions/tool-reaction": {
+      "types": "./dist/schemas/tools/reactions/tool-reaction.d.ts",
+      "default": "./dist/schemas/tools/reactions/tool-reaction.js"
     },
     "./schemas/tools/tool": {
       "types": "./dist/schemas/tools/tool.d.ts",
       "default": "./dist/schemas/tools/tool.js"
     },
-    "./schemas/tools/tool-comment": {
-      "types": "./dist/schemas/tools/tool-comment.d.ts",
-      "default": "./dist/schemas/tools/tool-comment.js"
+    "./schemas/tools/update-tool": {
+      "types": "./dist/schemas/tools/update-tool.d.ts",
+      "default": "./dist/schemas/tools/update-tool.js"
     },
-    "./schemas/tools/tool-comment-reaction": {
-      "types": "./dist/schemas/tools/tool-comment-reaction.d.ts",
-      "default": "./dist/schemas/tools/tool-comment-reaction.js"
+    "./schemas/users/bookmarks/get-user-bookmarks": {
+      "types": "./dist/schemas/users/bookmarks/get-user-bookmarks.d.ts",
+      "default": "./dist/schemas/users/bookmarks/get-user-bookmarks.js"
     },
-    "./schemas/tools/tool-reaction": {
-      "types": "./dist/schemas/tools/tool-reaction.d.ts",
-      "default": "./dist/schemas/tools/tool-reaction.js"
+    "./schemas/users/bookmarks/remove-user-bookmark": {
+      "types": "./dist/schemas/users/bookmarks/remove-user-bookmark.d.ts",
+      "default": "./dist/schemas/users/bookmarks/remove-user-bookmark.js"
     },
-    "./schemas/users/get-user-bookmarks": {
-      "types": "./dist/schemas/users/get-user-bookmarks.d.ts",
-      "default": "./dist/schemas/users/get-user-bookmarks.js"
+    "./schemas/users/bookmarks/toggle-user-bookmark": {
+      "types": "./dist/schemas/users/bookmarks/toggle-user-bookmark.d.ts",
+      "default": "./dist/schemas/users/bookmarks/toggle-user-bookmark.js"
     },
-    "./schemas/users/get-user-recovery-package": {
-      "types": "./dist/schemas/users/get-user-recovery-package.d.ts",
-      "default": "./dist/schemas/users/get-user-recovery-package.js"
+    "./schemas/users/bookmarks/user-bookmark": {
+      "types": "./dist/schemas/users/bookmarks/user-bookmark.d.ts",
+      "default": "./dist/schemas/users/bookmarks/user-bookmark.js"
     },
     "./schemas/users/get-user-stats": {
       "types": "./dist/schemas/users/get-user-stats.d.ts",
@@ -100,29 +167,26 @@
       "types": "./dist/schemas/users/get-users-leaderboard.d.ts",
       "default": "./dist/schemas/users/get-users-leaderboard.js"
     },
-    "./schemas/users/recover-user-account": {
-      "types": "./dist/schemas/users/recover-user-account.d.ts",
-      "default": "./dist/schemas/users/recover-user-account.js"
+    "./schemas/users/recovery-package/get-user-recovery-package": {
+      "types": "./dist/schemas/users/recovery-package/get-user-recovery-package.d.ts",
+      "default": "./dist/schemas/users/recovery-package/get-user-recovery-package.js"
     },
-    "./schemas/users/remove-user-bookmark": {
-      "types": "./dist/schemas/users/remove-user-bookmark.d.ts",
-      "default": "./dist/schemas/users/remove-user-bookmark.js"
+    "./schemas/users/recovery-package/recover-user-account": {
+      "types": "./dist/schemas/users/recovery-package/recover-user-account.d.ts",
+      "default": "./dist/schemas/users/recovery-package/recover-user-account.js"
+    },
+    "./schemas/users/recovery-package/user-recovery-package": {
+      "types": "./dist/schemas/users/recovery-package/user-recovery-package.d.ts",
+      "default": "./dist/schemas/users/recovery-package/user-recovery-package.js"
+    },
+    "./schemas/users/trust/user-trust": {
+      "types": "./dist/schemas/users/trust/user-trust.d.ts",
+      "default": "./dist/schemas/users/trust/user-trust.js"
     },
     "./schemas/users/user": {
       "types": "./dist/schemas/users/user.d.ts",
       "default": "./dist/schemas/users/user.js"
-    },
-    "./schemas/users/user-bookmark": {
-      "types": "./dist/schemas/users/user-bookmark.d.ts",
-      "default": "./dist/schemas/users/user-bookmark.js"
     }
-  },
-  "scripts": {
-    "dev": "pnpm run build && concurrently -k \"tsc -w\" \"tsc-alias -w\"",
-    "build": "rimraf dist && tsc && tsc-alias",
-    "lint": "eslint . --max-warnings 0",
-    "lint:fix": "eslint --fix .",
-    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "zod": "^4.1.11"

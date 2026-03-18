@@ -2,7 +2,7 @@ import {
   type GetToolsDirectoryQueryString,
   getToolsDirectoryQueryStringSchema,
   getToolsDirectoryResponseSchemas,
-} from "@workspace/shared/schemas/tools/get-tools-directory";
+} from "@workspace/shared/schemas/tools/directory/get-tools-directory";
 
 import { apiClient } from "@/lib/api-client";
 

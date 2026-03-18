@@ -31,7 +31,6 @@ import {
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-  InputGroupTextarea,
 } from "@workspace/ui/components/input-group";
 import {
   Popover,
@@ -51,33 +50,34 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { MarkdownEditor } from "@/components/markdown";
 import SubmissionAlert from "@/components/submission-alert";
 import { useSubmission } from "@/hooks/use-submission";
+import { parseExternalUrl } from "@/utils/parse-external-url";
 
 import { useAddTool } from "../-queries/user-add-tool";
 
-const MAX_SHORT_DESCRIPTION = 160;
-const MAX_LONG_DESCRIPTION = 2000;
-
-const formSchema = addToolBodySchema;
+const MAX_LONG_DESCRIPTION = 5000;
 
 export default function AddToolDialog() {
+  const { userId } = useRouteContext({ from: "/_authenticated" });
   const { username } = useParams({ from: "/_authenticated/@{$username}" });
   const searchParams = useSearch({
     from: "/_authenticated/@{$username}/tools/",
   });
   const navigate = useNavigate();
+
   const [externalUrlInput, setExternalUrlInput] = useState("");
   const [categoryInput, setCategoryInput] = useState("");
   const [tagInput, setTagInput] = useState("");
-  const { userId } = useRouteContext({ from: "/_authenticated" });
+
   const { mutateAsync: addTool } = useAddTool(userId);
   const { resetStatus, setError, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
       categories: [],
-      externalUrls: [],
+      externalUrls: undefined,
       image: undefined,
       longDescription: "",
       name: "",
@@ -111,7 +111,7 @@ export default function AddToolDialog() {
       }
     },
     validators: {
-      onSubmit: formSchema,
+      onSubmit: addToolBodySchema,
     },
   });
 
@@ -217,7 +217,6 @@ export default function AddToolDialog() {
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
-                const currentLength = field.state.value.length;
 
                 return (
                   <Field data-invalid={isInvalid}>
@@ -225,12 +224,9 @@ export default function AddToolDialog() {
                       Short Description
                     </FieldLabel>
                     <InputGroup>
-                      <InputGroupTextarea
+                      <InputGroupInput
                         aria-invalid={isInvalid}
-                        className="max-h-52"
                         id={field.name}
-                        maxLength={MAX_SHORT_DESCRIPTION}
-                        minLength={10}
                         onBlur={field.handleBlur}
                         onChange={(event) =>
                           field.handleChange(event.target.value)
@@ -239,9 +235,6 @@ export default function AddToolDialog() {
                         required={true}
                         value={field.state.value}
                       />
-                      <InputGroupAddon align="block-end">
-                        {currentLength}/{MAX_SHORT_DESCRIPTION}
-                      </InputGroupAddon>
                     </InputGroup>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -261,25 +254,28 @@ export default function AddToolDialog() {
                     <FieldLabel htmlFor={field.name}>
                       Long Description
                     </FieldLabel>
-                    <InputGroup>
-                      <InputGroupTextarea
-                        aria-invalid={isInvalid}
-                        className="max-h-52"
-                        id={field.name}
-                        maxLength={MAX_LONG_DESCRIPTION}
-                        minLength={20}
+                    <div className="space-y-2">
+                      <MarkdownEditor
                         onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
-                        placeholder="Detailed explanation of what the tool does."
-                        required={true}
+                        onChange={(value = "") => {
+                          if (value.length > MAX_LONG_DESCRIPTION) return;
+                          field.handleChange(value);
+                        }}
+                        textareaProps={{
+                          "aria-invalid": isInvalid,
+                          id: field.name,
+                          maxLength: MAX_LONG_DESCRIPTION,
+                          minLength: 20,
+                          placeholder:
+                            "Detailed explanation of what the tool does.",
+                          required: true,
+                        }}
                         value={field.state.value}
                       />
-                      <InputGroupAddon align="block-end">
+                      <div className="flex justify-end text-xs text-muted-foreground">
                         {currentLength}/{MAX_LONG_DESCRIPTION}
-                      </InputGroupAddon>
-                    </InputGroup>
+                      </div>
+                    </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -372,7 +368,9 @@ export default function AddToolDialog() {
                 const isDisabled = (field.state.value ?? []).length >= 4;
 
                 function addCategory() {
-                  const normalizedValue = normalizeTextInput(categoryInput);
+                  const normalizedValue = categoryInput
+                    .trim()
+                    .replaceAll(/\s+/g, " ");
                   if (!normalizedValue) return;
 
                   field.pushValue(normalizedValue);
@@ -441,10 +439,12 @@ export default function AddToolDialog() {
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
-                const isDisabled = (field.state.value ?? []).length >= 4;
+                const isDisabled = (field.state.value ?? []).length >= 8;
 
                 function addTag() {
-                  const normalizedValue = normalizeTextInput(tagInput);
+                  const normalizedValue = tagInput
+                    .trim()
+                    .replaceAll(/\s+/g, " ");
                   if (!normalizedValue) return;
 
                   field.pushValue(normalizedValue.toLowerCase());
@@ -528,9 +528,10 @@ export default function AddToolDialog() {
                         aria-invalid={isInvalid}
                         id={field.name}
                         onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
+                        onChange={(event) => {
+                          const value = event.target.value.trim();
+                          field.handleChange(value || undefined);
+                        }}
                         placeholder="https://example.com/image.png"
                         type="url"
                         value={field.state.value}
@@ -615,20 +616,4 @@ export default function AddToolDialog() {
       </DialogContent>
     </Dialog>
   );
-}
-
-function normalizeTextInput(value: string) {
-  return value.trim().replaceAll(/\s+/g, " ");
-}
-
-function parseExternalUrl(url: string) {
-  try {
-    const parsedUrl = new URL(url.trim());
-    return {
-      platform: parsedUrl.hostname.replace(/^www\./, ""),
-      url: parsedUrl.toString(),
-    };
-  } catch {
-    return;
-  }
 }

@@ -13,6 +13,7 @@ export default fp<FastifyMongodbOptions>(
       appName: fastify.env.APP_NAME,
       database: fastify.env.MONGODB_DATABASE,
       forceClose: true,
+      ignoreUndefined: true,
       serverApi: {
         deprecationErrors: true,
         strict: true,

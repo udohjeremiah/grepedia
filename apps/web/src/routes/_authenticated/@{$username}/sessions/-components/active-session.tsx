@@ -36,8 +36,8 @@ import { useDialogState } from "@/hooks/use-dialog-state";
 import type { ActiveSession } from "./active-sessions";
 
 export default function ActiveSession(session: ActiveSession) {
-  const DeviceIcon = getDeviceIcon(session.device);
   const { isPending, mutate: revokeSession } = auth.useRevokeSession();
+
   const { handleOpenChange, isOpen, setIsOpen } = useDialogState();
 
   const handleRevokeSession = () => {
@@ -50,6 +50,8 @@ export default function ActiveSession(session: ActiveSession) {
       token: session.token,
     });
   };
+
+  const DeviceIcon = getDeviceIcon(session.device);
 
   return (
     <div

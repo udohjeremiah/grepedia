@@ -4,7 +4,7 @@ import {
   type SetToolReactionParams,
   setToolReactionParamsSchema,
   setToolReactionResponseSchemas,
-} from "@workspace/shared/schemas/tools/set-tool-reaction";
+} from "@workspace/shared/schemas/tools/reactions/set-tool-reaction";
 
 import { apiClient } from "@/lib/api-client";
 

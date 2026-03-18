@@ -12,6 +12,7 @@ export function useItemsCount(
   options: UseItemsCountOptions,
 ) {
   const { gap, maxItems = 100, minItems = 1, rowHeight } = options;
+
   const [count, setCount] = useState(0);
 
   useLayoutEffect(() => {

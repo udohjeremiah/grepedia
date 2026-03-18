@@ -14,6 +14,8 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
 
       const body = request.body;
       const tools = fastify.getToolCollection();
+      const toolRevisions = fastify.getToolRevisionCollection();
+      const users = fastify.getUserCollection();
 
       const slugify = slugifyWithCounter();
       let slug = slugify(body.name);
@@ -33,15 +35,18 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       // const vecEmbed = await fastify.generateVectorEmbeddings(textToEmbed);
 
       const addedAt = new Date();
-      const insertResult = await tools.insertOne({
+      const userId = ObjectId.createFromHexString(request.user.id);
+      const toolDocument = {
         ...body,
         addedAt,
-        addedBy: ObjectId.createFromHexString(request.user.id),
+        addedBy: userId,
         releasedAt: body.releasedAt ? new Date(body.releasedAt) : undefined,
         slug,
         stats: { comments: 0, downvotes: 0, upvotes: 0 },
-        status: "published",
-      });
+        status: "published" as const,
+      };
+
+      const insertResult = await tools.insertOne(toolDocument);
 
       if (!insertResult.acknowledged) {
         return reply.code(500).send({
@@ -49,6 +54,52 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
           success: false,
         });
       }
+
+      const revisionInsertResult = await toolRevisions.insertOne({
+        createdAt: addedAt,
+        createdBy: userId,
+        isRevert: false,
+        revisionNumber: 1,
+        snapshot: {
+          ...body,
+          releasedAt: body.releasedAt ? new Date(body.releasedAt) : undefined,
+        },
+        summary:
+          "Created the initial tool listing with its basic details, description, and metadata.",
+        title: "Initial tool publication",
+        toolId: insertResult.insertedId,
+        toolSlug: slug,
+      });
+
+      if (!revisionInsertResult.acknowledged) {
+        return reply.code(500).send({
+          message: "Internal server error",
+          success: false,
+        });
+      }
+
+      if (request.user.role === "member") {
+        const promoteResult = await users.updateOne(
+          { _id: userId, role: "member" },
+          {
+            $set: {
+              role: "contributor",
+              updatedAt: addedAt,
+            },
+          },
+        );
+
+        if (!promoteResult.acknowledged) {
+          return reply.code(500).send({
+            message: "Internal server error",
+            success: false,
+          });
+        }
+      }
+
+      fastify.evaluateUserTrust(userId).catch((error: unknown) => {
+        fastify.log.error(error);
+      });
 
       return reply.code(201).send({
         data: {
@@ -61,7 +112,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "POST",
-    onRequest: [fastify.requireUser],
+    onRequest: [fastify.requireStatus("active")],
     schema: {
       body: addToolBodySchema,
       response: addToolResponseSchemas,

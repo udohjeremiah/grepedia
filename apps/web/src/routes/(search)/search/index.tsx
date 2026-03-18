@@ -1,6 +1,6 @@
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { searchQueryStringSchema } from "@workspace/shared/schemas/search";
+import { searchQueryStringSchema } from "@workspace/shared/schemas/search/search";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 

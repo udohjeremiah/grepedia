@@ -112,11 +112,13 @@ export const getStatConfig = ({
 
 export default function UserTools() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
+
+  const [filterView, setFilterView] = useState<FilterView>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
   const {
     data: { stats, tools },
   } = useUserTools({ userId });
-  const [filterView, setFilterView] = useState<FilterView>("all");
-  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTools = useMemo(() => {
     let filteredResult = [...tools];

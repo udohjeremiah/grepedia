@@ -4,6 +4,7 @@ import type { Tab } from "./tabs";
 
 export default function Tab({ icon: Icon, label, value }: Tab) {
   const searchParams = useSearch({ from: "/(search)/search/" });
+
   const isTabChange = value !== searchParams.tab;
 
   return (

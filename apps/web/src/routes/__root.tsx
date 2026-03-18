@@ -26,6 +26,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     meta: [
       { charSet: "utf8" },
       { content: "width=device-width, initial-scale=1", name: "viewport" },
+      { content: "light dark", name: "color-scheme" },
       {
         title:
           "Grepedia — The Encyclopedia Of Tools Powered By Collective Wisdom",

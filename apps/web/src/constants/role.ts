@@ -1,19 +1,36 @@
 import type { User } from "@workspace/shared/schemas/users/user";
 
+import { BadgeCheckIcon, ShieldCheckIcon, TrophyIcon } from "lucide-react";
+
 export const roleConfig: Record<
   User["role"],
-  { description: string; label: string }
+  {
+    badgeClassName: string;
+    badgeIcon: typeof BadgeCheckIcon;
+    badgeLabel: string;
+    description: string;
+    label: string;
+  }
 > = {
   contributor: {
-    description: "Can submit tools and resources for the community.",
+    badgeClassName: "text-sky-500",
+    badgeIcon: BadgeCheckIcon,
+    badgeLabel: "Verified contributor",
+    description: "Can submit and update tools and resources for the community.",
     label: "Contributor",
   },
   member: {
+    badgeClassName: "text-muted-foreground",
+    badgeIcon: TrophyIcon,
+    badgeLabel: "Member",
     description:
       "Standard account with access to browse, bookmark, and comment on tools.",
     label: "Member",
   },
   moderator: {
+    badgeClassName: "text-indigo-500",
+    badgeIcon: ShieldCheckIcon,
+    badgeLabel: "Verified moderator",
     description:
       "Can review, revert and moderate content and user submissions.",
     label: "Moderator",

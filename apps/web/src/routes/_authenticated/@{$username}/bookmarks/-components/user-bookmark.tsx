@@ -28,8 +28,10 @@ type UserBookmarkProps = ReturnType<typeof useUserBookmarks>["data"][number];
 
 export default function UserBookmark(bookmark: UserBookmarkProps) {
   const { userId } = useRouteContext({ from: "/_authenticated" });
+
   const { isPending, mutate: removeBookmark } = useUserRemoveBookmark(userId);
   const { resetStatus, setError, status } = useSubmission();
+
   const { handleOpenChange, isOpen, setIsOpen } = useDialogState({
     onCloseReset: () => {
       resetStatus();
@@ -45,7 +47,7 @@ export default function UserBookmark(bookmark: UserBookmarkProps) {
         onError: (error) => {
           setError(
             "Couldn't remove bookmark",
-            error.message ??
+            error.message ||
               "An error occurred while removing this bookmark. Please try again.",
           );
         },

@@ -18,8 +18,9 @@ import DirectoryCategorySection from "./directory-category-section";
 import DirectoryCategorySectionSkeleton from "./directory-category-section-skeleton";
 
 export default function Directory() {
-  const { data: categories } = useToolsDirectoryCategories();
   const [categoryQuery, setCategoryQuery] = useState("");
+
+  const { data: categories } = useToolsDirectoryCategories();
 
   const filteredCategories = useMemo(() => {
     const query = categoryQuery.trim().toLowerCase();

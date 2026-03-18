@@ -11,6 +11,7 @@ import ToolsEmpty from "./tools-empty";
 
 export default function Tools() {
   const searchParams = useSearch({ from: "/(search)/search/" });
+
   const containerRef = useRef<HTMLElement>(null);
   const trackingRef = useRef<HTMLDivElement>(null);
   const limit = useItemsCount(containerRef, { gap: 16, rowHeight: 70 });

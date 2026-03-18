@@ -1,13 +1,15 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
-import { objectIdSchema } from "@workspace/shared/schemas/object-id-schema";
+import { objectIdSchema } from "@workspace/shared/schemas/object-id";
 import {
   getToolCommentsParamsSchema,
   getToolCommentsQueryStringSchema,
   getToolCommentsResponseSchemas,
-} from "@workspace/shared/schemas/tools/get-tool-comments";
+} from "@workspace/shared/schemas/tools/comments/get-tool-comments";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
+
+import type { ToolCommentWithObjectIds } from "@/schemas/tools/tool-comment.js";
 
 import {
   decodeCursor,
@@ -19,17 +21,19 @@ import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 const commentsCursorSchema = z.object({
   createdAt: z.iso.datetime(),
   id: objectIdSchema,
+  score: z.number().optional(),
 });
 
 type CommentsCursor = z.infer<typeof commentsCursorSchema>;
 
 const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     handler: async function (request, reply) {
       if (!request.user) throw new Error("User not authenticated");
 
       const { slug } = request.params;
-      const { cursor, limit = 20 } = request.query;
+      const { cursor, limit = 20, sort = "top" } = request.query;
 
       const tools = fastify.getToolCollection();
       const comments = fastify.getToolCommentCollection();
@@ -58,43 +62,112 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
         throw error;
       }
 
-      const toolComments = await comments
-        .find(
-          decodedCursor
+      if (
+        decodedCursor &&
+        sort !== "newest" &&
+        typeof decodedCursor.score !== "number"
+      ) {
+        return reply.code(400).send({
+          message: "Invalid cursor",
+          success: false,
+        });
+      }
+
+      const cursorFilter = decodedCursor
+        ? sort === "newest"
+          ? {
+              $or: [
+                {
+                  createdAt: { $lt: new Date(decodedCursor.createdAt) },
+                },
+                {
+                  _id: {
+                    $lt: ObjectId.createFromHexString(decodedCursor.id),
+                  },
+                  createdAt: new Date(decodedCursor.createdAt),
+                },
+              ],
+            }
+          : sort === "bottom"
             ? {
-                $and: [
+                $or: [
+                  { score: { $gt: decodedCursor.score ?? 0 } },
                   {
-                    parentCommentId: { $exists: false },
-                    toolId: tool._id,
+                    createdAt: { $gt: new Date(decodedCursor.createdAt) },
+                    score: decodedCursor.score ?? 0,
                   },
                   {
-                    $or: [
-                      {
-                        createdAt: { $lt: new Date(decodedCursor.createdAt) },
-                      },
-                      {
-                        _id: {
-                          $lt: ObjectId.createFromHexString(decodedCursor.id),
-                        },
-                        createdAt: new Date(decodedCursor.createdAt),
-                      },
-                    ],
+                    _id: {
+                      $gt: ObjectId.createFromHexString(decodedCursor.id),
+                    },
+                    createdAt: new Date(decodedCursor.createdAt),
+                    score: decodedCursor.score ?? 0,
                   },
                 ],
               }
             : {
-                parentCommentId: { $exists: false },
-                toolId: tool._id,
-              },
-        )
-        // eslint-disable-next-line unicorn/no-array-sort, perfectionist/sort-objects
-        .sort({ createdAt: -1, _id: -1 })
-        .limit(limit)
+                $or: [
+                  { score: { $lt: decodedCursor.score ?? 0 } },
+                  {
+                    createdAt: { $lt: new Date(decodedCursor.createdAt) },
+                    score: decodedCursor.score ?? 0,
+                  },
+                  {
+                    _id: {
+                      $lt: ObjectId.createFromHexString(decodedCursor.id),
+                    },
+                    createdAt: new Date(decodedCursor.createdAt),
+                    score: decodedCursor.score ?? 0,
+                  },
+                ],
+              }
+        : undefined;
+
+      const baseMatch = {
+        parentCommentId: { $exists: false },
+        toolId: tool._id,
+      };
+
+      const sortStage =
+        sort === "newest"
+          ? // eslint-disable-next-line perfectionist/sort-objects
+            { createdAt: -1, _id: -1 }
+          : sort === "bottom"
+            ? // eslint-disable-next-line perfectionist/sort-objects
+              { score: 1, createdAt: 1, _id: 1 }
+            : // eslint-disable-next-line perfectionist/sort-objects
+              { score: -1, createdAt: -1, _id: -1 };
+
+      const pipeline = [
+        { $match: baseMatch },
+        {
+          $addFields: {
+            score: {
+              $subtract: ["$stats.upvotes", "$stats.downvotes"],
+            },
+          },
+        },
+        ...(cursorFilter ? [{ $match: cursorFilter }] : []),
+        { $sort: sortStage },
+        { $limit: limit },
+      ];
+
+      const toolComments = await comments
+        .aggregate<ToolCommentWithObjectIds & { score: number }>(pipeline)
         .toArray();
+
+      const commentList = toolComments.filter(
+        (
+          comment,
+        ): comment is ToolCommentWithObjectIds & {
+          _id: ObjectId;
+          score: number;
+        } => comment._id instanceof ObjectId,
+      );
 
       const userIds = [
         ...new Set(
-          toolComments
+          commentList
             .map((comment) => comment.userId.toHexString())
             .filter((id) => id.length > 0),
         ),
@@ -115,7 +188,7 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
       );
 
       const currentUserId = ObjectId.createFromHexString(request.user.id);
-      const commentIds = toolComments.map((comment) => comment._id);
+      const commentIds = commentList.map((comment) => comment._id);
       const currentUserReactions =
         commentIds.length > 0
           ? await commentReactions
@@ -133,7 +206,7 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
         ]),
       );
 
-      const commentsResponse = toolComments.map((comment) => {
+      const commentsResponse = commentList.map((comment) => {
         const user = userById.get(comment.userId.toHexString());
 
         return serializeMongoTypes({
@@ -155,12 +228,15 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       let nextCursor: string | undefined;
-      const lastComment = toolComments.at(-1);
+      const lastComment = commentList.at(-1);
 
-      if (lastComment && toolComments.length === limit) {
+      if (lastComment && commentList.length === limit) {
+        const lastScore =
+          lastComment.stats.upvotes - lastComment.stats.downvotes;
         nextCursor = encodeCursor({
           createdAt: lastComment.createdAt.toISOString(),
           id: lastComment._id.toHexString(),
+          score: sort === "newest" ? undefined : lastScore,
         });
       }
 

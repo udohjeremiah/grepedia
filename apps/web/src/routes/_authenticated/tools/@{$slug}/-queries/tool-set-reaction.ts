@@ -1,7 +1,7 @@
 import type {
   SetToolReactionBody,
   SetToolReactionParams,
-} from "@workspace/shared/schemas/tools/set-tool-reaction";
+} from "@workspace/shared/schemas/tools/reactions/set-tool-reaction";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -17,7 +17,8 @@ type MutationVariables = {
 export function useToolSetReaction(slug: string, userId: string) {
   const queryClient = useQueryClient();
   const params: SetToolReactionParams = { slug };
-  const toolKey = toolQueryOptions(params).queryKey;
+
+  const toolKey = toolQueryOptions({ slug }).queryKey;
   const userKey = userQueryOptions(userId).queryKey;
 
   return useMutation({

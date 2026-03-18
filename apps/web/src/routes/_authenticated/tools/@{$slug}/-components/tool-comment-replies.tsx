@@ -17,6 +17,7 @@ import { Spinner } from "@workspace/ui/components/spinner";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquareIcon } from "lucide-react";
 
+import { MarkdownPreview } from "@/components/markdown";
 import { useDialogState } from "@/hooks/use-dialog-state";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 import { getInitials } from "@/utils/get-initials";
@@ -57,7 +58,7 @@ export default function ToolCommentReplies({
     );
   } else if (replies.length > 0) {
     repliesContent = replies.map((replyItem) => (
-      <ToolComment key={replyItem._id} {...replyItem} />
+      <ToolComment {...replyItem} key={replyItem._id} />
     ));
   } else {
     repliesContent = (
@@ -66,6 +67,10 @@ export default function ToolCommentReplies({
       </p>
     );
   }
+
+  const isEdited =
+    new Date(comment.updatedAt).getTime() >
+    new Date(comment.createdAt).getTime();
 
   return (
     <Dialog onOpenChange={handleOpenChange} open={isOpen}>
@@ -98,8 +103,11 @@ export default function ToolCommentReplies({
                     addSuffix: true,
                   })}
                 </span>
+                {isEdited && (
+                  <span className="text-xs text-muted-foreground">edited</span>
+                )}
               </div>
-              <p className="text-sm leading-relaxed">{comment.content}</p>
+              <MarkdownPreview source={comment.content} />
               {comment.viewerReaction !== undefined && (
                 <p className="text-xs text-muted-foreground">
                   You {comment.viewerReaction === 1 ? "upvoted" : "downvoted"}{" "}

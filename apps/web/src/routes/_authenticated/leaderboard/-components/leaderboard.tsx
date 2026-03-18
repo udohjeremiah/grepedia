@@ -59,7 +59,10 @@ const categories = [
 
 export default function Leaderboard() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
+
   const trackingRef = useRef<HTMLDivElement>(null);
+  const [activeCategory, setActiveCategory] = useState<SortField>("toolsAdded");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   const {
     data: { leaderboard, totals },
@@ -67,9 +70,6 @@ export default function Leaderboard() {
     hasNextPage,
     isFetchingNextPage,
   } = useUsersLeaderboard({});
-
-  const [activeCategory, setActiveCategory] = useState<SortField>("toolsAdded");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 
   const sortedLeaderBoard = useMemo(() => {
     const sortedResult = [...leaderboard];

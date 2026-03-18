@@ -1,4 +1,4 @@
-import type { GetToolsDirectoryQueryString } from "@workspace/shared/schemas/tools/get-tools-directory";
+import type { GetToolsDirectoryQueryString } from "@workspace/shared/schemas/tools/directory/get-tools-directory";
 
 import {
   infiniteQueryOptions,

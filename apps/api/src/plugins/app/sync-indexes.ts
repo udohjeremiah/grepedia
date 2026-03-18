@@ -1,4 +1,9 @@
-import type { Collection, CreateIndexesOptions, Document } from "mongodb";
+import type {
+  Collection,
+  CreateIndexesOptions,
+  Document,
+  MongoServerError,
+} from "mongodb";
 
 import fp from "fastify-plugin";
 
@@ -48,7 +53,15 @@ async function syncIndexes<TSchema extends Document>({
   collection: Collection<TSchema>;
   specs: ManagedIndexSpec[];
 }) {
-  const existingIndexes = await collection.listIndexes().toArray();
+  const existingIndexes = await collection
+    .listIndexes()
+    .toArray()
+    .catch((error: MongoServerError) => {
+      if (error.codeName === "NamespaceNotFound") {
+        return [];
+      }
+      throw error;
+    });
 
   const normalize = (index: {
     expireAfterSeconds?: number;

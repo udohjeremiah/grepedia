@@ -4,9 +4,11 @@ import type { Collection, Db } from "mongodb";
 
 import fp from "fastify-plugin";
 
+import type { ModerationCaseWithObjectIds } from "@/schemas/moderation-case/moderation-case.js";
 import type { ToolCommentReactionWithObjectIds } from "@/schemas/tools/tool-comment-reaction.js";
 import type { ToolCommentWithObjectIds } from "@/schemas/tools/tool-comment.js";
 import type { ToolReactionWithObjectIds } from "@/schemas/tools/tool-reaction.js";
+import type { ToolRevisionWithObjectIds } from "@/schemas/tools/tool-revision.js";
 import type { ToolWithObjectIds } from "@/schemas/tools/tool.js";
 import type { UserBookmarkWithObjectIds } from "@/schemas/users/user-bookmark.js";
 import type { UserWithObjectIds } from "@/schemas/users/user.js";
@@ -14,10 +16,12 @@ import type { UserWithObjectIds } from "@/schemas/users/user.js";
 declare module "fastify" {
   interface FastifyInstance {
     getDatabase: () => Db;
+    getModerationCaseCollection: () => Collection<ModerationCaseWithObjectIds>;
     getToolCollection: () => Collection<ToolWithObjectIds>;
     getToolCommentCollection: () => Collection<ToolCommentWithObjectIds>;
     getToolCommentReactionCollection: () => Collection<ToolCommentReactionWithObjectIds>;
     getToolReactionCollection: () => Collection<ToolReactionWithObjectIds>;
+    getToolRevisionCollection: () => Collection<ToolRevisionWithObjectIds>;
     getUserBookmarkCollection: () => Collection<UserBookmarkWithObjectIds>;
     getUserCollection: () => Collection<UserWithObjectIds>;
   }
@@ -59,6 +63,16 @@ export default fp(
     const toolCommentReactionCollection =
       database.collection<ToolCommentReactionWithObjectIds>(
         fastify.env.MONGODB_COLL_TOOL_COMMENT_REACTION,
+      );
+
+    const toolRevisionCollection =
+      database.collection<ToolRevisionWithObjectIds>(
+        fastify.env.MONGODB_COLL_TOOL_REVISION,
+      );
+
+    const moderationCaseCollection =
+      database.collection<ModerationCaseWithObjectIds>(
+        fastify.env.MONGODB_COLL_MODERATION_CASE,
       );
 
     await Promise.all([
@@ -210,6 +224,56 @@ export default fp(
           },
         ],
       }),
+      fastify.syncIndexes({
+        collection: toolRevisionCollection,
+        mode: "reconcile",
+        specs: [
+          {
+            key: { toolId: 1, revisionNumber: -1, _id: -1 },
+            options: {
+              name: "grepedia__tool_revision__toolId_revisionNumber_desc_id_desc",
+              unique: true,
+            },
+          },
+          {
+            key: { toolId: 1, createdAt: -1, _id: -1 },
+            options: {
+              name: "grepedia__tool_revision__toolId_createdAt_desc_id_desc",
+            },
+          },
+        ],
+      }),
+      fastify.syncIndexes({
+        collection: moderationCaseCollection,
+        mode: "reconcile",
+        specs: [
+          {
+            key: { discussionUrl: 1 },
+            options: {
+              name: "grepedia__moderation_case__discussionUrl_unique",
+              unique: true,
+            },
+          },
+          {
+            key: { status: 1, type: 1, createdAt: -1, _id: -1 },
+            options: {
+              name: "grepedia__moderation_case__status_type_createdAt_desc_id_desc",
+            },
+          },
+          {
+            key: { userId: 1, type: 1, status: 1, createdAt: -1 },
+            options: {
+              name: "grepedia__moderation_case__userId_type_status_createdAt_desc",
+            },
+          },
+          {
+            key: { toolId: 1, type: 1, status: 1, createdAt: -1 },
+            options: {
+              name: "grepedia__moderation_case__toolId_type_status_createdAt_desc",
+            },
+          },
+        ],
+      }),
     ]);
 
     fastify.decorate("getDatabase", () => database);
@@ -221,6 +285,11 @@ export default fp(
     fastify.decorate(
       "getToolCommentReactionCollection",
       () => toolCommentReactionCollection,
+    );
+    fastify.decorate("getToolRevisionCollection", () => toolRevisionCollection);
+    fastify.decorate(
+      "getModerationCaseCollection",
+      () => moderationCaseCollection,
     );
   },
   { dependencies: ["mongodb", "sync-indexes"], name: "database" },

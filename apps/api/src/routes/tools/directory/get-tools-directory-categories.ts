@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
-import { getToolsDirectoryCategoriesResponseSchemas } from "@workspace/shared/schemas/tools/get-tools-directory-categories";
+import { getToolsDirectoryCategoriesResponseSchemas } from "@workspace/shared/schemas/tools/directory/get-tools-directory-categories";
 
 const getToolsDirectoryCategories: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({

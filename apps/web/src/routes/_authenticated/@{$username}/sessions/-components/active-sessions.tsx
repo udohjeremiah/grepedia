@@ -9,8 +9,9 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 import Bowser from "bowser";
 import { LaptopMinimalIcon } from "lucide-react";
 
+import type { Session } from "@/lib/auth-client";
+
 import { auth } from "@/hooks/auth";
-import { Session } from "@/lib/auth-client";
 
 import ActiveSession from "./active-session";
 

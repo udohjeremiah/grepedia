@@ -1,7 +1,9 @@
 import { z } from "zod";
 
-import { defaultResponse } from "../default-response.js";
-import { objectIdSchema } from "../object-id-schema.js";
+import { defaultResponse } from "@/schemas/default-response.js";
+import { objectIdSchema } from "@/schemas/object-id.js";
+
+import { imageSchema } from "../image.js";
 
 export const getUsersLeaderboardQueryStringSchema = z.object({
   cursor: z.string().optional(),
@@ -21,23 +23,23 @@ export const getUsersLeaderboardResponseSchemas = {
     data: z.object({
       leaderboard: z.array(
         z.object({
-          image: z.url().optional(),
+          image: imageSchema.optional(),
           joinedAt: z.iso.datetime(),
           name: z.string(),
-          rank: z.int().min(1),
+          rank: z.int(),
           role: z.enum(["member", "contributor", "moderator"]),
-          toolsAdded: z.int().min(0),
-          toolsOwned: z.int().min(0),
-          toolsUpdated: z.int().min(0),
+          toolsAdded: z.int(),
+          toolsOwned: z.int(),
+          toolsUpdated: z.int(),
           userId: objectIdSchema,
           username: z.string(),
         }),
       ),
       nextCursor: z.string().optional(),
       totals: z.object({
-        totalAdded: z.int().min(0),
-        totalOwned: z.int().min(0),
-        totalUpdated: z.int().min(0),
+        totalAdded: z.int(),
+        totalOwned: z.int(),
+        totalUpdated: z.int(),
       }),
     }),
     message: z.string(),

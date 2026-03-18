@@ -4,7 +4,6 @@ import {
   infiniteQueryOptions,
   useSuspenseInfiniteQuery,
 } from "@tanstack/react-query";
-import { omitKeys } from "@workspace/shared/omit-keys";
 
 import { getUsersLeaderboard } from "@/services/users/get-users-leaderboard";
 
@@ -15,7 +14,7 @@ export const usersLeaderboardQueryOptions = (
     initialPageParam: "",
     queryFn: ({ pageParam }) =>
       getUsersLeaderboard({ ...params, cursor: pageParam }),
-    queryKey: ["users", "leaderboard", omitKeys(params, ["cursor", "limit"])],
+    queryKey: ["users", "leaderboard"],
     // eslint-disable-next-line perfectionist/sort-objects
     getNextPageParam: (lastPage) => lastPage.data.nextCursor,
   });

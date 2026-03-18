@@ -20,14 +20,14 @@ import { useUserRecoveryPackage } from "../-queries/user-recovery-package";
 
 export default function PreviewDataDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
+
+  const { copied, copyToClipboard, resetCopied } = useCopyToClipboard();
   const {
     data: userRecoveryPackage,
     isPending,
     refetch,
-  } = useUserRecoveryPackage({
-    userId,
-  });
-  const { copied, copyToClipboard, resetCopied } = useCopyToClipboard();
+  } = useUserRecoveryPackage({ userId });
+
   const { handleOpenChange, isOpen } = useDialogState({
     onCloseReset: () => {
       resetCopied();

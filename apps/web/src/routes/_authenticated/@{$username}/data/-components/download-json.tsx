@@ -9,14 +9,13 @@ import { useUserRecoveryPackage } from "../-queries/user-recovery-package";
 
 export default function DownloadJSON() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
+
   const { user } = auth.useSession();
   const {
     data: userRecoveryPackage,
     isPending,
     refetch,
-  } = useUserRecoveryPackage({
-    userId,
-  });
+  } = useUserRecoveryPackage({ userId });
 
   if (isPending) {
     return <Skeleton className="h-9 w-40 rounded-4xl" />;

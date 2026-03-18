@@ -6,6 +6,7 @@ interface UseCopyToClipboardOptions {
 
 export function useCopyToClipboard(options: UseCopyToClipboardOptions = {}) {
   const { resetDelayMs = 2000 } = options;
+
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,

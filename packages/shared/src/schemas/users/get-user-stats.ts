@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
-import { objectIdSchema } from "../object-id-schema.js";
+import { objectIdSchema } from "../object-id.js";
 
 export const getUserStatsParamsSchema = z.object({
   userId: objectIdSchema,

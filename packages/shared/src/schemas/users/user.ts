@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { objectIdSchema } from "../object-id-schema.js";
+import { imageSchema } from "../image.js";
+import { objectIdSchema } from "../object-id.js";
 
 export const userSchema = z.object({
   _id: objectIdSchema,
@@ -13,10 +14,10 @@ export const userSchema = z.object({
   gender: z
     .enum(["male", "female", "nonBinary", "other", "preferNotToSay"])
     .optional(),
-  image: z.url().optional(),
+  image: imageSchema.optional(),
   name: z.string(),
   role: z.enum(["member", "contributor", "moderator"]),
-  status: z.enum(["active", "suspended", "deactivated"]),
+  status: z.enum(["active", "flagged", "suspended", "deactivated"]),
   updatedAt: z.iso.datetime(),
   username: z.string(),
 });

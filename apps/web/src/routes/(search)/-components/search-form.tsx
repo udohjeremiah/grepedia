@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
-import { searchQueryStringSchema } from "@workspace/shared/schemas/search";
+import { searchQueryStringSchema } from "@workspace/shared/schemas/search/search";
 import { Field, FieldError, FieldGroup } from "@workspace/ui/components/field";
 import {
   InputGroup,
@@ -12,14 +12,13 @@ import { cn } from "@workspace/ui/utils/cn";
 import { ArrowUpIcon, SearchIcon } from "lucide-react";
 import { type ComponentProps, useRef } from "react";
 
-const formSchema = searchQueryStringSchema.pick({ query: true });
-
 export default function SearchForm({
   className,
   ...props
 }: ComponentProps<"search">) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm({
     defaultValues: {
@@ -32,7 +31,7 @@ export default function SearchForm({
       });
     },
     validators: {
-      onSubmit: formSchema,
+      onSubmit: searchQueryStringSchema.pick({ query: true }),
     },
   });
 
@@ -64,7 +63,6 @@ export default function SearchForm({
                       autoCapitalize="off"
                       autoComplete="off"
                       autoCorrect="off"
-                      autoFocus={true}
                       maxLength={8192}
                       minLength={2}
                       name={field.name}

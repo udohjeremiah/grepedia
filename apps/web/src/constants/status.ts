@@ -15,6 +15,11 @@ export const statusConfig: Record<
     label: "Deactivated",
     nextStep: "Contact support to appeal or request review.",
   },
+  flagged: {
+    description: "Your account is flagged for suspicious activity.",
+    label: "Flagged",
+    nextStep: "Complete account checks or contact support for review.",
+  },
   suspended: {
     description: "Your account has been temporarily suspended.",
     label: "Suspended",
@@ -36,5 +41,6 @@ export const statusVariants: Record<
 > = {
   active: "success",
   deactivated: "destructive",
+  flagged: "info",
   suspended: "warning",
 } as const;

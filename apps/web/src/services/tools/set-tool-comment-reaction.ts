@@ -4,7 +4,7 @@ import {
   type SetToolCommentReactionParams,
   setToolCommentReactionParamsSchema,
   setToolCommentReactionResponseSchemas,
-} from "@workspace/shared/schemas/tools/set-tool-comment-reaction";
+} from "@workspace/shared/schemas/tools/comments/set-tool-comment-reaction";
 
 import { apiClient } from "@/lib/api-client";
 

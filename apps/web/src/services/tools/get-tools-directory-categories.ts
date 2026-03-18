@@ -1,4 +1,4 @@
-import { getToolsDirectoryCategoriesResponseSchemas } from "@workspace/shared/schemas/tools/get-tools-directory-categories";
+import { getToolsDirectoryCategoriesResponseSchemas } from "@workspace/shared/schemas/tools/directory/get-tools-directory-categories";
 
 import { apiClient } from "@/lib/api-client";
 

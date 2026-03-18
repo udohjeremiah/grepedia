@@ -30,23 +30,28 @@ export default function NavItem({
 
   const navItemPath = link.replace("{$username}", username);
   const isActive = pathname === navItemPath;
-
   const needsCount = countValues.has(value);
 
-  const { data: stats, isPending } = useUserStats(
-    { userId },
-    { enabled: needsCount },
-  );
+  const { data: stats, isPending } = useUserStats({ userId }, needsCount);
 
-  const getCountForValue = () => {
-    if (value === "bookmarks") return stats?.bookmarks;
-    if (value === "sessions") return stats?.sessions;
-    if (value === "tools") return stats?.tools;
-    // eslint-disable-next-line sonarjs/no-redundant-jump
-    return;
-  };
-
-  const count = getCountForValue();
+  let count: number | undefined;
+  switch (value) {
+    case "bookmarks": {
+      count = stats?.bookmarks;
+      break;
+    }
+    case "sessions": {
+      count = stats?.sessions;
+      break;
+    }
+    case "tools": {
+      count = stats?.tools;
+      break;
+    }
+    default: {
+      break;
+    }
+  }
 
   return (
     <Button

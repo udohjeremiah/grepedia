@@ -23,13 +23,16 @@ import { Route as authSignupIndexRouteImport } from './routes/(auth)/signup/inde
 import { Route as authSigninIndexRouteImport } from './routes/(auth)/signin/index'
 import { Route as authResetPasswordIndexRouteImport } from './routes/(auth)/reset-password/index'
 import { Route as authRequestPasswordResetIndexRouteImport } from './routes/(auth)/request-password-reset/index'
+import { Route as AuthenticatedToolsAtChar123slugChar125RouteRouteImport } from './routes/_authenticated/tools/@{$slug}/route'
 import { Route as AuthenticatedToolsDirectoryIndexRouteImport } from './routes/_authenticated/tools/directory/index'
 import { Route as AuthenticatedToolsAtChar123slugChar125IndexRouteImport } from './routes/_authenticated/tools/@{$slug}/index'
 import { Route as AuthenticatedAtChar123usernameChar125ToolsIndexRouteImport } from './routes/_authenticated/@{$username}/tools/index'
 import { Route as AuthenticatedAtChar123usernameChar125SessionsIndexRouteImport } from './routes/_authenticated/@{$username}/sessions/index'
 import { Route as AuthenticatedAtChar123usernameChar125SecurityIndexRouteImport } from './routes/_authenticated/@{$username}/security/index'
+import { Route as AuthenticatedAtChar123usernameChar125ModerationIndexRouteImport } from './routes/_authenticated/@{$username}/moderation/index'
 import { Route as AuthenticatedAtChar123usernameChar125DataIndexRouteImport } from './routes/_authenticated/@{$username}/data/index'
 import { Route as AuthenticatedAtChar123usernameChar125BookmarksIndexRouteImport } from './routes/_authenticated/@{$username}/bookmarks/index'
+import { Route as AuthenticatedToolsAtChar123slugChar125RevisionsIndexRouteImport } from './routes/_authenticated/tools/@{$slug}/revisions/index'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -102,6 +105,12 @@ const authRequestPasswordResetIndexRoute =
     path: '/request-password-reset/',
     getParentRoute: () => authRouteRoute,
   } as any)
+const AuthenticatedToolsAtChar123slugChar125RouteRoute =
+  AuthenticatedToolsAtChar123slugChar125RouteRouteImport.update({
+    id: '/tools/@{$slug}',
+    path: '/tools/@{$slug}',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedToolsDirectoryIndexRoute =
   AuthenticatedToolsDirectoryIndexRouteImport.update({
     id: '/tools/directory/',
@@ -110,9 +119,9 @@ const AuthenticatedToolsDirectoryIndexRoute =
   } as any)
 const AuthenticatedToolsAtChar123slugChar125IndexRoute =
   AuthenticatedToolsAtChar123slugChar125IndexRouteImport.update({
-    id: '/tools/@{$slug}/',
-    path: '/tools/@{$slug}/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedToolsAtChar123slugChar125RouteRoute,
   } as any)
 const AuthenticatedAtChar123usernameChar125ToolsIndexRoute =
   AuthenticatedAtChar123usernameChar125ToolsIndexRouteImport.update({
@@ -132,6 +141,12 @@ const AuthenticatedAtChar123usernameChar125SecurityIndexRoute =
     path: '/security/',
     getParentRoute: () => AuthenticatedAtChar123usernameChar125RouteRoute,
   } as any)
+const AuthenticatedAtChar123usernameChar125ModerationIndexRoute =
+  AuthenticatedAtChar123usernameChar125ModerationIndexRouteImport.update({
+    id: '/moderation/',
+    path: '/moderation/',
+    getParentRoute: () => AuthenticatedAtChar123usernameChar125RouteRoute,
+  } as any)
 const AuthenticatedAtChar123usernameChar125DataIndexRoute =
   AuthenticatedAtChar123usernameChar125DataIndexRouteImport.update({
     id: '/data/',
@@ -144,12 +159,19 @@ const AuthenticatedAtChar123usernameChar125BookmarksIndexRoute =
     path: '/bookmarks/',
     getParentRoute: () => AuthenticatedAtChar123usernameChar125RouteRoute,
   } as any)
+const AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute =
+  AuthenticatedToolsAtChar123slugChar125RevisionsIndexRouteImport.update({
+    id: '/revisions/',
+    path: '/revisions/',
+    getParentRoute: () => AuthenticatedToolsAtChar123slugChar125RouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/@{$username}': typeof AuthenticatedAtChar123usernameChar125RouteRouteWithChildren
   '/': typeof searchIndexRoute
   '/privacy-policy': typeof PrivacyPolicyIndexRoute
   '/terms-of-service': typeof TermsOfServiceIndexRoute
+  '/tools/@{$slug}': typeof AuthenticatedToolsAtChar123slugChar125RouteRouteWithChildren
   '/request-password-reset': typeof authRequestPasswordResetIndexRoute
   '/reset-password': typeof authResetPasswordIndexRoute
   '/signin': typeof authSigninIndexRoute
@@ -159,11 +181,13 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof AuthenticatedLeaderboardIndexRoute
   '/@{$username}/bookmarks': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
   '/@{$username}/data': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  '/@{$username}/moderation': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/@{$username}/security': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/@{$username}/sessions': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/@{$username}/tools': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
-  '/tools/@{$slug}': typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
+  '/tools/@{$slug}/': typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
   '/tools/directory': typeof AuthenticatedToolsDirectoryIndexRoute
+  '/tools/@{$slug}/revisions': typeof AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof searchIndexRoute
@@ -178,11 +202,13 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof AuthenticatedLeaderboardIndexRoute
   '/@{$username}/bookmarks': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
   '/@{$username}/data': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  '/@{$username}/moderation': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/@{$username}/security': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/@{$username}/sessions': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/@{$username}/tools': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
   '/tools/@{$slug}': typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
   '/tools/directory': typeof AuthenticatedToolsDirectoryIndexRoute
+  '/tools/@{$slug}/revisions': typeof AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -193,6 +219,7 @@ export interface FileRoutesById {
   '/(search)/': typeof searchIndexRoute
   '/privacy-policy/': typeof PrivacyPolicyIndexRoute
   '/terms-of-service/': typeof TermsOfServiceIndexRoute
+  '/_authenticated/tools/@{$slug}': typeof AuthenticatedToolsAtChar123slugChar125RouteRouteWithChildren
   '/(auth)/request-password-reset/': typeof authRequestPasswordResetIndexRoute
   '/(auth)/reset-password/': typeof authResetPasswordIndexRoute
   '/(auth)/signin/': typeof authSigninIndexRoute
@@ -202,11 +229,13 @@ export interface FileRoutesById {
   '/_authenticated/leaderboard/': typeof AuthenticatedLeaderboardIndexRoute
   '/_authenticated/@{$username}/bookmarks/': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
   '/_authenticated/@{$username}/data/': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  '/_authenticated/@{$username}/moderation/': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/_authenticated/@{$username}/security/': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/_authenticated/@{$username}/sessions/': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/_authenticated/@{$username}/tools/': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
   '/_authenticated/tools/@{$slug}/': typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
   '/_authenticated/tools/directory/': typeof AuthenticatedToolsDirectoryIndexRoute
+  '/_authenticated/tools/@{$slug}/revisions/': typeof AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -215,6 +244,7 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy-policy'
     | '/terms-of-service'
+    | '/tools/@{$slug}'
     | '/request-password-reset'
     | '/reset-password'
     | '/signin'
@@ -224,11 +254,13 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/@{$username}/bookmarks'
     | '/@{$username}/data'
+    | '/@{$username}/moderation'
     | '/@{$username}/security'
     | '/@{$username}/sessions'
     | '/@{$username}/tools'
-    | '/tools/@{$slug}'
+    | '/tools/@{$slug}/'
     | '/tools/directory'
+    | '/tools/@{$slug}/revisions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -243,11 +275,13 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/@{$username}/bookmarks'
     | '/@{$username}/data'
+    | '/@{$username}/moderation'
     | '/@{$username}/security'
     | '/@{$username}/sessions'
     | '/@{$username}/tools'
     | '/tools/@{$slug}'
     | '/tools/directory'
+    | '/tools/@{$slug}/revisions'
   id:
     | '__root__'
     | '/(auth)'
@@ -257,6 +291,7 @@ export interface FileRouteTypes {
     | '/(search)/'
     | '/privacy-policy/'
     | '/terms-of-service/'
+    | '/_authenticated/tools/@{$slug}'
     | '/(auth)/request-password-reset/'
     | '/(auth)/reset-password/'
     | '/(auth)/signin/'
@@ -266,11 +301,13 @@ export interface FileRouteTypes {
     | '/_authenticated/leaderboard/'
     | '/_authenticated/@{$username}/bookmarks/'
     | '/_authenticated/@{$username}/data/'
+    | '/_authenticated/@{$username}/moderation/'
     | '/_authenticated/@{$username}/security/'
     | '/_authenticated/@{$username}/sessions/'
     | '/_authenticated/@{$username}/tools/'
     | '/_authenticated/tools/@{$slug}/'
     | '/_authenticated/tools/directory/'
+    | '/_authenticated/tools/@{$slug}/revisions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -381,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authRequestPasswordResetIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/_authenticated/tools/@{$slug}': {
+      id: '/_authenticated/tools/@{$slug}'
+      path: '/tools/@{$slug}'
+      fullPath: '/tools/@{$slug}'
+      preLoaderRoute: typeof AuthenticatedToolsAtChar123slugChar125RouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/tools/directory/': {
       id: '/_authenticated/tools/directory/'
       path: '/tools/directory'
@@ -390,10 +434,10 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/tools/@{$slug}/': {
       id: '/_authenticated/tools/@{$slug}/'
-      path: '/tools/@{$slug}'
-      fullPath: '/tools/@{$slug}'
+      path: '/'
+      fullPath: '/tools/@{$slug}/'
       preLoaderRoute: typeof AuthenticatedToolsAtChar123slugChar125IndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      parentRoute: typeof AuthenticatedToolsAtChar123slugChar125RouteRoute
     }
     '/_authenticated/@{$username}/tools/': {
       id: '/_authenticated/@{$username}/tools/'
@@ -416,6 +460,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125SecurityIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
+    '/_authenticated/@{$username}/moderation/': {
+      id: '/_authenticated/@{$username}/moderation/'
+      path: '/moderation'
+      fullPath: '/@{$username}/moderation'
+      preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125ModerationIndexRouteImport
+      parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
+    }
     '/_authenticated/@{$username}/data/': {
       id: '/_authenticated/@{$username}/data/'
       path: '/data'
@@ -429,6 +480,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/@{$username}/bookmarks'
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
+    }
+    '/_authenticated/tools/@{$slug}/revisions/': {
+      id: '/_authenticated/tools/@{$slug}/revisions/'
+      path: '/revisions'
+      fullPath: '/tools/@{$slug}/revisions'
+      preLoaderRoute: typeof AuthenticatedToolsAtChar123slugChar125RevisionsIndexRouteImport
+      parentRoute: typeof AuthenticatedToolsAtChar123slugChar125RouteRoute
     }
   }
 }
@@ -469,6 +527,7 @@ interface AuthenticatedAtChar123usernameChar125RouteRouteChildren {
   AuthenticatedAtChar123usernameChar125IndexRoute: typeof AuthenticatedAtChar123usernameChar125IndexRoute
   AuthenticatedAtChar123usernameChar125BookmarksIndexRoute: typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
   AuthenticatedAtChar123usernameChar125DataIndexRoute: typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  AuthenticatedAtChar123usernameChar125ModerationIndexRoute: typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   AuthenticatedAtChar123usernameChar125SecurityIndexRoute: typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   AuthenticatedAtChar123usernameChar125SessionsIndexRoute: typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   AuthenticatedAtChar123usernameChar125ToolsIndexRoute: typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
@@ -482,6 +541,8 @@ const AuthenticatedAtChar123usernameChar125RouteRouteChildren: AuthenticatedAtCh
       AuthenticatedAtChar123usernameChar125BookmarksIndexRoute,
     AuthenticatedAtChar123usernameChar125DataIndexRoute:
       AuthenticatedAtChar123usernameChar125DataIndexRoute,
+    AuthenticatedAtChar123usernameChar125ModerationIndexRoute:
+      AuthenticatedAtChar123usernameChar125ModerationIndexRoute,
     AuthenticatedAtChar123usernameChar125SecurityIndexRoute:
       AuthenticatedAtChar123usernameChar125SecurityIndexRoute,
     AuthenticatedAtChar123usernameChar125SessionsIndexRoute:
@@ -495,19 +556,37 @@ const AuthenticatedAtChar123usernameChar125RouteRouteWithChildren =
     AuthenticatedAtChar123usernameChar125RouteRouteChildren,
   )
 
+interface AuthenticatedToolsAtChar123slugChar125RouteRouteChildren {
+  AuthenticatedToolsAtChar123slugChar125IndexRoute: typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
+  AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute: typeof AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute
+}
+
+const AuthenticatedToolsAtChar123slugChar125RouteRouteChildren: AuthenticatedToolsAtChar123slugChar125RouteRouteChildren =
+  {
+    AuthenticatedToolsAtChar123slugChar125IndexRoute:
+      AuthenticatedToolsAtChar123slugChar125IndexRoute,
+    AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute:
+      AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute,
+  }
+
+const AuthenticatedToolsAtChar123slugChar125RouteRouteWithChildren =
+  AuthenticatedToolsAtChar123slugChar125RouteRoute._addFileChildren(
+    AuthenticatedToolsAtChar123slugChar125RouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAtChar123usernameChar125RouteRoute: typeof AuthenticatedAtChar123usernameChar125RouteRouteWithChildren
+  AuthenticatedToolsAtChar123slugChar125RouteRoute: typeof AuthenticatedToolsAtChar123slugChar125RouteRouteWithChildren
   AuthenticatedLeaderboardIndexRoute: typeof AuthenticatedLeaderboardIndexRoute
-  AuthenticatedToolsAtChar123slugChar125IndexRoute: typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
   AuthenticatedToolsDirectoryIndexRoute: typeof AuthenticatedToolsDirectoryIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAtChar123usernameChar125RouteRoute:
     AuthenticatedAtChar123usernameChar125RouteRouteWithChildren,
+  AuthenticatedToolsAtChar123slugChar125RouteRoute:
+    AuthenticatedToolsAtChar123slugChar125RouteRouteWithChildren,
   AuthenticatedLeaderboardIndexRoute: AuthenticatedLeaderboardIndexRoute,
-  AuthenticatedToolsAtChar123slugChar125IndexRoute:
-    AuthenticatedToolsAtChar123slugChar125IndexRoute,
   AuthenticatedToolsDirectoryIndexRoute: AuthenticatedToolsDirectoryIndexRoute,
 }
 

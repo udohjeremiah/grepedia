@@ -59,6 +59,7 @@ export function tanstackQueryClient() {
     onSuccess: (_data, query) => {
       // Remove any previous associated global banner when data is successfully fetched
       const bannerId = queryBannerIds.get(query.queryHash);
+
       if (bannerId) {
         globalBanner.emit({ id: bannerId, type: "remove" });
         queryBannerIds.delete(query.queryHash);

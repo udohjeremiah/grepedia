@@ -22,8 +22,10 @@ import UserBookmark from "./user-bookmark";
 
 export default function UserBookmarks() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const { data: userBookmarks } = useUserBookmarks({ userId });
+
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { data: userBookmarks } = useUserBookmarks({ userId });
 
   const filteredBookmarks = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();

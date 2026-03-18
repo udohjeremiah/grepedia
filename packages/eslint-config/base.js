@@ -8,7 +8,7 @@ import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import tseslint from "typescript-eslint";
 
 /**
- * A shared ESLint configuration for the repository.
+ * A shared ESLint configuration for the workspace.
  *
  * @type {import("eslint").Linter.Config}
  * */

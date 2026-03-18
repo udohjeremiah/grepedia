@@ -1,4 +1,4 @@
-import type { GetUserRecoveryPackageParams } from "@workspace/shared/schemas/users/get-user-recovery-package";
+import type { GetUserRecoveryPackageParams } from "@workspace/shared/schemas/users/recovery-package/get-user-recovery-package";
 
 import { queryOptions, useQuery } from "@tanstack/react-query";
 

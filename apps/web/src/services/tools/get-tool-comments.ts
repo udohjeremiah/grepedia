@@ -1,20 +1,25 @@
 import type {
   GetToolCommentsParams,
   GetToolCommentsQueryString,
-} from "@workspace/shared/schemas/tools/get-tool-comments";
+} from "@workspace/shared/schemas/tools/comments/get-tool-comments";
 
 import {
   getToolCommentsParamsSchema,
   getToolCommentsQueryStringSchema,
   getToolCommentsResponseSchemas,
-} from "@workspace/shared/schemas/tools/get-tool-comments";
+} from "@workspace/shared/schemas/tools/comments/get-tool-comments";
 
 import { apiClient } from "@/lib/api-client";
 
-export async function getToolComments(
-  params: GetToolCommentsParams,
-  queryString: GetToolCommentsQueryString,
-) {
+type GetToolCommentsInput = {
+  params: GetToolCommentsParams;
+  queryString: GetToolCommentsQueryString;
+};
+
+export async function getToolComments({
+  params,
+  queryString,
+}: GetToolCommentsInput) {
   const { slug } = getToolCommentsParamsSchema.parse(params);
   const parsedQueryString = getToolCommentsQueryStringSchema.parse(queryString);
   const response = await apiClient.get(`/tools/${slug}/comments`, {

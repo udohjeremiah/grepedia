@@ -20,6 +20,7 @@ export default function RevokeOtherSessionsDialog() {
   const { data: sessions } = auth.useListSessions();
   const { isPending, mutate: revokeOtherSessions } =
     auth.useRevokeOtherSessions();
+
   const { handleOpenChange, isOpen, setIsOpen } = useDialogState();
 
   const sessionList = sessions ?? [];

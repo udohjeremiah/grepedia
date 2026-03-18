@@ -1,10 +1,11 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
+import { slugSchema } from "../slug.js";
 import { toolSchema } from "./tool.js";
 
 export const getToolParamsSchema = z.object({
-  slug: z.string().min(1),
+  slug: slugSchema,
 });
 
 export type GetToolParams = z.infer<typeof getToolParamsSchema>;

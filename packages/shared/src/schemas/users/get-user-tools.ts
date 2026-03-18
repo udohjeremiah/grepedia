@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
-import { objectIdSchema } from "../object-id-schema.js";
+import { imageSchema } from "../image.js";
+import { objectIdSchema } from "../object-id.js";
+import { slugSchema } from "../slug.js";
 
 export const getUserToolsParamsSchema = z.object({
   userId: objectIdSchema,
@@ -25,7 +27,7 @@ export const getUserToolsResponseSchemas = {
           _id: objectIdSchema,
           addedAt: z.iso.datetime(),
           categories: z.array(z.string()),
-          image: z.url().optional(),
+          image: imageSchema.optional(),
           name: z.string(),
           owner: z.string().optional(),
           relations: z.object({
@@ -37,7 +39,7 @@ export const getUserToolsResponseSchemas = {
             upvoted: z.boolean(),
           }),
           shortDescription: z.string(),
-          slug: z.string(),
+          slug: slugSchema,
           stats: z.object({
             comments: z.int(),
             downvotes: z.int(),

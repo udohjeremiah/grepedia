@@ -1,10 +1,10 @@
-import type { GetToolCommentRepliesParams } from "@workspace/shared/schemas/tools/get-tool-comment-replies";
+import type { GetToolCommentRepliesParams } from "@workspace/shared/schemas/tools/comments/get-tool-comment-replies";
 
 import { infiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query";
 
 import { getToolCommentReplies } from "@/services/tools/get-tool-comment-replies";
 
-import { toolCommentsQueryOptions } from "./tool-comments";
+import { toolQueryOptions } from "./tool";
 
 export const toolCommentRepliesQueryOptions = (
   params: GetToolCommentRepliesParams,
@@ -12,9 +12,10 @@ export const toolCommentRepliesQueryOptions = (
   return infiniteQueryOptions({
     initialPageParam: "",
     queryFn: ({ pageParam }) =>
-      getToolCommentReplies(params, { cursor: pageParam }),
+      getToolCommentReplies({ params, queryString: { cursor: pageParam } }),
     queryKey: [
-      ...toolCommentsQueryOptions({ slug: params.slug }).queryKey,
+      ...toolQueryOptions({ slug: params.slug }).queryKey,
+      "comments",
       params.commentId,
       "replies",
     ],

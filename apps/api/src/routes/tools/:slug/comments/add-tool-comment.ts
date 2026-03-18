@@ -4,7 +4,7 @@ import {
   addToolCommentBodySchema,
   addToolCommentParamsSchema,
   addToolCommentResponseSchemas,
-} from "@workspace/shared/schemas/tools/add-tool-comment";
+} from "@workspace/shared/schemas/tools/comments/add-tool-comment";
 import { ObjectId } from "mongodb";
 
 import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
@@ -63,7 +63,7 @@ const addToolComment: FastifyPluginAsyncZod = async (fastify) => {
       const insertResult = await comments.insertOne({
         content,
         createdAt: now,
-        ...(parentId ? { parentCommentId: parentId } : {}),
+        parentCommentId: parentId,
         replyCount: 0,
         stats: { downvotes: 0, upvotes: 0 },
         toolId: tool._id,
@@ -104,6 +104,10 @@ const addToolComment: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
+      fastify.evaluateUserTrust(userId).catch((error: unknown) => {
+        fastify.log.error(error);
+      });
+
       return reply.code(201).send({
         data: {
           comment: serializeMongoTypes({
@@ -122,7 +126,7 @@ const addToolComment: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "POST",
-    onRequest: [fastify.requireUser],
+    onRequest: [fastify.requireStatus("active")],
     schema: {
       body: addToolCommentBodySchema,
       params: addToolCommentParamsSchema,

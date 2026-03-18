@@ -21,7 +21,6 @@ export default function UserToolsSkeleton() {
           ))}
         </div>
       </div>
-
       <div className="flex flex-col gap-6 rounded-lg border p-6">
         <div className="flex gap-4">
           <Skeleton className="size-10 shrink-0 rounded-lg" />

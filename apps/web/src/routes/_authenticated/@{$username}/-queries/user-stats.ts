@@ -12,17 +12,10 @@ export const userStatQueryOptions = (params: GetUserStatsParams) => {
   });
 };
 
-type UseUserStatsOptions = {
-  enabled?: boolean;
-};
-
-export const useUserStats = (
-  params: GetUserStatsParams,
-  options?: UseUserStatsOptions,
-) => {
+export const useUserStats = (params: GetUserStatsParams, enabled: boolean) => {
   return useQuery({
     ...userStatQueryOptions(params),
-    enabled: options?.enabled ?? true,
+    enabled,
     select: (data) => data.data.stats,
   });
 };

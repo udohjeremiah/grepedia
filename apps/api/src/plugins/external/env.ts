@@ -4,18 +4,21 @@ import fp from "fastify-plugin";
 declare module "fastify" {
   export interface FastifyInstance {
     env: {
+      ADMIN_USER_IDS: string;
       APP_NAME: string;
       CLIENT_BASE_URL: string;
       EMAIL_AUTH: string;
+      MONGODB_COLL_MODERATION_CASE: string;
       MONGODB_COLL_TOOL: string;
       MONGODB_COLL_TOOL_COMMENT: string;
       MONGODB_COLL_TOOL_COMMENT_REACTION: string;
       MONGODB_COLL_TOOL_REACTION: string;
+      MONGODB_COLL_TOOL_REVISION: string;
       MONGODB_COLL_USER: string;
       MONGODB_COLL_USER_BOOKMARK: string;
       MONGODB_DATABASE: string;
       MONGODB_URL: string;
-      NODE_ENV: "development" | "production";
+      NODE_ENV: "development" | "production" | "testing";
       PORT: number;
       RESEND_API_KEY: string;
       USER_DATA_EXPORT_SIGNING_SECRET: string;
@@ -29,6 +32,10 @@ const options: FastifyEnvOptions = {
   dotenv: true,
   schema: {
     properties: {
+      ADMIN_USER_IDS: {
+        default: "",
+        type: "string",
+      },
       APP_NAME: {
         default: "api",
         type: "string",
@@ -41,32 +48,40 @@ const options: FastifyEnvOptions = {
         default: "Grepedia <auth@resend.dev>",
         type: "string",
       },
+      MONGODB_COLL_MODERATION_CASE: {
+        default: "moderation-case",
+        type: "string",
+      },
       MONGODB_COLL_TOOL: {
-        default: "my-tool",
+        default: "tool",
         type: "string",
       },
       MONGODB_COLL_TOOL_COMMENT: {
-        default: "my-tool-comment",
+        default: "tool-comment",
         type: "string",
       },
       MONGODB_COLL_TOOL_COMMENT_REACTION: {
-        default: "my-tool-comment-reaction",
+        default: "tool-comment-reaction",
         type: "string",
       },
       MONGODB_COLL_TOOL_REACTION: {
-        default: "my-tool-reaction",
+        default: "tool-reaction",
+        type: "string",
+      },
+      MONGODB_COLL_TOOL_REVISION: {
+        default: "tool-revision",
         type: "string",
       },
       MONGODB_COLL_USER: {
-        default: "my-user",
+        default: "user",
         type: "string",
       },
       MONGODB_COLL_USER_BOOKMARK: {
-        default: "my-user-bookmark",
+        default: "user-bookmark",
         type: "string",
       },
       MONGODB_DATABASE: {
-        default: "my-db",
+        default: "grepedia",
         type: "string",
       },
       MONGODB_URL: {
@@ -96,12 +111,15 @@ const options: FastifyEnvOptions = {
       "APP_NAME",
       "MONGODB_URL",
       "MONGODB_DATABASE",
+      "ADMIN_USER_IDS",
       "MONGODB_COLL_USER",
       "MONGODB_COLL_USER_BOOKMARK",
       "MONGODB_COLL_TOOL",
       "MONGODB_COLL_TOOL_REACTION",
       "MONGODB_COLL_TOOL_COMMENT",
       "MONGODB_COLL_TOOL_COMMENT_REACTION",
+      "MONGODB_COLL_TOOL_REVISION",
+      "MONGODB_COLL_MODERATION_CASE",
       "USER_DATA_EXPORT_SIGNING_SECRET",
       "RESEND_API_KEY",
       "EMAIL_AUTH",

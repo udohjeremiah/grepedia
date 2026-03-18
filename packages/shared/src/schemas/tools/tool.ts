@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-import { objectIdSchema } from "../object-id-schema.js";
+import { imageSchema } from "../image.js";
+import { objectIdSchema } from "../object-id.js";
+import { slugSchema } from "../slug.js";
 
 export const toolSchema = z.object({
   _id: objectIdSchema,
@@ -11,14 +13,14 @@ export const toolSchema = z.object({
     .array(z.object({ platform: z.string(), url: z.url() }))
     .max(4)
     .optional(),
-  image: z.url().optional(),
+  image: imageSchema.optional(),
   longDescription: z.string(),
   name: z.string(),
   officialUrl: z.url(),
   owner: objectIdSchema.optional(),
   releasedAt: z.iso.datetime().optional(),
   shortDescription: z.string(),
-  slug: z.string(),
+  slug: slugSchema,
   stats: z.object({
     comments: z.int().min(0),
     downvotes: z.int().min(0),

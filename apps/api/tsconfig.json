@@ -5,7 +5,8 @@
     "outDir": "dist",
     "paths": {
       "@/*": ["./src/*"],
-      "@workspace/shared/*": ["../../packages/shared/dist/*"]
+      "@workspace/shared/*": ["../../packages/shared/dist/*"],
+      "@workspace/transactional/*": ["../../packages/transactional/dist/*"]
     },
     "rootDir": "src",
     "sourceMap": true,

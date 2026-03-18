@@ -1,4 +1,4 @@
-import type { SearchQueryString } from "@workspace/shared/schemas/search";
+import type { SearchQueryString } from "@workspace/shared/schemas/search/search";
 
 import {
   infiniteQueryOptions,
@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { omitKeys } from "@workspace/shared/omit-keys";
 
-import { search } from "@/services/search";
+import { search } from "@/services/search/search";
 
 export const searchQueryOptions = (params: SearchQueryString) => {
   return infiniteQueryOptions({

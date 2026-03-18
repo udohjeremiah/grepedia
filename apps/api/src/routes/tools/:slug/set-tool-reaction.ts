@@ -4,7 +4,7 @@ import {
   setToolReactionBodySchema,
   setToolReactionParamsSchema,
   setToolReactionResponseSchemas,
-} from "@workspace/shared/schemas/tools/set-tool-reaction";
+} from "@workspace/shared/schemas/tools/reactions/set-tool-reaction";
 import { ObjectId } from "mongodb";
 
 type ReactionAction = "delete" | "insert" | "update";
@@ -152,7 +152,7 @@ const setToolReaction: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "POST",
-    onRequest: [fastify.requireUser],
+    onRequest: [fastify.requireStatus("active")],
     schema: {
       body: setToolReactionBodySchema,
       params: setToolReactionParamsSchema,

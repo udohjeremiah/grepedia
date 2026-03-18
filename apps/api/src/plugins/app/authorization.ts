@@ -6,12 +6,19 @@ import fp from "fastify-plugin";
 type AppUser = User & {
   displayName: string;
   role: "contributor" | "member" | "moderator";
-  status: "active" | "deactivated" | "suspended";
+  status: "active" | "deactivated" | "flagged" | "suspended";
   username: string;
 };
 
 declare module "fastify" {
   interface FastifyInstance {
+    isAdminUserId: (userId: string) => boolean;
+
+    requireModerator: (
+      request: FastifyRequest,
+      reply: FastifyReply,
+    ) => Promise<void>;
+
     requireRole: (
       role: AppUser["role"],
     ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
@@ -48,10 +55,19 @@ declare module "fastify" {
  * - `requireUser`: ensures the request is authenticated
  * - `requireUserId`: ensures the user id matches a route param id (defaults to `userId`)
  * - `requireRole`: ensures the user has a specific role
+ * - `requireModerator`: ensures the user is moderator or in `ADMIN_USER_IDS`
  * - `requireStatus`: ensures the user has a required account status
  */
 export default fp(
   async (fastify) => {
+    const adminUserIds = new Set(
+      fastify.env.ADMIN_USER_IDS.split(",")
+        .map((value) => value.trim())
+        .filter(Boolean),
+    );
+
+    const isAdminUserId = (userId: string) => adminUserIds.has(userId);
+
     const requireUser = async (
       request: FastifyRequest,
       reply: FastifyReply,
@@ -94,13 +110,34 @@ export default fp(
         await requireUser(request, reply);
         if (reply.sent) return;
 
-        if (request.user?.role !== role) {
+        if (
+          !request.user?.id ||
+          (!isAdminUserId(request.user.id) && request.user.role !== role)
+        ) {
           return reply.code(403).send({
             message: "Forbidden",
             success: false,
           });
         }
       };
+
+    const requireModerator = async (
+      request: FastifyRequest,
+      reply: FastifyReply,
+    ) => {
+      await requireUser(request, reply);
+      if (reply.sent) return;
+
+      if (
+        !request.user?.id ||
+        (!isAdminUserId(request.user.id) && request.user.role !== "moderator")
+      ) {
+        return reply.code(403).send({
+          message: "Forbidden",
+          success: false,
+        });
+      }
+    };
 
     const requireStatus =
       (status: AppUser["status"]) =>
@@ -116,8 +153,10 @@ export default fp(
         }
       };
 
+    fastify.decorate("isAdminUserId", isAdminUserId);
     fastify.decorate("requireUser", requireUser);
     fastify.decorate("requireRole", requireRole);
+    fastify.decorate("requireModerator", requireModerator);
     fastify.decorate("requireStatus", requireStatus);
     fastify.decorate("requireUserId", requireUserId);
   },

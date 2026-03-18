@@ -5,7 +5,7 @@ import { baseConfig } from "./base.js";
  *
  * @type {import("eslint").Linter.Config}
  * */
-export const nodeLibrary = [
+export const nodeLibraryConfig = [
   ...baseConfig,
   {
     rules: {
