@@ -3,13 +3,14 @@ import { z } from "zod";
 
 export const env = createEnv({
   client: {
-    VITE_BASE_URL: z.url().min(1),
-    VITE_DISCORD_APPEAL_URL: z.url().min(1),
-    VITE_DISCORD_MODERATOR_REQUEST_URL: z.url().min(1),
-    VITE_DISCORD_REPORT_URL: z.url().min(1),
-    VITE_DISCORD_TOOL_UPDATE_URL: z.url().min(1),
-    VITE_SERVER_API_URL: z.url().min(1),
-    VITE_SERVER_BASE_URL: z.url().min(1),
+    VITE_BASE_URL: z.url(),
+    VITE_DISCORD_APPEAL_URL: z.url(),
+    VITE_DISCORD_MODERATOR_REQUEST_URL: z.url(),
+    VITE_DISCORD_REPORT_COMMENT_URL: z.url(),
+    VITE_DISCORD_REPORT_TOOL_URL: z.url(),
+    VITE_DISCORD_TOOL_UPDATE_URL: z.url(),
+    VITE_SERVER_API_URL: z.url(),
+    VITE_SERVER_BASE_URL: z.url(),
   },
 
   /**

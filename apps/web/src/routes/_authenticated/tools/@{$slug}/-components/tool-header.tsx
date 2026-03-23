@@ -219,7 +219,7 @@ export default function ToolHeader() {
             variant="destructive"
           >
             <a
-              href={env.VITE_DISCORD_REPORT_URL}
+              href={env.VITE_DISCORD_REPORT_TOOL_URL}
               rel="noreferrer"
               target="_blank"
             >
