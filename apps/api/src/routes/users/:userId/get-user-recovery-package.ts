@@ -35,10 +35,7 @@ const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
         userBookmarks.find({ userId: userObjectId }).toArray(),
         tools
           .find({
-            $or: [
-              { addedBy: userObjectId },
-              { updatedBy: userObjectId },
-            ],
+            $or: [{ addedBy: userObjectId }, { updatedBy: userObjectId }],
           })
           .toArray(),
         toolReactions.find({ userId: userObjectId }).toArray(),

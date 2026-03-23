@@ -40,12 +40,7 @@ type StatConfigProps = {
   stats: Record<StatKey, number>;
 };
 
-type StatKey =
-  | "added"
-  | "commented"
-  | "downvoted"
-  | "updated"
-  | "upvoted";
+type StatKey = "added" | "commented" | "downvoted" | "updated" | "upvoted";
 
 export const getStatConfig = ({
   filterView,

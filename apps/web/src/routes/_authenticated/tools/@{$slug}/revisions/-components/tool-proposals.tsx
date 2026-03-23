@@ -52,10 +52,7 @@ export default function ToolProposals() {
               </p>
             </div>
             {canReview && (
-              <ToolModeratorDialog
-                currentStatus={item.status}
-                id={item.id}
-              />
+              <ToolModeratorDialog currentStatus={item.status} id={item.id} />
             )}
           </div>
           <p className="text-sm">{item.description}</p>

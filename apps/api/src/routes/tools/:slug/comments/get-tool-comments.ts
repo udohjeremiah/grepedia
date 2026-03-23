@@ -93,7 +93,11 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
             $or: [
               { score: { $gt: cursorScore } },
               { createdAt: { $gt: cursorDate }, score: cursorScore },
-              { _id: { $gt: cursorId }, createdAt: cursorDate, score: cursorScore },
+              {
+                _id: { $gt: cursorId },
+                createdAt: cursorDate,
+                score: cursorScore,
+              },
             ],
           };
         }
@@ -102,7 +106,11 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
           $or: [
             { score: { $lt: cursorScore } },
             { createdAt: { $lt: cursorDate }, score: cursorScore },
-            { _id: { $lt: cursorId }, createdAt: cursorDate, score: cursorScore },
+            {
+              _id: { $lt: cursorId },
+              createdAt: cursorDate,
+              score: cursorScore,
+            },
           ],
         };
       })();

@@ -162,8 +162,7 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
           moderationResolvedByResult.modifiedCount,
         toolReactions: toolReactionsResult.modifiedCount,
         tools:
-          toolsAddedByResult.modifiedCount +
-          toolsUpdatedByResult.modifiedCount,
+          toolsAddedByResult.modifiedCount + toolsUpdatedByResult.modifiedCount,
       };
 
       return reply.code(200).send({
