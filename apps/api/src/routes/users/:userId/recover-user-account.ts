@@ -80,10 +80,6 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
           { $set: { addedBy: currentUserId } },
         ),
         tools.updateMany(
-          { owner: previousUserId },
-          { $set: { owner: currentUserId } },
-        ),
-        tools.updateMany(
           { updatedBy: previousUserId },
           { $set: { updatedBy: currentUserId } },
         ),
@@ -128,7 +124,6 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
 
       const [
         toolsAddedByResult,
-        toolsOwnedResult,
         toolsUpdatedByResult,
         commentsResult,
         toolReactionsResult,
@@ -141,7 +136,6 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
 
       if (
         !isMongoWriteAcknowledged(toolsAddedByResult) ||
-        !isMongoWriteAcknowledged(toolsOwnedResult) ||
         !isMongoWriteAcknowledged(toolsUpdatedByResult) ||
         !isMongoWriteAcknowledged(commentsResult) ||
         !isMongoWriteAcknowledged(toolReactionsResult) ||
@@ -169,7 +163,6 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
         toolReactions: toolReactionsResult.modifiedCount,
         tools:
           toolsAddedByResult.modifiedCount +
-          toolsOwnedResult.modifiedCount +
           toolsUpdatedByResult.modifiedCount,
       };
 

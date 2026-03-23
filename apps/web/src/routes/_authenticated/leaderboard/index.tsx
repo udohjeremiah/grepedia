@@ -16,8 +16,7 @@ export const Route = createFileRoute("/_authenticated/leaderboard/")({
     meta: [
       { title: "Leaderboard — Grepedia" },
       {
-        content:
-          "Explore the Grepedia leaderboard and see top contributors by tool ownership, additions, and updates.",
+        content: "Explore the Grepedia leaderboard and see top contributors.",
         name: "description",
       },
     ],

@@ -42,8 +42,8 @@ function RouteComponent() {
               <h3 className="font-semibold">Export Recovery Package</h3>
               <p className="text-sm text-muted-foreground">
                 Download a signed recovery package. It is valid for 1 year and
-                can be reused. If someone gets it, they can claim your
-                contributions. Keep it private and delete it after use.
+                can be reused. If someone gets it, they can access your
+                recovery data. Keep it private and delete it after use.
                 Re-download if needed.
               </p>
             </div>

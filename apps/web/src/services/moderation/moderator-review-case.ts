@@ -1,9 +1,9 @@
-import type { ModeratorReviewCaseBody } from "@workspace/shared/schemas/moderation-case/moderator-review-case";
+import type { ModeratorReviewCaseBody } from "@workspace/shared/schemas/moderation/moderator-review-case";
 
 import {
   moderatorReviewCaseBodySchema,
   moderatorReviewCaseResponseSchemas,
-} from "@workspace/shared/schemas/moderation-case/moderator-review-case";
+} from "@workspace/shared/schemas/moderation/moderator-review-case";
 
 import { apiClient } from "@/lib/api-client";
 

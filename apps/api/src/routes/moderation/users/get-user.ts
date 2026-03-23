@@ -3,7 +3,7 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import {
   moderatorGetUserQuerySchema,
   moderatorGetUserResponseSchemas,
-} from "@workspace/shared/schemas/moderation-case/moderator-get-user";
+} from "@workspace/shared/schemas/moderation/moderator-get-user";
 
 import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
@@ -29,26 +29,16 @@ const getUser: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const [
-        toolsOwned,
-        toolsAdded,
-        toolsUpdated,
-        toolCommentsCount,
-        toolReactionsCount,
-      ] = await Promise.all([
-        tools.countDocuments({ owner: user._id }),
-        tools.countDocuments({ addedBy: user._id }),
-        tools.countDocuments({ updatedBy: user._id }),
-        toolComments.countDocuments({ userId: user._id }),
-        toolReactions.countDocuments({ userId: user._id }),
-      ]);
+      const [toolsAdded, toolsUpdated, toolCommentsCount, toolReactionsCount] =
+        await Promise.all([
+          tools.countDocuments({ addedBy: user._id }),
+          tools.countDocuments({ updatedBy: user._id }),
+          toolComments.countDocuments({ userId: user._id }),
+          toolReactions.countDocuments({ userId: user._id }),
+        ]);
 
       const totalContributions =
-        toolsOwned +
-        toolsAdded +
-        toolsUpdated +
-        toolCommentsCount +
-        toolReactionsCount;
+        toolsAdded + toolsUpdated + toolCommentsCount + toolReactionsCount;
 
       const trustProfile = await fastify.evaluateUserTrust(user._id);
 
@@ -59,7 +49,6 @@ const getUser: FastifyPluginAsyncZod = async (fastify) => {
               toolComments: toolCommentsCount,
               toolReactions: toolReactionsCount,
               toolsAdded,
-              toolsOwned,
               toolsUpdated,
               total: totalContributions,
             },

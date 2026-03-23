@@ -31,7 +31,6 @@ export const getToolsDirectoryResponseSchemas = {
           image: imageSchema.optional(),
           name: z.string(),
           officialUrl: z.url(),
-          owner: z.string().optional(),
           shortDescription: z.string(),
           slug: slugSchema,
           stats: z.object({

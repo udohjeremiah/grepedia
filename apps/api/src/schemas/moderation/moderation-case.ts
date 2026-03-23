@@ -1,4 +1,4 @@
-import { moderationCaseSchema } from "@workspace/shared/schemas/moderation-case/moderation-case";
+import { moderationCaseSchema } from "@workspace/shared/schemas/moderation/moderation-case";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 
@@ -10,16 +10,7 @@ const resolutionSchema = z
   })
   .optional();
 
-const toolClaimCase = moderationCaseSchema.options[0].extend({
-  _id: z.instanceof(ObjectId).optional(),
-  createdAt: z.date(),
-  createdBy: z.instanceof(ObjectId),
-  resolution: resolutionSchema,
-  toolId: z.instanceof(ObjectId),
-  updatedAt: z.date(),
-});
-
-const toolUpdateCase = moderationCaseSchema.options[1].extend({
+const toolUpdateCase = moderationCaseSchema.options[0].extend({
   _id: z.instanceof(ObjectId).optional(),
   createdAt: z.date(),
   createdBy: z.instanceof(ObjectId),
@@ -29,7 +20,6 @@ const toolUpdateCase = moderationCaseSchema.options[1].extend({
 });
 
 export const moderationCaseWithObjectIdsSchema = z.discriminatedUnion("type", [
-  toolClaimCase,
   toolUpdateCase,
 ]);
 

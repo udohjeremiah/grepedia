@@ -59,12 +59,6 @@ export default function ToolSidebar() {
         <Separator />
         <SidebarSection icon={UserCircleIcon} title="People">
           <div className="flex flex-col gap-2.5">
-            {tool.owner && (
-              <div className="flex items-center justify-between gap-4 text-sm">
-                <span className="text-muted-foreground">Owner</span>
-                <span className="font-mono">@{tool.owner}</span>
-              </div>
-            )}
             <div className="flex items-center justify-between gap-4 text-sm">
               <span className="text-muted-foreground">Added by</span>
               <span className="font-mono">@{tool.addedBy}</span>

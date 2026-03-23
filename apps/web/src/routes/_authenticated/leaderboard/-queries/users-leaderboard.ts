@@ -27,7 +27,6 @@ export const useUsersLeaderboard = (params: GetUsersLeaderboardQueryString) => {
       leaderboard: data.pages.flatMap((page) => page.data.leaderboard),
       totals: data.pages[0]?.data.totals ?? {
         totalAdded: 0,
-        totalOwned: 0,
         totalUpdated: 0,
       },
     }),

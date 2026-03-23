@@ -28,9 +28,8 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const [toolsOwned, toolsAdded, toolsUpdated, toolsReactions, comments] =
+      const [toolsAdded, toolsUpdated, toolsReactions, comments] =
         await Promise.all([
-          tools.find({ owner: user._id }, { projection: { _id: 1 } }).toArray(),
           tools
             .find({ addedBy: user._id }, { projection: { _id: 1 } })
             .toArray(),
@@ -56,7 +55,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
       const commentedToolIds = comments.map((c) => c.toolId);
 
       const mergedToolIds: ObjectId[] = [
-        ...toolsOwned.map((tool) => tool._id),
         ...toolsAdded.map((tool) => tool._id),
         ...toolsUpdated.map((tool) => tool._id),
         ...upvotedToolIds,
@@ -81,7 +79,7 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
                     categories: 1,
                     image: 1,
                     name: 1,
-                    owner: 1,
+                    officialUrl: 1,
                     shortDescription: 1,
                     slug: 1,
                     stats: 1,
@@ -92,35 +90,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
               .toArray()
           : [];
 
-      const ownerIds = [
-        ...new Set(
-          allTool
-            .map((tool) => tool.owner)
-            .filter((owner): owner is ObjectId => owner instanceof ObjectId)
-            .map((owner) => owner.toHexString()),
-        ),
-      ].map((ownerId) => ObjectId.createFromHexString(ownerId));
-
-      const ownerDocuments =
-        ownerIds.length > 0
-          ? await users
-              .find(
-                { _id: { $in: ownerIds } },
-                { projection: { _id: 1, username: 1 } },
-              )
-              .toArray()
-          : [];
-
-      const ownerUsernameById = new Map(
-        ownerDocuments.map((owner) => [
-          owner._id.toHexString(),
-          owner.username,
-        ]),
-      );
-
-      const ownedSet = new Set(
-        toolsOwned.map((tool) => tool._id.toHexString()),
-      );
       const addedSet = new Set(
         toolsAdded.map((tool) => tool._id.toHexString()),
       );
@@ -144,14 +113,11 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
           categories: tool.categories,
           image: tool.image,
           name: tool.name,
-          owner: tool.owner
-            ? ownerUsernameById.get(tool.owner.toHexString())
-            : undefined,
+          officialUrl: tool.officialUrl,
           relations: {
             added: addedSet.has(idHex),
             commented: commentedSet.has(idHex),
             downvoted: downvotedSet.has(idHex),
-            owned: ownedSet.has(idHex),
             updated: updatedSet.has(idHex),
             upvoted: upvotedSet.has(idHex),
           },
@@ -168,7 +134,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
             added: addedSet.size,
             commented: commentedSet.size,
             downvoted: downvotedSet.size,
-            owned: ownedSet.size,
             updated: updatedSet.size,
             upvoted: upvotedSet.size,
           },

@@ -1,5 +1,4 @@
 import {
-  BadgeCheckIcon,
   MessageSquareIcon,
   SearchIcon,
   SparklesIcon,
@@ -12,7 +11,6 @@ export const tabs = [
   { icon: SearchIcon, label: "All", value: "all" },
   { icon: StarIcon, label: "Popular", value: "popular" },
   { icon: MessageSquareIcon, label: "Trending", value: "trending" },
-  { icon: BadgeCheckIcon, label: "Verified", value: "verified" },
   { icon: SparklesIcon, label: "New", value: "new" },
 ] as const;
 

@@ -104,8 +104,7 @@ export default function AddToolDialog() {
       } catch (error) {
         setError(
           "Submission failed",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (error as any).message ??
+          (error as Error).message ??
             "An error occurred while submitting the tool. Please try again.",
         );
       }

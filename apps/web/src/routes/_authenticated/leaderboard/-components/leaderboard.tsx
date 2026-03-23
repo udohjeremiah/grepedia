@@ -19,19 +19,18 @@ import {
   ArrowUpDownIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  CrownIcon,
   PlusIcon,
   RefreshCwIcon,
   TrophyIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { roleConfig, roleVariants } from "@/constants/role";
+import { countryOptions } from "@/constants/country-options";
 import { getInitials } from "@/utils/get-initials";
 
 import { useUsersLeaderboard } from "../-queries/users-leaderboard";
 
-type SortField = "toolsAdded" | "toolsOwned" | "toolsUpdated";
+type SortField = "toolsAdded" | "toolsUpdated";
 
 const categories = [
   {
@@ -48,14 +47,17 @@ const categories = [
     label: "Most Tools Updated",
     shortLabel: "Updated",
   },
-  {
-    description: "Ranked by the number of tools they own",
-    icon: CrownIcon,
-    id: "toolsOwned",
-    label: "Most Tools Owned",
-    shortLabel: "Owned",
-  },
 ] as const;
+
+type UserGender = "female" | "male" | "nonBinary" | "other" | "preferNotToSay";
+
+const genderLabels: Record<UserGender, string> = {
+  female: "Female",
+  male: "Male",
+  nonBinary: "Non-binary",
+  other: "Other",
+  preferNotToSay: "Prefer not to say",
+};
 
 export default function Leaderboard() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
@@ -119,16 +121,11 @@ export default function Leaderboard() {
       label: "Total Updated",
       value: totals.totalUpdated,
     },
-    {
-      field: "toolsOwned",
-      label: "Total Owned",
-      value: totals.totalOwned,
-    },
   ] as const;
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {stats.map((stat) => (
           <Button
             className={cn(
@@ -183,7 +180,7 @@ export default function Leaderboard() {
       <div className="flex items-center gap-3 px-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
         <span className="w-9 shrink-0 text-center">#</span>
         <span className="flex-1">Contributor</span>
-        <div className="grid w-72 grid-cols-3 justify-items-end gap-6 max-sm:hidden">
+        <div className="grid w-48 grid-cols-2 justify-items-end gap-6 max-sm:hidden">
           {categories.map((category) => (
             <Tooltip key={category.id}>
               <TooltipTrigger asChild>
@@ -269,9 +266,6 @@ export default function Leaderboard() {
                     You
                   </Badge>
                 )}
-                <Badge variant={roleVariants[user.role]}>
-                  {roleConfig[user.role].label}
-                </Badge>
               </div>
               <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                 <span>@{user.username}</span>
@@ -279,6 +273,21 @@ export default function Leaderboard() {
                 <span>
                   Joined {format(new Date(user.joinedAt), "MMM yyyy")}
                 </span>
+                {user.country && (
+                  <>
+                    <span className="text-muted-foreground/30">•</span>
+                    <span className="flex items-center gap-1">
+                      <span aria-hidden>{getFlagEmoji(user.country)}</span>
+                      <span>{getCountryLabel(user.country)}</span>
+                    </span>
+                  </>
+                )}
+                {user.gender && (
+                  <>
+                    <span className="text-muted-foreground/30">•</span>
+                    <span>{genderLabels[user.gender]}</span>
+                  </>
+                )}
               </div>
               <span className="text-xs text-muted-foreground sm:hidden">
                 {currentCategory?.shortLabel}:{" "}
@@ -287,7 +296,7 @@ export default function Leaderboard() {
                 </span>
               </span>
             </div>
-            <div className="grid w-72 grid-cols-3 gap-6 max-sm:hidden">
+            <div className="grid w-48 grid-cols-2 gap-6 max-sm:hidden">
               <StatCell
                 isActive={activeCategory === "toolsAdded"}
                 value={user.toolsAdded}
@@ -295,10 +304,6 @@ export default function Leaderboard() {
               <StatCell
                 isActive={activeCategory === "toolsUpdated"}
                 value={user.toolsUpdated}
-              />
-              <StatCell
-                isActive={activeCategory === "toolsOwned"}
-                value={user.toolsOwned}
               />
             </div>
           </li>
@@ -318,6 +323,23 @@ export default function Leaderboard() {
         ref={trackingRef}
       />
     </>
+  );
+}
+
+function getCountryLabel(code: string) {
+  return (
+    countryOptions.find((country) => country.value === code)?.label ?? code
+  );
+}
+
+function getFlagEmoji(code: string) {
+  const base = 0x1_f1_e6;
+
+  return (
+    [...code.toUpperCase()]
+      // eslint-disable-next-line unicorn/prefer-code-point
+      .map((char) => String.fromCodePoint(base + char.charCodeAt(0) - 65))
+      .join("")
   );
 }
 

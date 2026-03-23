@@ -62,8 +62,7 @@ export default function Moderation() {
       globalBanner.emit({
         banner: {
           description:
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (error as any).message ??
+            (error as Error).message ??
             "Unable to fetch the user. Please try again.",
           title: "User lookup failed",
           variant: "warning",
@@ -146,7 +145,6 @@ export default function Moderation() {
             <div className="grid gap-1 sm:grid-cols-2">
               <p>Tools added: {user.contributions.toolsAdded}</p>
               <p>Tools updated: {user.contributions.toolsUpdated}</p>
-              <p>Tools owned: {user.contributions.toolsOwned}</p>
               <p>Tool comments: {user.contributions.toolComments}</p>
               <p>Tool reactions: {user.contributions.toolReactions}</p>
               <p>Total contributions: {user.contributions.total}</p>

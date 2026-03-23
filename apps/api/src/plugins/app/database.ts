@@ -4,7 +4,7 @@ import type { Collection, Db } from "mongodb";
 
 import fp from "fastify-plugin";
 
-import type { ModerationCaseWithObjectIds } from "@/schemas/moderation-case/moderation-case.js";
+import type { ModerationCaseWithObjectIds } from "@/schemas/moderation/moderation-case.js";
 import type { ToolCommentReactionWithObjectIds } from "@/schemas/tools/tool-comment-reaction.js";
 import type { ToolCommentWithObjectIds } from "@/schemas/tools/tool-comment.js";
 import type { ToolReactionWithObjectIds } from "@/schemas/tools/tool-reaction.js";
@@ -75,206 +75,211 @@ export default fp(
         fastify.env.MONGODB_COLL_MODERATION_CASE,
       );
 
-    await Promise.all([
-      fastify.syncIndexes({
-        collection: userBookmarkCollection,
+    fastify.addHook("onReady", async () => {
+      await fastify.syncIndexes({
+        db: database,
         mode: "reconcile",
-        specs: [
+        targets: [
           {
-            key: { userId: 1, toolId: 1 },
-            options: {
-              name: "grepedia__user_bookmark__userId_toolId",
-              unique: true,
-            },
+            collection: userBookmarkCollection,
+            specs: [
+              {
+                key: { userId: 1, toolId: 1 },
+                options: {
+                  name: "grepedia__user_bookmark__userId_toolId",
+                  unique: true,
+                },
+              },
+              {
+                key: { userId: 1, createdAt: -1 },
+                options: {
+                  name: "grepedia__user_bookmark__userId_createdAt_desc",
+                },
+              },
+            ],
           },
           {
-            key: { userId: 1, createdAt: -1 },
-            options: { name: "grepedia__user_bookmark__userId_createdAt_desc" },
+            collection: toolCollection,
+            specs: [
+              {
+                key: { status: 1, _id: -1 },
+                options: { name: "grepedia__tool__status_id_desc" },
+              },
+              {
+                key: { status: 1, releasedAt: -1, _id: -1 },
+                options: {
+                  name: "grepedia__tool__status_releasedAt_desc_id_desc",
+                },
+              },
+              {
+                key: { status: 1, "stats.comments": -1, _id: -1 },
+                options: {
+                  name: "grepedia__tool__status_comments_desc_id_desc",
+                },
+              },
+              {
+                key: {
+                  status: 1,
+                  "stats.upvotes": -1,
+                  "stats.downvotes": -1,
+                  _id: -1,
+                },
+                options: {
+                  name: "grepedia__tool__status_upvotes_desc_downvotes_desc_id_desc",
+                },
+              },
+              {
+                key: { status: 1, _id: -1 },
+                options: { name: "grepedia__tool__status_id_desc" },
+              },
+              {
+                key: { status: 1, categories: 1, name: 1, _id: 1 },
+                options: {
+                  name: "grepedia__tool__status_categories_name_id",
+                },
+              },
+              {
+                key: { addedBy: 1 },
+                options: { name: "grepedia__tool__addedBy" },
+              },
+              {
+                key: { updatedBy: 1 },
+                options: { name: "grepedia__tool__updatedBy" },
+              },
+              {
+                key: { slug: 1 },
+                options: { name: "grepedia__tool__slug_unique", unique: true },
+              },
+            ],
+          },
+          {
+            collection: toolReactionCollection,
+            specs: [
+              {
+                key: { toolId: 1, userId: 1 },
+                options: {
+                  name: "grepedia__tool_reaction__toolId_userId",
+                  unique: true,
+                },
+              },
+              {
+                key: { toolId: 1, value: 1 },
+                options: { name: "grepedia__tool_reaction__toolId_value" },
+              },
+              {
+                key: { userId: 1, value: 1 },
+                options: { name: "grepedia__tool_reaction__userId_value" },
+              },
+              {
+                key: { userId: 1, toolId: 1 },
+                options: { name: "grepedia__tool_reaction__userId_toolId" },
+              },
+            ],
+          },
+          {
+            collection: toolCommentCollection,
+            specs: [
+              {
+                key: { toolId: 1, createdAt: -1 },
+                options: {
+                  name: "grepedia__tool_comment__toolId_createdAt_desc",
+                },
+              },
+              {
+                key: { toolId: 1, parentCommentId: 1, createdAt: -1, _id: -1 },
+                options: {
+                  name: "grepedia__tool_comment__toolId_parentCommentId_createdAt_desc_id_desc",
+                },
+              },
+              {
+                key: { parentCommentId: 1, createdAt: -1, _id: -1 },
+                options: {
+                  name: "grepedia__tool_comment__parentCommentId_createdAt_desc_id_desc",
+                },
+              },
+              {
+                key: { userId: 1, createdAt: -1 },
+                options: {
+                  name: "grepedia__tool_comment__userId_createdAt_desc",
+                },
+              },
+            ],
+          },
+          {
+            collection: toolCommentReactionCollection,
+            specs: [
+              {
+                key: { commentId: 1, userId: 1 },
+                options: {
+                  name: "grepedia__tool_comment_reaction__commentId_userId",
+                  unique: true,
+                },
+              },
+              {
+                key: { commentId: 1, value: 1 },
+                options: {
+                  name: "grepedia__tool_comment_reaction__commentId_value",
+                },
+              },
+              {
+                key: { userId: 1, commentId: 1 },
+                options: {
+                  name: "grepedia__tool_comment_reaction__userId_commentId",
+                },
+              },
+            ],
+          },
+          {
+            collection: toolRevisionCollection,
+            specs: [
+              {
+                key: { toolId: 1, revisionNumber: -1, _id: -1 },
+                options: {
+                  name: "grepedia__tool_revision__toolId_revisionNumber_desc_id_desc",
+                  unique: true,
+                },
+              },
+              {
+                key: { toolId: 1, createdAt: -1, _id: -1 },
+                options: {
+                  name: "grepedia__tool_revision__toolId_createdAt_desc_id_desc",
+                },
+              },
+            ],
+          },
+          {
+            collection: moderationCaseCollection,
+            specs: [
+              {
+                key: { discussionUrl: 1 },
+                options: {
+                  name: "grepedia__moderation_case__discussionUrl_unique",
+                  unique: true,
+                },
+              },
+              {
+                key: { status: 1, type: 1, createdAt: -1, _id: -1 },
+                options: {
+                  name: "grepedia__moderation_case__status_type_createdAt_desc_id_desc",
+                },
+              },
+              {
+                key: { userId: 1, type: 1, status: 1, createdAt: -1 },
+                options: {
+                  name: "grepedia__moderation_case__userId_type_status_createdAt_desc",
+                },
+              },
+              {
+                key: { toolId: 1, type: 1, status: 1, createdAt: -1 },
+                options: {
+                  name: "grepedia__moderation_case__toolId_type_status_createdAt_desc",
+                },
+              },
+            ],
           },
         ],
-      }),
-      fastify.syncIndexes({
-        collection: toolCollection,
-        mode: "reconcile",
-        specs: [
-          {
-            key: { status: 1, _id: -1 },
-            options: { name: "grepedia__tool__status_id_desc" },
-          },
-          {
-            key: { status: 1, releasedAt: -1, _id: -1 },
-            options: { name: "grepedia__tool__status_releasedAt_desc_id_desc" },
-          },
-          {
-            key: { status: 1, "stats.comments": -1, _id: -1 },
-            options: { name: "grepedia__tool__status_comments_desc_id_desc" },
-          },
-          {
-            key: {
-              status: 1,
-              "stats.upvotes": -1,
-              "stats.downvotes": -1,
-              _id: -1,
-            },
-            options: {
-              name: "grepedia__tool__status_upvotes_desc_downvotes_desc_id_desc",
-            },
-          },
-          {
-            key: { status: 1, owner: 1, _id: -1 },
-            options: { name: "grepedia__tool__status_owner_id_desc" },
-          },
-          {
-            key: { status: 1, categories: 1, name: 1, _id: 1 },
-            options: {
-              name: "grepedia__tool__status_categories_name_id",
-            },
-          },
-          {
-            key: { owner: 1 },
-            options: { name: "grepedia__tool__owner" },
-          },
-          {
-            key: { addedBy: 1 },
-            options: { name: "grepedia__tool__addedBy" },
-          },
-          {
-            key: { updatedBy: 1 },
-            options: { name: "grepedia__tool__updatedBy" },
-          },
-          {
-            key: { slug: 1 },
-            options: { name: "grepedia__tool__slug_unique", unique: true },
-          },
-        ],
-      }),
-      fastify.syncIndexes({
-        collection: toolReactionCollection,
-        mode: "reconcile",
-        specs: [
-          {
-            key: { toolId: 1, userId: 1 },
-            options: {
-              name: "grepedia__tool_reaction__toolId_userId",
-              unique: true,
-            },
-          },
-          {
-            key: { toolId: 1, value: 1 },
-            options: { name: "grepedia__tool_reaction__toolId_value" },
-          },
-          {
-            key: { userId: 1, value: 1 },
-            options: { name: "grepedia__tool_reaction__userId_value" },
-          },
-          {
-            key: { userId: 1, toolId: 1 },
-            options: { name: "grepedia__tool_reaction__userId_toolId" },
-          },
-        ],
-      }),
-      fastify.syncIndexes({
-        collection: toolCommentCollection,
-        mode: "reconcile",
-        specs: [
-          {
-            key: { toolId: 1, createdAt: -1 },
-            options: { name: "grepedia__tool_comment__toolId_createdAt_desc" },
-          },
-          {
-            key: { toolId: 1, parentCommentId: 1, createdAt: -1, _id: -1 },
-            options: {
-              name: "grepedia__tool_comment__toolId_parentCommentId_createdAt_desc_id_desc",
-            },
-          },
-          {
-            key: { parentCommentId: 1, createdAt: -1, _id: -1 },
-            options: {
-              name: "grepedia__tool_comment__parentCommentId_createdAt_desc_id_desc",
-            },
-          },
-          {
-            key: { userId: 1, createdAt: -1 },
-            options: { name: "grepedia__tool_comment__userId_createdAt_desc" },
-          },
-        ],
-      }),
-      fastify.syncIndexes({
-        collection: toolCommentReactionCollection,
-        mode: "reconcile",
-        specs: [
-          {
-            key: { commentId: 1, userId: 1 },
-            options: {
-              name: "grepedia__tool_comment_reaction__commentId_userId",
-              unique: true,
-            },
-          },
-          {
-            key: { commentId: 1, value: 1 },
-            options: {
-              name: "grepedia__tool_comment_reaction__commentId_value",
-            },
-          },
-          {
-            key: { userId: 1, commentId: 1 },
-            options: {
-              name: "grepedia__tool_comment_reaction__userId_commentId",
-            },
-          },
-        ],
-      }),
-      fastify.syncIndexes({
-        collection: toolRevisionCollection,
-        mode: "reconcile",
-        specs: [
-          {
-            key: { toolId: 1, revisionNumber: -1, _id: -1 },
-            options: {
-              name: "grepedia__tool_revision__toolId_revisionNumber_desc_id_desc",
-              unique: true,
-            },
-          },
-          {
-            key: { toolId: 1, createdAt: -1, _id: -1 },
-            options: {
-              name: "grepedia__tool_revision__toolId_createdAt_desc_id_desc",
-            },
-          },
-        ],
-      }),
-      fastify.syncIndexes({
-        collection: moderationCaseCollection,
-        mode: "reconcile",
-        specs: [
-          {
-            key: { discussionUrl: 1 },
-            options: {
-              name: "grepedia__moderation_case__discussionUrl_unique",
-              unique: true,
-            },
-          },
-          {
-            key: { status: 1, type: 1, createdAt: -1, _id: -1 },
-            options: {
-              name: "grepedia__moderation_case__status_type_createdAt_desc_id_desc",
-            },
-          },
-          {
-            key: { userId: 1, type: 1, status: 1, createdAt: -1 },
-            options: {
-              name: "grepedia__moderation_case__userId_type_status_createdAt_desc",
-            },
-          },
-          {
-            key: { toolId: 1, type: 1, status: 1, createdAt: -1 },
-            options: {
-              name: "grepedia__moderation_case__toolId_type_status_createdAt_desc",
-            },
-          },
-        ],
-      }),
-    ]);
+      });
+    });
 
     fastify.decorate("getDatabase", () => database);
     fastify.decorate("getUserCollection", () => userCollection);

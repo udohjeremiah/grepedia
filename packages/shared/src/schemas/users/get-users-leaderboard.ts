@@ -23,13 +23,15 @@ export const getUsersLeaderboardResponseSchemas = {
     data: z.object({
       leaderboard: z.array(
         z.object({
+          country: z.string().optional(),
+          gender: z
+            .enum(["male", "female", "nonBinary", "other", "preferNotToSay"])
+            .optional(),
           image: imageSchema.optional(),
           joinedAt: z.iso.datetime(),
           name: z.string(),
           rank: z.int(),
-          role: z.enum(["member", "contributor", "moderator"]),
           toolsAdded: z.int(),
-          toolsOwned: z.int(),
           toolsUpdated: z.int(),
           userId: objectIdSchema,
           username: z.string(),
@@ -38,7 +40,6 @@ export const getUsersLeaderboardResponseSchemas = {
       nextCursor: z.string().optional(),
       totals: z.object({
         totalAdded: z.int(),
-        totalOwned: z.int(),
         totalUpdated: z.int(),
       }),
     }),

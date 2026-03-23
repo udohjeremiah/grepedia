@@ -28,20 +28,15 @@ const getToolProposals: FastifyPluginAsyncZod = async (fastify) => {
         .find({
           status: { $in: ["open", "under_review"] },
           toolId: tool._id,
-          type: { $in: ["tool_claim", "tool_update_proposal"] },
+          type: "tool_update_proposal",
         })
         .toArray();
 
-      const claimCase = cases.find((entry) => entry.type === "tool_claim");
       const updateCase = cases.find(
         (entry) => entry.type === "tool_update_proposal",
       );
 
       const requesterIds: ObjectId[] = [];
-
-      if (claimCase) {
-        requesterIds.push(claimCase.createdBy);
-      }
 
       if (updateCase) {
         requesterIds.push(updateCase.createdBy);
@@ -58,32 +53,11 @@ const getToolProposals: FastifyPluginAsyncZod = async (fastify) => {
         requesters.map((user) => [user._id.toHexString(), user] as const),
       );
 
-      const claimRequester = claimCase
-        ? requesterMap.get(claimCase.createdBy.toHexString())
-        : undefined;
       const updateRequester = updateCase
         ? requesterMap.get(updateCase.createdBy.toHexString())
         : undefined;
 
       const responseData = {
-        claimCase:
-          claimCase &&
-          claimRequester &&
-          (claimCase.status === "open" || claimCase.status === "under_review")
-            ? {
-                _id: claimCase._id.toHexString(),
-                discussionUrl: claimCase.discussionUrl,
-                reason: claimCase.payload.reason,
-                requestedAt: claimCase.createdAt.toISOString(),
-                requester: {
-                  _id: claimRequester._id.toHexString(),
-                  image: claimRequester.image,
-                  name: claimRequester.name,
-                  username: claimRequester.username,
-                },
-                status: claimCase.status,
-              }
-            : undefined,
         updateCase:
           updateCase &&
           updateRequester &&

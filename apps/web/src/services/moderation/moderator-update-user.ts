@@ -1,9 +1,9 @@
-import type { ModeratorUpdateUserBody } from "@workspace/shared/schemas/moderation-case/moderator-update-user";
+import type { ModeratorUpdateUserBody } from "@workspace/shared/schemas/moderation/moderator-update-user";
 
 import {
   moderatorUpdateUserBodySchema,
   moderatorUpdateUserResponseSchemas,
-} from "@workspace/shared/schemas/moderation-case/moderator-update-user";
+} from "@workspace/shared/schemas/moderation/moderator-update-user";
 
 import { apiClient } from "@/lib/api-client";
 

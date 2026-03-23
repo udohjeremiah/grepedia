@@ -103,8 +103,7 @@ export default function EditUserDialog() {
       } catch (error) {
         setError(
           "Couldn't update account",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (error as any).message ??
+          (error as Error).message ??
             "An error occurred while updating your account. Please try again.",
         );
       }

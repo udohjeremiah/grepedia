@@ -23,16 +23,25 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         slug = slugify(body.name);
       }
 
-      // Future vector embeddings implementation:
-      // const textToEmbed = `
-      //   ${body.name}
-      //   ${body.shortDescription}
-      //   ${body.longDescription}
-      //   Categories: ${body.categories.join(", ")}
-      //   Tags: ${body.tags.join(", ")}
-      //   Released at: ${body.releasedAt ?? "N/A"}
-      // `;
-      // const vecEmbed = await fastify.generateVectorEmbeddings(textToEmbed);
+      let embeddings: number[];
+      try {
+        const contentToEmbed = [
+          body.name,
+          body.shortDescription,
+          body.longDescription,
+          `Categories: ${body.categories.join(", ")}`,
+          `Tags: ${body.tags.join(", ")}`,
+          `Released at: ${body.releasedAt ?? "N/A"}`,
+        ];
+        embeddings = await fastify.generateEmbeddings(contentToEmbed);
+      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        fastify.log.error("Embedding Error:", error as any);
+        return reply.code(500).send({
+          message: "Failed to generate tool embeddings",
+          success: false,
+        });
+      }
 
       const addedAt = new Date();
       const userId = ObjectId.createFromHexString(request.user.id);
@@ -40,6 +49,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         ...body,
         addedAt,
         addedBy: userId,
+        embeddings,
         releasedAt: body.releasedAt ? new Date(body.releasedAt) : undefined,
         slug,
         stats: { comments: 0, downvotes: 0, upvotes: 0 },

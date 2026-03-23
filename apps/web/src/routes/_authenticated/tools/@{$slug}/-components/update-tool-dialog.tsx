@@ -123,8 +123,7 @@ export default function UpdateToolDialog() {
       } catch (error) {
         setError(
           "Couldn't update tool",
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (error as any).message ??
+          (error as Error).message ??
             "An error occurred while updating this tool. Please try again.",
         );
       }

@@ -12,7 +12,6 @@ import {
 import { getSession } from "@/utils/get-session";
 
 import NavItem from "./-components/nav-item";
-import { userStatQueryOptions } from "./-queries/user-stats";
 
 const baseNavItems = [
   {
@@ -64,11 +63,7 @@ export type Nav = (typeof baseNavItems)[number] | typeof moderationNavItem;
 
 export const Route = createFileRoute("/_authenticated/@{$username}")({
   component: LayoutComponent,
-  loader: async ({ context }) => {
-    context.queryClient.prefetchQuery(
-      userStatQueryOptions({ userId: context.userId }),
-    );
-
+  loader: async () => {
     const session = await getSession();
     const role = session?.user.role;
     const canModerate = role === "moderator";

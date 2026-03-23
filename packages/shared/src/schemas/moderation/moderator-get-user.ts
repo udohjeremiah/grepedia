@@ -17,7 +17,6 @@ export const moderatorGetUserResponseSchemas = {
           toolComments: z.int(),
           toolReactions: z.int(),
           toolsAdded: z.int(),
-          toolsOwned: z.int(),
           toolsUpdated: z.int(),
           total: z.int(),
         }),

@@ -15,7 +15,6 @@ export const getToolResponseSchemas = {
     data: z.object({
       tool: toolSchema.extend({
         addedBy: z.string(),
-        owner: z.string().optional(),
         relations: z.object({
           bookmarked: z.boolean(),
           commented: z.boolean(),

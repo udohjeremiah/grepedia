@@ -16,16 +16,6 @@ export default function ToolProposals() {
   const canReview = user?.status === "active" && user?.role === "moderator";
 
   const proposalList = [
-    proposals?.claimCase && {
-      description: proposals.claimCase.reason,
-      discussionUrl: proposals.claimCase.discussionUrl,
-      id: proposals.claimCase._id,
-      proposal: proposals.claimCase,
-      requestedAt: proposals.claimCase.requestedAt,
-      status: proposals.claimCase.status,
-      type: "claim" as const,
-      username: proposals.claimCase.requester.username,
-    },
     proposals?.updateCase && {
       description: proposals.updateCase.title,
       discussionUrl: proposals.updateCase.discussionUrl,
@@ -52,9 +42,7 @@ export default function ToolProposals() {
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <Badge variant="warning">{item.status.replace("_", " ")}</Badge>
-                <p className="text-sm font-medium">
-                  {item.type === "claim" ? "Tool Claim" : "Tool Update"}
-                </p>
+                <p className="text-sm font-medium">Tool Update</p>
               </div>
               <p className="text-xs text-muted-foreground">
                 by @{item.username} ·{" "}
@@ -67,7 +55,6 @@ export default function ToolProposals() {
               <ToolModeratorDialog
                 currentStatus={item.status}
                 id={item.id}
-                type={item.type}
               />
             )}
           </div>
@@ -79,9 +66,7 @@ export default function ToolProposals() {
               rel="noreferrer"
               target="_blank"
             >
-              {item.type === "claim"
-                ? "Open claim discussion"
-                : "Open update discussion"}
+              Open update discussion
             </a>
           )}
         </div>

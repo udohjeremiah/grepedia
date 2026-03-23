@@ -1,7 +1,7 @@
 import {
   moderatorGetUserQuerySchema,
   moderatorGetUserResponseSchemas,
-} from "@workspace/shared/schemas/moderation-case/moderator-get-user";
+} from "@workspace/shared/schemas/moderation/moderator-get-user";
 
 import { apiClient } from "@/lib/api-client";
 

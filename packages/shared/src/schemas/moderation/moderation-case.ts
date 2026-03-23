@@ -12,10 +12,7 @@ export const moderationCaseStatusSchema = z.enum([
   "rejected",
 ]);
 
-export const moderationCaseTypeSchema = z.enum([
-  "tool_claim",
-  "tool_update_proposal",
-]);
+export const moderationCaseTypeSchema = z.enum(["tool_update_proposal"]);
 
 export const moderationCaseBaseSchema = z.object({
   _id: objectIdSchema,
@@ -35,10 +32,6 @@ const resolutionSchema = z
   })
   .optional();
 
-const toolClaimPayloadSchema = z.object({
-  reason: z.string().min(8).max(2000),
-});
-
 const toolUpdatePayloadSchema = z.object({
   changes: toolRevisionSnapshotSchema,
   summary: z.string().min(20).max(1000),
@@ -46,13 +39,6 @@ const toolUpdatePayloadSchema = z.object({
 });
 
 export const moderationCaseSchema = z.discriminatedUnion("type", [
-  moderationCaseBaseSchema.extend({
-    payload: toolClaimPayloadSchema,
-    resolution: resolutionSchema,
-    toolId: objectIdSchema,
-    toolSlug: slugSchema,
-    type: z.literal("tool_claim"),
-  }),
   moderationCaseBaseSchema.extend({
     payload: toolUpdatePayloadSchema,
     resolution: resolutionSchema,

@@ -3,7 +3,7 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import {
   moderatorReviewCaseBodySchema,
   moderatorReviewCaseResponseSchemas,
-} from "@workspace/shared/schemas/moderation-case/moderator-review-case";
+} from "@workspace/shared/schemas/moderation/moderator-review-case";
 import { ObjectId } from "mongodb";
 
 const moderatorReviewCase: FastifyPluginAsyncZod = async (fastify) => {
@@ -66,37 +66,38 @@ const moderatorReviewCase: FastifyPluginAsyncZod = async (fastify) => {
           });
         }
 
-        if (moderationCase.type === "tool_claim") {
-          const updateResult = await tools.updateOne(
-            { _id: moderationCase.toolId },
-            {
-              $set: {
-                owner: moderationCase.createdBy,
-                updatedAt: now,
-                updatedBy: moderationCase.createdBy,
-              },
-            },
-          );
-
-          if (!updateResult.acknowledged || updateResult.matchedCount !== 1) {
-            return reply.code(500).send({
-              message: "Internal server error",
-              success: false,
-            });
-          }
-        }
-
         if (moderationCase.type === "tool_update_proposal") {
           const changes = moderationCase.payload.changes;
           const releasedAt = changes.releasedAt
             ? new Date(changes.releasedAt)
             : undefined;
 
+          let embeddings: number[];
+          try {
+            const contentToEmbed = [
+              changes.name,
+              changes.shortDescription,
+              changes.longDescription,
+              `Categories: ${changes.categories.join(", ")}`,
+              `Tags: ${changes.tags.join(", ")}`,
+              `Released at: ${changes.releasedAt ?? "N/A"}`,
+            ];
+            embeddings = await fastify.generateEmbeddings(contentToEmbed);
+          } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            fastify.log.error("Embedding Error:", error as any);
+            return reply.code(500).send({
+              message: "Failed to generate tool embeddings",
+              success: false,
+            });
+          }
+
           const updateResult = await tools.updateOne(
             { _id: moderationCase.toolId },
             {
               $set: {
                 ...changes,
+                embeddings,
                 releasedAt,
                 updatedAt: now,
                 updatedBy: moderationCase.createdBy,

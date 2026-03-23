@@ -7,29 +7,14 @@ import {
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@workspace/ui/components/dialog";
-import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
 } from "@workspace/ui/components/empty";
-import { Separator } from "@workspace/ui/components/separator";
-import { cn } from "@workspace/ui/utils/cn";
-import { format } from "date-fns";
 import {
-  ChevronDownIcon,
-  ChevronRightIcon,
   FileCode2Icon,
-  FolderIcon,
   FolderOpenIcon,
   MessageSquareIcon,
   SearchXIcon,
@@ -37,14 +22,11 @@ import {
   ThumbsUpIcon,
   XIcon,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { categoryVariants } from "@/constants/category";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 
 import { useUserTools } from "../-queries/user-tools";
-
-type RelationKey = keyof UserTool["relations"];
 
 interface ToolDirectoryProps {
   searchQuery: string;
@@ -53,26 +35,11 @@ interface ToolDirectoryProps {
 
 type UserTool = ReturnType<typeof useUserTools>["data"]["tools"][number];
 
-const relationGroups: Array<{
-  key: RelationKey;
-  label: string;
-}> = [
-  { key: "owned", label: "Owned" },
-  { key: "added", label: "Added" },
-  { key: "updated", label: "Updated" },
-  { key: "upvoted", label: "Upvoted" },
-  { key: "downvoted", label: "Downvoted" },
-  { key: "commented", label: "Commented" },
-];
-
 export default function ToolDirectory({
   searchQuery,
   tools,
 }: ToolDirectoryProps) {
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set(),
-  );
-  const [selectedTool, setSelectedTool] = useState<UserTool>();
+  const [selectedCategory, setSelectedCategory] = useState<string>();
 
   const groupedByCategory = useMemo(() => {
     const categoryMap = new Map<string, UserTool[]>();
@@ -96,23 +63,17 @@ export default function ToolDirectory({
     );
   }, [tools]);
 
-  const effectiveExpanded = searchQuery
-    ? new Set(groupedByCategory.map((group) => group.category))
-    : expandedCategories;
+  const categories = groupedByCategory.map((group) => group.category);
 
-  function toggleCategory(category: string) {
-    if (searchQuery) return;
+  useEffect(() => {
+    if (!selectedCategory || !categories.includes(selectedCategory)) {
+      setSelectedCategory(categories[0]);
+    }
+  }, [categories, selectedCategory]);
 
-    setExpandedCategories((previous) => {
-      const next = new Set(previous);
-      if (next.has(category)) {
-        next.delete(category);
-      } else {
-        next.add(category);
-      }
-      return next;
-    });
-  }
+  const activeGroup = groupedByCategory.find(
+    (group) => group.category === selectedCategory,
+  );
 
   if (groupedByCategory.length === 0) {
     return (
@@ -140,179 +101,94 @@ export default function ToolDirectory({
 
   return (
     <>
-      <div className="overflow-hidden rounded-lg border">
-        {groupedByCategory.map((group, groupIndex) => {
-          const isExpanded = effectiveExpanded.has(group.category);
+      <div className="grid gap-4 md:grid-cols-[30%_minmax(0,1fr)]">
+        <aside className="overflow-hidden rounded-lg border md:sticky md:top-4 md:self-start">
+          <div className="flex items-center gap-2 border-b px-3 py-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            <FolderOpenIcon className="size-3.5 text-info" />
+            Categories
+          </div>
+          <div className="max-h-130 overflow-y-auto">
+            {groupedByCategory.map((group) => {
+              const isActive = group.category === selectedCategory;
 
-          return (
-            <div key={group.category}>
-              <button
-                className={cn(
-                  "flex w-full items-center gap-2.5 px-4 py-2.5 transition-colors hover:bg-secondary/50",
-                  groupIndex > 0 && "border-t",
-                )}
-                onClick={() => toggleCategory(group.category)}
-              >
-                {isExpanded ? (
-                  <>
-                    <ChevronDownIcon className="size-3.5 text-muted-foreground" />
-                    <FolderOpenIcon className="size-4 text-info" />
-                  </>
-                ) : (
-                  <>
-                    <ChevronRightIcon className="size-3.5 text-muted-foreground" />
-                    <FolderIcon className="size-4 text-info" />
-                  </>
-                )}
-                <span className="text-sm font-medium">{group.category}</span>
-                <span className="ml-auto text-xs text-muted-foreground">
-                  {group.tools.length}{" "}
-                  {group.tools.length === 1 ? "tool" : "tools"}
-                </span>
-              </button>
-              {isExpanded && (
-                <div className="border-t">
-                  {group.tools.map((tool, toolIndex) => (
-                    <div key={`${group.category}-${tool._id}`}>
-                      <button
-                        className={cn(
-                          "flex w-full flex-wrap items-center gap-2.5 py-2 pr-4 pl-11 text-left transition-colors hover:bg-secondary/40",
-                          toolIndex > 0 && "border-t",
-                        )}
-                        onClick={() => setSelectedTool(tool)}
-                      >
-                        <FileCode2Icon className="size-3.5 shrink-0 text-muted-foreground" />
-                        <span className="flex-1 truncate text-sm">
-                          {tool.name}
-                        </span>
-                        <div className="flex items-center gap-3 text-[11px] text-muted-foreground/70">
-                          <span className="flex items-center gap-1">
-                            <ThumbsUpIcon className="size-3" />
-                            {formatCompactNumber(tool.stats.upvotes)}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <ThumbsDownIcon className="size-3" />
-                            {formatCompactNumber(tool.stats.downvotes)}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <MessageSquareIcon className="size-3" />
-                            {formatCompactNumber(tool.stats.comments)}
-                          </span>
-                        </div>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-      <Dialog
-        onOpenChange={(open) => {
-          if (!open) setSelectedTool(undefined);
-        }}
-        open={selectedTool !== undefined}
-      >
-        {selectedTool && (
-          <DialogContent>
-            <DialogHeader className="min-w-0 flex-row items-center gap-3">
-              <Avatar size="lg">
-                <AvatarImage alt={selectedTool.name} src={selectedTool.image} />
-                <AvatarFallback>
-                  {selectedTool.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex min-w-0 flex-col gap-1">
-                <DialogTitle className="truncate">
-                  {selectedTool.name}
-                </DialogTitle>
-                <DialogDescription className="truncate">
-                  {selectedTool.shortDescription}
-                </DialogDescription>
-              </div>
-            </DialogHeader>
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-wrap gap-2">
-                {selectedTool.categories.map((category, index) => (
-                  <Badge key={category} variant={categoryVariants[index]}>
-                    {category}
+              return (
+                <Button
+                  className="w-full gap-2.5 rounded-none border-none text-start"
+                  key={group.category}
+                  onClick={() => setSelectedCategory(group.category)}
+                  variant={isActive ? "secondary" : "ghost"}
+                >
+                  <span className="flex-1 truncate">{group.category}</span>
+                  <Badge className="ml-auto" variant="outline">
+                    {formatCompactNumber(group.tools.length)}
                   </Badge>
-                ))}
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                <StatTile label="Upvotes" value={selectedTool.stats.upvotes} />
-                <StatTile
-                  label="Downvotes"
-                  value={selectedTool.stats.downvotes}
-                />
-                <StatTile
-                  label="Comments"
-                  value={selectedTool.stats.comments}
-                />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {relationGroups.map(
-                  (group) =>
-                    selectedTool.relations[group.key] && (
-                      <Badge key={group.key} variant="secondary">
-                        {group.label}
-                      </Badge>
-                    ),
-                )}
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Owner</span>
-                  <span className="font-mono">
-                    {selectedTool.owner ? `@${selectedTool.owner}` : "—"}
-                  </span>
-                </div>
-                <Separator />
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Added</span>
-                  <span>
-                    {format(new Date(selectedTool.addedAt), "MMMM d, yyyy")}
-                  </span>
-                </div>
-                {selectedTool.updatedAt && (
-                  <>
-                    <Separator />
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Updated</span>
-                      <span>
-                        {format(
-                          new Date(selectedTool.updatedAt),
-                          "MMMM d, yyyy",
-                        )}
-                      </span>
-                    </div>
-                  </>
-                )}
-              </div>
+                </Button>
+              );
+            })}
+          </div>
+        </aside>
+        <section className="overflow-hidden rounded-lg border">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5">
+            <div className="flex items-center gap-2">
+              <FolderOpenIcon className="size-4 text-info" />
+              <span className="text-sm font-semibold">
+                {activeGroup?.category ?? "Tools"}
+              </span>
             </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Close</Button>
-              </DialogClose>
-              <Button asChild>
-                <Link params={{ slug: selectedTool.slug }} to="/tools/@{$slug}">
-                  View Details
+            <span className="text-xs text-muted-foreground">
+              {activeGroup?.tools.length ?? 0}{" "}
+              {(activeGroup?.tools.length ?? 0) === 1 ? "tool" : "tools"}
+            </span>
+          </div>
+          {(activeGroup?.tools.length ?? 0) > 0 ? (
+            <div className="divide-y">
+              {(activeGroup?.tools ?? []).map((tool) => (
+                <Link
+                  className="flex w-full flex-wrap items-center gap-2.5 px-4 py-2.5 transition-all hover:bg-muted hover:text-foreground dark:hover:bg-muted/50"
+                  key={tool._id}
+                  params={{ slug: tool.slug }}
+                  to="/tools/@{$slug}"
+                >
+                  <Avatar size="sm">
+                    <AvatarImage
+                      alt={tool.name}
+                      src={
+                        tool.image ??
+                        `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
+                      }
+                    />
+                    <AvatarFallback>
+                      {tool.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="flex-1 truncate text-sm font-medium">
+                    {tool.name}
+                  </span>
+                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground/70">
+                    <span className="flex items-center gap-1">
+                      <ThumbsUpIcon className="size-3" />
+                      {formatCompactNumber(tool.stats.upvotes)}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <ThumbsDownIcon className="size-3" />
+                      {formatCompactNumber(tool.stats.downvotes)}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MessageSquareIcon className="size-3" />
+                      {formatCompactNumber(tool.stats.comments)}
+                    </span>
+                  </div>
                 </Link>
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        )}
-      </Dialog>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-2 px-4 py-8 text-center text-sm text-muted-foreground">
+              <FileCode2Icon className="size-5" />
+              No tools in this category yet.
+            </div>
+          )}
+        </section>
+      </div>
     </>
-  );
-}
-
-function StatTile({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-md border bg-card p-3 text-center">
-      <p className="text-lg font-semibold">{formatCompactNumber(value)}</p>
-      <p className="text-[11px] text-muted-foreground">{label}</p>
-    </div>
   );
 }

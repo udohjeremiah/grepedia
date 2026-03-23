@@ -27,21 +27,21 @@
       "types": "./dist/schemas/image.d.ts",
       "default": "./dist/schemas/image.js"
     },
-    "./schemas/moderation-case/moderator-get-user": {
-      "types": "./dist/schemas/moderation-case/moderator-get-user.d.ts",
-      "default": "./dist/schemas/moderation-case/moderator-get-user.js"
+    "./schemas/moderation/moderator-get-user": {
+      "types": "./dist/schemas/moderation/moderator-get-user.d.ts",
+      "default": "./dist/schemas/moderation/moderator-get-user.js"
     },
-    "./schemas/moderation-case/moderation-case": {
-      "types": "./dist/schemas/moderation-case/moderation-case.d.ts",
-      "default": "./dist/schemas/moderation-case/moderation-case.js"
+    "./schemas/moderation/moderation-case": {
+      "types": "./dist/schemas/moderation/moderation-case.d.ts",
+      "default": "./dist/schemas/moderation/moderation-case.js"
     },
-    "./schemas/moderation-case/moderator-review-case": {
-      "types": "./dist/schemas/moderation-case/moderator-review-case.d.ts",
-      "default": "./dist/schemas/moderation-case/moderator-review-case.js"
+    "./schemas/moderation/moderator-review-case": {
+      "types": "./dist/schemas/moderation/moderator-review-case.d.ts",
+      "default": "./dist/schemas/moderation/moderator-review-case.js"
     },
-    "./schemas/moderation-case/moderator-update-user": {
-      "types": "./dist/schemas/moderation-case/moderator-update-user.d.ts",
-      "default": "./dist/schemas/moderation-case/moderator-update-user.js"
+    "./schemas/moderation/moderator-update-user": {
+      "types": "./dist/schemas/moderation/moderator-update-user.d.ts",
+      "default": "./dist/schemas/moderation/moderator-update-user.js"
     },
     "./schemas/object-id": {
       "types": "./dist/schemas/object-id.d.ts",
@@ -115,10 +115,6 @@
       "types": "./dist/schemas/tools/revisions/tool-revision.d.ts",
       "default": "./dist/schemas/tools/revisions/tool-revision.js"
     },
-    "./schemas/tools/submit-tool-claim": {
-      "types": "./dist/schemas/tools/submit-tool-claim.d.ts",
-      "default": "./dist/schemas/tools/submit-tool-claim.js"
-    },
     "./schemas/tools/proposals/get-tool-proposals": {
       "types": "./dist/schemas/tools/proposals/get-tool-proposals.d.ts",
       "default": "./dist/schemas/tools/proposals/get-tool-proposals.js"
@@ -154,10 +150,6 @@
     "./schemas/users/bookmarks/user-bookmark": {
       "types": "./dist/schemas/users/bookmarks/user-bookmark.d.ts",
       "default": "./dist/schemas/users/bookmarks/user-bookmark.js"
-    },
-    "./schemas/users/get-user-stats": {
-      "types": "./dist/schemas/users/get-user-stats.d.ts",
-      "default": "./dist/schemas/users/get-user-stats.js"
     },
     "./schemas/users/get-user-tools": {
       "types": "./dist/schemas/users/get-user-tools.d.ts",

@@ -5,33 +5,33 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@workspace/ui/components/empty";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@workspace/ui/components/input-group";
-import { FolderTreeIcon, SearchIcon } from "lucide-react";
-import { Suspense, useMemo, useState } from "react";
+import { FolderTreeIcon } from "lucide-react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { useToolsDirectoryCategories } from "../-queries/tools-directory-categories";
-import DirectoryCategorySection from "./directory-category-section";
-import DirectoryCategorySectionSkeleton from "./directory-category-section-skeleton";
+import Categories from "./categories";
+import CategoriesSkeleton from "./categories-skeleton";
+import Tools from "./tools";
+import ToolsSkeleton from "./tools-skeleton";
 
 export default function Directory() {
-  const [categoryQuery, setCategoryQuery] = useState("");
-
   const { data: categories } = useToolsDirectoryCategories();
+  const [selectedCategory, setSelectedCategory] = useState<string>();
 
-  const filteredCategories = useMemo(() => {
-    const query = categoryQuery.trim().toLowerCase();
-    if (!query) return categories;
+  const list = useMemo(() => categories, [categories]);
 
-    return categories.filter((category) =>
-      category.name.toLowerCase().includes(query),
-    );
-  }, [categories, categoryQuery]);
+  useEffect(() => {
+    if (!selectedCategory || !list.some((c) => c.name === selectedCategory)) {
+      setSelectedCategory(list[0]?.name);
+    }
+  }, [list, selectedCategory]);
 
-  if (categories.length === 0) {
+  const safeCategory = selectedCategory ?? list[0]?.name ?? "";
+  const activeCategory = list.find(
+    (category) => category.name === safeCategory,
+  );
+
+  if (list.length === 0) {
     return (
       <Empty className="border border-dashed">
         <EmptyHeader>
@@ -48,54 +48,20 @@ export default function Directory() {
   }
 
   return (
-    <>
-      <div className="space-y-2">
-        <InputGroup>
-          <InputGroupAddon>
-            <SearchIcon />
-          </InputGroupAddon>
-          <InputGroupInput
-            onChange={(event) => setCategoryQuery(event.target.value)}
-            placeholder="Filter categories..."
-            value={categoryQuery}
-          />
-        </InputGroup>
-        <p className="text-xs text-muted-foreground">
-          Showing {filteredCategories.length} of {categories.length} categories
-        </p>
-      </div>
-      {filteredCategories.length === 0 && (
-        <Empty className="border border-dashed">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <SearchIcon className="text-muted-foreground" />
-            </EmptyMedia>
-            <EmptyTitle>No categories match your filter</EmptyTitle>
-            <EmptyDescription>
-              Try a different keyword to find a category.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      )}
-      {filteredCategories.length > 0 && (
-        <div className="overflow-hidden rounded-lg border">
-          {filteredCategories.map((category, index) => (
-            <Suspense
-              fallback={
-                <DirectoryCategorySectionSkeleton withTopBorder={index > 0} />
-              }
-              key={category.name}
-            >
-              <DirectoryCategorySection
-                category={category.name}
-                count={category.count}
-                defaultExpanded={categoryQuery.trim().length > 0}
-                withTopBorder={index > 0}
-              />
-            </Suspense>
-          ))}
-        </div>
-      )}
-    </>
+    <div className="grid flex-1 gap-4 md:grid-cols-[25%_minmax(0,1fr)]">
+      <Suspense fallback={<CategoriesSkeleton />}>
+        <Categories
+          categories={list}
+          onSelect={setSelectedCategory}
+          selectedCategory={selectedCategory}
+        />
+      </Suspense>
+      <Suspense fallback={<ToolsSkeleton />}>
+        <Tools
+          categoryCount={activeCategory?.count}
+          categoryName={safeCategory}
+        />
+      </Suspense>
+    </div>
   );
 }

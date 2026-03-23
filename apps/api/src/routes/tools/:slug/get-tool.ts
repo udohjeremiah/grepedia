@@ -33,7 +33,7 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
 
       const userIds = [
         ...new Set(
-          [tool.owner, tool.addedBy, tool.updatedBy]
+          [tool.addedBy, tool.updatedBy]
             .filter((value): value is ObjectId => value instanceof ObjectId)
             .map((value) => value.toHexString()),
         ),
@@ -71,13 +71,10 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
       ]);
 
       const toolResponse = serializeMongoTypes({
-        ...omitKeys(tool, ["vectorEmbeddings"]),
+        ...omitKeys(tool, ["embeddings"]),
         addedBy:
           userById.get(tool.addedBy.toHexString()) ??
           tool.addedBy.toHexString(),
-        owner: tool.owner
-          ? (userById.get(tool.owner.toHexString()) ?? tool.owner.toHexString())
-          : undefined,
         relations: {
           bookmarked: Boolean(bookmark),
           commented: Boolean(comment),

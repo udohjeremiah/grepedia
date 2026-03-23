@@ -8,6 +8,8 @@ declare module "fastify" {
       APP_NAME: string;
       CLIENT_BASE_URL: string;
       EMAIL_AUTH: string;
+      GEMINI_API_KEY: string;
+      MIN_VECTOR_SCORE: number;
       MONGODB_COLL_MODERATION_CASE: string;
       MONGODB_COLL_TOOL: string;
       MONGODB_COLL_TOOL_COMMENT: string;
@@ -47,6 +49,14 @@ const options: FastifyEnvOptions = {
       EMAIL_AUTH: {
         default: "Grepedia <auth@resend.dev>",
         type: "string",
+      },
+      GEMINI_API_KEY: {
+        default: "********",
+        type: "string",
+      },
+      MIN_VECTOR_SCORE: {
+        default: 0.5,
+        type: "number",
       },
       MONGODB_COLL_MODERATION_CASE: {
         default: "moderation-case",
@@ -121,6 +131,8 @@ const options: FastifyEnvOptions = {
       "MONGODB_COLL_TOOL_REVISION",
       "MONGODB_COLL_MODERATION_CASE",
       "USER_DATA_EXPORT_SIGNING_SECRET",
+      "GEMINI_API_KEY",
+      "MIN_VECTOR_SCORE",
       "RESEND_API_KEY",
       "EMAIL_AUTH",
       "CLIENT_BASE_URL",

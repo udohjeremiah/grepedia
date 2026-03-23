@@ -30,7 +30,6 @@ import { getInitials } from "@/utils/get-initials";
 import { useTool } from "../-queries/tool";
 import { useToolSetReaction } from "../-queries/tool-set-reaction";
 import { useToolToggleBookmark } from "../-queries/tool-toggle-bookmark";
-import ClaimToolDialog from "./claim-tool-dialog";
 import UpdateToolDialog from "./update-tool-dialog";
 
 type Tool = ReturnType<typeof useTool>["data"];
@@ -38,10 +37,14 @@ type Tool = ReturnType<typeof useTool>["data"];
 const statusConfig: Record<
   Tool["status"],
   {
-    label: "Flagged" | "Pending" | "Published";
+    label: "Archived" | "Flagged" | "Pending" | "Published";
     variant: "default" | "destructive" | "warning";
   }
 > = {
+  archived: {
+    label: "Archived",
+    variant: "warning",
+  },
   flagged: {
     label: "Flagged",
     variant: "destructive",
@@ -208,7 +211,6 @@ export default function ToolHeader() {
           </span>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <ClaimToolDialog />
           <UpdateToolDialog />
           <Button
             asChild

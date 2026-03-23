@@ -12,7 +12,6 @@ import {
   FolderOpenIcon,
   type LucideIcon,
   MessageSquareIcon,
-  PackageIcon,
   PenLineIcon,
   PlusIcon,
   SearchIcon,
@@ -32,7 +31,6 @@ type FilterView =
   | "all"
   | "commented"
   | "downvoted"
-  | "owned"
   | "updated"
   | "upvoted";
 
@@ -46,7 +44,6 @@ type StatKey =
   | "added"
   | "commented"
   | "downvoted"
-  | "owned"
   | "updated"
   | "upvoted";
 
@@ -81,14 +78,6 @@ export const getStatConfig = ({
       label: "Downvotes Given",
       onClick: () =>
         setFilterView(filterView === "downvoted" ? "all" : "downvoted"),
-    },
-    owned: {
-      colorClass: "bg-primary/10 text-primary",
-      count: stats.owned,
-      icon: PackageIcon,
-      isActive: filterView === "owned",
-      label: "Tools Owned",
-      onClick: () => setFilterView(filterView === "owned" ? "all" : "owned"),
     },
     updated: {
       colorClass: "bg-info/10 text-info",
@@ -140,10 +129,6 @@ export default function UserTools() {
         );
         break;
       }
-      case "owned": {
-        filteredResult = filteredResult.filter((tool) => tool.relations.owned);
-        break;
-      }
       case "updated": {
         filteredResult = filteredResult.filter(
           (tool) => tool.relations.updated,
@@ -180,7 +165,6 @@ export default function UserTools() {
     all: "All Tools",
     commented: "Tools You Commented On",
     downvoted: "Tools You Downvoted",
-    owned: "Tools You Own",
     updated: "Tools You Updated",
     upvoted: "Tools You Upvoted",
   };
@@ -206,7 +190,6 @@ export default function UserTools() {
         </div>
         <Separator />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <StatCard {...statConfig.owned} />
           <StatCard {...statConfig.added} />
           <StatCard {...statConfig.updated} />
           <StatCard {...statConfig.upvoted} />

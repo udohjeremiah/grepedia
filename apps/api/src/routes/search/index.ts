@@ -7,6 +7,7 @@ import {
   searchQueryStringSchema,
   searchResponseSchemas,
 } from "@workspace/shared/schemas/search/search";
+import cosineSimilarity from "compute-cosine-similarity";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 
@@ -28,6 +29,17 @@ type BuildSearchPipelineParams = {
   trendingWindowStart: Date;
 };
 
+type BuildVectorSearchPipelineParams = {
+  commentsCollectionName: string;
+  cursorMatches: SearchCursorMatches;
+  limit: number;
+  minVectorScore: number;
+  queryVector: number[];
+  tab: SearchTab;
+  trendingWindowStart: Date;
+  vectorIndex: string;
+};
+
 type CursorPayload =
   | { comments: number; id: string; type: "comments" }
   | { date: string; id: string; type: "date" }
@@ -41,6 +53,7 @@ type GetNextSearchCursorParams = {
         _id?: ObjectId;
         recentComments?: number;
         releasedAt?: Date;
+        score?: number;
         stats: { downvotes: number; upvotes: number };
       };
   limit: number;
@@ -77,19 +90,6 @@ const searchCursorPayloadSchema = z.discriminatedUnion("type", [
   z.object({ id: objectIdSchema, score: z.number(), type: z.literal("score") }),
   z.object({ id: objectIdSchema, type: z.literal("id") }),
 ]);
-
-function buildBaseSearchFilter(words: RegExp[]) {
-  return {
-    $or: [
-      { name: { $in: words } },
-      { shortDescription: { $in: words } },
-      { longDescription: { $in: words } },
-      { categories: { $in: words } },
-      { tags: { $in: words } },
-    ],
-    status: "published",
-  };
-}
 
 function buildCursorMatches(
   decodedCursor: CursorPayload | undefined,
@@ -221,22 +221,106 @@ function buildSearchPipeline({
       { $sort: { recentComments: -1, _id: -1 } },
       { $limit: limit },
     ],
-    verified: [
-      { $match: { ...baseFilter, owner: { $exists: true } } },
-      ...(idCursorMatch ? [{ $match: idCursorMatch }] : []),
-      { $sort: { _id: -1 } },
-      { $limit: limit },
-    ],
   } as const;
 
   return pipelines[tab] as unknown as Document[];
 }
 
-function buildSearchWords(query: string): RegExp[] {
-  return query
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((word) => new RegExp(word, "i"));
+function buildVectorSearchPipeline({
+  commentsCollectionName,
+  cursorMatches,
+  limit,
+  minVectorScore,
+  queryVector,
+  tab,
+  trendingWindowStart,
+  vectorIndex,
+}: BuildVectorSearchPipelineParams): Document[] {
+  const { commentsCursorMatch, dateCursorMatch, scoreCursorMatch } =
+    cursorMatches;
+
+  const candidateLimit = Math.max(limit * 10, 200);
+  const vectorFilter = { status: "published" };
+
+  const vectorStage: Document = {
+    $vectorSearch: {
+      filter: vectorFilter,
+      index: vectorIndex,
+      limit: candidateLimit,
+      numCandidates: candidateLimit,
+      path: "embeddings",
+      queryVector,
+    },
+  };
+
+  const pipelines = {
+    all: [
+      vectorStage,
+      { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
+      { $match: { vectorScore: { $gte: minVectorScore } } },
+      ...(scoreCursorMatch ? [{ $match: scoreCursorMatch }] : []),
+      { $limit: limit },
+    ],
+    new: [
+      vectorStage,
+      { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
+      { $match: { vectorScore: { $gte: minVectorScore } } },
+      ...(dateCursorMatch ? [{ $match: dateCursorMatch }] : []),
+      { $sort: { _id: -1, releasedAt: -1 } },
+      { $limit: limit },
+    ],
+    popular: [
+      vectorStage,
+      { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
+      { $match: { vectorScore: { $gte: minVectorScore } } },
+      {
+        $addFields: {
+          score: { $subtract: ["$stats.upvotes", "$stats.downvotes"] },
+        },
+      },
+      ...(scoreCursorMatch ? [{ $match: scoreCursorMatch }] : []),
+      { $sort: { _id: -1, score: -1 } },
+      { $limit: limit },
+    ],
+    trending: [
+      vectorStage,
+      { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
+      { $match: { vectorScore: { $gte: minVectorScore } } },
+      {
+        $lookup: {
+          as: "recentCommentStats",
+          from: commentsCollectionName,
+          let: { toolId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$toolId", "$$toolId"] },
+                    { $gte: ["$createdAt", trendingWindowStart] },
+                  ],
+                },
+              },
+            },
+            { $count: "count" },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          recentComments: {
+            $ifNull: [{ $arrayElemAt: ["$recentCommentStats.count", 0] }, 0],
+          },
+        },
+      },
+      { $match: { recentComments: { $gt: 0 } } },
+      ...(commentsCursorMatch ? [{ $match: commentsCursorMatch }] : []),
+      { $sort: { _id: -1, recentComments: -1 } },
+      { $limit: limit },
+    ],
+  } as const;
+
+  return pipelines[tab] as unknown as Document[];
 }
 
 function getNextSearchCursor({
@@ -251,6 +335,14 @@ function getNextSearchCursor({
     return {
       id: last._id.toString(),
       score: last.stats.upvotes - last.stats.downvotes,
+      type: "score",
+    };
+  }
+
+  if (tab === "all" && typeof last.score === "number") {
+    return {
+      id: last._id.toString(),
+      score: last.score,
       type: "score",
     };
   }
@@ -279,6 +371,7 @@ function getNextSearchCursor({
 
 const search: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     handler: async (request, reply) => {
       const { cursor, limit = 20, query, tab } = request.query;
 
@@ -288,8 +381,6 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       const trendingWindowStart = new Date(
         Date.now() - 1000 * 60 * 60 * 24 * 7,
       );
-      const words = buildSearchWords(query);
-      const baseFilter = buildBaseSearchFilter(words);
 
       let decodedCursor;
       try {
@@ -305,18 +396,90 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       const cursorMatches = buildCursorMatches(decodedCursor);
-      const pipeline = buildSearchPipeline({
-        baseFilter,
-        commentsCollectionName: toolComments.collectionName,
-        cursorMatches,
-        limit,
-        tab,
-        trendingWindowStart,
-      });
+      let result: Array<ToolWithObjectIds & { score?: number }> = [];
+      const queryVector = await fastify.generateEmbeddings([query]);
+      const scoreCursor =
+        decodedCursor && decodedCursor.type === "score"
+          ? decodedCursor
+          : undefined;
 
-      const result = await tools
-        .aggregate<ToolWithObjectIds>(pipeline)
-        .toArray();
+      if (fastify.env.NODE_ENV === "production") {
+        const vectorIndex = "tool_embeddings";
+        const vectorPipeline = buildVectorSearchPipeline({
+          commentsCollectionName: toolComments.collectionName,
+          cursorMatches,
+          limit,
+          minVectorScore: fastify.env.MIN_VECTOR_SCORE,
+          queryVector,
+          tab,
+          trendingWindowStart,
+          vectorIndex,
+        });
+
+        result = await tools
+          .aggregate<ToolWithObjectIds & { score?: number }>(vectorPipeline)
+          .toArray();
+      } else {
+        const candidates = await tools
+          .find({ embeddings: { $exists: true }, status: "published" })
+          .project<ToolWithObjectIds>({
+            _id: 1,
+            embeddings: 1,
+            image: 1,
+            longDescription: 1,
+            name: 1,
+            officialUrl: 1,
+            releasedAt: 1,
+            shortDescription: 1,
+            slug: 1,
+            stats: 1,
+          })
+          .toArray();
+
+        const scored = candidates
+          .flatMap((tool) => {
+            if (!tool.embeddings || tool.embeddings.length === 0) return [];
+            const score = cosineSimilarity(queryVector, tool.embeddings) ?? 0;
+            if (score < fastify.env.MIN_VECTOR_SCORE) return [];
+            return [{ ...tool, score }];
+          })
+          // eslint-disable-next-line unicorn/no-array-sort
+          .sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return a._id!.toString().localeCompare(b._id!.toString());
+          });
+
+        const candidateLimit = Math.max(limit * 10, 200);
+        const candidatesForTab = scored.slice(0, candidateLimit);
+        const candidateIds = candidatesForTab
+          .map((item) => item._id)
+          .filter((id): id is ObjectId => id instanceof ObjectId);
+
+        if (tab === "all") {
+          const paged = scoreCursor
+            ? candidatesForTab.filter((item) => {
+                if (item.score < scoreCursor.score) return true;
+                if (item.score > scoreCursor.score) return false;
+                return item._id!.toHexString() < scoreCursor.id;
+              })
+            : candidatesForTab;
+
+          result = paged.slice(0, limit);
+        } else if (candidateIds.length > 0) {
+          const baseFilter = { status: "published" };
+
+          const pipeline = buildSearchPipeline({
+            baseFilter: { ...baseFilter, _id: { $in: candidateIds } },
+            commentsCollectionName: toolComments.collectionName,
+            cursorMatches,
+            limit,
+            tab,
+            trendingWindowStart,
+          });
+
+          result = await tools.aggregate<ToolWithObjectIds>(pipeline).toArray();
+        }
+      }
 
       const searchResults = result.map((tool) => {
         return serializeMongoTypes({
@@ -336,11 +499,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       const last = result.at(-1);
 
       if (last && result.length === limit) {
-        const cursorPayload = getNextSearchCursor({
-          last,
-          limit,
-          tab,
-        });
+        const cursorPayload = getNextSearchCursor({ last, limit, tab });
 
         if (cursorPayload) {
           nextCursor = encodeCursor(cursorPayload);

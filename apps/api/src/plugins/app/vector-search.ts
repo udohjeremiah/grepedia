@@ -4,7 +4,7 @@ import fp from "fastify-plugin";
 declare module "fastify" {
   interface FastifyInstance {
     embedder?: FeatureExtractionPipeline;
-    generateVectorEmbeddings(text: string): Promise<number[]>;
+    generateEmbeddings(contents: string[]): Promise<number[]>;
   }
 }
 
@@ -19,6 +19,7 @@ declare module "fastify" {
 export default fp(
   async (fastify) => {
     let loading: Promise<void> | undefined;
+    const isProduction = fastify.env.NODE_ENV === "production";
 
     const loadModel = async () => {
       if (fastify.embedder) return;
@@ -39,33 +40,49 @@ export default fp(
       await loading;
     };
 
-    const generateVectorEmbeddings = async (text: string) => {
-      if (!text.trim()) {
-        throw new Error("Cannot generate vector embeddings from empty text");
+    const generateEmbeddings = async (contents: string[]) => {
+      const combined = contents.filter(Boolean).join("\n");
+      if (!combined.trim()) {
+        throw new Error("Cannot generate embeddings from empty content");
       }
 
-      if (!fastify.embedder) {
-        await loadModel();
+      if (!isProduction) {
+        if (!fastify.embedder) {
+          throw new Error("Embedding pipeline is not available");
+        }
+
+        const output = await fastify.embedder(combined, {
+          normalize: true,
+          pooling: "mean",
+        });
+
+        return [...output.data];
       }
 
-      if (!fastify.embedder) {
-        throw new Error("Embedding pipeline is not available");
-      }
-
-      const output = await fastify.embedder(text, {
-        normalize: true,
-        pooling: "mean",
+      const result = await fastify.gemini.models.embedContent({
+        config: {
+          outputDimensionality: 768,
+          taskType: "SEMANTIC_SIMILARITY",
+        },
+        contents: combined,
+        model: "gemini-embedding-001",
       });
 
-      return [...output.data];
+      if (!result.embeddings || result.embeddings?.length === 0) {
+        throw new Error("Gemini embedContent returned empty embeddings");
+      }
+
+      return result.embeddings;
     };
 
-    fastify.decorate("embedder");
-    fastify.decorate("generateVectorEmbeddings", generateVectorEmbeddings);
-
     fastify.addHook("onReady", async () => {
-      loadModel();
+      if (!isProduction) {
+        await loadModel();
+      }
     });
+
+    fastify.decorate("embedder");
+    fastify.decorate("generateEmbeddings", generateEmbeddings);
   },
-  { name: "vector-search" },
+  { dependencies: ["gemini"], name: "vector-search" },
 );

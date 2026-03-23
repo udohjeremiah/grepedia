@@ -25,16 +25,6 @@ export type GetToolProposalsParams = z.infer<
 export const getToolProposalsResponseSchemas = {
   200: z.object({
     data: z.object({
-      claimCase: z
-        .object({
-          _id: objectIdSchema,
-          discussionUrl: discordUrlSchema,
-          reason: z.string(),
-          requestedAt: z.iso.datetime(),
-          requester: requesterSchema,
-          status: z.enum(["open", "under_review"]),
-        })
-        .optional(),
       updateCase: z
         .object({
           _id: objectIdSchema,

@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { ModeratorGetUserQuery } from "@workspace/shared/schemas/moderation-case/moderator-get-user";
+import { ModeratorGetUserQuery } from "@workspace/shared/schemas/moderation/moderator-get-user";
 
 import { moderatorGetUser } from "@/services/moderation/moderator-get-user";
 

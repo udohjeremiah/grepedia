@@ -6,11 +6,10 @@ export const toolWithObjectIdsSchema = toolSchema.extend({
   _id: z.instanceof(ObjectId).optional(),
   addedAt: z.date(),
   addedBy: z.instanceof(ObjectId),
-  owner: z.instanceof(ObjectId).optional(),
+  embeddings: z.array(z.number()).optional(),
   releasedAt: z.date().optional(),
   updatedAt: z.date().optional(),
   updatedBy: z.instanceof(ObjectId).optional(),
-  vectorEmbeddings: z.array(z.number()).optional(),
 });
 
 export type ToolWithObjectIds = z.infer<typeof toolWithObjectIdsSchema>;

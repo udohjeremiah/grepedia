@@ -3,7 +3,7 @@ import { useParams } from "@tanstack/react-router";
 import {
   ModeratorReviewCaseBody,
   moderatorReviewCaseBodySchema,
-} from "@workspace/shared/schemas/moderation-case/moderator-review-case";
+} from "@workspace/shared/schemas/moderation/moderator-review-case";
 import { Button } from "@workspace/ui/components/button";
 import {
   Dialog,
@@ -46,7 +46,6 @@ type DECISION = z.infer<typeof moderatorReviewCaseBodySchema>["decision"];
 type ToolModeratorDialogProps = {
   currentStatus: "open" | "under_review";
   id: string;
-  type: "claim" | "update";
 };
 
 const MAX_SUMMARY = 1000;
@@ -54,7 +53,6 @@ const MAX_SUMMARY = 1000;
 export default function ToolModeratorDialog({
   currentStatus,
   id,
-  type,
 }: ToolModeratorDialogProps) {
   const { slug } = useParams({ from: "/_authenticated/tools/@{$slug}" });
 
@@ -116,9 +114,7 @@ export default function ToolModeratorDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            Review {type === "claim" ? "Claim" : "Update"} Case
-          </DialogTitle>
+          <DialogTitle>Review Update Case</DialogTitle>
           <DialogDescription>
             Select a decision and provide details when approving or rejecting.
           </DialogDescription>

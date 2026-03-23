@@ -28,7 +28,7 @@ export const Route = createFileRoute(
     meta: [
       { title: `${params.slug} — Revisions | Grepedia` },
       {
-        content: `Review proposals, claims, and revision history for ${params.slug} on Grepedia.`,
+        content: `Review proposals and revision history for ${params.slug} on Grepedia.`,
         name: "description",
       },
     ],

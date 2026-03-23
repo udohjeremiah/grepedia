@@ -3,7 +3,7 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import {
   moderatorUpdateUserBodySchema,
   moderatorUpdateUserResponseSchemas,
-} from "@workspace/shared/schemas/moderation-case/moderator-update-user";
+} from "@workspace/shared/schemas/moderation/moderator-update-user";
 
 const updateUser: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({

@@ -28,7 +28,6 @@ type CommentsCursor = z.infer<typeof commentsCursorSchema>;
 
 const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
-    // eslint-disable-next-line sonarjs/cognitive-complexity
     handler: async function (request, reply) {
       if (!request.user) throw new Error("User not authenticated");
 
@@ -73,70 +72,60 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const cursorFilter = decodedCursor
-        ? sort === "newest"
-          ? {
-              $or: [
-                {
-                  createdAt: { $lt: new Date(decodedCursor.createdAt) },
-                },
-                {
-                  _id: {
-                    $lt: ObjectId.createFromHexString(decodedCursor.id),
-                  },
-                  createdAt: new Date(decodedCursor.createdAt),
-                },
-              ],
-            }
-          : sort === "bottom"
-            ? {
-                $or: [
-                  { score: { $gt: decodedCursor.score ?? 0 } },
-                  {
-                    createdAt: { $gt: new Date(decodedCursor.createdAt) },
-                    score: decodedCursor.score ?? 0,
-                  },
-                  {
-                    _id: {
-                      $gt: ObjectId.createFromHexString(decodedCursor.id),
-                    },
-                    createdAt: new Date(decodedCursor.createdAt),
-                    score: decodedCursor.score ?? 0,
-                  },
-                ],
-              }
-            : {
-                $or: [
-                  { score: { $lt: decodedCursor.score ?? 0 } },
-                  {
-                    createdAt: { $lt: new Date(decodedCursor.createdAt) },
-                    score: decodedCursor.score ?? 0,
-                  },
-                  {
-                    _id: {
-                      $lt: ObjectId.createFromHexString(decodedCursor.id),
-                    },
-                    createdAt: new Date(decodedCursor.createdAt),
-                    score: decodedCursor.score ?? 0,
-                  },
-                ],
-              }
-        : undefined;
+      const cursorFilter = (() => {
+        if (!decodedCursor) return;
+
+        const cursorDate = new Date(decodedCursor.createdAt);
+        const cursorId = ObjectId.createFromHexString(decodedCursor.id);
+        const cursorScore = decodedCursor.score ?? 0;
+
+        if (sort === "newest") {
+          return {
+            $or: [
+              { createdAt: { $lt: cursorDate } },
+              { _id: { $lt: cursorId }, createdAt: cursorDate },
+            ],
+          };
+        }
+
+        if (sort === "bottom") {
+          return {
+            $or: [
+              { score: { $gt: cursorScore } },
+              { createdAt: { $gt: cursorDate }, score: cursorScore },
+              { _id: { $gt: cursorId }, createdAt: cursorDate, score: cursorScore },
+            ],
+          };
+        }
+
+        return {
+          $or: [
+            { score: { $lt: cursorScore } },
+            { createdAt: { $lt: cursorDate }, score: cursorScore },
+            { _id: { $lt: cursorId }, createdAt: cursorDate, score: cursorScore },
+          ],
+        };
+      })();
 
       const baseMatch = {
         parentCommentId: { $exists: false },
         toolId: tool._id,
       };
 
-      const sortStage =
-        sort === "newest"
-          ? // eslint-disable-next-line perfectionist/sort-objects
-            { createdAt: -1, _id: -1 }
-          : sort === "bottom"
-            ? // eslint-disable-next-line perfectionist/sort-objects
-              { score: 1, createdAt: 1, _id: 1 }
-            : // eslint-disable-next-line perfectionist/sort-objects
-              { score: -1, createdAt: -1, _id: -1 };
+      const sortStage = (() => {
+        if (sort === "newest") {
+          // eslint-disable-next-line perfectionist/sort-objects
+          return { createdAt: -1, _id: -1 };
+        }
+
+        if (sort === "bottom") {
+          // eslint-disable-next-line perfectionist/sort-objects
+          return { score: 1, createdAt: 1, _id: 1 };
+        }
+
+        // eslint-disable-next-line perfectionist/sort-objects
+        return { score: -1, createdAt: -1, _id: -1 };
+      })();
 
       const pipeline = [
         { $match: baseMatch },

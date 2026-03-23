@@ -60,7 +60,6 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
           image?: string;
           name: string;
           officialUrl: string;
-          owner?: string;
           shortDescription: string;
           slug: string;
           stats: {
@@ -95,22 +94,12 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
           { $sort: toolsDirectorySort },
           { $limit: limit },
           {
-            $lookup: {
-              as: "ownerUser",
-              foreignField: "_id",
-              from: fastify.env.MONGODB_COLL_USER,
-              localField: "owner",
-              pipeline: [{ $project: { _id: 0, username: 1 } }],
-            },
-          },
-          {
             $project: {
               _id: 1,
               categories: 1,
               image: 1,
               name: 1,
               officialUrl: 1,
-              owner: { $first: "$ownerUser.username" },
               shortDescription: 1,
               slug: 1,
               stats: 1,
