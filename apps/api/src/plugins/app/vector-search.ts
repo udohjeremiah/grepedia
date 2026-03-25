@@ -1,9 +1,18 @@
-import { type FeatureExtractionPipeline, pipeline } from "@xenova/transformers";
+import type { DataArray } from "@xenova/transformers";
+
 import fp from "fastify-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
-    embedder?: FeatureExtractionPipeline;
+    embedder?: {
+      (
+        input: string | string[],
+        options: {
+          normalize: boolean;
+          pooling: "mean";
+        },
+      ): Promise<{ data: DataArray }>;
+    };
     generateEmbeddings(contents: string[]): Promise<number[]>;
   }
 }
@@ -18,8 +27,9 @@ declare module "fastify" {
  */
 export default fp(
   async (fastify) => {
-    let loading: Promise<void> | undefined;
     const isProduction = fastify.env.NODE_ENV === "production";
+
+    let loading: Promise<void> | undefined;
 
     const loadModel = async () => {
       if (fastify.embedder) return;
@@ -27,6 +37,7 @@ export default fp(
       if (!loading) {
         loading = (async () => {
           try {
+            const { pipeline } = await import("@xenova/transformers");
             fastify.embedder = await pipeline(
               "feature-extraction",
               "Xenova/all-MiniLM-L6-v2",
@@ -47,8 +58,12 @@ export default fp(
       }
 
       if (!isProduction) {
+        await loadModel();
+
         if (!fastify.embedder) {
-          throw new Error("Embedding pipeline is not available");
+          throw new Error(
+            "Local embedder is not available. Install @xenova/transformers or use the Gemini embedder.",
+          );
         }
 
         const output = await fastify.embedder(combined, {

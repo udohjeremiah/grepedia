@@ -373,6 +373,8 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     // eslint-disable-next-line sonarjs/cognitive-complexity
     handler: async (request, reply) => {
+      const isProduction = fastify.env.NODE_ENV === "production";
+
       const { cursor, limit = 20, query, tab } = request.query;
 
       const tools = fastify.getToolCollection();
@@ -403,7 +405,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
           ? decodedCursor
           : undefined;
 
-      if (fastify.env.NODE_ENV === "production") {
+      if (isProduction) {
         const vectorIndex = "tool_embeddings";
         const vectorPipeline = buildVectorSearchPipeline({
           commentsCollectionName: toolComments.collectionName,

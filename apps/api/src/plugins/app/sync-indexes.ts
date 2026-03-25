@@ -185,6 +185,7 @@ export default fp(
       targets,
     }: RunSyncOptions): Promise<void> {
       const isProduction = fastify.env.NODE_ENV === "production";
+
       const lockId = buildLockId(targets);
       const lockCol = await ensureLockCollection(db);
       const acquired = isProduction
@@ -199,7 +200,7 @@ export default fp(
       }
 
       fastify.log.info(
-        `[index-sync] Lock acquired (${lockId}). Running in '${mode}' mode…`,
+        `[index-sync] Lock acquired (${lockId}). Running in '${mode}' mode...`,
       );
 
       try {
