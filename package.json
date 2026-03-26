@@ -37,7 +37,8 @@
       "@types/react": "19.2.0",
       "@types/react-dom": "19.2.0",
       "react": "19.2.0",
-      "react-dom": "19.2.0"
+      "react-dom": "19.2.0",
+      "rollup": "npm:@rollup/wasm-node"
     },
     "ignoredBuiltDependencies": [
       "core-js-pure",
