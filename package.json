@@ -41,13 +41,11 @@
       "rollup": "npm:@rollup/wasm-node"
     },
     "ignoredBuiltDependencies": [
-      "core-js-pure",
-      "esbuild",
-      "msw",
-      "protobufjs",
-      "unrs-resolver"
+      "msw"
     ],
     "onlyBuiltDependencies": [
+      "esbuild",
+      "protobufjs",
       "sharp"
     ]
   },
