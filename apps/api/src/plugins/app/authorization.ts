@@ -1,14 +1,8 @@
-import type { User } from "better-auth";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
 import fp from "fastify-plugin";
 
-type AppUser = User & {
-  displayName: string;
-  role: "contributor" | "member" | "moderator";
-  status: "active" | "deactivated" | "flagged" | "suspended";
-  username: string;
-};
+import type { AuthUser } from "@/plugins/app/auth.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -20,11 +14,11 @@ declare module "fastify" {
     ) => Promise<void>;
 
     requireRole: (
-      role: AppUser["role"],
+      role: AuthUser["role"],
     ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
 
     requireStatus: (
-      status: AppUser["status"],
+      status: AuthUser["status"],
     ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
 
     requireUser: (
@@ -38,7 +32,7 @@ declare module "fastify" {
   }
 
   interface FastifyRequest {
-    user?: AppUser;
+    user?: AuthUser;
   }
 }
 
@@ -83,7 +77,7 @@ export default fp(
         });
       }
 
-      request.user = session.user as AppUser;
+      request.user = session.user;
     };
 
     const requireUserId =
@@ -105,7 +99,7 @@ export default fp(
       };
 
     const requireRole =
-      (role: AppUser["role"]) =>
+      (role: AuthUser["role"]) =>
       async (request: FastifyRequest, reply: FastifyReply) => {
         await requireUser(request, reply);
         if (reply.sent) return;
@@ -140,7 +134,7 @@ export default fp(
     };
 
     const requireStatus =
-      (status: AppUser["status"]) =>
+      (status: AuthUser["status"]) =>
       async (request: FastifyRequest, reply: FastifyReply) => {
         await requireUser(request, reply);
         if (reply.sent) return;

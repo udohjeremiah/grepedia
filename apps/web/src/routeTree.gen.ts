@@ -167,27 +167,27 @@ const AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/@{$username}': typeof AuthenticatedAtChar123usernameChar125RouteRouteWithChildren
   '/': typeof searchIndexRoute
-  '/privacy-policy': typeof PrivacyPolicyIndexRoute
-  '/terms-of-service': typeof TermsOfServiceIndexRoute
+  '/@{$username}': typeof AuthenticatedAtChar123usernameChar125RouteRouteWithChildren
+  '/privacy-policy/': typeof PrivacyPolicyIndexRoute
+  '/terms-of-service/': typeof TermsOfServiceIndexRoute
   '/tools/@{$slug}': typeof AuthenticatedToolsAtChar123slugChar125RouteRouteWithChildren
-  '/request-password-reset': typeof authRequestPasswordResetIndexRoute
-  '/reset-password': typeof authResetPasswordIndexRoute
-  '/signin': typeof authSigninIndexRoute
-  '/signup': typeof authSignupIndexRoute
-  '/search': typeof searchSearchIndexRoute
+  '/request-password-reset/': typeof authRequestPasswordResetIndexRoute
+  '/reset-password/': typeof authResetPasswordIndexRoute
+  '/signin/': typeof authSigninIndexRoute
+  '/signup/': typeof authSignupIndexRoute
+  '/search/': typeof searchSearchIndexRoute
   '/@{$username}/': typeof AuthenticatedAtChar123usernameChar125IndexRoute
-  '/leaderboard': typeof AuthenticatedLeaderboardIndexRoute
-  '/@{$username}/bookmarks': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
-  '/@{$username}/data': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
-  '/@{$username}/moderation': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
-  '/@{$username}/security': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
-  '/@{$username}/sessions': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
-  '/@{$username}/tools': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
+  '/leaderboard/': typeof AuthenticatedLeaderboardIndexRoute
+  '/@{$username}/bookmarks/': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
+  '/@{$username}/data/': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  '/@{$username}/moderation/': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
+  '/@{$username}/security/': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
+  '/@{$username}/sessions/': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
+  '/@{$username}/tools/': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
   '/tools/@{$slug}/': typeof AuthenticatedToolsAtChar123slugChar125IndexRoute
-  '/tools/directory': typeof AuthenticatedToolsDirectoryIndexRoute
-  '/tools/@{$slug}/revisions': typeof AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute
+  '/tools/directory/': typeof AuthenticatedToolsDirectoryIndexRoute
+  '/tools/@{$slug}/revisions/': typeof AuthenticatedToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof searchIndexRoute
@@ -240,27 +240,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/@{$username}'
     | '/'
-    | '/privacy-policy'
-    | '/terms-of-service'
+    | '/@{$username}'
+    | '/privacy-policy/'
+    | '/terms-of-service/'
     | '/tools/@{$slug}'
-    | '/request-password-reset'
-    | '/reset-password'
-    | '/signin'
-    | '/signup'
-    | '/search'
+    | '/request-password-reset/'
+    | '/reset-password/'
+    | '/signin/'
+    | '/signup/'
+    | '/search/'
     | '/@{$username}/'
-    | '/leaderboard'
-    | '/@{$username}/bookmarks'
-    | '/@{$username}/data'
-    | '/@{$username}/moderation'
-    | '/@{$username}/security'
-    | '/@{$username}/sessions'
-    | '/@{$username}/tools'
+    | '/leaderboard/'
+    | '/@{$username}/bookmarks/'
+    | '/@{$username}/data/'
+    | '/@{$username}/moderation/'
+    | '/@{$username}/security/'
+    | '/@{$username}/sessions/'
+    | '/@{$username}/tools/'
     | '/tools/@{$slug}/'
-    | '/tools/directory'
-    | '/tools/@{$slug}/revisions'
+    | '/tools/directory/'
+    | '/tools/@{$slug}/revisions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -323,7 +323,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -344,14 +344,14 @@ declare module '@tanstack/react-router' {
     '/terms-of-service/': {
       id: '/terms-of-service/'
       path: '/terms-of-service'
-      fullPath: '/terms-of-service'
+      fullPath: '/terms-of-service/'
       preLoaderRoute: typeof TermsOfServiceIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy-policy/': {
       id: '/privacy-policy/'
       path: '/privacy-policy'
-      fullPath: '/privacy-policy'
+      fullPath: '/privacy-policy/'
       preLoaderRoute: typeof PrivacyPolicyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -372,7 +372,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated/leaderboard/': {
       id: '/_authenticated/leaderboard/'
       path: '/leaderboard'
-      fullPath: '/leaderboard'
+      fullPath: '/leaderboard/'
       preLoaderRoute: typeof AuthenticatedLeaderboardIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -386,35 +386,35 @@ declare module '@tanstack/react-router' {
     '/(search)/search/': {
       id: '/(search)/search/'
       path: '/search'
-      fullPath: '/search'
+      fullPath: '/search/'
       preLoaderRoute: typeof searchSearchIndexRouteImport
       parentRoute: typeof searchRouteRoute
     }
     '/(auth)/signup/': {
       id: '/(auth)/signup/'
       path: '/signup'
-      fullPath: '/signup'
+      fullPath: '/signup/'
       preLoaderRoute: typeof authSignupIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/signin/': {
       id: '/(auth)/signin/'
       path: '/signin'
-      fullPath: '/signin'
+      fullPath: '/signin/'
       preLoaderRoute: typeof authSigninIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/reset-password/': {
       id: '/(auth)/reset-password/'
       path: '/reset-password'
-      fullPath: '/reset-password'
+      fullPath: '/reset-password/'
       preLoaderRoute: typeof authResetPasswordIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/request-password-reset/': {
       id: '/(auth)/request-password-reset/'
       path: '/request-password-reset'
-      fullPath: '/request-password-reset'
+      fullPath: '/request-password-reset/'
       preLoaderRoute: typeof authRequestPasswordResetIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
@@ -428,7 +428,7 @@ declare module '@tanstack/react-router' {
     '/_authenticated/tools/directory/': {
       id: '/_authenticated/tools/directory/'
       path: '/tools/directory'
-      fullPath: '/tools/directory'
+      fullPath: '/tools/directory/'
       preLoaderRoute: typeof AuthenticatedToolsDirectoryIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -442,49 +442,49 @@ declare module '@tanstack/react-router' {
     '/_authenticated/@{$username}/tools/': {
       id: '/_authenticated/@{$username}/tools/'
       path: '/tools'
-      fullPath: '/@{$username}/tools'
+      fullPath: '/@{$username}/tools/'
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125ToolsIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
     '/_authenticated/@{$username}/sessions/': {
       id: '/_authenticated/@{$username}/sessions/'
       path: '/sessions'
-      fullPath: '/@{$username}/sessions'
+      fullPath: '/@{$username}/sessions/'
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125SessionsIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
     '/_authenticated/@{$username}/security/': {
       id: '/_authenticated/@{$username}/security/'
       path: '/security'
-      fullPath: '/@{$username}/security'
+      fullPath: '/@{$username}/security/'
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125SecurityIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
     '/_authenticated/@{$username}/moderation/': {
       id: '/_authenticated/@{$username}/moderation/'
       path: '/moderation'
-      fullPath: '/@{$username}/moderation'
+      fullPath: '/@{$username}/moderation/'
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125ModerationIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
     '/_authenticated/@{$username}/data/': {
       id: '/_authenticated/@{$username}/data/'
       path: '/data'
-      fullPath: '/@{$username}/data'
+      fullPath: '/@{$username}/data/'
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125DataIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
     '/_authenticated/@{$username}/bookmarks/': {
       id: '/_authenticated/@{$username}/bookmarks/'
       path: '/bookmarks'
-      fullPath: '/@{$username}/bookmarks'
+      fullPath: '/@{$username}/bookmarks/'
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
     '/_authenticated/tools/@{$slug}/revisions/': {
       id: '/_authenticated/tools/@{$slug}/revisions/'
       path: '/revisions'
-      fullPath: '/tools/@{$slug}/revisions'
+      fullPath: '/tools/@{$slug}/revisions/'
       preLoaderRoute: typeof AuthenticatedToolsAtChar123slugChar125RevisionsIndexRouteImport
       parentRoute: typeof AuthenticatedToolsAtChar123slugChar125RouteRoute
     }

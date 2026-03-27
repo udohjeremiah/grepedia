@@ -92,7 +92,7 @@ export default fp(
 
     fastify.addHook("onReady", async () => {
       if (!isProduction) {
-        await loadModel();
+        loadModel();
       }
     });
 
