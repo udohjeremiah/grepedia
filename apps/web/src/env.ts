@@ -48,4 +48,10 @@ export const env = createEnv({
     VITE_SERVER_BASE_URL: import.meta.env["VITE_SERVER_BASE_URL"],
     VITE_TOOL_UPDATE_URL: import.meta.env["VITE_TOOL_UPDATE_URL"],
   },
+
+  // Skip validation on the server because `import.meta.env` is a Vite
+  // build-time feature and is unavailable at runtime in Node.js. These
+  // are client-only variables that Vite inlines into the bundle at build
+  // time, so validation only makes sense in the browser.
+  skipValidation: globalThis.window === undefined,
 });
