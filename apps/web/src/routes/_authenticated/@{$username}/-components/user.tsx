@@ -102,16 +102,12 @@ export default function User() {
           >
             <AlertTitle>Account action required</AlertTitle>
             <AlertDescription>
-              Your account is {status.label.toLowerCase()}. Open a Discord
-              appeal to get help from moderators.
+              Your account is {status.label.toLowerCase()}. Open an appeal to
+              get help from moderators.
             </AlertDescription>
             <AlertAction>
               <Button asChild size="xs" variant="outline">
-                <a
-                  href={env.VITE_DISCORD_APPEAL_URL}
-                  rel="noreferrer"
-                  target="_blank"
-                >
+                <a href={env.VITE_APPEAL_URL} rel="noreferrer" target="_blank">
                   Open Appeal
                 </a>
               </Button>
@@ -150,7 +146,7 @@ export default function User() {
                   You can{" "}
                   <a
                     className="text-primary underline-offset-4 hover:underline"
-                    href={env.VITE_DISCORD_MODERATOR_REQUEST_URL}
+                    href={env.VITE_MODERATOR_REQUEST_URL}
                     rel="noreferrer"
                     target="_blank"
                   >

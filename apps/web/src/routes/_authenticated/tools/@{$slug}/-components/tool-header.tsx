@@ -218,11 +218,7 @@ export default function ToolHeader() {
             size="sm"
             variant="destructive"
           >
-            <a
-              href={env.VITE_DISCORD_REPORT_TOOL_URL}
-              rel="noreferrer"
-              target="_blank"
-            >
+            <a href={env.VITE_REPORT_TOOL_URL} rel="noreferrer" target="_blank">
               <FlagIcon className="size-3.5" />
               <span className="text-xs">Report</span>
             </a>

@@ -3,14 +3,14 @@ import { z } from "zod";
 
 export const env = createEnv({
   client: {
+    VITE_APPEAL_URL: z.url(),
     VITE_BASE_URL: z.url(),
-    VITE_DISCORD_APPEAL_URL: z.url(),
-    VITE_DISCORD_MODERATOR_REQUEST_URL: z.url(),
-    VITE_DISCORD_REPORT_COMMENT_URL: z.url(),
-    VITE_DISCORD_REPORT_TOOL_URL: z.url(),
-    VITE_DISCORD_TOOL_UPDATE_URL: z.url(),
+    VITE_MODERATOR_REQUEST_URL: z.url(),
+    VITE_REPORT_COMMENT_URL: z.url(),
+    VITE_REPORT_TOOL_URL: z.url(),
     VITE_SERVER_API_URL: z.url(),
     VITE_SERVER_BASE_URL: z.url(),
+    VITE_TOOL_UPDATE_URL: z.url(),
   },
 
   /**
@@ -35,8 +35,17 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 
   /**
-   * What object holds the environment variables at runtime. This is usually
-   * `process.env` or `import.meta.env`.
+   * Makes sure you explicitly access **all** environment variables
+   * from `server` and `client` in your `runtimeEnv`.
    */
-  runtimeEnv: import.meta.env,
+  runtimeEnvStrict: {
+    VITE_APPEAL_URL: import.meta.env["VITE_APPEAL_URL"],
+    VITE_BASE_URL: import.meta.env["VITE_BASE_URL"],
+    VITE_MODERATOR_REQUEST_URL: import.meta.env["VITE_MODERATOR_REQUEST_URL"],
+    VITE_REPORT_COMMENT_URL: import.meta.env["VITE_REPORT_COMMENT_URL"],
+    VITE_REPORT_TOOL_URL: import.meta.env["VITE_REPORT_TOOL_URL"],
+    VITE_SERVER_API_URL: import.meta.env["VITE_SERVER_API_URL"],
+    VITE_SERVER_BASE_URL: import.meta.env["VITE_SERVER_BASE_URL"],
+    VITE_TOOL_UPDATE_URL: import.meta.env["VITE_TOOL_UPDATE_URL"],
+  },
 });

@@ -161,13 +161,9 @@ export default function UpdateToolDialog() {
         <DialogHeader>
           <DialogTitle>Propose Tool Update</DialogTitle>
           <DialogDescription>
-            Open a Discord update thread first, then paste the link and your
-            proposed changes below.{" "}
-            <a
-              href={env.VITE_DISCORD_TOOL_UPDATE_URL}
-              rel="noreferrer"
-              target="_blank"
-            >
+            Open an update thread first, then paste the link and your proposed
+            changes below.{" "}
+            <a href={env.VITE_TOOL_UPDATE_URL} rel="noreferrer" target="_blank">
               Go to the tool update channel
             </a>
             .

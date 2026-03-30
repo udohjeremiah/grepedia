@@ -113,7 +113,7 @@ export default function ToolComment(comment: ToolCommentProps) {
               )}
               <DropdownMenuItem asChild variant="destructive">
                 <a
-                  href={env.VITE_DISCORD_REPORT_COMMENT_URL}
+                  href={env.VITE_REPORT_COMMENT_URL}
                   rel="noreferrer"
                   target="_blank"
                 >
