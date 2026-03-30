@@ -1,6 +1,9 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
+console.log("Server env check:", process.env);
+console.log("Client env check:", import.meta.env);
+
 export const env = createEnv({
   client: {
     VITE_APPEAL_URL: z.url(),
@@ -35,23 +38,8 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 
   /**
-   * Makes sure you explicitly access **all** environment variables
-   * from `server` and `client` in your `runtimeEnv`.
+   * What object holds the environment variables at runtime. This is usually
+   * `process.env` or `import.meta.env`.
    */
-  runtimeEnvStrict: {
-    VITE_APPEAL_URL: import.meta.env["VITE_APPEAL_URL"],
-    VITE_BASE_URL: import.meta.env["VITE_BASE_URL"],
-    VITE_MODERATOR_REQUEST_URL: import.meta.env["VITE_MODERATOR_REQUEST_URL"],
-    VITE_REPORT_COMMENT_URL: import.meta.env["VITE_REPORT_COMMENT_URL"],
-    VITE_REPORT_TOOL_URL: import.meta.env["VITE_REPORT_TOOL_URL"],
-    VITE_SERVER_API_URL: import.meta.env["VITE_SERVER_API_URL"],
-    VITE_SERVER_BASE_URL: import.meta.env["VITE_SERVER_BASE_URL"],
-    VITE_TOOL_UPDATE_URL: import.meta.env["VITE_TOOL_UPDATE_URL"],
-  },
-
-  // Skip validation on the server because `import.meta.env` is a Vite
-  // build-time feature and is unavailable at runtime in Node.js. These
-  // are client-only variables that Vite inlines into the bundle at build
-  // time, so validation only makes sense in the browser.
-  skipValidation: globalThis.window === undefined,
+  runtimeEnv: import.meta.env,
 });
