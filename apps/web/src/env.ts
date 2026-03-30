@@ -35,31 +35,8 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 
   /**
-   * Makes sure you explicitly access **all** environment variables
-   * from `server` and `client` in your `runtimeEnv`.
+   * What object holds the environment variables at runtime. This is usually
+   * `process.env` or `import.meta.env`.
    */
-  runtimeEnvStrict: {
-    VITE_APPEAL_URL:
-      process.env["VITE_APPEAL_URL"] ?? import.meta.env["VITE_APPEAL_URL"],
-    VITE_BASE_URL:
-      process.env["VITE_BASE_URL"] ?? import.meta.env["VITE_BASE_URL"],
-    VITE_MODERATOR_REQUEST_URL:
-      process.env["VITE_MODERATOR_REQUEST_URL"] ??
-      import.meta.env["VITE_MODERATOR_REQUEST_URL"],
-    VITE_REPORT_COMMENT_URL:
-      process.env["VITE_REPORT_COMMENT_URL"] ??
-      import.meta.env["VITE_REPORT_COMMENT_URL"],
-    VITE_REPORT_TOOL_URL:
-      process.env["VITE_REPORT_TOOL_URL"] ??
-      import.meta.env["VITE_REPORT_TOOL_URL"],
-    VITE_SERVER_API_URL:
-      process.env["VITE_SERVER_API_URL"] ??
-      import.meta.env["VITE_SERVER_API_URL"],
-    VITE_SERVER_BASE_URL:
-      process.env["VITE_SERVER_BASE_URL"] ??
-      import.meta.env["VITE_SERVER_BASE_URL"],
-    VITE_TOOL_UPDATE_URL:
-      process.env["VITE_TOOL_UPDATE_URL"] ??
-      import.meta.env["VITE_TOOL_UPDATE_URL"],
-  },
+  runtimeEnv: import.meta.env,
 });
