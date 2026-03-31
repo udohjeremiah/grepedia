@@ -322,8 +322,8 @@ export default function EditUserDialog() {
                         id={field.name}
                         onBlur={field.handleBlur}
                         onChange={(event) => {
-                          const value = event.target.value.trim();
-                          field.handleChange(value || undefined);
+                          const value = event.target.value;
+                          field.handleChange(value === "" ? undefined : value);
                         }}
                         value={field.state.value ?? ""}
                       />
