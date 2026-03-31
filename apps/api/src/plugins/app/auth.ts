@@ -139,14 +139,12 @@ function createAuth(fastify: FastifyInstance) {
       }),
     },
     plugins: [username()],
-    // Cookie cache is disabled to avoid oversized Cookie headers (session_data.*)
-    // being dropped by browsers/proxies, which breaks get-session in production.
-    // session: {
-    //   cookieCache: {
-    //     enabled: true,
-    //     maxAge: 5 * 60,
-    //   },
-    // },
+    session: {
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60,
+      },
+    },
     trustedOrigins: [fastify.env.CLIENT_BASE_URL],
     user: {
       additionalFields: {
