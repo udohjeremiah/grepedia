@@ -44,7 +44,7 @@ export default function SignOutDialog() {
     try {
       await (revokeAllSessions ? revokeSessions({}) : signOut());
       closeDialog();
-      navigate({ reloadDocument: true, to: "/signin" });
+      navigate({ to: "/signin" });
     } catch {
       setSubmitting(false);
     }

@@ -34,10 +34,11 @@ function createAuth(fastify: FastifyInstance) {
   const auth = betterAuth({
     advanced: {
       cookiePrefix: "grepedia",
-      // Force secure cross-site cookies so auth works when client and API are
-      // on different origins (required for production HTTPS setups).
+      // Use cross-site cookies in production (SameSite=None + Secure) so auth
+      // works across client/API origins. In dev, fall back to SameSite=Lax to
+      // allow HTTP on localhost where Secure cookies would be rejected.
       defaultCookieAttributes: {
-        sameSite: "none",
+        sameSite: fastify.env.NODE_ENV === "production" ? "none" : "lax",
         secure: fastify.env.NODE_ENV === "production",
       },
     },
