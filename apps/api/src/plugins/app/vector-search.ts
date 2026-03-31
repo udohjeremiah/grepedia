@@ -83,11 +83,12 @@ export default fp(
         model: "gemini-embedding-001",
       });
 
-      if (!result.embeddings || result.embeddings?.length === 0) {
+      const embedding = result.embeddings?.[0]?.values;
+      if (!embedding || embedding.length === 0) {
         throw new Error("Gemini embedContent returned empty embeddings");
       }
 
-      return result.embeddings;
+      return embedding;
     };
 
     fastify.addHook("onReady", async () => {
