@@ -34,6 +34,10 @@ function createAuth(fastify: FastifyInstance) {
   const auth = betterAuth({
     advanced: {
       cookiePrefix: "grepedia",
+      crossSubDomainCookies: {
+        domain: fastify.env.CLIENT_COOKIE_DOMAIN,
+        enabled: true,
+      },
     },
     database: mongodbAdapter(fastify.getDatabase()),
     emailAndPassword: {
