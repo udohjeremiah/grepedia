@@ -7,7 +7,6 @@ declare module "fastify" {
       ADMIN_USER_IDS: string;
       APP_NAME: string;
       CLIENT_BASE_URL: string;
-      CLIENT_COOKIE_DOMAIN: string;
       EMAIL_AUTH: string;
       GEMINI_API_KEY: string;
       MIN_VECTOR_SCORE: number;
@@ -45,10 +44,6 @@ const options: FastifyEnvOptions = {
       },
       CLIENT_BASE_URL: {
         default: "*",
-        type: "string",
-      },
-      CLIENT_COOKIE_DOMAIN: {
-        default: "localhost",
         type: "string",
       },
       EMAIL_AUTH: {
@@ -141,7 +136,6 @@ const options: FastifyEnvOptions = {
       "RESEND_API_KEY",
       "EMAIL_AUTH",
       "CLIENT_BASE_URL",
-      "CLIENT_COOKIE_DOMAIN",
     ],
     type: "object",
   },
