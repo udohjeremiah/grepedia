@@ -34,6 +34,8 @@ function createAuth(fastify: FastifyInstance) {
   const auth = betterAuth({
     advanced: {
       cookiePrefix: "grepedia",
+      // Force secure cross-site cookies so auth works when client and API are
+      // on different origins (required for production HTTPS setups).
       defaultCookieAttributes: {
         sameSite: "none",
         secure: fastify.env.NODE_ENV === "production",
@@ -136,12 +138,14 @@ function createAuth(fastify: FastifyInstance) {
       }),
     },
     plugins: [username()],
-    session: {
-      cookieCache: {
-        enabled: true,
-        maxAge: 5 * 60,
-      },
-    },
+    // Cookie cache is disabled to avoid oversized Cookie headers (session_data.*)
+    // being dropped by browsers/proxies, which breaks get-session in production.
+    // session: {
+    //   cookieCache: {
+    //     enabled: true,
+    //     maxAge: 5 * 60,
+    //   },
+    // },
     trustedOrigins: [fastify.env.CLIENT_BASE_URL],
     user: {
       additionalFields: {
