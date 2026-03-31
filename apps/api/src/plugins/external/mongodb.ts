@@ -16,7 +16,9 @@ export default fp<FastifyMongodbOptions>(
       ignoreUndefined: true,
       serverApi: {
         deprecationErrors: true,
-        strict: true,
+        // Disabled because Atlas Vector Search ($vectorSearch) is rejected
+        // under apiStrict=true in API Version 1.
+        // strict: true,
         version: "1",
       },
       url: fastify.env.MONGODB_URL,
