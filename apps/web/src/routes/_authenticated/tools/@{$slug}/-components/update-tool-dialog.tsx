@@ -313,7 +313,7 @@ export default function UpdateToolDialog() {
                         onChange={(event) =>
                           field.handleChange(event.target.value)
                         }
-                        placeholder="Short summary for cards and search results."
+                        placeholder="Describe what this tool does in one clear sentence."
                         required={true}
                         value={field.state.value}
                       />
@@ -349,7 +349,7 @@ export default function UpdateToolDialog() {
                           maxLength: MAX_LONG_DESCRIPTION,
                           minLength: 20,
                           placeholder:
-                            "Detailed explanation of what the tool does.",
+                            "Explain what the tool does, its key features, and how people use it. Keep it clear and concise. You can use short paragraphs or bullet points if helpful.",
                           required: true,
                         }}
                         value={field.state.value}
