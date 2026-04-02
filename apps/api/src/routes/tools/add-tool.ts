@@ -7,20 +7,22 @@ import {
 } from "@workspace/shared/schemas/tools/add-tool";
 import { ObjectId } from "mongodb";
 
+import { normalizeToolInput } from "@/utils/normalize-tool-input.js";
+
 const addTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
       if (!request.user) throw new Error("User not authenticated");
 
-      const body = request.body;
+      const body = normalizeToolInput(request.body);
       const tools = fastify.getToolCollection();
       const toolRevisions = fastify.getToolRevisionCollection();
       const users = fastify.getUserCollection();
 
       const slugify = slugifyWithCounter();
-      let slug = slugify(body.name);
+      let slug = slugify(body.name, { decamelize: false });
       while (await tools.findOne({ slug })) {
-        slug = slugify(body.name);
+        slug = slugify(body.name, { decamelize: false });
       }
 
       let embeddings: number[];

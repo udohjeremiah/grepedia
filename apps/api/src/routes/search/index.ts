@@ -445,8 +445,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
             if (score < fastify.env.MIN_VECTOR_SCORE) return [];
             return [{ ...tool, score }];
           })
-          // eslint-disable-next-line unicorn/no-array-sort
-          .sort((a, b) => {
+          .toSorted((a, b) => {
             if (b.score !== a.score) return b.score - a.score;
             return a._id!.toString().localeCompare(b._id!.toString());
           });

@@ -7,6 +7,8 @@ import {
 } from "@workspace/shared/schemas/tools/update-tool";
 import { ObjectId } from "mongodb";
 
+import { normalizeToolInput } from "@/utils/normalize-tool-input.js";
+
 const updateTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
@@ -21,6 +23,7 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
 
       const { slug } = request.params;
       const { changes, discussionUrl, summary, title } = request.body;
+      const normalizedChanges = normalizeToolInput(changes);
 
       const tools = fastify.getToolCollection();
       const moderationCases = fastify.getModerationCaseCollection();
@@ -56,15 +59,15 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
         discussionUrl,
         payload: {
           changes: {
-            categories: changes.categories,
-            externalUrls: changes.externalUrls,
-            image: changes.image,
-            longDescription: changes.longDescription,
-            name: changes.name,
-            officialUrl: changes.officialUrl,
-            releasedAt: changes.releasedAt,
-            shortDescription: changes.shortDescription,
-            tags: changes.tags,
+            categories: normalizedChanges.categories,
+            externalUrls: normalizedChanges.externalUrls,
+            image: normalizedChanges.image,
+            longDescription: normalizedChanges.longDescription,
+            name: normalizedChanges.name,
+            officialUrl: normalizedChanges.officialUrl,
+            releasedAt: normalizedChanges.releasedAt,
+            shortDescription: normalizedChanges.shortDescription,
+            tags: normalizedChanges.tags,
           },
           summary,
           title,
