@@ -7,7 +7,7 @@ import axios from "axios";
 import { env } from "@/env";
 
 const rawApiClient = axios.create({
-  baseURL: env.VITE_SERVER_API_URL,
+  baseURL: env.VITE_API_BASE_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });

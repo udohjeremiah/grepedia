@@ -70,7 +70,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, "routes"),
     forceESM: true,
-    options: { ...options, prefix: "/api" },
+    options,
   });
 };
 

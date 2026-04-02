@@ -15,10 +15,7 @@ const health: FastifyPluginAsyncZod = async (fastify) => {
 
       const embedderStatus = fastify.embedder ? "ok" : "error";
 
-      const statusCode =
-        databaseStatus === "ok" && embedderStatus === "ok" ? 200 : 503;
-
-      return reply.code(statusCode).send({
+      return reply.code(200).send({
         database: databaseStatus,
         embedder: embedderStatus,
         server: "ok",

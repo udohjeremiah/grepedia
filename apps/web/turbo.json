@@ -4,13 +4,12 @@
   "tasks": {
     "build": {
       "env": [
+        "VITE_API_BASE_URL",
         "VITE_APPEAL_URL",
         "VITE_BASE_URL",
         "VITE_MODERATOR_REQUEST_URL",
         "VITE_REPORT_COMMENT_URL",
         "VITE_REPORT_TOOL_URL",
-        "VITE_SERVER_API_URL",
-        "VITE_SERVER_BASE_URL",
         "VITE_TOOL_UPDATE_URL"
       ]
     }
