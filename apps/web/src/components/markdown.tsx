@@ -93,7 +93,10 @@ export function MarkdownEditor({
   return (
     <MDEditor
       {...props}
-      className={cn("overflow-hidden! rounded-lg! font-sans!", className)}
+      className={cn(
+        "overflow-hidden! rounded-lg! font-sans! [&_:is(ol,ul,menu)]:[list-style:revert]",
+        className,
+      )}
       onBlur={onBlur}
       onChange={(value) => onChange?.(value)}
       preview={preview}
@@ -151,7 +154,10 @@ export function MarkdownPreview({ className, ...props }: MarkdownPreviewProps) {
   return (
     <MDEditor.Markdown
       {...props}
-      className={cn("bg-inherit! font-sans! text-sm!", className)}
+      className={cn(
+        "bg-inherit! font-sans! text-sm! [&_:is(ol,ul,menu)]:[list-style:revert]",
+        className,
+      )}
       components={mergedComponents}
       rehypePlugins={mergedRehypePlugins}
     />
