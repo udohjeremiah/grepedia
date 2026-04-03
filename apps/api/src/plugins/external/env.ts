@@ -6,6 +6,7 @@ declare module "fastify" {
     env: {
       ADMIN_USER_IDS: string;
       APP_NAME: string;
+      BASE_URL: string;
       CLIENT_BASE_URL: string;
       EMAIL_AUTH: string;
       GEMINI_API_KEY: string;
@@ -40,6 +41,10 @@ const options: FastifyEnvOptions = {
       },
       APP_NAME: {
         default: "api",
+        type: "string",
+      },
+      BASE_URL: {
+        default: "http://localhost:4000",
         type: "string",
       },
       CLIENT_BASE_URL: {
@@ -119,6 +124,7 @@ const options: FastifyEnvOptions = {
       "NODE_ENV",
       "PORT",
       "APP_NAME",
+      "BASE_URL",
       "MONGODB_URL",
       "MONGODB_DATABASE",
       "ADMIN_USER_IDS",

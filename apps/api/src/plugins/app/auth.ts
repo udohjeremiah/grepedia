@@ -42,6 +42,8 @@ function createAuth(fastify: FastifyInstance) {
         secure: fastify.env.NODE_ENV === "production",
       },
     },
+    basePath: "/auth",
+    baseURL: fastify.env.BASE_URL,
     database: mongodbAdapter(fastify.getDatabase()),
     emailAndPassword: {
       autoSignIn: false,
