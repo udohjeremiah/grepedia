@@ -96,7 +96,6 @@ export default function AddToolDialog() {
     defaultValues: {
       categories: [],
       externalUrls: undefined,
-      image: undefined,
       longDescription: LONG_DESCRIPTION_TEMPLATE,
       name: "",
       officialUrl: "",
@@ -515,43 +514,6 @@ export default function AddToolDialog() {
                           </Badge>
                         ))}
                       </div>
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-            <form.Field name="image">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel className="gap-1" htmlFor={field.name}>
-                      Image URL
-                      <span className="text-sm text-muted-foreground italic">
-                        (optional)
-                      </span>
-                    </FieldLabel>
-                    <InputGroup>
-                      <InputGroupAddon>
-                        <GlobeIcon />
-                      </InputGroupAddon>
-                      <InputGroupInput
-                        aria-invalid={isInvalid}
-                        id={field.name}
-                        onBlur={field.handleBlur}
-                        onChange={(event) => {
-                          const value = event.target.value.trim();
-                          field.handleChange(value || undefined);
-                        }}
-                        placeholder="https://example.com/image.png"
-                        type="url"
-                        value={field.state.value}
-                      />
-                    </InputGroup>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
                     )}
                   </Field>
                 );

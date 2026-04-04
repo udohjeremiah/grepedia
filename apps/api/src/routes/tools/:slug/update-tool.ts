@@ -98,7 +98,6 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
           changes: {
             categories: normalizedChanges.categories,
             externalUrls: normalizedChanges.externalUrls,
-            image: normalizedChanges.image,
             longDescription: normalizedChanges.longDescription,
             name: normalizedChanges.name,
             officialUrl: normalizedChanges.officialUrl,

@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
-import { imageSchema } from "../image.js";
 import { objectIdSchema } from "../object-id.js";
 
 export const addToolBodySchema = z.object({
@@ -26,7 +25,6 @@ export const addToolBodySchema = z.object({
     )
     .max(4, "You can add up to 4 external URLs")
     .optional(),
-  image: imageSchema.optional(),
   longDescription: z
     .string()
     .min(20, "Please provide at least 20 characters")

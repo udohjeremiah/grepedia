@@ -77,7 +77,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
                   projection: {
                     addedAt: 1,
                     categories: 1,
-                    image: 1,
                     name: 1,
                     officialUrl: 1,
                     shortDescription: 1,
@@ -111,7 +110,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
           _id: idHex,
           addedAt: tool.addedAt,
           categories: tool.categories,
-          image: tool.image,
           name: tool.name,
           officialUrl: tool.officialUrl,
           relations: {

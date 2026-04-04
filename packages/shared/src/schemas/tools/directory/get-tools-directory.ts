@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { defaultResponse } from "@/schemas/default-response.js";
-import { imageSchema } from "@/schemas/image.js";
 import { objectIdSchema } from "@/schemas/object-id.js";
 import { slugSchema } from "@/schemas/slug.js";
 
@@ -28,7 +27,6 @@ export const getToolsDirectoryResponseSchemas = {
         z.object({
           _id: objectIdSchema,
           categories: z.array(z.string()),
-          image: imageSchema.optional(),
           name: z.string(),
           officialUrl: z.url(),
           shortDescription: z.string(),

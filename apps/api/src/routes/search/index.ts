@@ -427,7 +427,6 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
           .project<ToolWithObjectIds>({
             _id: 1,
             embeddings: 1,
-            image: 1,
             longDescription: 1,
             name: 1,
             officialUrl: 1,
@@ -485,7 +484,6 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       const searchResults = result.map((tool) => {
         return serializeMongoTypes({
           _id: tool._id,
-          image: tool.image,
           longDescription: tool.longDescription,
           name: tool.name,
           officialUrl: tool.officialUrl,

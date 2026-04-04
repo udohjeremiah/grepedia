@@ -98,7 +98,6 @@ export default function UpdateToolDialog() {
       changes: {
         categories: tool.categories,
         externalUrls: tool.externalUrls,
-        image: tool.image,
         longDescription: tool.longDescription || LONG_DESCRIPTION_TEMPLATE,
         name: tool.name,
         officialUrl: tool.officialUrl,
@@ -120,7 +119,6 @@ export default function UpdateToolDialog() {
           changes: {
             categories: [],
             externalUrls: undefined,
-            image: undefined,
             longDescription: "",
             name: "",
             officialUrl: "",
@@ -598,43 +596,6 @@ export default function UpdateToolDialog() {
                           </Badge>
                         ))}
                       </div>
-                    )}
-                  </Field>
-                );
-              }}
-            </form.Field>
-            <form.Field name="changes.image">
-              {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel className="gap-1" htmlFor={field.name}>
-                      Image URL
-                      <span className="text-sm text-muted-foreground italic">
-                        (optional)
-                      </span>
-                    </FieldLabel>
-                    <InputGroup>
-                      <InputGroupAddon>
-                        <GlobeIcon />
-                      </InputGroupAddon>
-                      <InputGroupInput
-                        aria-invalid={isInvalid}
-                        id={field.name}
-                        onBlur={field.handleBlur}
-                        onChange={(event) => {
-                          const value = event.target.value.trim();
-                          field.handleChange(value || undefined);
-                        }}
-                        placeholder="https://example.com/image.png"
-                        type="url"
-                        value={field.state.value}
-                      />
-                    </InputGroup>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
                     )}
                   </Field>
                 );

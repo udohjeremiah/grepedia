@@ -57,7 +57,6 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
         .aggregate<{
           _id: ObjectId;
           categories: string[];
-          image?: string;
           name: string;
           officialUrl: string;
           shortDescription: string;
@@ -97,7 +96,6 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
             $project: {
               _id: 1,
               categories: 1,
-              image: 1,
               name: 1,
               officialUrl: 1,
               shortDescription: 1,

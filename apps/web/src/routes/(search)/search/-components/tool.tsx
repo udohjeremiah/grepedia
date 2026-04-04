@@ -72,10 +72,7 @@ export default function Tool(tool: ToolProps) {
           <Avatar className="size-15">
             <AvatarImage
               alt={tool.name}
-              src={
-                tool.image ??
-                `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
-              }
+              src={`https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`}
             />
             <AvatarFallback className="text-base">
               {getInitials(tool.name)}
@@ -100,10 +97,7 @@ export default function Tool(tool: ToolProps) {
           <Avatar size="lg">
             <AvatarImage
               alt={tool.name}
-              src={
-                tool.image ??
-                `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
-              }
+              src={`https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`}
             />
             <AvatarFallback>{getInitials(tool.name)}</AvatarFallback>
           </Avatar>

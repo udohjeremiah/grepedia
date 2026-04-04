@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
-import { imageSchema } from "../image.js";
 import { objectIdSchema } from "../object-id.js";
 import { slugSchema } from "../slug.js";
 
@@ -28,7 +27,6 @@ export const searchResponseSchemas = {
       tools: z.array(
         z.object({
           _id: objectIdSchema,
-          image: imageSchema.optional(),
           longDescription: z.string(),
           name: z.string(),
           officialUrl: z.string(),

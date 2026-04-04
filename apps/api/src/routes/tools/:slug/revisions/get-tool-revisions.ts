@@ -67,7 +67,6 @@ const getToolRevisions: FastifyPluginAsyncZod = async (fastify) => {
           snapshot: {
             categories: string[];
             externalUrls?: { platform: string; url: string }[];
-            image?: string;
             longDescription: string;
             name: string;
             officialUrl: string;
@@ -131,7 +130,6 @@ const getToolRevisions: FastifyPluginAsyncZod = async (fastify) => {
               snapshot: {
                 categories: 1,
                 externalUrls: 1,
-                image: { $ifNull: ["$snapshot.image", "$$REMOVE"] },
                 longDescription: 1,
                 name: 1,
                 officialUrl: 1,

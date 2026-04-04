@@ -90,10 +90,7 @@ export default function ToolHeader() {
             <Avatar className="size-15">
               <AvatarImage
                 alt={tool.name}
-                src={
-                  tool.image ??
-                  `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
-                }
+                src={`https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`}
               />
               <AvatarFallback className="text-base">
                 {getInitials(tool.name)}

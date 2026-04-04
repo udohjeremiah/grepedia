@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-import { imageSchema } from "../image.js";
 import { objectIdSchema } from "../object-id.js";
 import { slugSchema } from "../slug.js";
 
@@ -13,7 +12,6 @@ export const toolSchema = z.object({
     .array(z.object({ platform: z.string(), url: z.url() }))
     .max(4)
     .optional(),
-  image: imageSchema.optional(),
   longDescription: z.string(),
   name: z.string(),
   officialUrl: z.url(),

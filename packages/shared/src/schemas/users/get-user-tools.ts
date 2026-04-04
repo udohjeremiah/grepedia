@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
-import { imageSchema } from "../image.js";
 import { objectIdSchema } from "../object-id.js";
 import { slugSchema } from "../slug.js";
 
@@ -26,7 +25,6 @@ export const getUserToolsResponseSchemas = {
           _id: objectIdSchema,
           addedAt: z.iso.datetime(),
           categories: z.array(z.string()),
-          image: imageSchema.optional(),
           name: z.string(),
           officialUrl: z.url(),
           relations: z.object({

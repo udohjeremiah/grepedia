@@ -55,10 +55,7 @@ export default function Tools({ categoryCount, categoryName }: ToolsProps) {
               <Avatar size="sm">
                 <AvatarImage
                   alt={tool.name}
-                  src={
-                    tool.image ??
-                    `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`
-                  }
+                  src={`https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`}
                 />
                 <AvatarFallback>
                   {tool.name.charAt(0).toUpperCase()}
