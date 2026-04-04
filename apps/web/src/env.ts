@@ -9,6 +9,7 @@ export const env = createEnv({
     VITE_MODERATOR_REQUEST_URL: z.url(),
     VITE_REPORT_COMMENT_URL: z.url(),
     VITE_REPORT_TOOL_URL: z.url(),
+    VITE_SUPPORT_EMAIL: z.email(),
     VITE_TOOL_UPDATE_URL: z.url(),
   },
 
