@@ -5,6 +5,7 @@ import {
   getUserRecoveryPackageParamsSchema,
   getUserRecoveryPackageResponseSchemas,
 } from "@workspace/shared/schemas/users/recovery-package/get-user-recovery-package";
+import { userRecoveryPackageSchema } from "@workspace/shared/schemas/users/recovery-package/user-recovery-package";
 import { ObjectId } from "mongodb";
 import { createHmac, randomUUID } from "node:crypto";
 
@@ -63,7 +64,7 @@ const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
       const expiresAt = new Date(issuedAt);
       expiresAt.setUTCFullYear(expiresAt.getUTCFullYear() + 1);
 
-      const payload = {
+      const payload = userRecoveryPackageSchema.shape.payload.parse({
         app: "grepedia" as const,
         data: snapshot,
         expiresAt: expiresAt.toISOString(),
@@ -71,7 +72,7 @@ const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
         issuedAt: issuedAt.toISOString(),
         userId,
         version: 1 as const,
-      };
+      });
 
       const signature = createHmac(
         "sha256",
