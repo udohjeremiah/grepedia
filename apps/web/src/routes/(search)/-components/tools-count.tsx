@@ -1,3 +1,5 @@
+import { formatCompactNumber } from "@/utils/format-compact-number";
+
 import { useToolsCount } from "../-queries/tools-count";
 
 export default function ToolsCount() {
@@ -6,8 +8,8 @@ export default function ToolsCount() {
   return (
     <hgroup className="flex flex-col items-center">
       <h3 className="text-xs text-muted-foreground">Tools in Grepedia</h3>
-      <p className="font-medium">
-        {new Intl.NumberFormat().format(toolsCount)}
+      <p className="text-3xl font-semibold">
+        {formatCompactNumber(toolsCount)}
       </p>
     </hgroup>
   );
