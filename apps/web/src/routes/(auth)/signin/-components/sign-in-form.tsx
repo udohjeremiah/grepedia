@@ -64,6 +64,7 @@ export default function SignInForm() {
             const username = (context.data as Session).user.username;
             navigate({
               params: { username },
+              reloadDocument: true,
               to: "/@{$username}",
             });
           },
