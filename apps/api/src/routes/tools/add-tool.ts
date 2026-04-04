@@ -8,6 +8,7 @@ import {
 import { ObjectId } from "mongodb";
 
 import { normalizeToolInput } from "@/utils/normalize-tool-input.js";
+import { normalizeUrlForCompare } from "@/utils/normalize-url-for-compare.js";
 
 const addTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
@@ -18,6 +19,40 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       const tools = fastify.getToolCollection();
       const toolRevisions = fastify.getToolRevisionCollection();
       const users = fastify.getUserCollection();
+
+      const rawUrls = [
+        body.officialUrl,
+        ...(body.externalUrls ?? []).map((item) => item.url),
+      ].filter(Boolean);
+      const normalizedUrls = new Set(
+        rawUrls.map((value) => normalizeUrlForCompare(value)).filter(Boolean),
+      );
+      if (normalizedUrls.size > 0) {
+        const orClauses = [
+          { officialUrl: { $in: rawUrls } },
+          { "externalUrls.url": { $in: rawUrls } },
+        ];
+
+        const candidates = await tools.find({ $or: orClauses }).toArray();
+        const duplicate = candidates.find((candidate) => {
+          const candidateUrls = [
+            candidate.officialUrl,
+            ...(candidate.externalUrls ?? []).map((item) => item.url),
+          ]
+            .map((value) => normalizeUrlForCompare(value))
+            .filter(Boolean);
+
+          return candidateUrls.some((value) => normalizedUrls.has(value));
+        });
+
+        if (duplicate) {
+          return reply.code(409).send({
+            message:
+              "A tool with the same official or external URL already exists",
+            success: false,
+          });
+        }
+      }
 
       const slugify = slugifyWithCounter();
       let slug = slugify(body.name, { decamelize: false });
