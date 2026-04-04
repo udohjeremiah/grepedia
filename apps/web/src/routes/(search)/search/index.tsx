@@ -27,7 +27,7 @@ export const Route = createFileRoute("/(search)/search/")({
     const query = loaderData?.query;
     return {
       meta: [
-        { title: `${query ?? "Search"} — Search Results | Grepedia` },
+        { title: `${query ?? "Search"} • Search Results • Grepedia` },
         {
           content: query
             ? `Search results for "${query}" on Grepedia.`

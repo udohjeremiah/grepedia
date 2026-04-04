@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/tools/@{$slug}")({
   // eslint-disable-next-line perfectionist/sort-objects
   head: ({ params }) => ({
     meta: [
-      { title: `${params.slug} — Tool Details | Grepedia` },
+      { title: `${params.slug} • Tool Details • Grepedia` },
       {
         content: `Explore tool details, proposals, and community debate for ${params.slug} on Grepedia.`,
         name: "description",

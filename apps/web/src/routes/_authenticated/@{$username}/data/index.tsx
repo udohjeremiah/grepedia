@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/data/")({
   // eslint-disable-next-line perfectionist/sort-objects
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} — Data & Privacy | Grepedia` },
+      { title: `@${params.username} • Data & Privacy • Grepedia` },
       {
         content: `Export recovery data and manage account deletion and privacy actions for @${params.username}.`,
         name: "description",

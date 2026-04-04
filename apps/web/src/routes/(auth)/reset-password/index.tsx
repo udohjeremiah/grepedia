@@ -10,7 +10,7 @@ export const Route = createFileRoute("/(auth)/reset-password/")({
   component: RouteComponent,
   head: () => ({
     meta: [
-      { title: "Set New Password — Grepedia" },
+      { title: "Set New Password • Grepedia" },
       {
         content: "Set a new password for your Grepedia account.",
         name: "description",

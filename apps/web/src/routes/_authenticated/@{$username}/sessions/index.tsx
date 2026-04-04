@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/sessions/")({
   component: RouteComponent,
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} — Sessions | Grepedia` },
+      { title: `@${params.username} • Sessions • Grepedia` },
       {
         content: `Review and manage active account sessions for @${params.username}.`,
         name: "description",

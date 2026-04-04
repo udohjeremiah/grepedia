@@ -20,7 +20,7 @@ export const Route = createFileRoute(
   component: RouteComponent,
   head: () => ({
     meta: [
-      { title: "Moderation — Grepedia" },
+      { title: "Moderation • Grepedia" },
       {
         content:
           "Manage role progression, moderation queue, and flagged activity on Grepedia.",

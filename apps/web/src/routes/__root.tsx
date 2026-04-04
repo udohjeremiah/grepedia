@@ -29,7 +29,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { content: "light dark", name: "color-scheme" },
       {
         title:
-          "Grepedia — The Encyclopedia Of Tools Powered By Collective Wisdom",
+          "Grepedia • The Encyclopedia Of Tools Powered By Collective Wisdom",
       },
       {
         content:

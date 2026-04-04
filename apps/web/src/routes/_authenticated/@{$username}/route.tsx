@@ -73,7 +73,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}")({
   // eslint-disable-next-line perfectionist/sort-objects
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} — Grepedia` },
+      { title: `@${params.username} • Grepedia` },
       {
         content: `View @${params.username}'s profile, tools, bookmarks, sessions, and account settings on Grepedia.`,
         name: "description",

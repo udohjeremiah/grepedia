@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/security/")({
   component: RouteComponent,
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} — Security | Grepedia` },
+      { title: `@${params.username} • Security • Grepedia` },
       {
         content: `Manage password, email, and account security settings for @${params.username}.`,
         name: "description",

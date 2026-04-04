@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/tools/directory/")({
   component: RouteComponent,
   head: () => ({
     meta: [
-      { title: "Tools Directory — Grepedia" },
+      { title: "Tools Directory • Grepedia" },
       {
         content:
           "Browse the full Grepedia tools directory and discover tools from around the world.",

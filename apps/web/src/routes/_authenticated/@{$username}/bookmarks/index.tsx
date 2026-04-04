@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/bookmarks/")(
     // eslint-disable-next-line perfectionist/sort-objects
     head: ({ params }) => ({
       meta: [
-        { title: `@${params.username} — Bookmarks | Grepedia` },
+        { title: `@${params.username} • Bookmarks • Grepedia` },
         {
           content: `View bookmarked tools saved by @${params.username} on Grepedia.`,
           name: "description",

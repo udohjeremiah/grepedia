@@ -6,7 +6,7 @@ export const Route = createFileRoute("/terms-of-service/")({
   component: RouteComponent,
   head: () => ({
     meta: [
-      { title: "Terms Of Service — Grepedia" },
+      { title: "Terms Of Service • Grepedia" },
       {
         content:
           "Review Grepedia's Terms of Service for rules, responsibilities, and platform usage guidelines.",

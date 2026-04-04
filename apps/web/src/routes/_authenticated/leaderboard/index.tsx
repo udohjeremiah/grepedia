@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authenticated/leaderboard/")({
   component: RouteComponent,
   head: () => ({
     meta: [
-      { title: "Leaderboard — Grepedia" },
+      { title: "Leaderboard • Grepedia" },
       {
         content: "Explore the Grepedia leaderboard and see top contributors.",
         name: "description",

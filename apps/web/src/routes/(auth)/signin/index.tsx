@@ -6,7 +6,7 @@ export const Route = createFileRoute("/(auth)/signin/")({
   component: RouteComponent,
   head: () => ({
     meta: [
-      { title: "Sign In — Grepedia" },
+      { title: "Sign In • Grepedia" },
       {
         content:
           "Sign in to Grepedia to manage your profile, tools, bookmarks, and account settings.",

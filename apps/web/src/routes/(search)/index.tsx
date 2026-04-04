@@ -17,7 +17,7 @@ export const Route = createFileRoute("/(search)/")({
   component: RouteComponent,
   head: () => ({
     meta: [
-      { title: "Grepedia — Search Tools Worldwide" },
+      { title: "Grepedia • Search Tools Worldwide" },
       {
         content:
           "Search Grepedia to discover tools from around the world, curated and reviewed by the community.",
