@@ -61,6 +61,24 @@ import { useToolUpdate } from "../revisions/-queries/tool-update";
 
 const MAX_LONG_DESCRIPTION = 5000;
 const MAX_SUMMARY = 1000;
+const LONG_DESCRIPTION_TEMPLATE = `Use this space to describe the tool by answering the key questions below. Keep it clear, concise, and helpful — someone should understand the tool in 10–20 seconds.
+
+1. What is it?
+   - Give a short, one or two sentence overview of the tool and its purpose.
+
+2. Who is it for?
+   - Mention the main audience or user persona who benefits most from this tool.
+
+3. What problem does it solve?
+   - Explain the core problem or need this tool addresses.
+
+4. Key features:
+   - List 3–5 of the most important or distinctive features in bullet points.
+
+5. Who is behind it?
+   - Include the organization, company, or creator for credibility.
+
+Delete this template before writing your description.`;
 
 export default function UpdateToolDialog() {
   const { slug } = useParams({ from: "/_authenticated/tools/@{$slug}" });
@@ -81,7 +99,7 @@ export default function UpdateToolDialog() {
         categories: tool.categories,
         externalUrls: tool.externalUrls,
         image: tool.image,
-        longDescription: tool.longDescription,
+        longDescription: tool.longDescription || LONG_DESCRIPTION_TEMPLATE,
         name: tool.name,
         officialUrl: tool.officialUrl,
         releasedAt: tool.releasedAt,
