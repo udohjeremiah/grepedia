@@ -31,6 +31,11 @@ const sortExternalUrls = (values: ExternalUrl[]) => {
   });
 };
 
+/**
+ * Normalizes tool input for consistent storage and comparisons.
+ * Trims and sorts categories and tags, and trims + sorts external URLs by
+ * platform then URL (case-insensitive).
+ */
 export const normalizeToolInput = <T extends ToolInput>(input: T): T => {
   return {
     ...input,
