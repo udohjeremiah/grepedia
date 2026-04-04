@@ -90,7 +90,7 @@ export default function AddToolDialog() {
   const [tagInput, setTagInput] = useState("");
 
   const { mutateAsync: addTool } = useAddTool(userId);
-  const { resetStatus, setError, status } = useSubmission();
+  const { resetStatus, setApiError, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -120,11 +120,7 @@ export default function AddToolDialog() {
           to: "/tools/@{$slug}",
         });
       } catch (error) {
-        setError(
-          "Submission failed",
-          (error as Error).message ??
-            "An error occurred while submitting the tool. Please try again.",
-        );
+        setApiError("Submission failed", error);
       }
     },
     validators: {

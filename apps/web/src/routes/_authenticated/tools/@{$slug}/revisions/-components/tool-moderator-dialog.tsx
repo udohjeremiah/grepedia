@@ -58,7 +58,7 @@ export default function ToolModeratorDialog({
 
   const { isPending: isReviewing, mutate: reviewCase } =
     useToolModeratorReviewCase(slug);
-  const { resetStatus, setError, setSuccess, status } = useSubmission();
+  const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -71,12 +71,7 @@ export default function ToolModeratorDialog({
       resetStatus();
 
       reviewCase(value, {
-        onError: (error) =>
-          setError(
-            "Could not update case",
-            error.message ||
-              "An error occurred while reviewing this case. Please try again.",
-          ),
+        onError: (error) => setApiError("Could not update case", error),
         onSuccess: () => {
           setSuccess(
             "Case updated",

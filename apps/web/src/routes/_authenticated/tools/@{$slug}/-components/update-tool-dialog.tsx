@@ -91,7 +91,7 @@ export default function UpdateToolDialog() {
   const { data: tool } = useTool({ slug });
   const { data: proposals } = useToolProposals({ slug });
   const { mutateAsync: updateTool } = useToolUpdate(slug);
-  const { resetStatus, setError, setSuccess, status } = useSubmission();
+  const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -139,11 +139,7 @@ export default function UpdateToolDialog() {
 
         setSuccess("Update submitted", "Your update is pending review.");
       } catch (error) {
-        setError(
-          "Couldn't update tool",
-          (error as Error).message ??
-            "An error occurred while updating this tool. Please try again.",
-        );
+        setApiError("Couldn't update tool", error);
       }
     },
     validators: {

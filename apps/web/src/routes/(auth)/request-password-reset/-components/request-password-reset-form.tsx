@@ -27,7 +27,7 @@ const formSchema = z.object({
 });
 
 export default function RequestPasswordResetForm() {
-  const { resetStatus, setError, setSuccess, status } = useSubmission();
+  const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -40,11 +40,7 @@ export default function RequestPasswordResetForm() {
         { ...value, redirectTo: `${env.VITE_BASE_URL}/reset-password` },
         {
           onError: (context) => {
-            setError(
-              "Unable to send reset email",
-              context.error.message ||
-                "Something went wrong while sending the reset email. Please try again.",
-            );
+            setApiError("Unable to send reset email", context.error);
           },
           onSuccess: () => {
             form.reset();

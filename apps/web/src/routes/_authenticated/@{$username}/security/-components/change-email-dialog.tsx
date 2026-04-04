@@ -34,7 +34,7 @@ const formSchema = z.object({
 });
 
 export default function ChangeEmailDialog() {
-  const { resetStatus, setError, setSuccess, status } = useSubmission();
+  const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -47,11 +47,7 @@ export default function ChangeEmailDialog() {
         { ...value, callbackURL: `${env.VITE_BASE_URL}/signin` },
         {
           onError: (context) => {
-            setError(
-              "Couldn't update email",
-              context.error.message ||
-                "An error occurred while sending the email change link. Please try again.",
-            );
+            setApiError("Couldn't update email", context.error);
           },
           onSuccess: () => {
             form.reset();

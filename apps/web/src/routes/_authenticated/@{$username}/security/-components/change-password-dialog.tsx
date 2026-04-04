@@ -65,7 +65,7 @@ export default function ChangePasswordDialog() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { resetStatus, setError, setSuccess, status } = useSubmission();
+  const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -81,11 +81,7 @@ export default function ChangePasswordDialog() {
         { ...omitKeys(value, ["confirmPassword"]) },
         {
           onError: (context) => {
-            setError(
-              "Couldn't update password",
-              context.error.message ||
-                "An error occurred while updating your password. Please try again.",
-            );
+            setApiError("Couldn't update password", context.error);
           },
           onSuccess: () => {
             form.reset();

@@ -43,7 +43,7 @@ const formSchema = z.object({
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { resetStatus, setError, setSuccess, status } = useSubmission();
+  const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -58,11 +58,7 @@ export default function SignUpForm() {
         { ...value, callbackURL: `${env.VITE_BASE_URL}/signin` },
         {
           onError: (context) => {
-            setError(
-              "Unable to create your account",
-              context.error.message ||
-                "Please check your details and try again.",
-            );
+            setApiError("Unable to create your account", context.error);
           },
           onSuccess: () => {
             form.reset();

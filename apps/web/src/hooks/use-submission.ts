@@ -2,6 +2,8 @@ import { useCallback, useState } from "react";
 
 import type { SubmissionStatus } from "@/components/submission-alert";
 
+import { getErrorMessage } from "@/utils/get-error-message";
+
 export function useSubmission() {
   const [status, setStatus] = useState<SubmissionStatus | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,6 +19,13 @@ export function useSubmission() {
     setStatus({ description, status: "error", title });
   }, []);
 
+  const setApiError = useCallback(
+    (title: string, error: unknown, fallback?: string) => {
+      setError(title, getErrorMessage(error, fallback));
+    },
+    [setError],
+  );
+
   const setSuccess = useCallback((title: string, description: string) => {
     setStatus({ description, status: "success", title });
   }, []);
@@ -28,6 +37,7 @@ export function useSubmission() {
   return {
     isSubmitting,
     resetStatus,
+    setApiError,
     setError,
     setInfo,
     setSubmitting,

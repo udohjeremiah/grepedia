@@ -19,6 +19,7 @@ import { UserRoundXIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Session } from "@/lib/auth-client";
+import { getErrorMessage } from "@/utils/get-error-message";
 import { globalBanner } from "@/utils/global-banner";
 
 import { useModeratorGetUser } from "../-queries/moderator-get-user";
@@ -61,9 +62,7 @@ export default function Moderation() {
     } catch (error) {
       globalBanner.emit({
         banner: {
-          description:
-            (error as Error).message ??
-            "Unable to fetch the user. Please try again.",
+          description: getErrorMessage(error),
           title: "User lookup failed",
           variant: "warning",
         },
@@ -83,8 +82,7 @@ export default function Moderation() {
         onError: (error) => {
           globalBanner.emit({
             banner: {
-              description:
-                error.message ?? "Unable to update the user. Please try again.",
+              description: getErrorMessage(error),
               title: "Couldn't update user",
               variant: "warning",
             },

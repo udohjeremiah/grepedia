@@ -42,7 +42,7 @@ export default function SignInForm() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const { resetStatus, setError, status } = useSubmission();
+  const { resetStatus, setApiError, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -57,11 +57,7 @@ export default function SignInForm() {
         { ...value },
         {
           onError: (context) => {
-            setError(
-              "Unable to sign in",
-              context.error.message ||
-                "Please check your details and try again.",
-            );
+            setApiError("Unable to sign in", context.error);
           },
           onSuccess: (context) => {
             form.reset();

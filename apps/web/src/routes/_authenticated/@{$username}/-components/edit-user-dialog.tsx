@@ -74,7 +74,7 @@ export default function EditUserDialog() {
 
   const { user } = auth.useSession();
   const { mutateAsync: updateUser } = auth.useUpdateUser();
-  const { resetStatus, setError, setSuccess, status } = useSubmission();
+  const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
     defaultValues: {
@@ -101,11 +101,7 @@ export default function EditUserDialog() {
           to: "/@{$username}",
         });
       } catch (error) {
-        setError(
-          "Couldn't update account",
-          (error as Error).message ??
-            "An error occurred while updating your account. Please try again.",
-        );
+        setApiError("Couldn't update account", error);
       }
     },
     validators: {

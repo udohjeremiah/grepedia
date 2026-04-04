@@ -29,7 +29,8 @@ export default function RecoverAccountDialog() {
   const [payload, setPayload] = useState("");
 
   const { isPending, mutate: recoverAccount } = useUserRecoverAccount(userId);
-  const { resetStatus, setError, setSuccess, status } = useSubmission();
+  const { resetStatus, setApiError, setError, setSuccess, status } =
+    useSubmission();
 
   const handleRecover = () => {
     resetStatus();
@@ -73,11 +74,7 @@ export default function RecoverAccountDialog() {
       },
       {
         onError: (error) => {
-          setError(
-            "Couldn't recover account",
-            error.message ||
-              "An error occurred while recovering your account. Please try again.",
-          );
+          setApiError("Couldn't recover account", error);
         },
         onSuccess: () => {
           setPayload("");

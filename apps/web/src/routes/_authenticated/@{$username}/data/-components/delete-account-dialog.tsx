@@ -31,6 +31,7 @@ export default function DeleteAccountDialog() {
   const {
     isSubmitting,
     resetStatus,
+    setApiError,
     setError,
     setSubmitting,
     setSuccess,
@@ -74,11 +75,7 @@ export default function DeleteAccountDialog() {
       fetchOptions: {
         onError: (context) => {
           setSubmitting(false);
-          setError(
-            "Couldn't delete account",
-            context.error.message ||
-              "An error occurred while deleting your account. Please try again.",
-          );
+          setApiError("Couldn't delete account", context.error);
         },
         onSuccess: () => {
           setDeleteConfirmText("");

@@ -5,6 +5,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
+import { getErrorMessage } from "@/utils/get-error-message";
 import { globalBanner } from "@/utils/global-banner";
 
 import { useToolRevertRevision } from "../-queries/tool-revert-revision";
@@ -32,9 +33,7 @@ export default function ToolRevision(revision: ToolRevisionProps) {
         onError: (error) => {
           globalBanner.emit({
             banner: {
-              description:
-                error.message ||
-                "An error occurred while reverting this revision. Please try again.",
+              description: getErrorMessage(error),
               title: "Couldn't revert revision",
               variant: "destructive",
             },
