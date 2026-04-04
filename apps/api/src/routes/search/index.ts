@@ -372,7 +372,7 @@ function getNextSearchCursor({
 const search: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    handler: async (request, reply) => {
+    handler: async function (request, reply) {
       const isProduction = fastify.env.NODE_ENV === "production";
 
       const { cursor, limit = 20, query, tab } = request.query;

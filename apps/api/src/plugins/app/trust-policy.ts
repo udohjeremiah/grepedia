@@ -1,3 +1,4 @@
+import type { User } from "@workspace/shared/schemas/users/user.js";
 import type { FastifyInstance } from "fastify";
 
 import fp from "fastify-plugin";
@@ -7,11 +8,11 @@ type UserTrustEvaluation = {
   lastEvaluatedAt: Date;
   reasons: string[];
   recommendations: {
-    role: "contributor" | "member" | "moderator";
-    status: "active" | "deactivated" | "flagged" | "suspended";
+    role: User["role"];
+    status: User["status"];
   };
   riskLevel: "high" | "low" | "medium";
-  roleAtEvaluation: "contributor" | "member" | "moderator";
+  roleAtEvaluation: User["role"];
   scores: {
     botRisk: number;
     trust: number;
@@ -133,8 +134,7 @@ export async function evaluateUserTrust(
     recentActions1h,
   });
 
-  // eslint-disable-next-line sonarjs/use-type-alias
-  let recommendedRole: "contributor" | "member" | "moderator" = "member";
+  let recommendedRole: User["role"] = "member";
 
   if (botRiskScore < 20 && trustScore >= 80) {
     recommendedRole = "moderator";
@@ -142,12 +142,8 @@ export async function evaluateUserTrust(
     recommendedRole = "contributor";
   }
 
-  const roleAtEvaluation = user.role as "contributor" | "member" | "moderator";
-  const statusAtEvaluation = user.status as  // eslint-disable-next-line sonarjs/use-type-alias
-    | "active"
-    | "deactivated"
-    | "flagged"
-    | "suspended";
+  const roleAtEvaluation = user.role;
+  const statusAtEvaluation = user.status;
 
   const isAdmin = fastify.isAdminUserId(user._id.toHexString());
 
@@ -266,8 +262,8 @@ async function escalateStatusIfNeeded({
 }: {
   isAdmin: boolean;
   now: Date;
-  recommendedStatus: "active" | "deactivated" | "flagged" | "suspended";
-  statusAtEvaluation: "active" | "deactivated" | "flagged" | "suspended";
+  recommendedStatus: User["status"];
+  statusAtEvaluation: User["status"];
   userId: ObjectId;
   users: ReturnType<FastifyInstance["getUserCollection"]>;
 }): Promise<void> {
@@ -291,7 +287,7 @@ function getRecommendedStatus({
 }: {
   botRiskScore: number;
   trustScore: number;
-}): "active" | "deactivated" | "flagged" | "suspended" {
+}): User["status"] {
   if (botRiskScore >= autoStatusFlaggingPolicy.deactivated.botRiskScore) {
     return "deactivated";
   }
@@ -356,9 +352,9 @@ async function promoteRoleIfEligible({
 }: {
   isAdmin: boolean;
   now: Date;
-  recommendedRole: "contributor" | "member" | "moderator";
-  roleAtEvaluation: "contributor" | "member" | "moderator";
-  statusAtEvaluation: "active" | "deactivated" | "flagged" | "suspended";
+  recommendedRole: User["role"];
+  roleAtEvaluation: User["role"];
+  statusAtEvaluation: User["status"];
   userId: ObjectId;
   users: ReturnType<FastifyInstance["getUserCollection"]>;
 }): Promise<void> {
