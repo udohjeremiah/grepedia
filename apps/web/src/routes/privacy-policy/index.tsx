@@ -18,7 +18,7 @@ export const Route = createFileRoute("/privacy-policy/")({
 
 function RouteComponent() {
   return (
-    <main className="mx-auto prose p-4 sm:p-8 dark:prose-invert">
+    <main className="mx-auto prose p-4 prose-zinc sm:p-8 dark:prose-invert">
       <h1>Privacy Policy for Grepedia</h1>
       <p>
         <em>Last Updated: April 4, 2026</em>

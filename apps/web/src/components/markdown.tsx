@@ -94,7 +94,7 @@ export function MarkdownEditor({
     <MDEditor
       {...props}
       className={cn(
-        "overflow-hidden! rounded-lg! font-sans! [&_:is(ol,ul,menu)]:[list-style:revert]",
+        "prose max-w-none overflow-hidden! rounded-lg! prose-zinc dark:prose-invert",
         className,
       )}
       onBlur={onBlur}
@@ -155,7 +155,7 @@ export function MarkdownPreview({ className, ...props }: MarkdownPreviewProps) {
     <MDEditor.Markdown
       {...props}
       className={cn(
-        "bg-inherit! font-sans! text-sm! [&_:is(ol,ul,menu)]:[list-style:revert]",
+        "prose prose-sm! max-w-none bg-inherit! font-sans! prose-zinc dark:prose-invert",
         className,
       )}
       components={mergedComponents}
