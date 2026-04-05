@@ -1,0 +1,26 @@
+name: Keep API Alive
+
+on:
+  schedule:
+    - cron: "*/14 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: none
+
+jobs:
+  ping:
+    name: Ping API
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping API health endpoint
+        run: |
+          response=$(curl --silent --write-out "HTTPSTATUS:%{http_code}" --max-time 90 "${{ secrets.API_BASE_URL }}/health")
+          status=$(echo "$response" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+          echo "HTTP Status: $status"
+          if [ "$status" -ne 200 ]; then
+            echo "API returned non-200 status: $status"
+            exit 1
+          fi
+          echo "API is alive!"
