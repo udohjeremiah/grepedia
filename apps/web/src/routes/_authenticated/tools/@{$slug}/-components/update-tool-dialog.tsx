@@ -437,9 +437,10 @@ export default function UpdateToolDialog() {
                     {(field.state.value ?? []).length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {(field.state.value ?? []).map((item, index) => (
-                          <Badge key={index}>
-                            {item.platform}
+                          <Badge className="max-w-full" key={index}>
+                            <span className="truncate">{item.platform}</span>
                             <button
+                              className="shrink-0"
                               onClick={() => {
                                 field.removeValue(index);
                                 field.handleBlur();
@@ -508,9 +509,10 @@ export default function UpdateToolDialog() {
                     {field.state.value.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {field.state.value.map((category, index) => (
-                          <Badge key={index}>
-                            {category}
+                          <Badge className="max-w-full" key={index}>
+                            <span className="truncate">{category}</span>
                             <button
+                              className="shrink-0"
                               onClick={() => {
                                 field.removeValue(index);
                                 field.handleBlur();
@@ -583,9 +585,10 @@ export default function UpdateToolDialog() {
                     {field.state.value.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {field.state.value.map((tag, index) => (
-                          <Badge key={index}>
-                            {tag}
+                          <Badge className="max-w-full" key={index}>
+                            <span className="truncate">{tag}</span>
                             <button
+                              className="shrink-0"
                               onClick={() => {
                                 field.removeValue(index);
                                 field.handleBlur();
