@@ -438,7 +438,15 @@ export default function UpdateToolDialog() {
                       <div className="flex flex-wrap gap-2">
                         {(field.state.value ?? []).map((item, index) => (
                           <Badge className="max-w-full" key={index}>
-                            <span className="truncate">{item.platform}</span>
+                            <button
+                              className="truncate"
+                              onClick={() => {
+                                setExternalUrlInput(item.url);
+                                field.removeValue(index);
+                              }}
+                            >
+                              {item.platform}
+                            </button>
                             <button
                               className="shrink-0"
                               onClick={() => {
@@ -510,7 +518,15 @@ export default function UpdateToolDialog() {
                       <div className="flex flex-wrap gap-2">
                         {field.state.value.map((category, index) => (
                           <Badge className="max-w-full" key={index}>
-                            <span className="truncate">{category}</span>
+                            <span
+                              className="truncate"
+                              onClick={() => {
+                                setCategoryInput(category);
+                                field.removeValue(index);
+                              }}
+                            >
+                              {category}
+                            </span>
                             <button
                               className="shrink-0"
                               onClick={() => {
@@ -586,7 +602,15 @@ export default function UpdateToolDialog() {
                       <div className="flex flex-wrap gap-2">
                         {field.state.value.map((tag, index) => (
                           <Badge className="max-w-full" key={index}>
-                            <span className="truncate">{tag}</span>
+                            <button
+                              className="truncate"
+                              onClick={() => {
+                                setTagInput(tag);
+                                field.removeValue(index);
+                              }}
+                            >
+                              {tag}
+                            </button>
                             <button
                               className="shrink-0"
                               onClick={() => {
