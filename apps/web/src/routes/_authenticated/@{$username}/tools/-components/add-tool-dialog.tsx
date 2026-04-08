@@ -305,6 +305,11 @@ export default function AddToolDialog() {
                   const parsedUrl = parseExternalUrl(externalUrlInput);
                   if (!parsedUrl) return;
 
+                  const isDuplicate = field.state.value?.some(
+                    (item) => item.url === parsedUrl.url,
+                  );
+                  if (isDuplicate) return;
+
                   field.pushValue(parsedUrl);
                   field.handleBlur();
                   setExternalUrlInput("");
@@ -393,6 +398,7 @@ export default function AddToolDialog() {
                     .trim()
                     .replaceAll(/\s+/g, " ");
                   if (!normalizedValue) return;
+                  if (field.state.value.includes(normalizedValue)) return;
 
                   field.pushValue(normalizedValue);
                   field.handleBlur();
@@ -476,6 +482,7 @@ export default function AddToolDialog() {
                     .trim()
                     .replaceAll(/\s+/g, " ");
                   if (!normalizedValue) return;
+                  if (field.state.value.includes(normalizedValue)) return;
 
                   field.pushValue(normalizedValue.toLowerCase());
                   field.handleBlur();
