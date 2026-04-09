@@ -44,7 +44,8 @@ type CursorPayload =
   | { comments: number; id: string; type: "comments" }
   | { date: string; id: string; type: "date" }
   | { id: string; score: number; type: "score" }
-  | { id: string; type: "id" };
+  | { id: string; type: "id" }
+  | { id: string; type: "vectorScore"; vectorScore: number };
 
 type GetNextSearchCursorParams = {
   last:
@@ -55,6 +56,7 @@ type GetNextSearchCursorParams = {
         releasedAt?: Date;
         score?: number;
         stats: { downvotes: number; upvotes: number };
+        vectorScore?: number;
       };
   limit: number;
   tab: SearchTab;
@@ -65,13 +67,15 @@ type NextCursor =
   | { comments: number; id: string; type: "comments" }
   | { date: string; id: string; type: "date" }
   | { id: string; score: number; type: "score" }
-  | { id: string; type: "id" };
+  | { id: string; type: "id" }
+  | { id: string; type: "vectorScore"; vectorScore: number };
 
 type SearchCursorMatches = {
   commentsCursorMatch?: Record<string, unknown>;
   dateCursorMatch?: Record<string, unknown>;
   idCursorMatch?: Record<string, unknown>;
   scoreCursorMatch?: Record<string, unknown>;
+  vectorScoreCursorMatch?: Record<string, unknown>;
 };
 
 type SearchTab = SearchQueryString["tab"];
@@ -88,6 +92,11 @@ const searchCursorPayloadSchema = z.discriminatedUnion("type", [
     type: z.literal("comments"),
   }),
   z.object({ id: objectIdSchema, score: z.number(), type: z.literal("score") }),
+  z.object({
+    id: objectIdSchema,
+    type: z.literal("vectorScore"),
+    vectorScore: z.number(),
+  }),
   z.object({ id: objectIdSchema, type: z.literal("id") }),
 ]);
 
@@ -112,6 +121,20 @@ function buildCursorMatches(
           {
             _id: { $lt: ObjectId.createFromHexString(decodedCursor.id) },
             score: decodedCursor.score,
+          },
+        ],
+      },
+    };
+  }
+
+  if (decodedCursor.type === "vectorScore") {
+    return {
+      vectorScoreCursorMatch: {
+        $or: [
+          { vectorScore: { $lt: decodedCursor.vectorScore } },
+          {
+            _id: { $lt: ObjectId.createFromHexString(decodedCursor.id) },
+            vectorScore: decodedCursor.vectorScore,
           },
         ],
       },
@@ -236,8 +259,12 @@ function buildVectorSearchPipeline({
   trendingWindowStart,
   vectorIndex,
 }: BuildVectorSearchPipelineParams): Document[] {
-  const { commentsCursorMatch, dateCursorMatch, scoreCursorMatch } =
-    cursorMatches;
+  const {
+    commentsCursorMatch,
+    dateCursorMatch,
+    scoreCursorMatch,
+    vectorScoreCursorMatch,
+  } = cursorMatches;
 
   const candidateLimit = Math.max(limit * 10, 200);
   const vectorFilter = { status: "published" };
@@ -258,7 +285,9 @@ function buildVectorSearchPipeline({
       vectorStage,
       { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
       { $match: { vectorScore: { $gte: minVectorScore } } },
-      ...(scoreCursorMatch ? [{ $match: scoreCursorMatch }] : []),
+      ...(vectorScoreCursorMatch ? [{ $match: vectorScoreCursorMatch }] : []),
+      // eslint-disable-next-line perfectionist/sort-objects
+      { $sort: { vectorScore: -1, _id: -1 } },
       { $limit: limit },
     ],
     new: [
@@ -266,7 +295,8 @@ function buildVectorSearchPipeline({
       { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
       { $match: { vectorScore: { $gte: minVectorScore } } },
       ...(dateCursorMatch ? [{ $match: dateCursorMatch }] : []),
-      { $sort: { _id: -1, releasedAt: -1 } },
+      // eslint-disable-next-line perfectionist/sort-objects
+      { $sort: { releasedAt: -1, _id: -1 } },
       { $limit: limit },
     ],
     popular: [
@@ -279,7 +309,8 @@ function buildVectorSearchPipeline({
         },
       },
       ...(scoreCursorMatch ? [{ $match: scoreCursorMatch }] : []),
-      { $sort: { _id: -1, score: -1 } },
+      // eslint-disable-next-line perfectionist/sort-objects
+      { $sort: { score: -1, _id: -1 } },
       { $limit: limit },
     ],
     trending: [
@@ -315,7 +346,8 @@ function buildVectorSearchPipeline({
       },
       { $match: { recentComments: { $gt: 0 } } },
       ...(commentsCursorMatch ? [{ $match: commentsCursorMatch }] : []),
-      { $sort: { _id: -1, recentComments: -1 } },
+      // eslint-disable-next-line perfectionist/sort-objects
+      { $sort: { recentComments: -1, _id: -1 } },
       { $limit: limit },
     ],
   } as const;
@@ -344,6 +376,14 @@ function getNextSearchCursor({
       id: last._id.toString(),
       score: last.score,
       type: "score",
+    };
+  }
+
+  if (tab === "all" && typeof last.vectorScore === "number") {
+    return {
+      id: last._id.toString(),
+      type: "vectorScore",
+      vectorScore: last.vectorScore,
     };
   }
 
@@ -398,7 +438,9 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       const cursorMatches = buildCursorMatches(decodedCursor);
-      let result: Array<ToolWithObjectIds & { score?: number }> = [];
+      let result: Array<
+        ToolWithObjectIds & { score?: number; vectorScore?: number }
+      > = [];
       const queryVector = await fastify.generateEmbeddings([query]);
       const scoreCursor =
         decodedCursor && decodedCursor.type === "score"
@@ -419,7 +461,9 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         });
 
         result = await tools
-          .aggregate<ToolWithObjectIds & { score?: number }>(vectorPipeline)
+          .aggregate<
+            ToolWithObjectIds & { score?: number; vectorScore?: number }
+          >(vectorPipeline)
           .toArray();
       } else {
         const candidates = await tools
