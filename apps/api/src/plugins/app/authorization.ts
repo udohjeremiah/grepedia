@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 
+import { fromNodeHeaders } from "better-auth/node";
 import fp from "fastify-plugin";
 
 import type { AuthUser } from "@/plugins/app/auth.js";
@@ -67,7 +68,7 @@ export default fp(
       reply: FastifyReply,
     ) => {
       const session = await fastify.auth.api.getSession({
-        headers: request.headers,
+        headers: fromNodeHeaders(request.headers),
       });
 
       if (!session?.user) {

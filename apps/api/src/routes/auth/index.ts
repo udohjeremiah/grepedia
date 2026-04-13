@@ -1,5 +1,7 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
+import { fromNodeHeaders } from "better-auth/node";
+
 const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
   fastify.route({
     handler: async function (request, reply) {
@@ -8,10 +10,7 @@ const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
         const url = new URL(request.url, `http://${request.headers.host}`);
 
         // Convert Fastify headers to standard Headers object
-        const headers = new Headers();
-        for (const [key, value] of Object.entries(request.headers)) {
-          if (value) headers.append(key, value.toString());
-        }
+        const headers = fromNodeHeaders(request.headers);
 
         // Create Fetch API-compatible request
         const compatibleRequest = new Request(url.toString(), {
