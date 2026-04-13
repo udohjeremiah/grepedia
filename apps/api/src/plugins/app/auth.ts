@@ -138,12 +138,16 @@ function createAuth(fastify: FastifyInstance) {
       }),
     },
     plugins: [username()],
-    session: {
-      cookieCache: {
-        enabled: true,
-        maxAge: 5 * 60,
-      },
-    },
+    // `cookieCache` stores serialized session/user payloads in cookies.
+    // Our user image is currently a large SVG data URI, which can push
+    // auth response headers beyond proxy/browser limits in production.
+    // Keep session state server-side to avoid oversized `Set-Cookie` headers.
+    // session: {
+    //   cookieCache: {
+    //     enabled: true,
+    //     maxAge: 5 * 60,
+    //   },
+    // },
     trustedOrigins: [fastify.env.CLIENT_BASE_URL],
     user: {
       additionalFields: {
