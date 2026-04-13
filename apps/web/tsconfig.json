@@ -1,7 +1,6 @@
 {
   "extends": "@workspace/typescript-config/tanstack-start.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@workspace/shared/*": ["../../packages/shared/dist/*"],

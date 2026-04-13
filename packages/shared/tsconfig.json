@@ -1,7 +1,6 @@
 {
   "extends": "@workspace/typescript-config/node-library.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "outDir": "dist",
     "paths": {
       "@/*": ["./src/*"]
