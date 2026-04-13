@@ -1,3 +1,5 @@
+import type { BetterAuthClientPlugin } from "better-auth/client";
+
 import {
   inferAdditionalFields,
   usernameClient,
@@ -32,7 +34,7 @@ export const authClient = createAuthClient({
         username: { input: false, type: "string" },
       },
     }),
-  ],
+  ] satisfies BetterAuthClientPlugin[],
 });
 
 export type Session = typeof authClient.$Infer.Session;

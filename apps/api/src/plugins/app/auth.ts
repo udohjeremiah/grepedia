@@ -1,3 +1,4 @@
+import type { BetterAuthPlugin } from "better-auth";
 import type { FastifyInstance } from "fastify";
 
 import { buildEmail } from "@workspace/transactional/build-email";
@@ -21,12 +22,6 @@ declare module "fastify" {
     auth: AuthInstance;
   }
 }
-
-// NOTE: Intentional type-only export to keep `createAuth`'s return type
-// portable and prevent pnpm-internal type paths from surfacing in compiler
-// diagnostics.
-/** @internal */
-export type { Auth as _ } from "better-auth";
 
 function createAuth(fastify: FastifyInstance) {
   const auth = betterAuth({
@@ -127,7 +122,7 @@ function createAuth(fastify: FastifyInstance) {
         return { context };
       }),
     },
-    plugins: [username()],
+    plugins: [username()] satisfies BetterAuthPlugin[],
     session: {
       cookieCache: {
         enabled: true,
