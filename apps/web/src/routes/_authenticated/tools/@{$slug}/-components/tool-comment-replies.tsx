@@ -21,6 +21,7 @@ import { MarkdownPreview } from "@/components/markdown";
 import { useDialogState } from "@/hooks/use-dialog-state";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 import { getInitials } from "@/utils/get-initials";
+import { getUserAvatar } from "@/utils/get-user-avatar";
 
 import { useToolCommentReplies } from "../-queries/tool-comment-replies";
 import { useToolComments } from "../-queries/tool-comments";
@@ -90,7 +91,10 @@ export default function ToolCommentReplies({
         <div className="flex flex-col overflow-hidden border">
           <div className="flex gap-3 bg-muted/30 px-4 py-3">
             <Avatar>
-              <AvatarImage alt={comment.user.name} src={comment.user.image} />
+              <AvatarImage
+                alt={comment.user.name}
+                src={getUserAvatar(comment.user.username)}
+              />
               <AvatarFallback>{getInitials(comment.user.name)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 space-y-1">

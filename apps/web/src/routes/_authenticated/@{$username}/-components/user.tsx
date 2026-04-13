@@ -31,6 +31,7 @@ import { statusConfig, statusVariants } from "@/constants/status";
 import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { getInitials } from "@/utils/get-initials";
+import { getUserAvatar } from "@/utils/get-user-avatar";
 
 import EditUserDialog from "./edit-user-dialog";
 import SignOutDialog from "./sign-out-dialog";
@@ -72,7 +73,10 @@ export default function User() {
       <div className="flex flex-col gap-6 rounded-lg border p-6">
         <div className="flex gap-4">
           <Avatar className="size-16">
-            <AvatarImage alt={user.username} src={user.image ?? undefined} />
+            <AvatarImage
+              alt={user.username}
+              src={getUserAvatar(user.username)}
+            />
             <AvatarFallback className="text-xl">
               {getInitials(user.name)}
             </AvatarFallback>

@@ -1,18 +1,11 @@
-import type { DataArray } from "@xenova/transformers";
-
 import fp from "fastify-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
-    embedder?: {
-      (
-        input: string | string[],
-        options: {
-          normalize: boolean;
-          pooling: "mean";
-        },
-      ): Promise<{ data: DataArray }>;
-    };
+    embedder?: (
+      input: string | string[],
+      options: { normalize: boolean; pooling: "mean" },
+    ) => Promise<{ data: ArrayLike<number> }>;
     generateEmbeddings(contents: string[]): Promise<number[]>;
   }
 }
@@ -38,10 +31,10 @@ export default fp(
         loading = (async () => {
           try {
             const { pipeline } = await import("@xenova/transformers");
-            fastify.embedder = await pipeline(
+            fastify.embedder = (await pipeline(
               "feature-extraction",
               "Xenova/all-MiniLM-L6-v2",
-            );
+            )) as unknown as typeof fastify.embedder;
           } catch (error) {
             fastify.log.error({ error }, "Failed to load embedding pipeline");
           }
@@ -71,7 +64,7 @@ export default fp(
           pooling: "mean",
         });
 
-        return [...output.data];
+        return [...(output.data as Float32Array)];
       }
 
       const result = await fastify.gemini.models.embedContent({

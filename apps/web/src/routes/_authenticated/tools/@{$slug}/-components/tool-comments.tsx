@@ -18,6 +18,7 @@ import { MarkdownEditor } from "@/components/markdown";
 import { auth } from "@/hooks/auth";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 import { getInitials } from "@/utils/get-initials";
+import { getUserAvatar } from "@/utils/get-user-avatar";
 import { globalBanner } from "@/utils/global-banner";
 
 import { useTool } from "../-queries/tool";
@@ -148,7 +149,7 @@ export default function ToolComments() {
       <div className="flex gap-3 px-6 py-4">
         {user ? (
           <Avatar>
-            <AvatarImage alt={user.name} src={user.image ?? undefined} />
+            <AvatarImage alt={user.name} src={getUserAvatar(user.username)} />
             <AvatarFallback className="bg-primary/10 font-semibold text-primary">
               {getInitials(user.name ?? "")}
             </AvatarFallback>

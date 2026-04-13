@@ -27,6 +27,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { countryOptions } from "@/constants/country-options";
 import { getInitials } from "@/utils/get-initials";
+import { getUserAvatar } from "@/utils/get-user-avatar";
 
 import { useUsersLeaderboard } from "../-queries/users-leaderboard";
 
@@ -251,7 +252,10 @@ export default function Leaderboard() {
           >
             <RankBadge rank={user.rank} />
             <Avatar size={index < 3 ? "lg" : "default"}>
-              <AvatarImage alt={user.username} src={user.image} />
+              <AvatarImage
+                alt={user.username}
+                src={getUserAvatar(user.username)}
+              />
               <AvatarFallback className="text-foreground">
                 {getInitials(user.name)}
               </AvatarFallback>

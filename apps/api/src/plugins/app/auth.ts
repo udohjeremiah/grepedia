@@ -1,7 +1,5 @@
 import type { FastifyInstance } from "fastify";
 
-import { adventurer } from "@dicebear/collection";
-import { createAvatar } from "@dicebear/core";
 import { buildEmail } from "@workspace/transactional/build-email";
 import ChangeEmailConfirmationEmail from "@workspace/transactional/emails/change-email-confirmation-email";
 import DeleteAccountVerificationEmail from "@workspace/transactional/emails/delete-account-verification-email";
@@ -114,20 +112,12 @@ function createAuth(fastify: FastifyInstance) {
             });
           }
 
-          const avatar = createAvatar(adventurer, {
-            backgroundColor: ["7fb3ff", "6a8dff", "5a6cff"],
-            backgroundType: ["gradientLinear"],
-            randomizeIds: true,
-            seed: username,
-          }).toDataUri();
-
           return {
             context: {
               ...context,
               body: {
                 ...context.body,
                 displayUsername: username,
-                image: avatar,
                 username: username,
               },
             },
@@ -138,16 +128,12 @@ function createAuth(fastify: FastifyInstance) {
       }),
     },
     plugins: [username()],
-    // `cookieCache` stores serialized session/user payloads in cookies.
-    // Our user image is currently a large SVG data URI, which can push
-    // auth response headers beyond proxy/browser limits in production.
-    // Keep session state server-side to avoid oversized `Set-Cookie` headers.
-    // session: {
-    //   cookieCache: {
-    //     enabled: true,
-    //     maxAge: 5 * 60,
-    //   },
-    // },
+    session: {
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60,
+      },
+    },
     trustedOrigins: [fastify.env.CLIENT_BASE_URL],
     user: {
       additionalFields: {

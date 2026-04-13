@@ -9,6 +9,7 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 
 import { auth } from "@/hooks/auth";
 import { getInitials } from "@/utils/get-initials";
+import { getUserAvatar } from "@/utils/get-user-avatar";
 
 export default function UserProfile() {
   const { isPending, user } = auth.useSession();
@@ -28,7 +29,7 @@ export default function UserProfile() {
   return (
     <Link params={{ username: user.username }} to="/@{$username}">
       <Avatar>
-        <AvatarImage alt={user.username} src={user.image ?? undefined} />
+        <AvatarImage alt={user.username} src={getUserAvatar(user.username)} />
         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>
     </Link>

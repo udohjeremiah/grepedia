@@ -1,12 +1,15 @@
 import { z } from "zod";
 
-const svgSchema = z
+export const imageSchema = z
   .string()
   .trim()
   .refine(
     (value) =>
-      value.startsWith("<svg") || value.startsWith("data:image/svg+xml"),
-    { error: "Image must be a URL or an SVG string" },
+      value.startsWith("<svg") ||
+      value.startsWith("data:image/svg+xml") ||
+      z.url().safeParse(value).success,
+    {
+      error:
+        "Image must be a valid URL, SVG markup (<svg...>), or an SVG data URI.",
+    },
   );
-
-export const imageSchema = z.union([z.url(), svgSchema]);

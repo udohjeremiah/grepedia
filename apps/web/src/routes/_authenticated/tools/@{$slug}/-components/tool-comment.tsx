@@ -27,6 +27,7 @@ import { MarkdownEditor, MarkdownPreview } from "@/components/markdown";
 import { env } from "@/env";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 import { getInitials } from "@/utils/get-initials";
+import { getUserAvatar } from "@/utils/get-user-avatar";
 
 import { useToolComments } from "../-queries/tool-comments";
 import { useToolSetCommentReaction } from "../-queries/tool-set-comment-reaction";
@@ -79,7 +80,10 @@ export default function ToolComment(comment: ToolCommentProps) {
   return (
     <div className="flex gap-3">
       <Avatar>
-        <AvatarImage alt={comment.user.name} src={comment.user.image} />
+        <AvatarImage
+          alt={comment.user.name}
+          src={getUserAvatar(comment.user.username)}
+        />
         <AvatarFallback>{getInitials(comment.user.name)}</AvatarFallback>
       </Avatar>
       <div className="flex flex-1 flex-col gap-1.5">

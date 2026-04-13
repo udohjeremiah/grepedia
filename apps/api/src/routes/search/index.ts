@@ -7,7 +7,6 @@ import {
   searchQueryStringSchema,
   searchResponseSchemas,
 } from "@workspace/shared/schemas/search/search";
-import cosineSimilarity from "compute-cosine-similarity";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 
@@ -466,6 +465,9 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
           >(vectorPipeline)
           .toArray();
       } else {
+        const { default: cosineSimilarity } =
+          await import("compute-cosine-similarity");
+
         const candidates = await tools
           .find({ embeddings: { $exists: true }, status: "published" })
           .project<ToolWithObjectIds>({
