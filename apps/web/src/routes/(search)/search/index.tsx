@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import ErrorFallback from "@/components/error-fallback";
+import Footer from "@/components/footer";
 
 import Header from "./-components/header";
 import Tools from "./-components/tools";
@@ -63,6 +64,7 @@ function RouteComponent() {
           )}
         </QueryErrorResetBoundary>
       </Suspense>
+      <Footer />
     </>
   );
 }
