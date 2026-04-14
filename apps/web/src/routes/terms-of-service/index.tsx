@@ -19,7 +19,7 @@ export const Route = createFileRoute("/terms-of-service/")({
 function RouteComponent() {
   return (
     <main className="mx-auto prose p-4 prose-zinc sm:p-8 dark:prose-invert">
-      <h1>Terms of Service for Grepedia</h1>
+      <h1 className="text-3xl">Terms of Service for Grepedia</h1>
       <p>
         <em>Last Updated: April 4, 2026</em>
       </p>
