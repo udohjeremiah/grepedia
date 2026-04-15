@@ -9,7 +9,7 @@ export default function GitHubLink() {
         rel="noreferrer"
         target="_blank"
       >
-        <SiGithub />
+        <SiGithub className="size-5" />
         <span className="sr-only">Visit Github repo</span>
       </a>
     </Button>
