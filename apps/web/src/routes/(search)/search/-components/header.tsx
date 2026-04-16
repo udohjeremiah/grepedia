@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
+import DiscordLink from "@/components/discord-link";
 import GitHubLink from "@/components/github-link";
 import ThemeSwitcher from "@/components/theme-switcher";
 import UserProfile from "@/components/user-profile";
@@ -21,9 +22,10 @@ export default function Header() {
           />
         </Link>
         <Search />
-        <div className="ms-auto flex items-center gap-1">
-          <GitHubLink />
+        <div className="ms-auto flex items-center gap-2">
           <ThemeSwitcher />
+          <GitHubLink />
+          <DiscordLink />
           <UserProfile />
         </div>
       </header>
