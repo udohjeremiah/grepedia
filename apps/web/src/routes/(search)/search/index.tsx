@@ -21,6 +21,7 @@ export const Route = createFileRoute("/(search)/search/")({
   // eslint-disable-next-line perfectionist/sort-objects
   loader: ({ context, deps }) => {
     context.queryClient.prefetchInfiniteQuery(searchQueryOptions(deps));
+
     return deps;
   },
   // eslint-disable-next-line perfectionist/sort-objects

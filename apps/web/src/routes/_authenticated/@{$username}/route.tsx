@@ -84,6 +84,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}")({
 
 function LayoutComponent() {
   const { canModerate } = Route.useLoaderData();
+
   const navItems = canModerate
     ? [...baseNavItems, moderationNavItem]
     : baseNavItems;

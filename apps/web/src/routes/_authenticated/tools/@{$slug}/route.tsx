@@ -1,27 +1,53 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
+import { useFavicon } from "@/hooks/use-favicon";
+
 import ToolHeader from "./-components/tool-header";
 import ToolSidebar from "./-components/tool-sidebar";
+import ToolSkeleton from "./-components/tool-skeleton";
 import { toolQueryOptions } from "./-queries/tool";
 
 export const Route = createFileRoute("/_authenticated/tools/@{$slug}")({
   component: LayoutComponent,
-  loader: ({ context, params }) => {
-    context.queryClient.prefetchQuery(toolQueryOptions({ slug: params.slug }));
+  loader: async ({ context, params }) => {
+    const {
+      data: { tool },
+    } = await context.queryClient.ensureQueryData(
+      toolQueryOptions({ slug: params.slug }),
+    );
+
+    return { tool };
   },
+  pendingComponent: ToolSkeleton,
   // eslint-disable-next-line perfectionist/sort-objects
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} • Tool Details • Grepedia` },
-      {
-        content: `Explore tool details, proposals, and community debate for ${params.slug} on Grepedia.`,
-        name: "description",
-      },
-    ],
-  }),
+  head: ({ loaderData, params }) => {
+    const tool = loaderData?.tool;
+
+    if (!tool) {
+      return {
+        meta: [
+          { title: `${params.slug} • Tool Details • Grepedia` },
+          {
+            content: `Explore tool details, proposals, and community debate for ${params.slug} on Grepedia.`,
+            name: "description",
+          },
+        ],
+      };
+    }
+
+    return {
+      meta: [
+        { title: `${tool.name} • Grepedia` },
+        { content: tool.shortDescription, name: "description" },
+      ],
+    };
+  },
 });
 
 function LayoutComponent() {
+  const { tool } = Route.useLoaderData();
+  useFavicon(tool.officialUrl);
+
   return (
     <main className="flex flex-1 p-4 sm:px-8 md:px-16">
       <div className="flex flex-1 flex-col gap-8">
