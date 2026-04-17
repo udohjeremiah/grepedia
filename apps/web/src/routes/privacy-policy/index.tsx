@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@workspace/ui/components/button";
 
+import AppLink from "@/components/app-link";
 import { env } from "@/env";
 
 export const Route = createFileRoute("/privacy-policy/")({
@@ -17,6 +19,8 @@ export const Route = createFileRoute("/privacy-policy/")({
 });
 
 function RouteComponent() {
+  const supportEmailHref = `mailto:${env.VITE_SUPPORT_EMAIL}`;
+
   return (
     <main className="mx-auto prose p-4 prose-zinc sm:p-8 dark:prose-invert">
       <h1 className="text-3xl">Privacy Policy for Grepedia</h1>
@@ -27,11 +31,15 @@ function RouteComponent() {
       <h2>Introduction</h2>
       <p>
         Grepedia (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) operates{" "}
-        {env.VITE_BASE_URL} (the &quot;Service&quot;). This Privacy Policy
-        explains how we collect, use, disclose, and safeguard your information
-        when you visit our Service. Please read this privacy policy carefully.
-        If you do not agree with the terms of this privacy policy, please do not
-        access the Service.
+        <AppLink to={env.VITE_BASE_URL}>{env.VITE_BASE_URL}</AppLink> (the
+        &quot;Service&quot;). This Privacy Policy explains how we collect, use,
+        disclose, and safeguard your information when you visit our Service.
+        Please read this privacy policy carefully. If you do not agree with the
+        terms of this privacy policy, please do not access the Service.
+      </p>
+      <p>
+        Please also review our{" "}
+        <AppLink to="/terms-of-service">Terms of Service</AppLink>.
       </p>
 
       <h2>Information We Collect</h2>
@@ -139,8 +147,10 @@ function RouteComponent() {
       </ul>
       <p>
         If you wish to exercise any of these rights, please contact us at{" "}
-        {env.VITE_SUPPORT_EMAIL}. We will respond to your request within 30
-        days.
+        <Button asChild className="size-fit p-0 align-baseline" variant="link">
+          <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
+        </Button>
+        . We will respond to your request within 30 days.
       </p>
 
       <h2>Your Rights Under CCPA (California Residents)</h2>
@@ -169,9 +179,12 @@ function RouteComponent() {
         </li>
       </ul>
       <p>
-        To exercise your rights, contact us at {env.VITE_SUPPORT_EMAIL}. We will
-        verify your identity before processing your request and respond within
-        45 days.
+        To exercise your rights, contact us at{" "}
+        <Button asChild className="size-fit p-0 align-baseline" variant="link">
+          <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
+        </Button>
+        . We will verify your identity before processing your request and
+        respond within 45 days.
       </p>
 
       <h2>CalOPPA Compliance</h2>
@@ -190,7 +203,14 @@ function RouteComponent() {
         </li>
         <li>
           Users can change their personal information by contacting us at{" "}
-          {env.VITE_SUPPORT_EMAIL}.
+          <Button
+            asChild
+            className="size-fit p-0 align-baseline"
+            variant="link"
+          >
+            <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
+          </Button>
+          .
         </li>
       </ul>
       <p>
@@ -215,8 +235,20 @@ function RouteComponent() {
         If you have any questions about this Privacy Policy, please contact us:
       </p>
       <ul>
-        <li>By email: {env.VITE_SUPPORT_EMAIL}</li>
-        <li>By visiting: {env.VITE_BASE_URL}</li>
+        <li>
+          By email:{" "}
+          <Button
+            asChild
+            className="size-fit p-0 align-baseline"
+            variant="link"
+          >
+            <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
+          </Button>
+        </li>
+        <li>
+          By visiting:{" "}
+          <AppLink to={env.VITE_BASE_URL}>{env.VITE_BASE_URL}</AppLink>
+        </li>
       </ul>
     </main>
   );

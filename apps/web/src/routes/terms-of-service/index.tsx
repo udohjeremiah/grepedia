@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@workspace/ui/components/button";
 
+import AppLink from "@/components/app-link";
 import { env } from "@/env";
 
 export const Route = createFileRoute("/terms-of-service/")({
@@ -17,6 +19,8 @@ export const Route = createFileRoute("/terms-of-service/")({
 });
 
 function RouteComponent() {
+  const supportEmailHref = `mailto:${env.VITE_SUPPORT_EMAIL}`;
+
   return (
     <main className="mx-auto prose p-4 prose-zinc sm:p-8 dark:prose-invert">
       <h1 className="text-3xl">Terms of Service for Grepedia</h1>
@@ -27,9 +31,14 @@ function RouteComponent() {
       <h2>Agreement to Terms</h2>
       <p>
         By accessing or using the services provided by Grepedia at{" "}
-        {env.VITE_BASE_URL} (the &quot;Service&quot;), you agree to be bound by
-        these Terms of Service (&quot;Terms&quot;). If you disagree with any
-        part of these terms, you may not access the Service.
+        <AppLink to={env.VITE_BASE_URL}>{env.VITE_BASE_URL}</AppLink> (the
+        &quot;Service&quot;), you agree to be bound by these Terms of Service
+        (&quot;Terms&quot;). If you disagree with any part of these terms, you
+        may not access the Service.
+      </p>
+      <p>
+        Please also review our{" "}
+        <AppLink to="/privacy-policy">Privacy Policy</AppLink>.
       </p>
 
       <h2>Use of Service</h2>
@@ -144,8 +153,20 @@ function RouteComponent() {
         us:
       </p>
       <ul>
-        <li>By email: {env.VITE_SUPPORT_EMAIL}</li>
-        <li>By visiting: {env.VITE_BASE_URL}</li>
+        <li>
+          By email:{" "}
+          <Button
+            asChild
+            className="size-fit p-0 align-baseline"
+            variant="link"
+          >
+            <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
+          </Button>
+        </li>
+        <li>
+          By visiting:{" "}
+          <AppLink to={env.VITE_BASE_URL}>{env.VITE_BASE_URL}</AppLink>
+        </li>
       </ul>
     </main>
   );
