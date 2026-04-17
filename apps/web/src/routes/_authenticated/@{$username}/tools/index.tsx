@@ -2,7 +2,6 @@ import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { z } from "zod";
 
 import ErrorFallback from "@/components/error-fallback";
 
@@ -26,9 +25,6 @@ export const Route = createFileRoute("/_authenticated/@{$username}/tools/")({
         name: "description",
       },
     ],
-  }),
-  validateSearch: z.object({
-    modal: z.literal("add-tool").optional(),
   }),
 });
 

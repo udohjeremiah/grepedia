@@ -1,10 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import {
-  useNavigate,
-  useParams,
-  useRouteContext,
-  useSearch,
-} from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import {
   type AddToolBody,
   addToolBodySchema,
@@ -52,6 +47,7 @@ import { useState } from "react";
 
 import { MarkdownEditor } from "@/components/markdown";
 import SubmissionAlert from "@/components/submission-alert";
+import { useDialogState } from "@/hooks/use-dialog-state";
 import { useSubmission } from "@/hooks/use-submission";
 import { parseExternalUrl } from "@/utils/parse-external-url";
 
@@ -79,10 +75,6 @@ Delete this template before writing your description.`;
 
 export default function AddToolDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
-  const { username } = useParams({ from: "/_authenticated/@{$username}" });
-  const searchParams = useSearch({
-    from: "/_authenticated/@{$username}/tools/",
-  });
   const navigate = useNavigate();
 
   const [externalUrlInput, setExternalUrlInput] = useState("");
@@ -127,21 +119,12 @@ export default function AddToolDialog() {
     },
   });
 
+  const { handleOpenChange, isOpen } = useDialogState({
+    onCloseReset: resetStatus,
+  });
+
   return (
-    <Dialog
-      onOpenChange={(open) => {
-        navigate({
-          params: { username },
-          replace: true,
-          search: { modal: open ? "add-tool" : undefined },
-          to: "/@{$username}/tools",
-        });
-        if (!open) {
-          resetStatus();
-        }
-      }}
-      open={searchParams.modal === "add-tool"}
-    >
+    <Dialog onOpenChange={handleOpenChange} open={isOpen}>
       <DialogTrigger asChild>
         <Button size="sm">
           <PlusIcon />
