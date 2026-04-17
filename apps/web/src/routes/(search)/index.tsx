@@ -1,5 +1,6 @@
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@workspace/ui/components/button";
 import { Separator } from "@workspace/ui/components/separator";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -9,9 +10,9 @@ import ErrorFallback from "@/components/error-fallback";
 import { auth } from "@/hooks/auth";
 
 import SearchForm from "./-components/search-form";
-import ToolsCount from "./-components/tools-count";
-import ToolsCountSkeleton from "./-components/tools-count-skeleton";
-import { toolsCountQueryOptions } from "./-queries/tools-count";
+import ToolsStats from "./-components/tools-stats";
+import ToolsStatsSkeleton from "./-components/tools-stats-skeleton";
+import { toolsStatsQueryOptions } from "./-queries/tools-stats";
 
 export const Route = createFileRoute("/(search)/")({
   component: RouteComponent,
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/(search)/")({
     ],
   }),
   loader: ({ context }) => {
-    context.queryClient.prefetchQuery(toolsCountQueryOptions());
+    context.queryClient.prefetchQuery(toolsStatsQueryOptions());
   },
 });
 
@@ -42,28 +43,28 @@ function RouteComponent() {
         </div>
         <SearchForm className="w-full" />
       </main>
-      <footer className="mx-auto flex items-center gap-6 p-4 md:p-6">
-        <Suspense fallback={<ToolsCountSkeleton />}>
+      <footer className="mx-auto flex flex-col items-center gap-2 p-4 md:p-6">
+        <Suspense fallback={<ToolsStatsSkeleton />}>
           <QueryErrorResetBoundary>
             {({ reset }) => (
               <ErrorBoundary
                 FallbackComponent={({ resetErrorBoundary }) => (
                   <ErrorFallback
-                    description="Couldn't load tools count."
+                    description="Couldn't load tools stats."
                     onRetry={resetErrorBoundary}
                     variant="compact"
                   />
                 )}
                 onReset={reset}
               >
-                <ToolsCount />
+                <ToolsStats />
               </ErrorBoundary>
             )}
           </QueryErrorResetBoundary>
         </Suspense>
-        <Separator orientation="vertical" />
-        <div className="flex flex-col gap-2 text-xs">
-          <div className="flex flex-wrap items-center gap-2">
+        <Separator />
+        <div className="flex flex-col items-center">
+          <div className="flex items-center gap-2">
             <AppLink className="text-xs" to="/tools/directory">
               All Tools
             </AppLink>
@@ -82,15 +83,11 @@ function RouteComponent() {
               </AppLink>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <AppLink className="text-xs" to="/terms-of-service">
-              Terms of Service
-            </AppLink>
-            <span className="text-muted-foreground">•</span>
-            <AppLink className="text-xs" to="/privacy-policy">
-              Privacy Policy
-            </AppLink>
-          </div>
+          <Button asChild className="p-0" size="xs" variant="link">
+            <a href="https://www.netlify.com" rel="noreferrer" target="_blank">
+              This site is powered by Netlify
+            </a>
+          </Button>
         </div>
       </footer>
     </>

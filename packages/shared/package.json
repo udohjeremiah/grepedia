@@ -99,9 +99,9 @@
       "types": "./dist/schemas/tools/get-tool.d.ts",
       "default": "./dist/schemas/tools/get-tool.js"
     },
-    "./schemas/tools/get-tools-count": {
-      "types": "./dist/schemas/tools/get-tools-count.d.ts",
-      "default": "./dist/schemas/tools/get-tools-count.js"
+    "./schemas/tools/get-tools-stats": {
+      "types": "./dist/schemas/tools/get-tools-stats.d.ts",
+      "default": "./dist/schemas/tools/get-tools-stats.js"
     },
     "./schemas/tools/revisions/get-tool-revisions": {
       "types": "./dist/schemas/tools/revisions/get-tool-revisions.d.ts",

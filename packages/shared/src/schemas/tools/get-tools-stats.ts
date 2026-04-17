@@ -2,10 +2,14 @@ import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
 
-export const getToolsCountResponseSchemas = {
+export const getToolsStatsResponseSchemas = {
   200: z.object({
     data: z.object({
-      count: z.int(),
+      stats: z.object({
+        contributors: z.int(),
+        reviews: z.int(),
+        tools: z.int(),
+      }),
     }),
     message: z.string(),
     success: z.boolean(),
