@@ -2,7 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { FolderOpenIcon, TrophyIcon } from "lucide-react";
+import { Activity, useState } from "react";
 
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 
 import { useToolsDirectoryCategories } from "../-queries/tools-directory-categories";
@@ -18,6 +20,9 @@ export default function Categories({
   onSelect,
   selectedCategory,
 }: CategoriesProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
   return (
     <aside className="overflow-hidden rounded-lg border md:sticky md:top-4 md:self-start">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2">
@@ -31,25 +36,41 @@ export default function Categories({
           </Link>
         </Button>
       </div>
-      <div className="max-h-140 overflow-y-auto">
-        {categories.map((category) => {
-          const isActive = category.name === selectedCategory;
-
-          return (
-            <Button
-              className="w-full gap-2.5 rounded-none border-none text-start"
-              key={category.name}
-              onClick={() => onSelect(category.name)}
-              variant={isActive ? "secondary" : "ghost"}
-            >
-              <span className="flex-1 truncate">{category.name}</span>
-              <Badge className="ml-auto" variant="outline">
-                {formatCompactNumber(category.count)}
-              </Badge>
-            </Button>
-          );
-        })}
+      <div className="px-3 py-2 md:hidden">
+        <Button
+          aria-expanded={isExpanded}
+          className="w-full"
+          onClick={() => setIsExpanded((previous) => !previous)}
+          size="sm"
+          variant="outline"
+        >
+          {isExpanded ? "Hide Categories" : "Show Categories"}
+        </Button>
       </div>
+      <Activity mode={isDesktop || isExpanded ? "visible" : "hidden"}>
+        <div className="max-h-140 overflow-y-auto max-md:border-t">
+          {categories.map((category) => {
+            const isActive = category.name === selectedCategory;
+
+            return (
+              <Button
+                className="w-full gap-2.5 rounded-none border-none text-start"
+                key={category.name}
+                onClick={() => {
+                  onSelect(category.name);
+                  setIsExpanded(false);
+                }}
+                variant={isActive ? "secondary" : "ghost"}
+              >
+                <span className="flex-1 truncate">{category.name}</span>
+                <Badge className="ml-auto" variant="outline">
+                  {formatCompactNumber(category.count)}
+                </Badge>
+              </Button>
+            );
+          })}
+        </div>
+      </Activity>
     </aside>
   );
 }

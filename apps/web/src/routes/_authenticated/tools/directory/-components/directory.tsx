@@ -48,7 +48,7 @@ export default function Directory() {
   }
 
   return (
-    <div className="grid flex-1 gap-4 md:grid-cols-[25%_minmax(0,1fr)]">
+    <div className="w-full space-y-4 md:grid md:flex-1 md:grid-cols-[25%_minmax(0,1fr)] md:gap-4">
       <Suspense fallback={<CategoriesSkeleton />}>
         <Categories
           categories={list}
