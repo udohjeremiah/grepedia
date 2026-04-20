@@ -147,7 +147,7 @@ function RouteComponent() {
       </ul>
       <p>
         If you wish to exercise any of these rights, please contact us at{" "}
-        <Button asChild className="size-fit p-0 align-baseline" variant="link">
+        <Button asChild className="size-fit p-0" variant="link">
           <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
         </Button>
         . We will respond to your request within 30 days.
@@ -180,7 +180,7 @@ function RouteComponent() {
       </ul>
       <p>
         To exercise your rights, contact us at{" "}
-        <Button asChild className="size-fit p-0 align-baseline" variant="link">
+        <Button asChild className="size-fit p-0" variant="link">
           <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
         </Button>
         . We will verify your identity before processing your request and
@@ -203,11 +203,7 @@ function RouteComponent() {
         </li>
         <li>
           Users can change their personal information by contacting us at{" "}
-          <Button
-            asChild
-            className="size-fit p-0 align-baseline"
-            variant="link"
-          >
+          <Button asChild className="size-fit p-0" variant="link">
             <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
           </Button>
           .
@@ -237,11 +233,7 @@ function RouteComponent() {
       <ul>
         <li>
           By email:{" "}
-          <Button
-            asChild
-            className="size-fit p-0 align-baseline"
-            variant="link"
-          >
+          <Button asChild className="size-fit p-0" variant="link">
             <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
           </Button>
         </li>

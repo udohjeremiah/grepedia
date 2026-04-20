@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Separator } from "@workspace/ui/components/separator";
 
 import DiscordLink from "@/components/discord-link";
 import GitHubLink from "@/components/github-link";
@@ -18,11 +19,13 @@ export default function Header() {
             width={48}
           />
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <UserProfile />
+          <Separator orientation="vertical" />
           <ThemeSwitcher />
+          <Separator orientation="vertical" />
           <GitHubLink />
           <DiscordLink />
-          <UserProfile />
         </div>
       </header>
     </div>

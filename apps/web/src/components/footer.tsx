@@ -21,7 +21,7 @@ export default function Footer() {
             Privacy Policy
           </AppLink>
         </div>
-        <Button asChild className="p-0" size="xs" variant="link">
+        <Button asChild className="size-fit p-0" size="xs" variant="link">
           <a href="https://www.netlify.com" rel="noreferrer" target="_blank">
             This site is powered by Netlify
           </a>

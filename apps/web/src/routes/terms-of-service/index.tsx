@@ -155,11 +155,7 @@ function RouteComponent() {
       <ul>
         <li>
           By email:{" "}
-          <Button
-            asChild
-            className="size-fit p-0 align-baseline"
-            variant="link"
-          >
+          <Button asChild className="size-fit p-0" variant="link">
             <a href={supportEmailHref}>{env.VITE_SUPPORT_EMAIL}</a>
           </Button>
         </li>

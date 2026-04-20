@@ -4,7 +4,6 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@workspace/ui/components/avatar";
-import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
 import { auth } from "@/hooks/auth";
@@ -20,15 +19,18 @@ export default function UserProfile() {
 
   if (!user) {
     return (
-      <Button asChild size="sm">
-        <Link to="/signin">Sign in</Link>
-      </Button>
+      <Link
+        className="text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-primary"
+        to="/signin"
+      >
+        Sign in
+      </Link>
     );
   }
 
   return (
     <Link params={{ username: user.username }} to="/@{$username}">
-      <Avatar>
+      <Avatar size="sm">
         <AvatarImage alt={user.username} src={getUserAvatar(user.username)} />
         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>

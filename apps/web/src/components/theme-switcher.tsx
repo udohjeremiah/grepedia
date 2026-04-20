@@ -1,52 +1,42 @@
-import { Button } from "@workspace/ui/components/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/dropdown-menu";
-import { CheckIcon, LaptopIcon, MoonIcon, SunIcon } from "lucide-react";
+import { cn } from "@workspace/ui/utils/cn";
+import { MoonIcon, SunIcon } from "lucide-react";
 
 import { useTheme } from "@/providers/theme-provider";
 
 export default function ThemeSwitcher() {
   const { setTheme, theme } = useTheme();
 
+  const isDark = theme === "dark";
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button size="icon-sm" variant="ghost">
-          <SunIcon className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-          <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          <SunIcon /> Light
-          {theme === "light" && (
-            <div className="ms-auto text-muted-foreground">
-              <CheckIcon />
-            </div>
-          )}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <MoonIcon /> Dark
-          {theme === "dark" && (
-            <div className="ms-auto text-muted-foreground">
-              <CheckIcon />
-            </div>
-          )}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          <LaptopIcon /> System
-          {theme === "system" && (
-            <div className="ms-auto text-muted-foreground">
-              <CheckIcon />
-            </div>
-          )}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <button
+      aria-checked={isDark}
+      aria-label="Toggle theme"
+      className="not-transition-lock relative h-5.5 w-10.5 shrink-0 rounded-full bg-muted transition-colors"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      role="switch"
+    >
+      <span
+        className={cn(
+          "absolute top-0 left-0 flex size-full items-center transition-transform duration-250",
+          isDark ? "translate-x-5" : "translate-x-0",
+        )}
+      >
+        <span className="relative flex size-5 items-center justify-center rounded-full bg-background shadow-sm">
+          <SunIcon
+            className={cn(
+              "absolute size-3 transition-all duration-250",
+              isDark ? "scale-0 rotate-90 opacity-0" : "scale-100 opacity-100",
+            )}
+          />
+          <MoonIcon
+            className={cn(
+              "absolute size-3 transition-all duration-250",
+              isDark ? "scale-100 opacity-100" : "scale-0 -rotate-90 opacity-0",
+            )}
+          />
+        </span>
+      </span>
+    </button>
   );
 }
