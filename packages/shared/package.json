@@ -63,6 +63,10 @@
       "types": "./dist/schemas/tools/comments/add-tool-comment.d.ts",
       "default": "./dist/schemas/tools/comments/add-tool-comment.js"
     },
+    "./schemas/tools/comments/delete-tool-comment": {
+      "types": "./dist/schemas/tools/comments/delete-tool-comment.d.ts",
+      "default": "./dist/schemas/tools/comments/delete-tool-comment.js"
+    },
     "./schemas/tools/comments/get-tool-comment-replies": {
       "types": "./dist/schemas/tools/comments/get-tool-comment-replies.d.ts",
       "default": "./dist/schemas/tools/comments/get-tool-comment-replies.js"

@@ -20,6 +20,7 @@ import {
   PencilIcon,
   ThumbsDownIcon,
   ThumbsUpIcon,
+  Trash2Icon,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -28,8 +29,10 @@ import { env } from "@/env";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 import { getInitials } from "@/utils/get-initials";
 import { getUserAvatar } from "@/utils/get-user-avatar";
+import { globalBanner } from "@/utils/global-banner";
 
 import { useToolComments } from "../-queries/tool-comments";
+import { useToolDeleteComment } from "../-queries/tool-delete-comment";
 import { useToolSetCommentReaction } from "../-queries/tool-set-comment-reaction";
 import { useToolUpdateComment } from "../-queries/tool-update-comment";
 import ToolCommentReplies from "./tool-comment-replies";
@@ -50,6 +53,8 @@ export default function ToolComment(comment: ToolCommentProps) {
   } = useToolSetCommentReaction(slug, comment.parentCommentId);
   const { isPending: isUpdating, mutate: updateComment } =
     useToolUpdateComment(slug);
+  const { isPending: isDeleting, mutate: removeComment } =
+    useToolDeleteComment(slug);
 
   const handleSaveEdit = () => {
     const content = draft.trim();
@@ -69,6 +74,35 @@ export default function ToolComment(comment: ToolCommentProps) {
     );
   };
 
+  const handleDeleteComment = () => {
+    removeComment(
+      { commentId: comment._id },
+      {
+        onError: () => {
+          globalBanner.emit({
+            banner: {
+              description:
+                "An error occurred while deleting your comment. Please try again.",
+              title: "Couldn't delete comment",
+              variant: "destructive",
+            },
+            type: "add",
+          });
+        },
+        onSuccess: () => {
+          globalBanner.emit({
+            banner: {
+              description: "Your comment was deleted successfully.",
+              title: "Comment deleted successfully",
+              variant: "success",
+            },
+            type: "add",
+          });
+        },
+      },
+    );
+  };
+
   const isAuthor = comment.user._id === userId;
   const isEdited =
     new Date(comment.updatedAt).getTime() >
@@ -76,6 +110,7 @@ export default function ToolComment(comment: ToolCommentProps) {
   const hasUpvoted = comment.viewerReaction === 1;
   const hasDownvoted = comment.viewerReaction === -1;
   const isPendingForComment = isPending && variables?.commentId === comment._id;
+  const canDelete = isAuthor && comment.replyCount === 0;
 
   return (
     <div className="flex gap-3">
@@ -115,7 +150,7 @@ export default function ToolComment(comment: ToolCommentProps) {
                   Edit
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem asChild variant="destructive">
+              <DropdownMenuItem asChild>
                 <a
                   href={env.VITE_REPORT_COMMENT_URL}
                   rel="noreferrer"
@@ -125,6 +160,16 @@ export default function ToolComment(comment: ToolCommentProps) {
                   Report
                 </a>
               </DropdownMenuItem>
+              {canDelete && (
+                <DropdownMenuItem
+                  disabled={isDeleting}
+                  onClick={handleDeleteComment}
+                  variant="destructive"
+                >
+                  <Trash2Icon />
+                  Delete
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
