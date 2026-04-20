@@ -23,6 +23,7 @@ import {
   ThumbsUpIcon,
 } from "lucide-react";
 
+import TierBadge from "@/components/tier-badge";
 import { env } from "@/env";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { getInitials } from "@/utils/get-initials";
@@ -59,6 +60,39 @@ const statusConfig: Record<
   },
 };
 
+const tiers: { color: string; label: string; minScore: number }[] = [
+  {
+    color: "text-[#7C3AED]",
+    label: "Elite · 250+ score",
+    minScore: 250,
+  },
+  {
+    color: "text-[#059669]",
+    label: "Established · 100-249 score",
+    minScore: 100,
+  },
+  {
+    color: "text-[#EA580C]",
+    label: "Trending · 50-99 score",
+    minScore: 50,
+  },
+  {
+    color: "text-[#D97706]",
+    label: "Notable · 10-49 score",
+    minScore: 10,
+  },
+  {
+    color: "text-[#1D9BF0]",
+    label: "Rising · 1-9 score",
+    minScore: 1,
+  },
+  {
+    color: "text-[#6B7280]",
+    label: "Live · Just getting started",
+    minScore: -Infinity,
+  },
+];
+
 export default function ToolHeader() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
   const { slug } = useParams({ from: "/_authenticated/tools/@{$slug}" });
@@ -73,6 +107,7 @@ export default function ToolHeader() {
 
   const status = statusConfig[tool.status];
   const score = tool.stats.upvotes - tool.stats.downvotes;
+  const tier = tiers.find(({ minScore }) => score >= minScore)!;
 
   const hasBookmarked = tool.relations.bookmarked;
   const hasDownvoted = tool.relations.downvoted;
@@ -98,11 +133,20 @@ export default function ToolHeader() {
             </Avatar>
           </Link>
           <div className="flex flex-col gap-1">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <div className="flex flex-wrap items-center gap-1">
               <h2 className="text-2xl font-bold tracking-tight text-balance">
                 {tool.name}
               </h2>
-              <Badge variant={status.variant}>{status.label}</Badge>
+              {tool.status === "published" ? (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <TierBadge className={cn("size-6", tier.color)} />
+                  </TooltipTrigger>
+                  <TooltipContent>{tier.label}</TooltipContent>
+                </Tooltip>
+              ) : (
+                <Badge variant={status.variant}>{status.label}</Badge>
+              )}
             </div>
             <p className="text-sm leading-relaxed text-muted-foreground">
               {tool.shortDescription}
@@ -122,7 +166,7 @@ export default function ToolHeader() {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              {hasBookmarked ? "Bookmarked" : "Not bookmarked"}
+              {hasBookmarked ? "Bookmarked" : "Bookmark"}
             </TooltipContent>
           </Tooltip>
           <Tooltip>
