@@ -13,6 +13,7 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Separator } from "@workspace/ui/components/separator";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import { cn } from "@workspace/ui/utils/cn";
 import { format } from "date-fns";
 import {
   CalendarIcon,
@@ -24,7 +25,7 @@ import {
   UserIcon,
 } from "lucide-react";
 
-import UserContributionBadge from "@/components/user-contribution-badge";
+import BadgeIcon from "@/components/badge-icon";
 import { countryOptions } from "@/constants/country-options";
 import { roleConfig, roleVariants } from "@/constants/role";
 import { statusConfig, statusVariants } from "@/constants/status";
@@ -83,9 +84,12 @@ export default function User() {
           </Avatar>
           <div className="flex w-full min-w-0 justify-between gap-4 max-sm:flex-col">
             <div className="flex min-w-0 flex-col gap-1">
-              <h2 className="flex items-center gap-2 text-xl font-semibold">
+              <h2 className="flex items-center gap-1 text-xl font-semibold">
                 <span className="truncate">{user.name}</span>
-                <UserContributionBadge role={user.role} />
+                <BadgeIcon
+                  aria-label={role.label}
+                  className={cn("size-5", role.color)}
+                />
               </h2>
               <p className="truncate text-sm text-muted-foreground">
                 {user.email}
@@ -121,7 +125,7 @@ export default function User() {
         <Separator />
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
-            <UserContributionBadge role={user.role} />
+            <BadgeIcon aria-label={role.label} className={cn(role.color)} />
             <span className="text-sm text-muted-foreground">Role</span>
             <Badge variant={roleVariants[user.role]}>{role.label}</Badge>
           </div>

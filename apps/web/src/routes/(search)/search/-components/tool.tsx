@@ -18,7 +18,6 @@ import {
 } from "@workspace/ui/components/sheet";
 import { format } from "date-fns";
 import {
-  BadgeCheckIcon,
   CalendarIcon,
   MessageSquareIcon,
   SearchIcon,
@@ -51,10 +50,6 @@ const statConfigByTab = {
   trending: {
     getValue: (tool: ToolProps) => formatCompactNumber(tool.stats.comments),
     icon: MessageSquareIcon,
-  },
-  verified: {
-    getValue: () => "verified",
-    icon: BadgeCheckIcon,
   },
 } as const;
 

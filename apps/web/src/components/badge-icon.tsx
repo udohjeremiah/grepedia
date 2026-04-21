@@ -2,12 +2,11 @@ import type { SVGProps } from "react";
 
 import { cn } from "@workspace/ui/utils/cn";
 
-type TierBadgeProps = SVGProps<SVGSVGElement>;
+type BadgeIconProps = SVGProps<SVGSVGElement>;
 
-export default function TierBadge({ className, ...props }: TierBadgeProps) {
+export default function BadgeIcon({ className, ...props }: BadgeIconProps) {
   return (
     <svg
-      aria-label="Tier"
       className={cn("size-4", className)}
       fill="currentColor"
       viewBox="0 0 22 22"

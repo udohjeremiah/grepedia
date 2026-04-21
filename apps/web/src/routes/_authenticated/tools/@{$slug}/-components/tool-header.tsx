@@ -23,7 +23,7 @@ import {
   ThumbsUpIcon,
 } from "lucide-react";
 
-import TierBadge from "@/components/tier-badge";
+import BadgeIcon from "@/components/badge-icon";
 import { env } from "@/env";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { getInitials } from "@/utils/get-initials";
@@ -62,33 +62,38 @@ const statusConfig: Record<
 
 const tiers: { color: string; label: string; minScore: number }[] = [
   {
-    color: "text-[#7C3AED]",
+    color: "text-violet-500",
     label: "Elite · 250+ score",
     minScore: 250,
   },
   {
-    color: "text-[#059669]",
+    color: "text-indigo-500",
     label: "Established · 100-249 score",
     minScore: 100,
   },
   {
-    color: "text-[#EA580C]",
+    color: "text-blue-500",
     label: "Trending · 50-99 score",
     minScore: 50,
   },
   {
-    color: "text-[#D97706]",
+    color: "text-green-500",
     label: "Notable · 10-49 score",
     minScore: 10,
   },
   {
-    color: "text-[#1D9BF0]",
+    color: "text-yellow-500",
     label: "Rising · 1-9 score",
     minScore: 1,
   },
   {
-    color: "text-[#6B7280]",
+    color: "text-muted-foreground",
     label: "Live · Just getting started",
+    minScore: 0,
+  },
+  {
+    color: "text-red-500",
+    label: "Controversial · Negative score",
     minScore: -Infinity,
   },
 ];
@@ -140,7 +145,10 @@ export default function ToolHeader() {
               {tool.status === "published" ? (
                 <Tooltip>
                   <TooltipTrigger>
-                    <TierBadge className={cn("size-6", tier.color)} />
+                    <BadgeIcon
+                      aria-label="Tier"
+                      className={cn("size-6", tier.color)}
+                    />
                   </TooltipTrigger>
                   <TooltipContent>{tier.label}</TooltipContent>
                 </Tooltip>
