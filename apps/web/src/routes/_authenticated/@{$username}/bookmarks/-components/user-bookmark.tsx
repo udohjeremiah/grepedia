@@ -55,79 +55,73 @@ export default function UserBookmark(bookmark: UserBookmarkProps) {
   }
 
   return (
-    <Button
-      asChild
-      className="flex size-full flex-wrap items-start justify-between gap-4 p-4 whitespace-normal"
-      variant="outline"
-    >
-      <div>
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <AppLink params={{ slug: bookmark.slug }} to="/tools/@{$slug}">
-                {bookmark.name}
-              </AppLink>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs text-muted-foreground">
-                {formatDistanceToNow(new Date(bookmark.bookmarkedAt), {
-                  addSuffix: true,
-                })}
-              </span>
-            </div>
-            <p className="text-muted-foreground">{bookmark.shortDescription}</p>
+    <div className="flex justify-between gap-4 rounded-xl border p-4 max-md:flex-col">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <AppLink params={{ slug: bookmark.slug }} to="/tools/@{$slug}">
+              {bookmark.name}
+            </AppLink>
+            <span className="text-xs text-muted-foreground">•</span>
+            <span className="text-xs text-muted-foreground">
+              {formatDistanceToNow(new Date(bookmark.bookmarkedAt), {
+                addSuffix: true,
+              })}
+            </span>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {bookmark.categories.map((category, index) => (
-              <Badge key={category} variant={categoryVariants[index]}>
-                {category}
-              </Badge>
-            ))}
-          </div>
+          <p className="text-sm text-muted-foreground">
+            {bookmark.shortDescription}
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button asChild size="icon-sm" variant="ghost">
-            <a href={bookmark.officialUrl} rel="noreferrer" target="_blank">
-              <ExternalLinkIcon />
-              <span className="sr-only">Visit {bookmark.name}</span>
-            </a>
-          </Button>
-          <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
-            <AlertDialogTrigger asChild>
-              <Button disabled={isPending} size="sm" variant="ghost">
-                <Trash2Icon />
-                <span className="sr-only">Remove {bookmark.name} bookmark</span>
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle className="flex items-center gap-2">
-                  <Trash2Icon className="size-5 text-destructive" />
-                  Remove Bookmark
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  Remove {bookmark.name} from your bookmarks?
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <SubmissionAlert status={status} />
-              <AlertDialogFooter>
-                <AlertDialogCancel disabled={isPending}>
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  disabled={isPending}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    handleRemoveBookmark();
-                  }}
-                  variant="destructive"
-                >
-                  {isPending ? "Removing..." : "Remove Bookmark"}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+        <div className="flex flex-wrap gap-2">
+          {bookmark.categories.map((category, index) => (
+            <Badge key={category} variant={categoryVariants[index]}>
+              {category}
+            </Badge>
+          ))}
         </div>
       </div>
-    </Button>
+      <div className="flex gap-2">
+        <Button asChild size="icon-sm" variant="ghost">
+          <a href={bookmark.officialUrl} rel="noreferrer" target="_blank">
+            <ExternalLinkIcon />
+            <span className="sr-only">Visit {bookmark.name}</span>
+          </a>
+        </Button>
+        <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
+          <AlertDialogTrigger asChild>
+            <Button disabled={isPending} size="icon-sm" variant="ghost">
+              <Trash2Icon />
+              <span className="sr-only">Remove {bookmark.name} bookmark</span>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <Trash2Icon className="size-5 text-destructive" />
+                Remove Bookmark
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Remove {bookmark.name} from your bookmarks?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <SubmissionAlert status={status} />
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={isPending}
+                onClick={(event) => {
+                  event.preventDefault();
+                  handleRemoveBookmark();
+                }}
+                variant="destructive"
+              >
+                {isPending ? "Removing..." : "Remove Bookmark"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </div>
   );
 }
