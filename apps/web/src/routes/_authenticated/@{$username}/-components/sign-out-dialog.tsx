@@ -42,7 +42,13 @@ export default function SignOutDialog() {
     setSubmitting(true);
 
     try {
-      await (revokeAllSessions ? revokeSessions({}) : signOut());
+      if (revokeAllSessions) {
+        await revokeSessions({});
+        await signOut();
+      } else {
+        await signOut();
+      }
+
       closeDialog();
       navigate({ reloadDocument: true, to: "/signin" });
     } catch {
