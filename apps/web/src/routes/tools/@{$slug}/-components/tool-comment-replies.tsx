@@ -25,8 +25,8 @@ import { getInitials } from "@/utils/get-initials";
 
 import { useToolCommentReplies } from "../-queries/tool-comment-replies";
 import { useToolComments } from "../-queries/tool-comments";
-import ToolComment from "./tool-comment";
-import ToolCommentReply from "./tool-comment-reply";
+import { ToolComment } from "./tool-comment";
+import { ToolCommentReply } from "./tool-comment-reply";
 
 type ToolComment = ReturnType<typeof useToolComments>["data"][number];
 
@@ -35,10 +35,7 @@ interface ToolCommentRepliesProps {
   slug: string;
 }
 
-export default function ToolCommentReplies({
-  comment,
-  slug,
-}: ToolCommentRepliesProps) {
+export function ToolCommentReplies({ comment, slug }: ToolCommentRepliesProps) {
   const { handleOpenChange, isOpen } = useDialog();
 
   const {

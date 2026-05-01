@@ -3,10 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import ErrorFallback from "@/components/error-fallback";
+import { ErrorFallback } from "@/components/error-fallback";
 
-import ToolProposals from "./-components/tool-proposals";
-import ToolRevisions from "./-components/tool-revisions";
+import { ToolProposals } from "./-components/tool-proposals";
+import { ToolRevisions } from "./-components/tool-revisions";
 import { toolProposalsQueryOptions } from "./-queries/tool-proposals";
 import { toolRevisionsQueryOptions } from "./-queries/tool-revisions";
 

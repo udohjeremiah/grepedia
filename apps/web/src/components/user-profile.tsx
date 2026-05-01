@@ -9,7 +9,7 @@ import { auth } from "@/hooks/auth";
 import { getAvatar } from "@/utils/get-avatar";
 import { getInitials } from "@/utils/get-initials";
 
-export default function UserProfile() {
+export function UserProfile() {
   const { user } = auth.useSession();
 
   if (!user) {

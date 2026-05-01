@@ -18,7 +18,7 @@ interface ResetPasswordEmailProps {
   username: string;
 }
 
-export default function ResetPasswordEmail({
+export function ResetPasswordEmail({
   logo,
   resetLink,
   username,

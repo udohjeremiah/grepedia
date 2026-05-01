@@ -17,13 +17,13 @@ import { Textarea } from "@workspace/ui/components/textarea";
 import { RotateCcwIcon } from "lucide-react";
 import { useState } from "react";
 
-import SubmissionAlert from "@/components/submission-alert";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 
 import { useUserRecoverAccount } from "../-queries/user-recover-account";
 
-export default function RecoverAccountDialog() {
+export function RecoverAccountDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
   const [payload, setPayload] = useState("");

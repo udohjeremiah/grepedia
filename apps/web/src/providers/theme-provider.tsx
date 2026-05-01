@@ -70,7 +70,7 @@ const themeScript = (storageKey: string) => {
 
 type ThemeContextType = {
   setTheme: (theme: Theme) => void;
-  theme: Theme | undefined;
+  theme: Theme;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -86,17 +86,16 @@ export function ThemeProvider({
   disableTransitionOnChange = true,
   storageKey = "theme",
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>();
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (globalThis.window === undefined) return "light";
+    return getStoredTheme();
+  });
 
   useEffect(() => {
-    const resolved = theme ?? getStoredTheme();
     const enable = disableTransitionOnChange ? disableTransitions() : undefined;
-
-    applyTheme(resolved);
+    applyTheme(theme);
     enable?.();
-
-    if (theme === undefined) setThemeState(resolved);
-  }, [theme, disableTransitionOnChange, storageKey]);
+  }, [disableTransitionOnChange, theme]);
 
   const setTheme = (newTheme: Theme) => {
     const validated = ThemeSchema.parse(newTheme);

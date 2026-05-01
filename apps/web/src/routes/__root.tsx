@@ -12,9 +12,9 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TooltipProvider } from "@workspace/ui/components/tooltip";
 
-import DefaultError from "@/components/default-error";
-import DefaultNotFound from "@/components/default-not-found";
-import GlobalBanner from "@/components/global-banner";
+import { DefaultError } from "@/components/default-error";
+import { DefaultNotFound } from "@/components/default-not-found";
+import { GlobalBanner } from "@/components/global-banner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import appCss from "@/styles/globals.css?url";
 

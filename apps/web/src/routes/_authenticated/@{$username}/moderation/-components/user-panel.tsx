@@ -25,7 +25,7 @@ interface UserPanelProps {
 type UserRole = Session["user"]["role"];
 type UserStatus = Session["user"]["status"];
 
-export default function UserPanel({ identifier, user }: UserPanelProps) {
+export function UserPanel({ identifier, user }: UserPanelProps) {
   const [selectedRole, setSelectedRole] = useState<UserRole>(user.role);
   const [selectedStatus, setSelectedStatus] = useState<UserStatus>(user.status);
 

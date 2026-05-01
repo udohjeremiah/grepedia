@@ -23,8 +23,8 @@ import { z } from "zod";
 
 import type { Session } from "@/lib/auth-client";
 
-import AppLink from "@/components/app-link";
-import SubmissionAlert from "@/components/submission-alert";
+import { AppLink } from "@/components/app-link";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { useSubmission } from "@/hooks/use-submission";
 import { signIn } from "@/services/auth/sign-in";
 
@@ -37,7 +37,7 @@ const formSchema = z.object({
   rememberMe: z.boolean(),
 });
 
-export default function SignInForm() {
+export function SignInForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);

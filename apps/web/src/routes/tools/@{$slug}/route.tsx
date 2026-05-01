@@ -2,8 +2,8 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 import { useFavicon } from "@/hooks/use-favicon";
 
-import ToolHeader from "./-components/tool-header";
-import ToolSidebar from "./-components/tool-sidebar";
+import { ToolHeader } from "./-components/tool-header";
+import { ToolSidebar } from "./-components/tool-sidebar";
 import { toolQueryOptions } from "./-queries/tool";
 
 export const Route = createFileRoute("/tools/@{$slug}")({

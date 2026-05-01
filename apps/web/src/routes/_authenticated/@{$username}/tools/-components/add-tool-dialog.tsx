@@ -47,7 +47,7 @@ import {
 import { useState } from "react";
 
 import { MarkdownEditor } from "@/components/markdown";
-import SubmissionAlert from "@/components/submission-alert";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { parseExternalUrl } from "@/utils/parse-external-url";
@@ -74,7 +74,7 @@ Delete this template before writing your description.
 5. Who is behind it?
    - Include the organization, company, or creator for credibility.`;
 
-export default function AddToolDialog() {
+export function AddToolDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
   const navigate = useNavigate();
 

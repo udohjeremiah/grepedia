@@ -53,7 +53,7 @@ const statConfigByTab = {
   },
 } as const;
 
-export default function Tool(tool: ToolProps) {
+export function Tool(tool: ToolProps) {
   const searchParams = useSearch({ from: "/search/" });
 
   const tab = searchParams.tab ?? "all";

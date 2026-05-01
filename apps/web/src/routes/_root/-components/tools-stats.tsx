@@ -5,7 +5,7 @@ import { formatCompactNumber } from "@/utils/format-compact-number";
 
 import { useToolsStats } from "../-queries/tools-stats";
 
-export default function ToolsStats() {
+export function ToolsStats() {
   const { data } = useToolsStats();
 
   const stats = [

@@ -23,7 +23,7 @@ interface DeleteCommentDialogProps {
   userId: string;
 }
 
-export default function DeleteCommentDialog({
+export function DeleteCommentDialog({
   commentId,
   userId,
 }: DeleteCommentDialogProps) {

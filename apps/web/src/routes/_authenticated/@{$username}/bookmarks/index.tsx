@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import ErrorFallback from "@/components/error-fallback";
+import { ErrorFallback } from "@/components/error-fallback";
 
-import UserBookmarks from "./-components/user-bookmarks";
+import { UserBookmarks } from "./-components/user-bookmarks";
 import { userBookmarksQueryOptions } from "./-queries/user-bookmarks";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/bookmarks/")(

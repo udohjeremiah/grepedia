@@ -4,10 +4,10 @@ import { TrophyIcon } from "lucide-react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import AppLayout from "@/components/app-layout";
-import ErrorFallback from "@/components/error-fallback";
+import { AppLayout } from "@/components/app-layout";
+import { ErrorFallback } from "@/components/error-fallback";
 
-import Leaderboard from "./-components/leaderboard";
+import { Leaderboard } from "./-components/leaderboard";
 import { usersLeaderboardQueryOptions } from "./-queries/users-leaderboard";
 
 export const Route = createFileRoute("/leaderboard/")({

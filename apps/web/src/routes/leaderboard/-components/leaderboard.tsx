@@ -60,7 +60,7 @@ const genderLabels: Record<UserGender, string> = {
   preferNotToSay: "Prefer not to say",
 };
 
-export default function Leaderboard() {
+export function Leaderboard() {
   const { user } = auth.useSession();
   const userId = user?.id;
 

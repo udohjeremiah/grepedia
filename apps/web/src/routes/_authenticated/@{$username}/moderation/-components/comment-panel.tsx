@@ -22,10 +22,7 @@ interface CommentPanelProps {
 
 type CommentStatus = CommentPanelProps["comment"]["status"];
 
-export default function CommentPanel({
-  comment,
-  identifier,
-}: CommentPanelProps) {
+export function CommentPanel({ comment, identifier }: CommentPanelProps) {
   const [selectedStatus, setSelectedStatus] = useState<CommentStatus>(
     comment.status,
   );

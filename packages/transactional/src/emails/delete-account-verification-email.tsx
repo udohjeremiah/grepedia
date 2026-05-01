@@ -18,7 +18,7 @@ interface DeleteAccountVerificationEmailProps {
   verificationLink: string;
 }
 
-export default function DeleteAccountVerificationEmail({
+export function DeleteAccountVerificationEmail({
   logo,
   username,
   verificationLink,

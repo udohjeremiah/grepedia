@@ -5,9 +5,9 @@ import { formatDistanceToNow } from "date-fns";
 import { auth } from "@/hooks/auth";
 
 import { useToolProposals } from "../-queries/tool-proposals";
-import ToolModeratorDialog from "./tool-moderator-dialog";
+import { ToolModeratorDialog } from "./tool-moderator-dialog";
 
-export default function ToolProposals() {
+export function ToolProposals() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
 
   const { user } = auth.useSession();

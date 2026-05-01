@@ -23,7 +23,7 @@ import {
   ThumbsUpIcon,
 } from "lucide-react";
 
-import BadgeIcon from "@/components/badge-icon";
+import { BadgeIcon } from "@/components/badge-icon";
 import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
@@ -33,7 +33,7 @@ import { getInitials } from "@/utils/get-initials";
 import { useTool } from "../-queries/tool";
 import { useToolSetReaction } from "../-queries/tool-set-reaction";
 import { useToolToggleBookmark } from "../-queries/tool-toggle-bookmark";
-import UpdateToolDialog from "./update-tool-dialog";
+import { UpdateToolDialog } from "./update-tool-dialog";
 
 type Tool = ReturnType<typeof useTool>["data"];
 
@@ -100,7 +100,7 @@ const tiers: { color: string; label: string; minScore: number }[] = [
   },
 ];
 
-export default function ToolHeader() {
+export function ToolHeader() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
   const { user } = auth.useSession();
 

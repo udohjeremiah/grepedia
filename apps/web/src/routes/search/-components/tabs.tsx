@@ -5,7 +5,7 @@ import {
   StarIcon,
 } from "lucide-react";
 
-import Tab from "./tab";
+import { Tab } from "./tab";
 
 export const tabs = [
   { icon: SearchIcon, label: "All", value: "all" },
@@ -16,7 +16,7 @@ export const tabs = [
 
 export type Tab = (typeof tabs)[number];
 
-export default function Tabs() {
+export function Tabs() {
   return (
     <ul className="relative no-scrollbar flex gap-6 overflow-x-auto scroll-smooth px-4 sm:px-8 md:px-16">
       {tabs.map((tab) => (

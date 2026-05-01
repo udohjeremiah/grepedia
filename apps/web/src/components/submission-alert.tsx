@@ -41,7 +41,7 @@ const statusConfig: Record<
   },
 };
 
-export default function SubmissionAlert({ status }: SubmissionAlertProps) {
+export function SubmissionAlert({ status }: SubmissionAlertProps) {
   if (!status) return;
 
   const { icon: Icon, variant } = statusConfig[status.status];

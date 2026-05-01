@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@workspace/ui/components/button";
 
-import AppLink from "@/components/app-link";
+import { AppLink } from "@/components/app-link";
 import { env } from "@/env";
 
 export const Route = createFileRoute("/terms-of-service/")({

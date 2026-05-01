@@ -4,17 +4,17 @@ import { Link } from "@tanstack/react-router";
 import { Separator } from "@workspace/ui/components/separator";
 import { cn } from "@workspace/ui/lib/cn";
 
-import DiscordLink from "@/components/discord-link";
-import GitHubLink from "@/components/github-link";
-import ThemeSwitcher from "@/components/theme-switcher";
-import UserProfile from "@/components/user-profile";
+import { DiscordLink } from "@/components/discord-link";
+import { GitHubLink } from "@/components/github-link";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { UserProfile } from "@/components/user-profile";
 
 interface HeaderProps {
   search?: ReactNode;
   tabs?: ReactNode;
 }
 
-export default function Header({ search, tabs }: HeaderProps) {
+export function Header({ search, tabs }: HeaderProps) {
   const hasSubNav = !!tabs;
 
   return (

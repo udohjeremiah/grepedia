@@ -35,12 +35,12 @@ import { getInitials } from "@/utils/get-initials";
 import { useToolComments } from "../-queries/tool-comments";
 import { useToolSetCommentReaction } from "../-queries/tool-set-comment-reaction";
 import { useToolUpdateComment } from "../-queries/tool-update-comment";
-import DeleteCommentDialog from "./delete-comment-dialog";
-import ToolCommentReplies from "./tool-comment-replies";
+import { DeleteCommentDialog } from "./delete-comment-dialog";
+import { ToolCommentReplies } from "./tool-comment-replies";
 
 type ToolCommentProps = ReturnType<typeof useToolComments>["data"][number];
 
-export default function ToolComment(comment: ToolCommentProps) {
+export function ToolComment(comment: ToolCommentProps) {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
   const { user } = auth.useSession();
 

@@ -12,7 +12,7 @@ import { SearchXIcon } from "lucide-react";
 
 import { auth } from "@/hooks/auth";
 
-export default function ToolsEmpty() {
+export function ToolsEmpty() {
   const searchParams = useSearch({ from: "/search/" });
 
   const { user } = auth.useSession();

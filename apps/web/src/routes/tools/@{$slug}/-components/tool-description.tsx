@@ -5,7 +5,7 @@ import { MarkdownPreview } from "@/components/markdown";
 
 import { useTool } from "../-queries/tool";
 
-export default function ToolDescription() {
+export function ToolDescription() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
 
   const { data: tool } = useTool({ slug });

@@ -5,4 +5,7 @@ import { nodeLibraryConfig } from "./node-library.js";
  *
  * @type {import("eslint").Linter.Config}
  * */
-export const fastifyConfig = [...nodeLibraryConfig];
+export const fastifyConfig = [
+  ...nodeLibraryConfig,
+  { rules: { "import-x/no-default-export": "off" } },
+];

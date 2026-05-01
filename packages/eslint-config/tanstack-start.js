@@ -8,6 +8,10 @@ import { reactLibraryConfig } from "./react-library.js";
 export const tanstackStartConfig = [
   ...reactLibraryConfig,
   {
+    files: ["**/vite.config.*"],
+    rules: { "import-x/no-default-export": "off" },
+  },
+  {
     ignores: [
       "**/routeTree.gen.ts",
       ".netlify/**",

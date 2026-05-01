@@ -9,7 +9,7 @@ import {
 } from "@workspace/ui/components/select";
 import { useState } from "react";
 
-import AppLink from "@/components/app-link";
+import { AppLink } from "@/components/app-link";
 import { globalBannerStore } from "@/lib/global-banner-store";
 import { getErrorMessage } from "@/utils/get-error-message";
 
@@ -23,7 +23,7 @@ interface ToolPanelProps {
 
 type ToolStatus = ToolPanelProps["tool"]["status"];
 
-export default function ToolPanel({ identifier, tool }: ToolPanelProps) {
+export function ToolPanel({ identifier, tool }: ToolPanelProps) {
   const [selectedStatus, setSelectedStatus] = useState<ToolStatus>(tool.status);
 
   const { isPending: isUpdating, mutate: updateTool } =

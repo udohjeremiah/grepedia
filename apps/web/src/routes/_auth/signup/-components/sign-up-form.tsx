@@ -25,8 +25,8 @@ import {
 import { useState } from "react";
 import { z } from "zod";
 
-import AppLink from "@/components/app-link";
-import SubmissionAlert from "@/components/submission-alert";
+import { AppLink } from "@/components/app-link";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { env } from "@/env";
 import { useSubmission } from "@/hooks/use-submission";
 import { signUp } from "@/services/auth/sign-up";
@@ -40,7 +40,7 @@ const formSchema = z.object({
     .max(128, "Please provide no more than 128 characters."),
 });
 
-export default function SignUpForm() {
+export function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();

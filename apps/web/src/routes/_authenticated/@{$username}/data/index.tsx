@@ -4,10 +4,10 @@ import { AlertTriangleIcon, DownloadIcon } from "lucide-react";
 
 import { accountDeletion } from "@/constants/account-deletion";
 
-import DeleteAccountDialog from "./-components/delete-account-dialog";
-import DownloadJSON from "./-components/download-json";
-import PreviewDataDialog from "./-components/preview-data-dialog";
-import RecoverAccountDialog from "./-components/recover-account-dialog";
+import { DeleteAccountDialog } from "./-components/delete-account-dialog";
+import { DownloadJSON } from "./-components/download-json";
+import { PreviewDataDialog } from "./-components/preview-data-dialog";
+import { RecoverAccountDialog } from "./-components/recover-account-dialog";
 import { userRecoveryPackageQueryOptions } from "./-queries/user-recovery-package";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/data/")({

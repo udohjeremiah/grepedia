@@ -19,7 +19,7 @@ import { EyeIcon, EyeOffIcon, LockIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
-import SubmissionAlert from "@/components/submission-alert";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { useSubmission } from "@/hooks/use-submission";
 import { resetPassword } from "@/services/auth/reset-password";
 
@@ -49,7 +49,7 @@ interface ResetPasswordFormProps {
   token: string;
 }
 
-export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
+export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const navigate = useNavigate();
 
   const [showNewPassword, setShowNewPassword] = useState(false);

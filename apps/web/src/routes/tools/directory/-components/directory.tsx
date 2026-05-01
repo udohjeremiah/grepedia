@@ -9,10 +9,10 @@ import { FolderTreeIcon } from "lucide-react";
 import { Suspense, useState } from "react";
 
 import { useToolsDirectoryCategories } from "../-queries/tools-directory-categories";
-import Categories from "./categories";
-import Tools from "./tools";
+import { Categories } from "./categories";
+import { Tools } from "./tools";
 
-export default function Directory() {
+export function Directory() {
   const { data: categories } = useToolsDirectoryCategories();
   const [selectedCategory, setSelectedCategory] = useState<string>();
 

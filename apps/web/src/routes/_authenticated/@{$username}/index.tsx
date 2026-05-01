@@ -2,9 +2,9 @@ import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { ErrorBoundary } from "react-error-boundary";
 
-import ErrorFallback from "@/components/error-fallback";
+import { ErrorFallback } from "@/components/error-fallback";
 
-import UserProfile from "./-components/user-profile";
+import { UserProfile } from "./-components/user-profile";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/")({
   component: RouteComponent,

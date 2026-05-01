@@ -35,7 +35,7 @@ import {
 import { Spinner } from "@workspace/ui/components/spinner";
 import { z } from "zod";
 
-import SubmissionAlert from "@/components/submission-alert";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 
@@ -50,7 +50,7 @@ type ToolModeratorDialogProps = {
 
 const MAX_SUMMARY = 1000;
 
-export default function ToolModeratorDialog({
+export function ToolModeratorDialog({
   currentStatus,
   id,
 }: ToolModeratorDialogProps) {

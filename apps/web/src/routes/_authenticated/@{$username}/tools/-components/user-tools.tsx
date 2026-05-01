@@ -23,8 +23,8 @@ import {
 import { useMemo, useState } from "react";
 
 import { useUserTools } from "../-queries/user-tools";
-import AddToolDialog from "./add-tool-dialog";
-import ToolDirectory from "./tool-directory";
+import { AddToolDialog } from "./add-tool-dialog";
+import { ToolDirectory } from "./tool-directory";
 
 type FilterView =
   | "added"
@@ -94,7 +94,7 @@ export const getStatConfig = ({
     },
   }) as const;
 
-export default function UserTools() {
+export function UserTools() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
   const [filterView, setFilterView] = useState<FilterView>("all");

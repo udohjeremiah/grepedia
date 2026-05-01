@@ -3,7 +3,7 @@ import { MoonIcon, SunIcon } from "lucide-react";
 
 import { useTheme } from "@/providers/theme-provider";
 
-export default function ThemeSwitcher() {
+export function ThemeSwitcher() {
   const { setTheme, theme } = useTheme();
 
   const isDark = theme === "dark";

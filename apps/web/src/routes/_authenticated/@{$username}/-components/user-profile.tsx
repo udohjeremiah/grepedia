@@ -26,7 +26,7 @@ import {
 
 import type { Session } from "@/lib/auth-client";
 
-import BadgeIcon from "@/components/badge-icon";
+import { BadgeIcon } from "@/components/badge-icon";
 import { countryOptions } from "@/constants/country-options";
 import { roleConfig, roleVariants } from "@/constants/role";
 import { statusConfig, statusVariants } from "@/constants/status";
@@ -35,8 +35,8 @@ import { auth } from "@/hooks/auth";
 import { getAvatar } from "@/utils/get-avatar";
 import { getInitials } from "@/utils/get-initials";
 
-import EditUserDialog from "./edit-user-dialog";
-import SignOutDialog from "./sign-out-dialog";
+import { EditUserDialog } from "./edit-user-dialog";
+import { SignOutDialog } from "./sign-out-dialog";
 
 const genderLabel = {
   female: "Female",
@@ -46,7 +46,7 @@ const genderLabel = {
   preferNotToSay: "Prefer not to say",
 } as const;
 
-export default function UserProfile() {
+export function UserProfile() {
   const { user } = auth.useSession();
 
   return <>{user && <Profile user={user} />}</>;

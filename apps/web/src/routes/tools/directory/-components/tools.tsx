@@ -22,7 +22,7 @@ interface ToolsProps {
   categoryName?: string;
 }
 
-export default function Tools({ categoryCount, categoryName }: ToolsProps) {
+export function Tools({ categoryCount, categoryName }: ToolsProps) {
   const {
     data: { tools },
     fetchNextPage,

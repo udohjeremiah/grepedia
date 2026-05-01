@@ -10,7 +10,7 @@ import {
 } from "@workspace/ui/components/empty";
 import { BugIcon } from "lucide-react";
 
-export default function DefaultError() {
+export function DefaultError() {
   return (
     <div
       className="flex h-svh flex-col items-center justify-center p-6 md:p-10"

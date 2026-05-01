@@ -18,7 +18,7 @@ interface ErrorFallbackProps {
   wrapperClassName?: string;
 }
 
-export default function ErrorFallback({
+export function ErrorFallback({
   description,
   onRetry,
   title = "Something Went Wrong",

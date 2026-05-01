@@ -26,11 +26,11 @@ import { getInitials } from "@/utils/get-initials";
 import { useTool } from "../-queries/tool";
 import { useToolAddComment } from "../-queries/tool-add-comment";
 import { useToolComments } from "../-queries/tool-comments";
-import ToolComment from "./tool-comment";
+import { ToolComment } from "./tool-comment";
 
 type SortedView = "bottom" | "newest" | "top";
 
-export default function ToolComments() {
+export function ToolComments() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
   const { data: tool } = useTool({ slug });
 

@@ -5,12 +5,12 @@ import { Separator } from "@workspace/ui/components/separator";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import AppLink from "@/components/app-link";
-import ErrorFallback from "@/components/error-fallback";
+import { AppLink } from "@/components/app-link";
+import { ErrorFallback } from "@/components/error-fallback";
 import { auth } from "@/hooks/auth";
 
-import SearchForm from "./-components/search-form";
-import ToolsStats from "./-components/tools-stats";
+import { SearchForm } from "./-components/search-form";
+import { ToolsStats } from "./-components/tools-stats";
 import { toolsStatsQueryOptions } from "./-queries/tools-stats";
 
 export const Route = createFileRoute("/_root/")({

@@ -40,7 +40,7 @@ const getIcon = (variant: GlobalBanner["variant"]) => {
   }
 };
 
-export default function GlobalBanner() {
+export function GlobalBanner() {
   const banners = useSyncExternalStore(
     globalBannerStore.subscribe,
     getBanners,

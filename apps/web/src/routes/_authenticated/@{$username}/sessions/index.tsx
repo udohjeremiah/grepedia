@@ -3,10 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Separator } from "@workspace/ui/components/separator";
 import { ErrorBoundary } from "react-error-boundary";
 
-import ErrorFallback from "@/components/error-fallback";
+import { ErrorFallback } from "@/components/error-fallback";
 
-import ActiveSessions from "./-components/active-sessions";
-import RevokeOtherSessionsDialog from "./-components/revoke-other-sessions-dialog";
+import { ActiveSessions } from "./-components/active-sessions";
+import { RevokeOtherSessionsDialog } from "./-components/revoke-other-sessions-dialog";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/sessions/")({
   component: RouteComponent,

@@ -12,7 +12,7 @@ import type { Session } from "@/lib/auth-client";
 
 import { auth } from "@/hooks/auth";
 
-import ActiveSession from "./active-session";
+import { ActiveSession } from "./active-session";
 
 export interface ActiveSession {
   browser: string;
@@ -25,7 +25,7 @@ export interface ActiveSession {
   token: string;
 }
 
-export default function ActiveSessions() {
+export function ActiveSessions() {
   const { session } = auth.useSession();
   const { data: sessions } = auth.useListSessions();
 
@@ -95,6 +95,7 @@ function parseUserAgent(userAgent: null | string | undefined) {
     };
   }
 
+  // eslint-disable-next-line import-x/no-named-as-default-member
   const parser = Bowser.getParser(userAgent);
 
   const { name: browserName, version: browserVersion } = parser.getBrowser();

@@ -1,6 +1,6 @@
 import { SiDiscord } from "@icons-pack/react-simple-icons";
 
-export default function DiscordLink() {
+export function DiscordLink() {
   return (
     <a
       className="text-muted-foreground transition-colors duration-200 hover:text-foreground"

@@ -15,8 +15,8 @@ import { Button } from "@workspace/ui/components/button";
 import { formatDistanceToNow } from "date-fns";
 import { ExternalLinkIcon, Trash2Icon } from "lucide-react";
 
-import AppLink from "@/components/app-link";
-import SubmissionAlert from "@/components/submission-alert";
+import { AppLink } from "@/components/app-link";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { categoryVariants } from "@/constants/category";
 import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
@@ -26,7 +26,7 @@ import { useUserRemoveBookmark } from "../-queries/user-remove-bookmark";
 
 type UserBookmarkProps = ReturnType<typeof useUserBookmarks>["data"][number];
 
-export default function UserBookmark(bookmark: UserBookmarkProps) {
+export function UserBookmark(bookmark: UserBookmarkProps) {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
   const { isPending, mutate: removeBookmark } = useUserRemoveBookmark(userId);

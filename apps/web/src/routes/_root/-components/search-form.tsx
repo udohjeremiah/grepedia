@@ -12,10 +12,7 @@ import { cn } from "@workspace/ui/lib/cn";
 import { ArrowUpIcon, SearchIcon } from "lucide-react";
 import { type ComponentProps } from "react";
 
-export default function SearchForm({
-  className,
-  ...props
-}: ComponentProps<"search">) {
+export function SearchForm({ className, ...props }: ComponentProps<"search">) {
   const navigate = useNavigate();
 
   const form = useForm({

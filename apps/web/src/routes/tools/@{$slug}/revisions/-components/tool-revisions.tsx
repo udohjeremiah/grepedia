@@ -11,9 +11,9 @@ import { Separator } from "@workspace/ui/components/separator";
 import { FileStackIcon } from "lucide-react";
 
 import { useToolRevisions } from "../-queries/tool-revisions";
-import ToolRevision from "./tool-revision";
+import { ToolRevision } from "./tool-revision";
 
-export default function ToolRevisions() {
+export function ToolRevisions() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
 
   const {

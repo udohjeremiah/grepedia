@@ -29,7 +29,7 @@ import { EyeIcon, EyeOffIcon, KeyRoundIcon, LockIcon } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
-import SubmissionAlert from "@/components/submission-alert";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { changePassword } from "@/services/auth/change-password";
@@ -60,7 +60,7 @@ const formSchema = z
     }
   });
 
-export default function ChangePasswordDialog() {
+export function ChangePasswordDialog() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

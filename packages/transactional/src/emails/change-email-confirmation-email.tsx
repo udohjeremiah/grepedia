@@ -19,7 +19,7 @@ interface ChangeEmailConfirmationEmailProps {
   verificationLink: string;
 }
 
-export default function ChangeEmailConfirmationEmail({
+export function ChangeEmailConfirmationEmail({
   logo,
   newEmail,
   username,

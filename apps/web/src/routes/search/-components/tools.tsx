@@ -4,10 +4,10 @@ import { cn } from "@workspace/ui/lib/cn";
 import { useEffect, useRef } from "react";
 
 import { useSearchTools } from "../-queries/search";
-import Tool from "./tool";
-import ToolsEmpty from "./tools-empty";
+import { Tool } from "./tool";
+import { ToolsEmpty } from "./tools-empty";
 
-export default function Tools() {
+export function Tools() {
   const searchParams = useSearch({ from: "/search/" });
 
   const containerRef = useRef<HTMLElement>(null);

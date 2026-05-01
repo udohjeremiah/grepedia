@@ -1,9 +1,9 @@
 import { Button } from "@workspace/ui/components/button";
 import { Separator } from "@workspace/ui/components/separator";
 
-import AppLink from "@/components/app-link";
+import { AppLink } from "@/components/app-link";
 
-export default function Footer() {
+export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (

@@ -28,7 +28,7 @@ interface SearchFormProps extends ComponentProps<"search"> {
   onSubmitted?: () => void;
 }
 
-export default function Search() {
+export function Search() {
   const { handleOpenChange, isOpen, setIsOpen } = useDialog();
 
   return (

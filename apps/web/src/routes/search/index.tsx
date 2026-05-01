@@ -4,12 +4,12 @@ import { searchQueryStringSchema } from "@workspace/shared/schemas/search/search
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import AppLayout from "@/components/app-layout";
-import ErrorFallback from "@/components/error-fallback";
+import { AppLayout } from "@/components/app-layout";
+import { ErrorFallback } from "@/components/error-fallback";
 
-import Search from "./-components/search";
-import Tabs from "./-components/tabs";
-import Tools from "./-components/tools";
+import { Search } from "./-components/search";
+import { Tabs } from "./-components/tabs";
+import { Tools } from "./-components/tools";
 import { searchQueryOptions } from "./-queries/search";
 
 export const Route = createFileRoute("/search/")({

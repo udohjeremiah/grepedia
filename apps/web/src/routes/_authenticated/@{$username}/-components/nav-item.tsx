@@ -9,12 +9,7 @@ import type { Nav } from "../route";
 
 type NavItemProps = Nav;
 
-export default function NavItem({
-  icon: Icon,
-  label,
-  link,
-  value,
-}: NavItemProps) {
+export function NavItem({ icon: Icon, label, link, value }: NavItemProps) {
   const { username } = useParams({ from: "/_authenticated/@{$username}" });
   const pathname = useLocation({ select: (location) => location.pathname });
 

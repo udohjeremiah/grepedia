@@ -19,8 +19,6 @@ AppLinkComponent.displayName = "AppLinkComponent";
 
 const CreatedLinkComponent = createLink(AppLinkComponent);
 
-const AppLink: LinkComponent<typeof AppLinkComponent> = (props) => {
+export const AppLink: LinkComponent<typeof AppLinkComponent> = (props) => {
   return <CreatedLinkComponent preload={"intent"} {...props} />;
 };
-
-export default AppLink;

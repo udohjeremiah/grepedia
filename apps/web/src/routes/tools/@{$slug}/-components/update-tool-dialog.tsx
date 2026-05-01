@@ -49,7 +49,7 @@ import {
 import { useState } from "react";
 
 import { MarkdownEditor } from "@/components/markdown";
-import SubmissionAlert from "@/components/submission-alert";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { useDialog } from "@/hooks/use-dialog";
@@ -81,7 +81,7 @@ Delete this template before writing your description.
 5. Who is behind it?
    - Include the organization, company, or creator for credibility.`;
 
-export default function UpdateToolDialog() {
+export function UpdateToolDialog() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
 
   const [externalUrlInput, setExternalUrlInput] = useState("");

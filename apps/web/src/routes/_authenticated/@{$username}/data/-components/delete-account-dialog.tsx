@@ -16,14 +16,14 @@ import { Spinner } from "@workspace/ui/components/spinner";
 import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
-import SubmissionAlert from "@/components/submission-alert";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { deleteUser } from "@/services/auth/delete-user";
 
-export default function DeleteAccountDialog() {
+export function DeleteAccountDialog() {
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   const { isPending, user } = auth.useSession();

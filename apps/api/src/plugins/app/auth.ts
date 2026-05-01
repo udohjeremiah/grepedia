@@ -2,10 +2,10 @@ import type { BetterAuthPlugin } from "better-auth";
 import type { FastifyInstance } from "fastify";
 
 import { buildEmail } from "@workspace/transactional/build-email";
-import ChangeEmailConfirmationEmail from "@workspace/transactional/emails/change-email-confirmation-email";
-import DeleteAccountVerificationEmail from "@workspace/transactional/emails/delete-account-verification-email";
-import ResetPasswordEmail from "@workspace/transactional/emails/reset-password-email";
-import VerificationEmail from "@workspace/transactional/emails/verification-email";
+import { ChangeEmailConfirmationEmail } from "@workspace/transactional/emails/change-email-confirmation-email";
+import { DeleteAccountVerificationEmail } from "@workspace/transactional/emails/delete-account-verification-email";
+import { ResetPasswordEmail } from "@workspace/transactional/emails/reset-password-email";
+import { VerificationEmail } from "@workspace/transactional/emails/verification-email";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { betterAuth } from "better-auth/minimal";

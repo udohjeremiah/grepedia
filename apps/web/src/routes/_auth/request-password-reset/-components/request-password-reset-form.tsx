@@ -16,8 +16,8 @@ import { Spinner } from "@workspace/ui/components/spinner";
 import { MailIcon } from "lucide-react";
 import { z } from "zod";
 
-import AppLink from "@/components/app-link";
-import SubmissionAlert from "@/components/submission-alert";
+import { AppLink } from "@/components/app-link";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { env } from "@/env";
 import { useSubmission } from "@/hooks/use-submission";
 import { requestPasswordReset } from "@/services/auth/request-password-reset";
@@ -26,7 +26,7 @@ const formSchema = z.object({
   email: z.email("Please provide a valid email address."),
 });
 
-export default function RequestPasswordResetForm() {
+export function RequestPasswordResetForm() {
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({

@@ -18,7 +18,7 @@ interface VerificationEmailProps {
   verificationLink: string;
 }
 
-export default function VerificationEmail({
+export function VerificationEmail({
   fullName,
   logo,
   verificationLink,

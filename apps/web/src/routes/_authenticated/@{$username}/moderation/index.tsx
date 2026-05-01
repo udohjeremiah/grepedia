@@ -3,7 +3,7 @@ import { Separator } from "@workspace/ui/components/separator";
 
 import { getSession } from "@/utils/get-session";
 
-import Moderation from "./-components/moderation";
+import { Moderation } from "./-components/moderation";
 
 export const Route = createFileRoute(
   "/_authenticated/@{$username}/moderation/",

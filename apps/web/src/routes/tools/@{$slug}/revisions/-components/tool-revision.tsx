@@ -13,7 +13,7 @@ import { useToolRevisions } from "../-queries/tool-revisions";
 
 type ToolRevisionProps = ReturnType<typeof useToolRevisions>["data"][number];
 
-export default function ToolRevision(revision: ToolRevisionProps) {
+export function ToolRevision(revision: ToolRevisionProps) {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
 
   const [showSnapshot, setShowSnapshot] = useState(false);

@@ -1,14 +1,14 @@
 import type { ComponentProps, ReactNode } from "react";
 
-import Footer from "./footer";
-import Header from "./header";
+import { Footer } from "./footer";
+import { Header } from "./header";
 
-type AppLayoutProps = {
+interface AppLayoutProps {
   children: ReactNode;
   header?: ComponentProps<typeof Header>;
-};
+}
 
-export default function AppLayout({ children, header }: AppLayoutProps) {
+export function AppLayout({ children, header }: AppLayoutProps) {
   return (
     <div className="flex min-h-svh flex-col">
       <Header {...header} />

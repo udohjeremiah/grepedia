@@ -4,8 +4,8 @@ import { AlertTriangleIcon, LockIcon, MailIcon } from "lucide-react";
 
 import { securityTips } from "@/constants/security-tips";
 
-import ChangeEmailDialog from "./-components/change-email-dialog";
-import ChangePasswordDialog from "./-components/change-password-dialog";
+import { ChangeEmailDialog } from "./-components/change-email-dialog";
+import { ChangePasswordDialog } from "./-components/change-password-dialog";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/security/")({
   component: RouteComponent,

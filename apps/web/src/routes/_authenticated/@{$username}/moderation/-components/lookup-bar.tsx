@@ -33,7 +33,7 @@ const placeholderByTarget: Record<ModerationTarget, string> = {
   user: "Enter username",
 };
 
-export default function LookupBar({
+export function LookupBar({
   identifier,
   isFetching,
   onFetch,

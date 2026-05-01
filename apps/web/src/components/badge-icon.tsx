@@ -4,7 +4,7 @@ import { cn } from "@workspace/ui/lib/cn";
 
 type BadgeIconProps = SVGProps<SVGSVGElement>;
 
-export default function BadgeIcon({ className, ...props }: BadgeIconProps) {
+export function BadgeIcon({ className, ...props }: BadgeIconProps) {
   return (
     <svg
       className={cn("size-4", className)}

@@ -23,7 +23,7 @@ import { Spinner } from "@workspace/ui/components/spinner";
 import { MailIcon } from "lucide-react";
 import { z } from "zod";
 
-import SubmissionAlert from "@/components/submission-alert";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { env } from "@/env";
 import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
@@ -33,7 +33,7 @@ const formSchema = z.object({
   newEmail: z.email("Please provide a valid email address."),
 });
 
-export default function ChangeEmailDialog() {
+export function ChangeEmailDialog() {
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({

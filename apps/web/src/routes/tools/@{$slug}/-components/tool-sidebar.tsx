@@ -28,7 +28,7 @@ import { getInitials } from "@/utils/get-initials";
 
 import { useTool } from "../-queries/tool";
 
-export default function ToolSidebar() {
+export function ToolSidebar() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
   const pathname = useLocation({ select: (location) => location.pathname });
 

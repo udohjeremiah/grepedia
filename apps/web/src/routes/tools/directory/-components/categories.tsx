@@ -15,7 +15,7 @@ interface CategoriesProps {
   selectedCategory?: string;
 }
 
-export default function Categories({
+export function Categories({
   categories,
   onSelect,
   selectedCategory,

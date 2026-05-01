@@ -40,8 +40,8 @@ import { Spinner } from "@workspace/ui/components/spinner";
 import { PencilIcon, UserRoundIcon } from "lucide-react";
 import { z } from "zod";
 
-import AppLink from "@/components/app-link";
-import SubmissionAlert from "@/components/submission-alert";
+import { AppLink } from "@/components/app-link";
+import { SubmissionAlert } from "@/components/submission-alert";
 import { countryOptions } from "@/constants/country-options";
 import { auth } from "@/hooks/auth";
 import { useDialog } from "@/hooks/use-dialog";
@@ -69,7 +69,7 @@ const formSchema = z.object({
 
 type Gender = z.infer<typeof formSchema>["gender"];
 
-export default function EditUserDialog() {
+export function EditUserDialog() {
   const navigate = useNavigate();
 
   const { user } = auth.useSession();

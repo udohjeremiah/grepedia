@@ -21,7 +21,7 @@ import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { signOut } from "@/services/auth/sign-out";
 
-export default function SignOutDialog() {
+export function SignOutDialog() {
   const navigate = useNavigate();
 
   const [revokeAllSessions, setRevokeAllSessions] = useState(false);

@@ -6,7 +6,7 @@ import { auth } from "@/hooks/auth";
 
 import { useUserRecoveryPackage } from "../-queries/user-recovery-package";
 
-export default function DownloadJSON() {
+export function DownloadJSON() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
   const { user } = auth.useSession();

@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 
-import ResetPasswordForm from "./-components/reset-password-form";
+import { ResetPasswordForm } from "./-components/reset-password-form";
 
 export const Route = createFileRoute("/_auth/reset-password/")({
   beforeLoad: ({ search }) => {

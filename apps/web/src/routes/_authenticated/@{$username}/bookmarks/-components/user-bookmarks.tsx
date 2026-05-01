@@ -18,9 +18,9 @@ import { BookmarkIcon, SearchIcon, SearchXIcon, XIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { useUserBookmarks } from "../-queries/user-bookmarks";
-import UserBookmark from "./user-bookmark";
+import { UserBookmark } from "./user-bookmark";
 
-export default function UserBookmarks() {
+export function UserBookmarks() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
   const [searchQuery, setSearchQuery] = useState("");

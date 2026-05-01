@@ -35,7 +35,13 @@ import { useDialog } from "@/hooks/use-dialog";
 
 import type { ActiveSession } from "./active-sessions";
 
-export default function ActiveSession(session: ActiveSession) {
+const DEVICE_ICON_MAP = {
+  default: MonitorIcon,
+  mobile: SmartphoneIcon,
+  tablet: TabletIcon,
+} as const;
+
+export function ActiveSession(session: ActiveSession) {
   const { isPending, mutate: revokeSession } = auth.useRevokeSession();
 
   const { handleOpenChange, isOpen, setIsOpen } = useDialog();
@@ -51,7 +57,15 @@ export default function ActiveSession(session: ActiveSession) {
     });
   };
 
-  const DeviceIcon = getDeviceIcon(session.device);
+  const device = session.device.toLowerCase();
+
+  const getDeviceKey = () => {
+    if (device.includes("mobile")) return "mobile";
+    if (device.includes("tablet")) return "tablet";
+    return "default";
+  };
+
+  const DeviceIcon = DEVICE_ICON_MAP[getDeviceKey()];
 
   return (
     <div
@@ -155,10 +169,4 @@ function formatCompactRelativeTime(value: string) {
   if (seconds > 5) return `${seconds}s ago`;
 
   return "just now";
-}
-
-function getDeviceIcon(device: string) {
-  if (device.toLowerCase().includes("mobile")) return SmartphoneIcon;
-  if (device.toLowerCase().includes("tablet")) return TabletIcon;
-  return MonitorIcon;
 }

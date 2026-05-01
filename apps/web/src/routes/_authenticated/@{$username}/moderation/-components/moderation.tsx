@@ -14,10 +14,10 @@ import { getErrorMessage } from "@/utils/get-error-message";
 import { useModeratorGetComment } from "../-queries/moderator-get-comment";
 import { useModeratorGetTool } from "../-queries/moderator-get-tool";
 import { useModeratorGetUser } from "../-queries/moderator-get-user";
-import CommentPanel from "./comment-panel";
-import LookupBar from "./lookup-bar";
-import ToolPanel from "./tool-panel";
-import UserPanel from "./user-panel";
+import { CommentPanel } from "./comment-panel";
+import { LookupBar } from "./lookup-bar";
+import { ToolPanel } from "./tool-panel";
+import { UserPanel } from "./user-panel";
 
 type ModerationTarget = "comment" | "tool" | "user";
 
@@ -33,7 +33,7 @@ const emptyIdentifierByTarget: Record<ModerationTarget, string> = {
   user: "user",
 };
 
-export default function Moderation() {
+export function Moderation() {
   const [target, setTarget] = useState<ModerationTarget>("user");
   const [identifier, setIdentifier] = useState("");
 

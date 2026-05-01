@@ -2,9 +2,9 @@ import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { ErrorBoundary } from "react-error-boundary";
 
-import ErrorFallback from "@/components/error-fallback";
+import { ErrorFallback } from "@/components/error-fallback";
 
-import Tool from "./-components/tool";
+import { Tool } from "./-components/tool";
 import { toolCommentsQueryOptions } from "./-queries/tool-comments";
 
 export const Route = createFileRoute("/tools/@{$slug}/")({

@@ -6,7 +6,7 @@ import {
   ToggleGroupItem,
 } from "@workspace/ui/components/toggle-group";
 import { cn } from "@workspace/ui/lib/cn";
-import DOMPurify from "isomorphic-dompurify";
+import * as DOMPurify from "isomorphic-dompurify";
 import { marked } from "marked";
 import { useDeferredValue, useMemo, useState } from "react";
 

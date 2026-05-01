@@ -13,7 +13,7 @@ interface ToolCommentReplyProps {
   username: string;
 }
 
-export default function ToolCommentReply({
+export function ToolCommentReply({
   commentId,
   slug,
   username,

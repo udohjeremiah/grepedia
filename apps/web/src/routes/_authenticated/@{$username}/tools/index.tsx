@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import ErrorFallback from "@/components/error-fallback";
+import { ErrorFallback } from "@/components/error-fallback";
 
-import UserTools from "./-components/user-tools";
+import { UserTools } from "./-components/user-tools";
 import { userToolsQueryOptions } from "./-queries/user-tools";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/tools/")({

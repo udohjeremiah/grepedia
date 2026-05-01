@@ -11,7 +11,7 @@ import {
 
 import { getSession } from "@/utils/get-session";
 
-import NavItem from "./-components/nav-item";
+import { NavItem } from "./-components/nav-item";
 
 const baseNavItems = [
   {

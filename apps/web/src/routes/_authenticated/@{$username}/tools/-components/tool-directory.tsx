@@ -36,10 +36,7 @@ interface ToolDirectoryProps {
 
 type UserTool = ReturnType<typeof useUserTools>["data"]["tools"][number];
 
-export default function ToolDirectory({
-  searchQuery,
-  tools,
-}: ToolDirectoryProps) {
+export function ToolDirectory({ searchQuery, tools }: ToolDirectoryProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>();
   const [isExpanded, setIsExpanded] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");

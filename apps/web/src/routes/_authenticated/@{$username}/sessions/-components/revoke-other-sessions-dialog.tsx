@@ -15,7 +15,7 @@ import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
 import { auth } from "@/hooks/auth";
 import { useDialog } from "@/hooks/use-dialog";
 
-export default function RevokeOtherSessionsDialog() {
+export function RevokeOtherSessionsDialog() {
   const { session } = auth.useSession();
   const { data: sessions } = auth.useListSessions();
   const { isPending, mutate: revokeOtherSessions } =
