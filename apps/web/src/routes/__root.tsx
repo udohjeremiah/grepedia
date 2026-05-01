@@ -17,6 +17,7 @@ import { DefaultNotFound } from "@/components/default-not-found";
 import { GlobalBanner } from "@/components/global-banner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import appCss from "@/styles/globals.css?url";
+import { getTheme } from "@/utils/get-theme";
 
 export interface MyRouterContext {
   queryClient: QueryClient;
@@ -49,8 +50,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootDocument({ children }: { children: ReactNode }) {
+  const theme = getTheme();
+
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html data-theme={theme} lang="en" suppressHydrationWarning={true}>
       <head>
         <HeadContent />
       </head>
@@ -64,9 +67,7 @@ function RootDocument({ children }: { children: ReactNode }) {
           </ThemeProvider>
         </AuthQueryProvider>
         <TanStackDevtools
-          config={{
-            position: "bottom-right",
-          }}
+          config={{ position: "bottom-right" }}
           plugins={[
             {
               name: "Tanstack Router",

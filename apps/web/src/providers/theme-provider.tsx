@@ -1,30 +1,21 @@
-import { ScriptOnce } from "@tanstack/react-router";
 import { createClientOnlyFn } from "@tanstack/react-start";
-import { createContext, type ReactNode, use, useEffect, useState } from "react";
-import { z } from "zod";
+import {
+  createContext,
+  type ReactNode,
+  use,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
-// eslint-disable-next-line unicorn/prefer-top-level-await
-const ThemeSchema = z.enum(["light", "dark"]).catch("light");
-export type Theme = z.infer<typeof ThemeSchema>;
+import { getTheme, type Theme } from "@/utils/get-theme";
 
-const getStoredTheme = (): Theme => {
-  const stored = localStorage.getItem("theme");
-  if (stored === "dark" || stored === "light") return stored;
-  return document.documentElement.dataset["theme"] === "dark"
-    ? "dark"
-    : "light";
+type ThemeContextType = {
+  setTheme: (theme: Theme) => void;
+  theme: Theme;
 };
 
-const setStoredTheme = createClientOnlyFn(
-  (storageKey: string, theme: Theme) => {
-    localStorage.setItem(storageKey, theme);
-  },
-);
-
-const applyTheme = createClientOnlyFn((theme: Theme) => {
-  const root = document.documentElement;
-  root.dataset["theme"] = theme;
-});
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const disableTransitions = createClientOnlyFn(() => {
   const css = document.createElement("style");
@@ -47,65 +38,27 @@ const disableTransitions = createClientOnlyFn(() => {
   };
 });
 
-const themeFunction = (storageKey: string) => {
-  const prefersDark = globalThis.matchMedia(
-    "(prefers-color-scheme: dark)",
-  ).matches;
-  const resolvedByPreference = prefersDark ? "dark" : "light";
-  const root = document.documentElement;
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setThemeState] = useState<Theme>(getTheme());
 
-  try {
-    const stored = localStorage.getItem(storageKey);
-    const resolved =
-      stored === "dark" || stored === "light" ? stored : resolvedByPreference;
-    root.dataset["theme"] = resolved;
-  } catch {
-    root.dataset["theme"] = resolvedByPreference;
-  }
-};
-
-const themeScript = (storageKey: string) => {
-  return `(${themeFunction.toString()})(${JSON.stringify(storageKey)});`;
-};
-
-type ThemeContextType = {
-  setTheme: (theme: Theme) => void;
-  theme: Theme;
-};
-
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-interface ThemeProviderProps {
-  children: ReactNode;
-  disableTransitionOnChange?: boolean;
-  storageKey?: string;
-}
-
-export function ThemeProvider({
-  children,
-  disableTransitionOnChange = true,
-  storageKey = "theme",
-}: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (globalThis.window === undefined) return "light";
-    return getStoredTheme();
-  });
+  const setTheme = useCallback((newTheme: Theme) => {
+    const enable = disableTransitions();
+    setThemeState(newTheme);
+    document.documentElement.dataset["theme"] = newTheme;
+    // eslint-disable-next-line unicorn/no-document-cookie
+    document.cookie = `theme=${newTheme}; path=/; max-age=${365 * 24 * 60 * 60}`;
+    enable?.();
+  }, []);
 
   useEffect(() => {
-    const enable = disableTransitionOnChange ? disableTransitions() : undefined;
-    applyTheme(theme);
-    enable?.();
-  }, [disableTransitionOnChange, theme]);
-
-  const setTheme = (newTheme: Theme) => {
-    const validated = ThemeSchema.parse(newTheme);
-    setThemeState(validated);
-    setStoredTheme(storageKey, validated);
-  };
+    const media = globalThis.matchMedia("(prefers-color-scheme: dark)");
+    const update = () => setTheme(media.matches ? "dark" : "light");
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, [setTheme]);
 
   return (
     <ThemeContext.Provider value={{ setTheme, theme }}>
-      <ScriptOnce>{themeScript(storageKey)}</ScriptOnce>
       {children}
     </ThemeContext.Provider>
   );

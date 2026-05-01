@@ -7,18 +7,16 @@ import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
 export const getRouter = () => {
-  const rqContext = { queryClient: tanstackQueryClient() };
+  const queryClient = tanstackQueryClient();
 
   const router = createRouter({
-    context: {
-      ...rqContext,
-    },
+    context: { queryClient },
     defaultPreload: "intent",
     routeTree,
   });
 
   setupRouterSsrQueryIntegration({
-    queryClient: rqContext.queryClient,
+    queryClient,
     router,
   });
 
