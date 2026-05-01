@@ -13,7 +13,7 @@ export const moderatorReviewCaseBodySchema = z
   })
   .superRefine(({ decision, decisionSummary, decisionTitle }, context) => {
     if (["approve", "reject"].includes(decision)) {
-      if (!decisionTitle || decisionTitle.trim().length === 0) {
+      if (!decisionTitle || !decisionTitle.trim()) {
         context.addIssue({
           code: "custom",
           message: "Decision title is required when approving or rejecting.",
@@ -21,7 +21,7 @@ export const moderatorReviewCaseBodySchema = z
         });
       }
 
-      if (!decisionSummary || decisionSummary.trim().length === 0) {
+      if (!decisionSummary || !decisionSummary.trim()) {
         context.addIssue({
           code: "custom",
           message: "Decision summary is required when approving or rejecting.",

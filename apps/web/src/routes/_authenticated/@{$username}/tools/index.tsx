@@ -6,7 +6,6 @@ import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "@/components/error-fallback";
 
 import UserTools from "./-components/user-tools";
-import UserToolsSkeleton from "./-components/user-tools-skeleton";
 import { userToolsQueryOptions } from "./-queries/user-tools";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/tools/")({
@@ -19,7 +18,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/tools/")({
   // eslint-disable-next-line perfectionist/sort-objects
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} • Tools • Grepedia` },
+      { title: "Tools • Grepedia" },
       {
         content: `Browse tools associated with @${params.username}, including owned, added, and updated tools.`,
         name: "description",
@@ -31,23 +30,23 @@ export const Route = createFileRoute("/_authenticated/@{$username}/tools/")({
 function RouteComponent() {
   return (
     <main className="flex p-4 sm:px-8 md:px-0 md:py-6">
-      <Suspense fallback={<UserToolsSkeleton />}>
-        <QueryErrorResetBoundary>
-          {({ reset }) => (
-            <ErrorBoundary
-              FallbackComponent={({ resetErrorBoundary }) => (
-                <ErrorFallback
-                  description="Something unexpected happened, so we couldn't load your tools. Click the button below to try again."
-                  onRetry={resetErrorBoundary}
-                />
-              )}
-              onReset={reset}
-            >
+      <QueryErrorResetBoundary>
+        {({ reset }) => (
+          <ErrorBoundary
+            FallbackComponent={({ resetErrorBoundary }) => (
+              <ErrorFallback
+                description="Something unexpected happened, so we couldn't load your tools. Click the button below to try again."
+                onRetry={resetErrorBoundary}
+              />
+            )}
+            onReset={reset}
+          >
+            <Suspense>
               <UserTools />
-            </ErrorBoundary>
-          )}
-        </QueryErrorResetBoundary>
-      </Suspense>
+            </Suspense>
+          </ErrorBoundary>
+        )}
+      </QueryErrorResetBoundary>
     </main>
   );
 }

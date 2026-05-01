@@ -42,10 +42,8 @@ const getToolsDirectoryCategories: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireUser],
     schema: {
       response: getToolsDirectoryCategoriesResponseSchemas,
-      security: [{ sessionCookie: [] }],
       tags: ["Tools"],
     },
     url: "/categories",

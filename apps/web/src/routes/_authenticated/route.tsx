@@ -1,9 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import Footer from "@/components/footer";
+import AppLayout from "@/components/app-layout";
 import { getSession } from "@/utils/get-session";
-
-import Header from "./-components/header";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async () => {
@@ -18,10 +16,8 @@ export const Route = createFileRoute("/_authenticated")({
 
 function LayoutComponent() {
   return (
-    <div className="flex min-h-svh flex-col">
-      <Header />
+    <AppLayout>
       <Outlet />
-      <Footer />
-    </div>
+    </AppLayout>
   );
 }

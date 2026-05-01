@@ -12,6 +12,7 @@ export const toolCommentSchema = z.object({
     downvotes: z.int().min(0),
     upvotes: z.int().min(0),
   }),
+  status: z.enum(["active", "flagged"]),
   toolId: objectIdSchema,
   updatedAt: z.iso.datetime(),
   userId: objectIdSchema,

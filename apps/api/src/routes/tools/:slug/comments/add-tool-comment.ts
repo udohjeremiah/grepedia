@@ -66,6 +66,7 @@ const addToolComment: FastifyPluginAsyncZod = async (fastify) => {
         parentCommentId: parentId,
         replyCount: 0,
         stats: { downvotes: 0, upvotes: 0 },
+        status: "active",
         toolId: tool._id,
         updatedAt: now,
         userId,

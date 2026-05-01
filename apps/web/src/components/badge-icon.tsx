@@ -1,6 +1,6 @@
 import type { SVGProps } from "react";
 
-import { cn } from "@workspace/ui/utils/cn";
+import { cn } from "@workspace/ui/lib/cn";
 
 type BadgeIconProps = SVGProps<SVGSVGElement>;
 

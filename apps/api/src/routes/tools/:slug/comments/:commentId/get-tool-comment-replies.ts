@@ -26,8 +26,6 @@ type RepliesCursor = z.infer<typeof repliesCursorSchema>;
 const getToolCommentReplies: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
-      if (!request.user) throw new Error("User not authenticated");
-
       const { commentId, slug } = request.params;
       const { cursor, limit = 20 } = request.query;
 
@@ -48,6 +46,7 @@ const getToolCommentReplies: FastifyPluginAsyncZod = async (fastify) => {
       const parentCommentId = ObjectId.createFromHexString(commentId);
       const parent = await comments.findOne({
         _id: parentCommentId,
+        status: "active",
         toolId: tool._id,
       });
 
@@ -77,6 +76,7 @@ const getToolCommentReplies: FastifyPluginAsyncZod = async (fastify) => {
             ? {
                 $and: [
                   { parentCommentId, toolId: tool._id },
+                  { status: "active" },
                   {
                     $or: [
                       {
@@ -92,7 +92,12 @@ const getToolCommentReplies: FastifyPluginAsyncZod = async (fastify) => {
                   },
                 ],
               }
-            : { parentCommentId, toolId: tool._id },
+            : {
+                $and: [
+                  { parentCommentId, toolId: tool._id },
+                  { status: "active" },
+                ],
+              },
         )
         // eslint-disable-next-line perfectionist/sort-objects, unicorn/no-array-sort
         .sort({ createdAt: -1, _id: -1 })
@@ -117,10 +122,12 @@ const getToolCommentReplies: FastifyPluginAsyncZod = async (fastify) => {
         commentUsers.map((user) => [user._id.toHexString(), user]),
       );
 
-      const currentUserId = ObjectId.createFromHexString(request.user.id);
+      const currentUserId = request.user?.id
+        ? ObjectId.createFromHexString(request.user.id)
+        : undefined;
       const replyIds = replies.map((replyItem) => replyItem._id);
       const currentUserReactions =
-        replyIds.length > 0
+        currentUserId && replyIds.length > 0
           ? await commentReactions
               .find(
                 { commentId: { $in: replyIds }, userId: currentUserId },
@@ -177,12 +184,11 @@ const getToolCommentReplies: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireUser],
+    onRequest: [fastify.setUserIfPresent],
     schema: {
       params: getToolCommentRepliesParamsSchema,
       querystring: getToolCommentRepliesQueryStringSchema,
       response: getToolCommentRepliesResponseSchemas,
-      security: [{ sessionCookie: [] }],
       tags: ["Tools"],
     },
     url: "/replies",

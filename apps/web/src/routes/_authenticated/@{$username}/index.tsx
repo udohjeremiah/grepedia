@@ -4,13 +4,13 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import ErrorFallback from "@/components/error-fallback";
 
-import User from "./-components/user";
+import UserProfile from "./-components/user-profile";
 
 export const Route = createFileRoute("/_authenticated/@{$username}/")({
   component: RouteComponent,
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} • Profile • Grepedia` },
+      { title: "Profile • Grepedia" },
       {
         content: `View profile details and contribution summary for @${params.username} on Grepedia.`,
         name: "description",
@@ -33,7 +33,7 @@ function RouteComponent() {
             )}
             onReset={reset}
           >
-            <User />
+            <UserProfile />
           </ErrorBoundary>
         )}
       </QueryErrorResetBoundary>

@@ -12,7 +12,9 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TooltipProvider } from "@workspace/ui/components/tooltip";
 
-import { GlobalBannerProvider } from "@/providers/global-banner-provider";
+import DefaultError from "@/components/default-error";
+import DefaultNotFound from "@/components/default-not-found";
+import GlobalBanner from "@/components/global-banner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import appCss from "@/styles/globals.css?url";
 
@@ -21,6 +23,7 @@ export interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  errorComponent: DefaultError,
   head: () => ({
     links: [
       { href: appCss, rel: "stylesheet" },
@@ -41,6 +44,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
+  notFoundComponent: DefaultNotFound,
   shellComponent: RootDocument,
 });
 
@@ -54,7 +58,8 @@ function RootDocument({ children }: { children: ReactNode }) {
         <AuthQueryProvider>
           <ThemeProvider>
             <TooltipProvider>
-              <GlobalBannerProvider>{children}</GlobalBannerProvider>
+              <GlobalBanner />
+              {children}
             </TooltipProvider>
           </ThemeProvider>
         </AuthQueryProvider>

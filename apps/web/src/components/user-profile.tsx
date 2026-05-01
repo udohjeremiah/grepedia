@@ -4,18 +4,13 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@workspace/ui/components/avatar";
-import { Skeleton } from "@workspace/ui/components/skeleton";
 
 import { auth } from "@/hooks/auth";
+import { getAvatar } from "@/utils/get-avatar";
 import { getInitials } from "@/utils/get-initials";
-import { getUserAvatar } from "@/utils/get-user-avatar";
 
 export default function UserProfile() {
-  const { isPending, user } = auth.useSession();
-
-  if (isPending) {
-    return <Skeleton className="size-8 rounded-full" />;
-  }
+  const { user } = auth.useSession();
 
   if (!user) {
     return (
@@ -30,8 +25,8 @@ export default function UserProfile() {
 
   return (
     <Link params={{ username: user.username }} to="/@{$username}">
-      <Avatar size="sm">
-        <AvatarImage alt={user.username} src={getUserAvatar(user.username)} />
+      <Avatar>
+        <AvatarImage alt={user.username} src={getAvatar(user.username)} />
         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>
     </Link>

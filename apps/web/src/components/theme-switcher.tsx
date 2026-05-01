@@ -1,4 +1,4 @@
-import { cn } from "@workspace/ui/utils/cn";
+import { cn } from "@workspace/ui/lib/cn";
 import { MoonIcon, SunIcon } from "lucide-react";
 
 import { useTheme } from "@/providers/theme-provider";
@@ -12,17 +12,17 @@ export default function ThemeSwitcher() {
     <button
       aria-checked={isDark}
       aria-label="Toggle theme"
-      className="not-transition-lock relative h-5.5 w-10.5 shrink-0 rounded-full bg-muted transition-colors"
+      className="not-transition-lock relative h-6 w-11 shrink-0 bg-muted p-0.5"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       role="switch"
     >
       <span
         className={cn(
-          "absolute top-0 left-0 flex size-full items-center transition-transform duration-250",
-          isDark ? "translate-x-5" : "translate-x-0",
+          "flex h-full w-fit items-center transition-transform duration-250",
+          isDark ? "translate-x-full" : "translate-x-0",
         )}
       >
-        <span className="relative flex size-5 items-center justify-center rounded-full bg-background shadow-sm">
+        <span className="relative flex size-5 items-center justify-center bg-background shadow-sm">
           <SunIcon
             className={cn(
               "absolute size-3 transition-all duration-250",

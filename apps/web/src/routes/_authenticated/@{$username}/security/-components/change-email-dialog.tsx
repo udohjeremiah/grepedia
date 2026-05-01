@@ -25,7 +25,7 @@ import { z } from "zod";
 
 import SubmissionAlert from "@/components/submission-alert";
 import { env } from "@/env";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { changeEmail } from "@/services/auth/change-email";
 
@@ -64,7 +64,7 @@ export default function ChangeEmailDialog() {
     },
   });
 
-  const { handleOpenChange, isOpen } = useDialogState({
+  const { handleOpenChange, isOpen } = useDialog({
     onCloseReset: () => {
       form.reset();
       resetStatus();

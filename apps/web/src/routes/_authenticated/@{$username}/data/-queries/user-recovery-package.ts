@@ -19,6 +19,6 @@ export const useUserRecoveryPackage = (
 ) => {
   return useQuery({
     ...userRecoveryPackageQueryOptions(params),
-    select: (data) => data.data,
+    select: (data) => data.data.recoveryPackage,
   });
 };

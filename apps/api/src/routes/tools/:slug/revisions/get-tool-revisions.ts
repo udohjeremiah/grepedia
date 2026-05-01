@@ -164,12 +164,10 @@ const getToolRevisions: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireUser],
     schema: {
       params: getToolRevisionsParamsSchema,
       querystring: getToolRevisionsQueryStringSchema,
       response: getToolRevisionsResponseSchemas,
-      security: [{ sessionCookie: [] }],
       tags: ["Tools"],
     },
     url: "/",

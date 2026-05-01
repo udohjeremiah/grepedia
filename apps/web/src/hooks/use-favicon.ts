@@ -1,25 +1,24 @@
 import { useEffect } from "react";
 
-export function useFavicon(url: string) {
+export function useFavicon(url: string, defaultFavicon = "/favicon.ico") {
   useEffect(() => {
-    if (!url) return;
+    const link =
+      document.querySelector<HTMLLinkElement>("link[rel~='icon']") ??
+      (() => {
+        const element = document.createElement("link");
+        element.rel = "icon";
+        document.head.append(element);
+        return element;
+      })();
 
-    let link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
-    let created = false;
+    const previousHref = link.href;
 
-    if (!link) {
-      link = document.createElement("link");
-      link.rel = "icon";
-      document.head.append(link);
-      created = true;
+    if (url) {
+      link.href = `https://www.google.com/s2/favicons?domain=${url}&sz=64`;
     }
 
-    const original = link.href;
-    link.href = `https://www.google.com/s2/favicons?domain=${url}&sz=64`;
-
     return () => {
-      link.href = original || "/favicon.ico";
-      if (created) link.remove();
+      link.href = previousHref || defaultFavicon;
     };
-  }, [url]);
+  }, [defaultFavicon, url]);
 }

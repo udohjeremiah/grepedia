@@ -24,7 +24,6 @@ const setStoredTheme = createClientOnlyFn(
 const applyTheme = createClientOnlyFn((theme: Theme) => {
   const root = document.documentElement;
   root.dataset["theme"] = theme;
-  root.dataset["colorMode"] = theme;
 });
 
 const disableTransitions = createClientOnlyFn(() => {
@@ -59,12 +58,9 @@ const themeFunction = (storageKey: string) => {
     const stored = localStorage.getItem(storageKey);
     const resolved =
       stored === "dark" || stored === "light" ? stored : resolvedByPreference;
-
     root.dataset["theme"] = resolved;
-    root.dataset["colorMode"] = resolved;
   } catch {
     root.dataset["theme"] = resolvedByPreference;
-    root.dataset["colorMode"] = resolvedByPreference;
   }
 };
 

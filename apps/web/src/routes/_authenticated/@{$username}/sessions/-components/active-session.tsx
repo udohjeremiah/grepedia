@@ -11,7 +11,7 @@ import {
 } from "@workspace/ui/components/alert-dialog";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
-import { cn } from "@workspace/ui/utils/cn";
+import { cn } from "@workspace/ui/lib/cn";
 import {
   differenceInDays,
   differenceInHours,
@@ -31,14 +31,14 @@ import {
 } from "lucide-react";
 
 import { auth } from "@/hooks/auth";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 
 import type { ActiveSession } from "./active-sessions";
 
 export default function ActiveSession(session: ActiveSession) {
   const { isPending, mutate: revokeSession } = auth.useRevokeSession();
 
-  const { handleOpenChange, isOpen, setIsOpen } = useDialogState();
+  const { handleOpenChange, isOpen, setIsOpen } = useDialog();
 
   const handleRevokeSession = () => {
     revokeSession({
@@ -56,13 +56,13 @@ export default function ActiveSession(session: ActiveSession) {
   return (
     <div
       className={cn(
-        "flex gap-4 rounded-lg border p-4",
+        "flex gap-4 border p-4",
         session.isCurrent && "border-primary/20 bg-primary/5",
       )}
     >
       <div
         className={cn(
-          "flex size-10 shrink-0 items-center justify-center rounded-lg",
+          "flex size-10 shrink-0 items-center justify-center",
           session.isCurrent
             ? "bg-primary/15 text-primary"
             : "bg-muted text-muted-foreground",

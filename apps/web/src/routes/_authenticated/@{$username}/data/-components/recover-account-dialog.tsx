@@ -18,7 +18,7 @@ import { RotateCcwIcon } from "lucide-react";
 import { useState } from "react";
 
 import SubmissionAlert from "@/components/submission-alert";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 
 import { useUserRecoverAccount } from "../-queries/user-recover-account";
@@ -87,7 +87,7 @@ export default function RecoverAccountDialog() {
     );
   };
 
-  const { handleOpenChange, isOpen } = useDialogState({
+  const { handleOpenChange, isOpen } = useDialog({
     onCloseReset: () => {
       setPayload("");
       resetStatus();

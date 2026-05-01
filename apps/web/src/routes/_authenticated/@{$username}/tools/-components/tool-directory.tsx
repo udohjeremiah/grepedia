@@ -22,8 +22,9 @@ import {
   ThumbsUpIcon,
   XIcon,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Activity, useMemo, useState } from "react";
 
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { formatCompactNumber } from "@/utils/format-compact-number";
 
 import { useUserTools } from "../-queries/user-tools";
@@ -40,6 +41,8 @@ export default function ToolDirectory({
   tools,
 }: ToolDirectoryProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const groupedByCategory = useMemo(() => {
     const categoryMap = new Map<string, UserTool[]>();
@@ -65,14 +68,13 @@ export default function ToolDirectory({
 
   const categories = groupedByCategory.map((group) => group.category);
 
-  useEffect(() => {
-    if (!selectedCategory || !categories.includes(selectedCategory)) {
-      setSelectedCategory(categories[0]);
-    }
-  }, [categories, selectedCategory]);
+  const safeCategory =
+    selectedCategory && categories.includes(selectedCategory)
+      ? selectedCategory
+      : categories[0];
 
   const activeGroup = groupedByCategory.find(
-    (group) => group.category === selectedCategory,
+    (group) => group.category === safeCategory,
   );
 
   if (groupedByCategory.length === 0) {
@@ -102,35 +104,51 @@ export default function ToolDirectory({
   return (
     <>
       <div className="grid gap-4 md:grid-cols-[30%_minmax(0,1fr)]">
-        <aside className="overflow-hidden rounded-lg border md:sticky md:top-4 md:self-start">
+        <aside className="overflow-hidden border md:sticky md:top-4 md:self-start">
           <div className="flex items-center gap-2 border-b px-3 py-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            <FolderOpenIcon className="size-3.5 text-info" />
+            <FolderOpenIcon className="size-3.5 text-chart-4" />
             Categories
           </div>
-          <div className="max-h-130 overflow-y-auto">
-            {groupedByCategory.map((group) => {
-              const isActive = group.category === selectedCategory;
-
-              return (
-                <Button
-                  className="w-full gap-2.5 rounded-none border-none text-start"
-                  key={group.category}
-                  onClick={() => setSelectedCategory(group.category)}
-                  variant={isActive ? "secondary" : "ghost"}
-                >
-                  <span className="flex-1 truncate">{group.category}</span>
-                  <Badge className="ml-auto" variant="outline">
-                    {formatCompactNumber(group.tools.length)}
-                  </Badge>
-                </Button>
-              );
-            })}
+          <div className="px-3 py-2 md:hidden">
+            <Button
+              aria-expanded={isExpanded}
+              className="w-full"
+              onClick={() => setIsExpanded((previous) => !previous)}
+              size="sm"
+              variant="outline"
+            >
+              {isExpanded ? "Hide Categories" : "Show Categories"}
+            </Button>
           </div>
+          <Activity mode={isDesktop || isExpanded ? "visible" : "hidden"}>
+            <div className="max-h-130 overflow-y-auto max-md:border-t">
+              {groupedByCategory.map((group) => {
+                const isActive = group.category === safeCategory;
+
+                return (
+                  <Button
+                    className="w-full gap-2.5 border-none text-start"
+                    key={group.category}
+                    onClick={() => {
+                      setSelectedCategory(group.category);
+                      setIsExpanded(false);
+                    }}
+                    variant={isActive ? "secondary" : "ghost"}
+                  >
+                    <span className="flex-1 truncate">{group.category}</span>
+                    <Badge className="ml-auto" variant="outline">
+                      {formatCompactNumber(group.tools.length)}
+                    </Badge>
+                  </Button>
+                );
+              })}
+            </div>
+          </Activity>
         </aside>
-        <section className="overflow-hidden rounded-lg border">
+        <section className="overflow-hidden border">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5">
             <div className="flex items-center gap-2">
-              <FolderOpenIcon className="size-4 text-info" />
+              <FolderOpenIcon className="size-4 text-chart-4" />
               <span className="text-sm font-semibold">
                 {activeGroup?.category ?? "Tools"}
               </span>

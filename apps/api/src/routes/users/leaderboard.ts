@@ -242,11 +242,9 @@ const getUsersLeaderboard: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireUser],
     schema: {
       querystring: getUsersLeaderboardQueryStringSchema,
       response: getUsersLeaderboardResponseSchemas,
-      security: [{ sessionCookie: [] }],
       tags: ["Users"],
     },
     url: "/leaderboard",

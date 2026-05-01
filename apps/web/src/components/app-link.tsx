@@ -1,6 +1,6 @@
 import { createLink, LinkComponent } from "@tanstack/react-router";
 import { Button } from "@workspace/ui/components/button";
-import { cn } from "@workspace/ui/utils/cn";
+import { cn } from "@workspace/ui/lib/cn";
 import { AnchorHTMLAttributes, forwardRef } from "react";
 
 type AppLinkProps = AnchorHTMLAttributes<HTMLAnchorElement>;

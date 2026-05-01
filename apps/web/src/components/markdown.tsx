@@ -1,165 +1,100 @@
-import type MDEditor from "@uiw/react-md-editor";
-import type { MDEditorProps } from "@uiw/react-md-editor";
 import type { ComponentProps } from "react";
 
-import { omitKeys } from "@workspace/shared/omit-keys";
 import { Textarea } from "@workspace/ui/components/textarea";
-import { cn } from "@workspace/ui/utils/cn";
-import { useEffect, useState } from "react";
-import rehypeSanitize from "rehype-sanitize";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@workspace/ui/components/toggle-group";
+import { cn } from "@workspace/ui/lib/cn";
+import DOMPurify from "isomorphic-dompurify";
+import { marked } from "marked";
+import { useDeferredValue, useMemo, useState } from "react";
 
-type MarkdownPreviewProps = ComponentProps<typeof MDEditor.Markdown>;
+type EditorMode = "edit" | "preview";
+
+interface MarkdownPreviewProps {
+  className?: string;
+  value: string;
+}
+
+DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+  if (node.tagName === "A") {
+    const href = node.getAttribute("href") || "";
+
+    const isExternal = href && !href.startsWith("/") && !href.startsWith("#");
+
+    if (isExternal) {
+      node.setAttribute("target", "_blank");
+      node.setAttribute("rel", "noreferrer");
+    }
+  }
+});
 
 export function MarkdownEditor({
   className,
-  onBlur,
-  onChange,
-  preview = "edit",
-  previewOptions,
   value,
-  visibleDragbar = false,
   ...props
-}: MDEditorProps) {
-  const [editorModule, setEditorModule] =
-    useState<typeof import("@uiw/react-md-editor")>();
+}: ComponentProps<"textarea">) {
+  const [mode, setMode] = useState<EditorMode>("edit");
 
-  useEffect(() => {
-    let isMounted = true;
-
-    import("@uiw/react-md-editor").then((module) => {
-      if (isMounted) setEditorModule(module);
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // Fix (hack): scroll lock not released after closing dialog
-  useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-
-    const previousHtmlOverflow = html.style.overflow;
-    const previousBodyOverflow = body.style.overflow;
-    const previousBodyPaddingRight = body.style.paddingRight;
-
-    return () => {
-      html.style.overflow = previousHtmlOverflow;
-      body.style.overflow = previousBodyOverflow;
-      body.style.paddingRight = previousBodyPaddingRight;
-    };
-  }, []);
-
-  const MDEditor = editorModule?.default;
-
-  if (!MDEditor) {
-    const textareaProps = omitKeys(props.textareaProps ?? {}, [
-      "onScroll",
-      "renderTextarea",
-    ]);
-
-    return (
-      <Textarea
-        {...textareaProps}
-        onBlur={textareaProps.onBlur}
-        onChange={(event) => onChange?.(event.target.value)}
-        value={value}
-      />
-    );
-  }
-
-  const mergedPreviewOptions = {
-    ...previewOptions,
-    components: {
-      ...previewOptions?.components,
-      a: ({ href, ...rest }: ComponentProps<"a">) => {
-        const isExternal =
-          !!href && !href.startsWith("/") && !href.startsWith("#");
-
-        return (
-          <a
-            {...rest}
-            href={href}
-            rel={isExternal ? "noreferrer" : undefined}
-            target={isExternal ? "_blank" : undefined}
-          />
-        );
-      },
-    },
-    rehypePlugins: [...(previewOptions?.rehypePlugins ?? []), rehypeSanitize],
-  };
+  const stringValue = (value ?? "") as string;
 
   return (
-    <MDEditor
-      {...props}
-      className={cn(
-        "prose max-w-none overflow-hidden! rounded-lg! prose-zinc dark:prose-invert",
-        className,
+    <div className="border">
+      <div className="border-b">
+        <ToggleGroup
+          onValueChange={(value) => {
+            if (!value) return;
+            setMode(value as EditorMode);
+          }}
+          type="single"
+          value={mode}
+          variant="outline"
+        >
+          <ToggleGroupItem className="border-none" value="edit">
+            Edit
+          </ToggleGroupItem>
+          <ToggleGroupItem className="border-none" value="preview">
+            Preview
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+      {mode === "edit" && (
+        <div className="relative">
+          <Textarea
+            {...props}
+            className={cn("h-75 border-none p-3 text-sm", className)}
+            value={value}
+          />
+          {props.maxLength && (
+            <span className="pointer-events-none absolute right-4 bottom-2 text-xs text-muted-foreground">
+              {`${stringValue.length}/${props.maxLength}`}
+            </span>
+          )}
+        </div>
       )}
-      onBlur={onBlur}
-      onChange={(value) => onChange?.(value)}
-      preview={preview}
-      previewOptions={mergedPreviewOptions}
-      value={value}
-      visibleDragbar={visibleDragbar}
-    />
+      {mode === "preview" && (
+        <MarkdownPreview className="prose-sm h-75 p-3" value={stringValue} />
+      )}
+    </div>
   );
 }
 
-export function MarkdownPreview({ className, ...props }: MarkdownPreviewProps) {
-  const [editorModule, setEditorModule] =
-    useState<typeof import("@uiw/react-md-editor")>();
+export function MarkdownPreview({ className, value }: MarkdownPreviewProps) {
+  const deferredValue = useDeferredValue(value);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    import("@uiw/react-md-editor").then((module) => {
-      if (isMounted) setEditorModule(module);
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const MDEditor = editorModule?.default;
-
-  if (!MDEditor) {
-    return (
-      <p className="text-sm whitespace-break-spaces text-muted-foreground">
-        {props.source}
-      </p>
-    );
-  }
-
-  const mergedRehypePlugins = [...(props.rehypePlugins ?? []), rehypeSanitize];
-  const mergedComponents = {
-    ...props.components,
-    a: ({ href, ...rest }: ComponentProps<"a">) => {
-      const isExternal =
-        !!href && !href.startsWith("/") && !href.startsWith("#");
-
-      return (
-        <a
-          {...rest}
-          href={href}
-          rel={isExternal ? "noreferrer" : undefined}
-          target={isExternal ? "_blank" : undefined}
-        />
-      );
-    },
-  };
+  const html = useMemo(() => {
+    const parsed = marked.parse(deferredValue, { async: false });
+    return DOMPurify.sanitize(parsed, { ADD_ATTR: ["target"] });
+  }, [deferredValue]);
 
   return (
-    <MDEditor.Markdown
-      {...props}
+    <div
       className={cn(
-        "prose prose-sm! max-w-none bg-inherit! font-sans! prose-zinc dark:prose-invert",
+        "prose max-w-none overflow-auto prose-neutral dark:prose-invert prose-a:text-primary prose-a:underline-offset-4",
         className,
       )}
-      components={mergedComponents}
-      rehypePlugins={mergedRehypePlugins}
+      dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }

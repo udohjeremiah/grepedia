@@ -46,7 +46,7 @@ const baseNavItems = [
   },
   {
     icon: DatabaseIcon,
-    label: "Data & Privacy",
+    label: "Data",
     link: "/@{$username}/data",
     value: "data",
   },

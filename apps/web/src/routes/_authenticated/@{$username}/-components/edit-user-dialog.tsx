@@ -44,7 +44,7 @@ import AppLink from "@/components/app-link";
 import SubmissionAlert from "@/components/submission-alert";
 import { countryOptions } from "@/constants/country-options";
 import { auth } from "@/hooks/auth";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 
 const formSchema = z.object({
@@ -109,7 +109,7 @@ export default function EditUserDialog() {
     },
   });
 
-  const { handleOpenChange, isOpen } = useDialogState({
+  const { handleOpenChange, isOpen } = useDialog({
     onCloseReset: () => {
       form.reset();
       resetStatus();

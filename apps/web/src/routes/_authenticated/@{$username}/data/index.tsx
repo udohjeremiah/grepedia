@@ -13,16 +13,16 @@ import { userRecoveryPackageQueryOptions } from "./-queries/user-recovery-packag
 export const Route = createFileRoute("/_authenticated/@{$username}/data/")({
   component: RouteComponent,
   loader: ({ context }) => {
-    context.queryClient.prefetchQuery(
+    return context.queryClient.ensureQueryData(
       userRecoveryPackageQueryOptions({ userId: context.userId }),
     );
   },
   // eslint-disable-next-line perfectionist/sort-objects
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} • Data & Privacy • Grepedia` },
+      { title: "Data • Grepedia" },
       {
-        content: `Export recovery data and manage account deletion and privacy actions for @${params.username}.`,
+        content: `Recover your account, export recovery data, and manage account deletion for @${params.username}.`,
         name: "description",
       },
     ],
@@ -33,9 +33,9 @@ function RouteComponent() {
   return (
     <main className="flex p-4 sm:px-8 md:px-0 md:py-6">
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-6 rounded-lg border p-6">
+        <div className="flex flex-col gap-6 border p-6">
           <div className="flex gap-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
               <DownloadIcon className="size-5" />
             </div>
             <div className="flex flex-col gap-1">
@@ -55,9 +55,9 @@ function RouteComponent() {
             <PreviewDataDialog />
           </div>
         </div>
-        <div className="flex flex-col gap-6 rounded-lg border border-destructive/30 p-6">
+        <div className="flex flex-col gap-6 border border-destructive/30 p-6">
           <div className="flex gap-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-destructive/10 text-destructive">
               <AlertTriangleIcon className="size-5" />
             </div>
             <div className="flex flex-col gap-1">
@@ -68,7 +68,7 @@ function RouteComponent() {
             </div>
           </div>
           <Separator />
-          <div className="flex flex-col gap-4 rounded-md border border-destructive/20 bg-destructive/5 p-4">
+          <div className="flex flex-col gap-4 border border-destructive/20 bg-destructive/5 p-4">
             <h4 className="text-sm font-medium">Delete Account</h4>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               <p>
@@ -78,7 +78,7 @@ function RouteComponent() {
               <ul className="flex flex-col gap-1 pl-4 text-xs">
                 {accountDeletion.map((info) => (
                   <li className="flex gap-2" key={info}>
-                    <span className="mt-1 size-1 shrink-0 rounded-full bg-muted-foreground" />
+                    <span className="mt-1 size-1 shrink-0 bg-muted-foreground" />
                     {info}
                   </li>
                 ))}

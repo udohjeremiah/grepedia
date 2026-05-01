@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/security/")({
   component: RouteComponent,
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} • Security • Grepedia` },
+      { title: "Security • Grepedia" },
       {
         content: `Manage password, email, and account security settings for @${params.username}.`,
         name: "description",
@@ -24,9 +24,9 @@ function RouteComponent() {
   return (
     <main className="flex p-4 sm:px-8 md:px-0 md:py-6">
       <div className="flex flex-1 flex-col gap-6">
-        <div className="rounded-lg border p-6">
+        <div className="border p-6">
           <div className="flex gap-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
               <MailIcon className="size-5" />
             </div>
             <div className="flex w-full justify-between gap-4 max-sm:flex-col">
@@ -40,9 +40,9 @@ function RouteComponent() {
             </div>
           </div>
         </div>
-        <div className="rounded-lg border p-6">
+        <div className="border p-6">
           <div className="flex gap-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
               <LockIcon className="size-5" />
             </div>
             <div className="flex w-full justify-between gap-4 max-sm:flex-col">
@@ -56,9 +56,9 @@ function RouteComponent() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-6 rounded-lg border p-6">
+        <div className="flex flex-col gap-6 border p-6">
           <div className="flex gap-4">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex size-10 items-center justify-center bg-primary/10 text-primary">
               <AlertTriangleIcon className="size-5" />
             </div>
             <div className="flex flex-col gap-1">
@@ -72,7 +72,7 @@ function RouteComponent() {
           <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
             {securityTips.map((tip) => (
               <li className="flex gap-2" key={tip}>
-                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-primary" />
+                <span className="mt-1 size-1.5 shrink-0 bg-primary" />
                 {tip}
               </li>
             ))}

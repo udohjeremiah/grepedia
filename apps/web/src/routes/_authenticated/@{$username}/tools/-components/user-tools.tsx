@@ -6,7 +6,7 @@ import {
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
 import { Separator } from "@workspace/ui/components/separator";
-import { cn } from "@workspace/ui/utils/cn";
+import { cn } from "@workspace/ui/lib/cn";
 import {
   ArrowUpRightIcon,
   FolderOpenIcon,
@@ -49,7 +49,7 @@ export const getStatConfig = ({
 }: StatConfigProps) =>
   ({
     added: {
-      colorClass: "bg-success/10 text-success",
+      colorClass: "bg-chart-4/10 text-chart-4",
       count: stats.added,
       icon: PlusIcon,
       isActive: filterView === "added",
@@ -57,7 +57,7 @@ export const getStatConfig = ({
       onClick: () => setFilterView(filterView === "added" ? "all" : "added"),
     },
     commented: {
-      colorClass: "bg-warning/10 text-warning",
+      colorClass: "bg-primary/10 text-primary",
       count: stats.commented,
       icon: MessageSquareIcon,
       isActive: filterView === "commented",
@@ -75,7 +75,7 @@ export const getStatConfig = ({
         setFilterView(filterView === "downvoted" ? "all" : "downvoted"),
     },
     updated: {
-      colorClass: "bg-info/10 text-info",
+      colorClass: "bg-success/10 text-success",
       count: stats.updated,
       icon: PenLineIcon,
       isActive: filterView === "updated",
@@ -168,9 +168,9 @@ export default function UserTools() {
 
   return (
     <div className="flex flex-1 flex-col gap-6">
-      <div className="flex flex-col gap-6 rounded-lg border p-6">
+      <div className="flex flex-col gap-6 border p-6">
         <div className="flex gap-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
             <WrenchIcon className="size-5" />
           </div>
           <div className="flex w-full justify-between gap-4 max-sm:flex-col">
@@ -192,9 +192,9 @@ export default function UserTools() {
           <StatCard {...statConfig.commented} />
         </div>
       </div>
-      <div className="flex flex-col gap-6 rounded-lg border p-6">
+      <div className="flex flex-col gap-6 border p-6">
         <div className="flex gap-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-warning/10 text-warning">
+          <div className="flex size-10 shrink-0 items-center justify-center bg-chart-4/10 text-chart-4">
             <FolderOpenIcon className="size-5" />
           </div>
           <div className="flex w-full justify-between gap-4 max-sm:flex-col">
@@ -271,7 +271,7 @@ function StatCard({
     >
       <div
         className={cn(
-          "flex size-9 shrink-0 items-center justify-center rounded-lg",
+          "flex size-9 shrink-0 items-center justify-center",
           colorClass,
         )}
       >

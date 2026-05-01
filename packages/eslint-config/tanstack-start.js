@@ -8,6 +8,11 @@ import { reactLibraryConfig } from "./react-library.js";
 export const tanstackStartConfig = [
   ...reactLibraryConfig,
   {
-    ignores: ["**/routeTree.gen.ts", ".output/**", ".tanstack/**"],
+    ignores: [
+      "**/routeTree.gen.ts",
+      ".netlify/**",
+      ".output/**",
+      ".tanstack/**",
+    ],
   },
 ];

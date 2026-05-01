@@ -128,11 +128,9 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireUser],
     schema: {
       querystring: getToolsDirectoryQueryStringSchema,
       response: getToolsDirectoryResponseSchemas,
-      security: [{ sessionCookie: [] }],
       tags: ["Tools"],
     },
     url: "/",

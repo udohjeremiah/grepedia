@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/sessions/")({
   component: RouteComponent,
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} • Sessions • Grepedia` },
+      { title: "Sessions • Grepedia" },
       {
         content: `Review and manage active account sessions for @${params.username}.`,
         name: "description",
@@ -35,7 +35,7 @@ function RouteComponent() {
             )}
             onReset={reset}
           >
-            <div className="flex flex-1 flex-col gap-6 rounded-lg border p-6">
+            <div className="flex flex-1 flex-col gap-6 border p-6">
               <div className="flex w-full justify-between gap-4 max-sm:flex-col">
                 <div className="flex flex-col gap-1">
                   <h3 className="font-semibold">Active Sessions</h3>

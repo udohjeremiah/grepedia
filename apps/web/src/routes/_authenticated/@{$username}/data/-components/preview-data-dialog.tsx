@@ -10,11 +10,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
-import { Skeleton } from "@workspace/ui/components/skeleton";
-import { AlertTriangleIcon, CheckIcon, CopyIcon } from "lucide-react";
+import { CheckIcon, CopyIcon } from "lucide-react";
 
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 
 import { useUserRecoveryPackage } from "../-queries/user-recovery-package";
 
@@ -22,40 +21,15 @@ export default function PreviewDataDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
   const { copied, copyToClipboard, resetCopied } = useCopyToClipboard();
-  const {
-    data: userRecoveryPackage,
-    isPending,
-    refetch,
-  } = useUserRecoveryPackage({ userId });
+  const { data: userRecoveryPackage } = useUserRecoveryPackage({ userId });
 
-  const { handleOpenChange, isOpen } = useDialogState({
+  const { handleOpenChange, isOpen } = useDialog({
     onCloseReset: () => {
       resetCopied();
     },
   });
 
-  if (isPending) {
-    return <Skeleton className="h-9 w-28 rounded-4xl" />;
-  }
-
-  if (!userRecoveryPackage) {
-    return (
-      <Button onClick={() => refetch()} variant="destructive">
-        <AlertTriangleIcon />
-        Click to try again...
-      </Button>
-    );
-  }
-
-  const exportJson = JSON.stringify(
-    userRecoveryPackage.recoveryPackage,
-    undefined,
-    2,
-  );
-
-  async function handleCopy() {
-    await copyToClipboard(exportJson);
-  }
+  const exportJson = JSON.stringify(userRecoveryPackage, undefined, 2);
 
   return (
     <Dialog onOpenChange={handleOpenChange} open={isOpen}>
@@ -72,14 +46,18 @@ export default function PreviewDataDialog() {
             <span>Valid for 1 year. Do not share it.</span>
           </DialogDescription>
         </DialogHeader>
-        <pre className="max-h-96 overflow-auto rounded-md border bg-card p-4 font-mono text-xs">
+        <pre className="max-h-96 overflow-auto border bg-card p-4 font-mono text-xs">
           {exportJson}
         </pre>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Close</Button>
           </DialogClose>
-          <Button disabled={copied} onClick={handleCopy} size="sm">
+          <Button
+            disabled={copied}
+            onClick={async () => await copyToClipboard(exportJson)}
+            size="sm"
+          >
             {copied ? (
               <>
                 <CheckIcon />

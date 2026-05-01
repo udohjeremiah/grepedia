@@ -30,6 +30,8 @@ declare module "fastify" {
     requireUserId: (
       paramKey?: string,
     ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+
+    setUserIfPresent: (request: FastifyRequest) => Promise<void>;
   }
 
   interface FastifyRequest {
@@ -47,6 +49,8 @@ declare module "fastify" {
  * `preHandler` hooks.
  *
  * Available guards:
+ * - `isAdminUserId`: helper to check whether a user id is listed in `ADMIN_USER_IDS`
+ * - `setUserIfPresent`: resolves session user when available without enforcing auth
  * - `requireUser`: ensures the request is authenticated
  * - `requireUserId`: ensures the user id matches a route param id (defaults to `userId`)
  * - `requireRole`: ensures the user has a specific role
@@ -63,22 +67,26 @@ export default fp(
 
     const isAdminUserId = (userId: string) => adminUserIds.has(userId);
 
-    const requireUser = async (
-      request: FastifyRequest,
-      reply: FastifyReply,
-    ) => {
+    const setUserIfPresent = async (request: FastifyRequest) => {
       const session = await fastify.auth.api.getSession({
         headers: fromNodeHeaders(request.headers),
       });
 
-      if (!session?.user) {
+      request.user = session?.user;
+    };
+
+    const requireUser = async (
+      request: FastifyRequest,
+      reply: FastifyReply,
+    ) => {
+      await setUserIfPresent(request);
+
+      if (!request.user) {
         return reply.code(401).send({
           message: "Unauthorized",
           success: false,
         });
       }
-
-      request.user = session.user;
     };
 
     const requireUserId =
@@ -149,11 +157,12 @@ export default fp(
       };
 
     fastify.decorate("isAdminUserId", isAdminUserId);
+    fastify.decorate("setUserIfPresent", setUserIfPresent);
     fastify.decorate("requireUser", requireUser);
+    fastify.decorate("requireUserId", requireUserId);
     fastify.decorate("requireRole", requireRole);
     fastify.decorate("requireModerator", requireModerator);
     fastify.decorate("requireStatus", requireStatus);
-    fastify.decorate("requireUserId", requireUserId);
   },
   { dependencies: ["auth"], name: "authorization" },
 );

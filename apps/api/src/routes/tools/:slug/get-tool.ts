@@ -12,8 +12,6 @@ import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 const getTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
-      if (!request.user) throw new Error("User not authenticated");
-
       const { slug } = request.params;
 
       const tools = fastify.getToolCollection();
@@ -53,22 +51,27 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
         toolUsers.map((user) => [user._id.toHexString(), user.username]),
       );
 
-      const currentUserId = ObjectId.createFromHexString(request.user.id);
+      const currentUserId = request.user?.id
+        ? ObjectId.createFromHexString(request.user.id)
+        : undefined;
 
-      const [reaction, comment, bookmark] = await Promise.all([
-        toolReactions.findOne(
-          { toolId: tool._id, userId: currentUserId },
-          { projection: { value: 1 } },
-        ),
-        toolComments.findOne(
-          { toolId: tool._id, userId: currentUserId },
-          { projection: { _id: 1 } },
-        ),
-        userBookmarks.findOne(
-          { toolId: tool._id, userId: currentUserId },
-          { projection: { _id: 1 } },
-        ),
-      ]);
+      const [reaction, comment, bookmark] = currentUserId
+        ? await Promise.all([
+            toolReactions.findOne(
+              { toolId: tool._id, userId: currentUserId },
+              { projection: { value: 1 } },
+            ),
+            toolComments.findOne(
+              { toolId: tool._id, userId: currentUserId },
+              { projection: { _id: 1 } },
+            ),
+            userBookmarks.findOne(
+              { toolId: tool._id, userId: currentUserId },
+              { projection: { _id: 1 } },
+            ),
+          ])
+        : // eslint-disable-next-line unicorn/no-null
+          [null, null, null];
 
       const toolResponse = serializeMongoTypes({
         ...omitKeys(tool, ["embeddings"]),
@@ -94,11 +97,10 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireStatus("active")],
+    onRequest: [fastify.setUserIfPresent],
     schema: {
       params: getToolParamsSchema,
       response: getToolResponseSchemas,
-      security: [{ sessionCookie: [] }],
       tags: ["Tools"],
     },
     url: "/",

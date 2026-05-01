@@ -17,6 +17,7 @@ import {
 } from "@workspace/ui/components/dialog";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -47,7 +48,7 @@ import { useState } from "react";
 
 import { MarkdownEditor } from "@/components/markdown";
 import SubmissionAlert from "@/components/submission-alert";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { parseExternalUrl } from "@/utils/parse-external-url";
 
@@ -55,6 +56,8 @@ import { useAddTool } from "../-queries/user-add-tool";
 
 const MAX_LONG_DESCRIPTION = 5000;
 const LONG_DESCRIPTION_TEMPLATE = `Use this space to describe the tool by answering the key questions below. Keep it clear, concise, and helpful — someone should understand the tool in 10-20 seconds.
+
+Delete this template before writing your description.
 
 1. What is it?
    - Give a short, one or two sentence overview of the tool and its purpose.
@@ -69,9 +72,7 @@ const LONG_DESCRIPTION_TEMPLATE = `Use this space to describe the tool by answer
    - List 3-5 of the most important or distinctive features in bullet points.
 
 5. Who is behind it?
-   - Include the organization, company, or creator for credibility.
-
-Delete this template before writing your description.`;
+   - Include the organization, company, or creator for credibility.`;
 
 export default function AddToolDialog() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
@@ -119,7 +120,7 @@ export default function AddToolDialog() {
     },
   });
 
-  const { handleOpenChange, isOpen } = useDialogState({
+  const { handleOpenChange, isOpen } = useDialog({
     onCloseReset: resetStatus,
   });
 
@@ -131,7 +132,7 @@ export default function AddToolDialog() {
           Add Tool
         </Button>
       </DialogTrigger>
-      <DialogContent className="h-svh max-w-full rounded-none sm:max-w-full">
+      <DialogContent className="h-svh max-w-full sm:max-w-full">
         <DialogHeader>
           <DialogTitle>Submit Tool</DialogTitle>
           <DialogDescription>
@@ -242,35 +243,28 @@ export default function AddToolDialog() {
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
-                const currentLength = field.state.value.length;
 
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>
                       Long Description
                     </FieldLabel>
-                    <div className="space-y-2">
-                      <MarkdownEditor
-                        onBlur={field.handleBlur}
-                        onChange={(value = "") => {
-                          if (value.length > MAX_LONG_DESCRIPTION) return;
-                          field.handleChange(value);
-                        }}
-                        textareaProps={{
-                          "aria-invalid": isInvalid,
-                          id: field.name,
-                          maxLength: MAX_LONG_DESCRIPTION,
-                          minLength: 20,
-                          placeholder:
-                            "Explain what the tool does, its key features, and how people use it. Keep it clear and concise. You can use short paragraphs or bullet points if helpful.",
-                          required: true,
-                        }}
-                        value={field.state.value}
-                      />
-                      <div className="flex justify-end text-xs text-muted-foreground">
-                        {currentLength}/{MAX_LONG_DESCRIPTION}
-                      </div>
-                    </div>
+                    <MarkdownEditor
+                      aria-invalid={isInvalid}
+                      id={field.name}
+                      maxLength={MAX_LONG_DESCRIPTION}
+                      minLength={20}
+                      onBlur={field.handleBlur}
+                      onChange={(event) => {
+                        const value = event.target.value;
+                        if (value.length > MAX_LONG_DESCRIPTION) return;
+                        field.handleChange(value);
+                      }}
+                      placeholder="Explain what the tool does, its key features, and how people use it. Keep it clear and concise. You can use short paragraphs or bullet points if helpful."
+                      required={true}
+                      value={field.state.value}
+                    />
+                    <FieldDescription>Markdown is supported.</FieldDescription>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -350,6 +344,7 @@ export default function AddToolDialog() {
                                 setExternalUrlInput(item.url);
                                 field.removeValue(index);
                               }}
+                              type="button"
                             >
                               {item.platform}
                             </button>
@@ -359,6 +354,7 @@ export default function AddToolDialog() {
                                 field.removeValue(index);
                                 field.handleBlur();
                               }}
+                              type="button"
                             >
                               <XIcon className="size-3" />
                             </button>
@@ -431,6 +427,7 @@ export default function AddToolDialog() {
                                 setCategoryInput(category);
                                 field.removeValue(index);
                               }}
+                              type="button"
                             >
                               {category}
                             </button>
@@ -440,6 +437,7 @@ export default function AddToolDialog() {
                                 field.removeValue(index);
                                 field.handleBlur();
                               }}
+                              type="button"
                             >
                               <XIcon className="size-3" />
                             </button>
@@ -516,6 +514,7 @@ export default function AddToolDialog() {
                                 setTagInput(tag);
                                 field.removeValue(index);
                               }}
+                              type="button"
                             >
                               {tag}
                             </button>
@@ -525,6 +524,7 @@ export default function AddToolDialog() {
                                 field.removeValue(index);
                                 field.handleBlur();
                               }}
+                              type="button"
                             >
                               <XIcon className="size-3" />
                             </button>

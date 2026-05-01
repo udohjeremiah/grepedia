@@ -46,9 +46,9 @@ export default function UserBookmarks() {
   }, [searchQuery, userBookmarks]);
 
   return (
-    <div className="flex flex-1 flex-col gap-6 rounded-lg border p-6">
+    <div className="flex flex-1 flex-col gap-6 border p-6">
       <div className="flex gap-4">
-        <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div className="flex size-10 items-center justify-center bg-primary/10 text-primary">
           <BookmarkIcon className="size-5" />
         </div>
         <div className="flex flex-col gap-1">

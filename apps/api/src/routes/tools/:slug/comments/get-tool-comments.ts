@@ -29,8 +29,6 @@ type CommentsCursor = z.infer<typeof commentsCursorSchema>;
 const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
-      if (!request.user) throw new Error("User not authenticated");
-
       const { slug } = request.params;
       const { cursor, limit = 20, sort = "top" } = request.query;
 
@@ -117,6 +115,7 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
 
       const baseMatch = {
         parentCommentId: { $exists: false },
+        status: "active",
         toolId: tool._id,
       };
 
@@ -184,10 +183,12 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
         commentUsers.map((user) => [user._id.toHexString(), user]),
       );
 
-      const currentUserId = ObjectId.createFromHexString(request.user.id);
+      const currentUserId = request.user?.id
+        ? ObjectId.createFromHexString(request.user.id)
+        : undefined;
       const commentIds = commentList.map((comment) => comment._id);
       const currentUserReactions =
-        commentIds.length > 0
+        currentUserId && commentIds.length > 0
           ? await commentReactions
               .find(
                 { commentId: { $in: commentIds }, userId: currentUserId },
@@ -247,12 +248,11 @@ const getToolComments: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireUser],
+    onRequest: [fastify.setUserIfPresent],
     schema: {
       params: getToolCommentsParamsSchema,
       querystring: getToolCommentsQueryStringSchema,
       response: getToolCommentsResponseSchemas,
-      security: [{ sessionCookie: [] }],
       tags: ["Tools"],
     },
     url: "/",

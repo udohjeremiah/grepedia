@@ -27,17 +27,33 @@
       "types": "./dist/schemas/image.d.ts",
       "default": "./dist/schemas/image.js"
     },
-    "./schemas/moderation/moderator-get-user": {
-      "types": "./dist/schemas/moderation/moderator-get-user.d.ts",
-      "default": "./dist/schemas/moderation/moderator-get-user.js"
-    },
     "./schemas/moderation/moderation-case": {
       "types": "./dist/schemas/moderation/moderation-case.d.ts",
       "default": "./dist/schemas/moderation/moderation-case.js"
     },
+    "./schemas/moderation/moderator-get-comment": {
+      "types": "./dist/schemas/moderation/moderator-get-comment.d.ts",
+      "default": "./dist/schemas/moderation/moderator-get-comment.js"
+    },
+    "./schemas/moderation/moderator-get-tool": {
+      "types": "./dist/schemas/moderation/moderator-get-tool.d.ts",
+      "default": "./dist/schemas/moderation/moderator-get-tool.js"
+    },
+    "./schemas/moderation/moderator-get-user": {
+      "types": "./dist/schemas/moderation/moderator-get-user.d.ts",
+      "default": "./dist/schemas/moderation/moderator-get-user.js"
+    },
     "./schemas/moderation/moderator-review-case": {
       "types": "./dist/schemas/moderation/moderator-review-case.d.ts",
       "default": "./dist/schemas/moderation/moderator-review-case.js"
+    },
+    "./schemas/moderation/moderator-update-comment": {
+      "types": "./dist/schemas/moderation/moderator-update-comment.d.ts",
+      "default": "./dist/schemas/moderation/moderator-update-comment.js"
+    },
+    "./schemas/moderation/moderator-update-tool": {
+      "types": "./dist/schemas/moderation/moderator-update-tool.d.ts",
+      "default": "./dist/schemas/moderation/moderator-update-tool.js"
     },
     "./schemas/moderation/moderator-update-user": {
       "types": "./dist/schemas/moderation/moderator-update-user.d.ts",

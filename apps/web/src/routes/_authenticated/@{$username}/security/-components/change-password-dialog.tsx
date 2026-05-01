@@ -30,7 +30,7 @@ import { useState } from "react";
 import { z } from "zod";
 
 import SubmissionAlert from "@/components/submission-alert";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { changePassword } from "@/services/auth/change-password";
 
@@ -98,7 +98,7 @@ export default function ChangePasswordDialog() {
     },
   });
 
-  const { handleOpenChange, isOpen } = useDialogState({
+  const { handleOpenChange, isOpen } = useDialog({
     onCloseReset: () => {
       form.reset();
       setShowConfirmPassword(false);
@@ -267,7 +267,7 @@ export default function ChangePasswordDialog() {
             <form.Field name="revokeOtherSessions">
               {(field) => (
                 <Field
-                  className="flex rounded-xl border p-3 has-aria-checked:border-primary/50 has-aria-checked:bg-primary/10"
+                  className="flex border p-3 has-aria-checked:border-primary/50 has-aria-checked:bg-primary/10"
                   orientation="horizontal"
                 >
                   <Checkbox

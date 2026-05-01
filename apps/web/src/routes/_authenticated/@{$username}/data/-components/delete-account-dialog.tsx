@@ -12,7 +12,6 @@ import {
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
-import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
@@ -20,14 +19,14 @@ import { useState } from "react";
 import SubmissionAlert from "@/components/submission-alert";
 import { env } from "@/env";
 import { auth } from "@/hooks/auth";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { deleteUser } from "@/services/auth/delete-user";
 
 export default function DeleteAccountDialog() {
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
-  const { isPending, refetch, user } = auth.useSession();
+  const { isPending, user } = auth.useSession();
   const {
     isSubmitting,
     resetStatus,
@@ -38,7 +37,7 @@ export default function DeleteAccountDialog() {
     status,
   } = useSubmission();
 
-  const { handleOpenChange, isOpen } = useDialogState({
+  const { handleOpenChange, isOpen } = useDialog({
     onCloseReset: () => {
       setDeleteConfirmText("");
       setSubmitting(false);
@@ -46,21 +45,8 @@ export default function DeleteAccountDialog() {
     },
   });
 
-  if (isPending) {
-    return <Skeleton className="h-8 w-full rounded-4xl" />;
-  }
-
-  if (!user) {
-    return (
-      <Button onClick={() => refetch()} size="sm" variant="destructive">
-        <AlertTriangleIcon />
-        Click to try again...
-      </Button>
-    );
-  }
-
   const handleDeleteAccount = async () => {
-    if (deleteConfirmText !== user.username) {
+    if (deleteConfirmText !== user?.username) {
       setError(
         "Username mismatch",
         "The username you entered does not match your current username.",
@@ -92,7 +78,7 @@ export default function DeleteAccountDialog() {
   return (
     <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
       <AlertDialogTrigger asChild>
-        <Button size="sm" variant="destructive">
+        <Button disabled={isPending} size="sm" variant="destructive">
           <Trash2Icon />
           Delete My Account
         </Button>
@@ -108,7 +94,7 @@ export default function DeleteAccountDialog() {
               This will permanently delete your account profile and bookmarks.
               Your tools, comments, and reactions will remain on the platform.
             </span>
-            <span className="rounded-lg border bg-info/10 p-3 text-xs text-info">
+            <span className="border border-chart-4/20 bg-chart-4/10 p-3 text-xs text-chart-4">
               Export your account data first. You will need the recovery package
               if you want to re-link your past contributions after creating a
               new account.
@@ -117,22 +103,19 @@ export default function DeleteAccountDialog() {
         </AlertDialogHeader>
         <div className="flex flex-col gap-2">
           <Label className="text-sm" htmlFor="delete-confirm">
-            Type <span className="font-mono">{user.username}</span> to confirm
+            Type <span className="text-primary">{user?.username}</span> to
+            confirm
           </Label>
           <Input
             id="delete-confirm"
             onChange={(event) => setDeleteConfirmText(event.target.value)}
-            placeholder={user.username}
+            placeholder={user?.username}
             value={deleteConfirmText}
           />
         </div>
         <SubmissionAlert status={status} />
         <AlertDialogFooter>
-          <AlertDialogCancel
-            onClick={() => {
-              setSubmitting(false);
-            }}
-          >
+          <AlertDialogCancel onClick={() => setSubmitting(false)}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction

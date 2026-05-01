@@ -17,7 +17,7 @@ import { LogOutIcon } from "lucide-react";
 import { useState } from "react";
 
 import { auth } from "@/hooks/auth";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 import { signOut } from "@/services/auth/sign-out";
 
@@ -29,7 +29,7 @@ export default function SignOutDialog() {
   const { mutateAsync: revokeSessions } = auth.useRevokeSessions();
   const { isSubmitting, setSubmitting } = useSubmission();
 
-  const { closeDialog, handleOpenChange, isOpen } = useDialogState({
+  const { closeDialog, handleOpenChange, isOpen } = useDialog({
     onCloseReset: () => {
       setSubmitting(false);
       setRevokeAllSessions(false);
@@ -68,7 +68,7 @@ export default function SignOutDialog() {
             You are about to sign out of your current session.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <div className="flex gap-2 rounded-xl border p-3 has-aria-checked:border-primary/50 has-aria-checked:bg-primary/10">
+        <div className="flex gap-2 border p-3 has-aria-checked:border-primary/50 has-aria-checked:bg-primary/10">
           <Checkbox
             checked={revokeAllSessions}
             className="mt-0.5"

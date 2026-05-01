@@ -13,7 +13,7 @@ import { Button } from "@workspace/ui/components/button";
 import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
 
 import { auth } from "@/hooks/auth";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 
 export default function RevokeOtherSessionsDialog() {
   const { session } = auth.useSession();
@@ -21,7 +21,7 @@ export default function RevokeOtherSessionsDialog() {
   const { isPending, mutate: revokeOtherSessions } =
     auth.useRevokeOtherSessions();
 
-  const { handleOpenChange, isOpen, setIsOpen } = useDialogState();
+  const { handleOpenChange, isOpen, setIsOpen } = useDialog();
 
   const sessionList = sessions ?? [];
   const currentSessionId = session?.id;
@@ -63,7 +63,7 @@ export default function RevokeOtherSessionsDialog() {
               {otherSessions.length === 1 ? "device" : "devices"}. Only your
               current session will remain active.
             </span>
-            <span className="rounded-lg border bg-info/10 p-3 text-xs text-info">
+            <span className="border-chart-4/20 bg-chart-4/10 p-3 text-xs text-chart-4">
               Other devices will be signed out within 5 minutes. If you suspect
               unauthorized access, change your password immediately.
             </span>

@@ -18,7 +18,6 @@ Before adding or updating components, please read
 - `src/components` - reusable UI components
 - `src/hooks` - shared UI hooks
 - `src/lib` - UI-focused helpers
-- `src/utils` - utility functions (`cn`, etc.)
 - `src/styles/globals.css` - shared Tailwind v4 styles
 
 ## Importing Components
@@ -27,7 +26,7 @@ Import components from `@workspace/ui` in app workspaces.
 
 ```tsx
 import { Button } from "@workspace/ui/components/button";
-import { cn } from "@workspace/ui/utils/cn";
+import { cn } from "@workspace/ui/lib/cn";
 ```
 
 ## Check For Updates Before Adding Components

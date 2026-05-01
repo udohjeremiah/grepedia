@@ -1,4 +1,4 @@
-import { cn } from "@workspace/ui/utils/cn";
+import { cn } from "@workspace/ui/lib/cn";
 import { Separator as SeparatorPrimitive } from "radix-ui";
 import * as React from "react";
 

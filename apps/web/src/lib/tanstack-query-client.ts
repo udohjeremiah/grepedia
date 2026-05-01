@@ -6,11 +6,9 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 
-import { globalBanner } from "@/utils/global-banner";
+import { globalBannerStore } from "@/lib/global-banner-store";
 
 export function tanstackQueryClient() {
-  const queryBannerIds = new Map<string, string>();
-
   const defaultOptions: DefaultOptions = {
     dehydrate: {
       shouldDehydrateQuery: (query) => {
@@ -37,33 +35,19 @@ export function tanstackQueryClient() {
       // Show a global banner if we already have data in the cache which
       // indicates a failed background update
       if (query.state.data !== undefined) {
-        const existingBannerId = queryBannerIds.get(query.queryHash);
-        if (existingBannerId) return;
-
-        const bannerId = globalBanner.emit({
-          banner: {
-            autoDismiss: false,
-            description:
-              "We couldn't fetch the latest update for this section. The data currently shown is the last successfully loaded version and may be out of date.",
-            title: "Showing previously loaded data",
-            variant: "warning",
-          },
-          type: "add",
+        globalBannerStore.add({
+          autoDismiss: false,
+          description:
+            "We couldn't fetch the latest update for this section. The data currently shown is the last successfully loaded version and may be out of date.",
+          id: query.queryHash,
+          title: "Showing previously loaded data",
+          variant: "warning",
         });
-
-        if (bannerId) {
-          queryBannerIds.set(query.queryHash, bannerId);
-        }
       }
     },
     onSuccess: (_data, query) => {
       // Remove any previous associated global banner when data is successfully fetched
-      const bannerId = queryBannerIds.get(query.queryHash);
-
-      if (bannerId) {
-        globalBanner.emit({ id: bannerId, type: "remove" });
-        queryBannerIds.delete(query.queryHash);
-      }
+      globalBannerStore.remove(query.queryHash);
     },
   });
 

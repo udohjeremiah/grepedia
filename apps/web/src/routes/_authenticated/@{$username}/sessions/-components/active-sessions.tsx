@@ -5,7 +5,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@workspace/ui/components/empty";
-import { Skeleton } from "@workspace/ui/components/skeleton";
 import Bowser from "bowser";
 import { LaptopMinimalIcon } from "lucide-react";
 
@@ -27,25 +26,11 @@ export interface ActiveSession {
 }
 
 export default function ActiveSessions() {
-  const { isPending: sessionPending, session } = auth.useSession();
-  const { data: sessions, isPending: sessionsPending } = auth.useListSessions();
+  const { session } = auth.useSession();
+  const { data: sessions } = auth.useListSessions();
 
-  if (sessionPending || sessionsPending) {
-    return (
-      <div className="flex flex-1 flex-col gap-3">
-        <Skeleton className="h-22 w-full rounded-lg" />
-        <Skeleton className="h-22 w-full rounded-lg" />
-        <Skeleton className="h-22 w-full rounded-lg" />
-        <Skeleton className="h-22 w-full rounded-lg" />
-      </div>
-    );
-  }
-
-  if (!session || !sessions) {
-    throw new Error("Couldn't load sessions");
-  }
-
-  const sessionList = formatSessions(sessions, session.id);
+  const sessionList =
+    session && sessions ? formatSessions(sessions, session.id) : [];
 
   return (
     <>

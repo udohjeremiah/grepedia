@@ -22,7 +22,7 @@ function RouteComponent() {
   const supportEmailHref = `mailto:${env.VITE_SUPPORT_EMAIL}`;
 
   return (
-    <main className="mx-auto prose p-4 prose-zinc sm:p-8 dark:prose-invert">
+    <main className="mx-auto prose p-4 prose-neutral sm:p-8 dark:prose-invert">
       <h1 className="text-3xl">Terms of Service for Grepedia</h1>
       <p>
         <em>Last Updated: April 4, 2026</em>

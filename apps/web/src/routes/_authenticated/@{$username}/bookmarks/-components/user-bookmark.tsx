@@ -18,7 +18,7 @@ import { ExternalLinkIcon, Trash2Icon } from "lucide-react";
 import AppLink from "@/components/app-link";
 import SubmissionAlert from "@/components/submission-alert";
 import { categoryVariants } from "@/constants/category";
-import { useDialogState } from "@/hooks/use-dialog-state";
+import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
 
 import { useUserBookmarks } from "../-queries/user-bookmarks";
@@ -32,7 +32,7 @@ export default function UserBookmark(bookmark: UserBookmarkProps) {
   const { isPending, mutate: removeBookmark } = useUserRemoveBookmark(userId);
   const { resetStatus, setApiError, status } = useSubmission();
 
-  const { handleOpenChange, isOpen, setIsOpen } = useDialogState({
+  const { handleOpenChange, isOpen, setIsOpen } = useDialog({
     onCloseReset: () => {
       resetStatus();
     },
@@ -55,7 +55,7 @@ export default function UserBookmark(bookmark: UserBookmarkProps) {
   }
 
   return (
-    <div className="flex justify-between gap-4 rounded-xl border p-4 max-md:flex-col">
+    <div className="flex justify-between gap-4 border p-4 max-md:flex-col">
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">

@@ -87,11 +87,9 @@ const getToolProposals: FastifyPluginAsyncZod = async (fastify) => {
       });
     },
     method: "GET",
-    onRequest: [fastify.requireUser],
     schema: {
       params: getToolProposalsParamsSchema,
       response: getToolProposalsResponseSchemas,
-      security: [{ sessionCookie: [] }],
       tags: ["Tools"],
     },
     url: "/",
