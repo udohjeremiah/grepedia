@@ -2,15 +2,17 @@ import { z } from "zod";
 
 import { objectIdSchema } from "@/schemas/object-id.js";
 
+import { officialUrlSchema, publicUrlSchema } from "../../url-policy.js";
+
 export const toolRevisionSnapshotSchema = z.object({
   categories: z.array(z.string()).min(1).max(4),
   externalUrls: z
-    .array(z.object({ platform: z.string(), url: z.url() }))
+    .array(z.object({ platform: z.string(), url: publicUrlSchema }))
     .max(4)
     .optional(),
   longDescription: z.string(),
   name: z.string(),
-  officialUrl: z.url(),
+  officialUrl: officialUrlSchema,
   releasedAt: z.iso.datetime().optional(),
   shortDescription: z.string(),
   tags: z.array(z.string()).min(1).max(8),

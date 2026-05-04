@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { defaultResponse } from "../default-response.js";
 import { objectIdSchema } from "../object-id.js";
+import { officialUrlSchema, publicUrlSchema } from "../url-policy.js";
 
 export const addToolBodySchema = z.object({
   categories: z
@@ -20,7 +21,7 @@ export const addToolBodySchema = z.object({
           .string()
           .min(1, "URL platform cannot be empty")
           .max(50, "URL platform too long"),
-        url: z.url(),
+        url: publicUrlSchema,
       }),
     )
     .max(4, "You can add up to 4 external URLs")
@@ -33,7 +34,7 @@ export const addToolBodySchema = z.object({
     .string()
     .min(2, "Please provide at least 2 characters")
     .max(100, "Please provide no more than 100 characters"),
-  officialUrl: z.url(),
+  officialUrl: officialUrlSchema,
   releasedAt: z.iso.datetime().optional(),
   shortDescription: z
     .string()
