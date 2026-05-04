@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@workspace/ui/components/dialog";
 import { CheckIcon, CopyIcon } from "lucide-react";
+import { useMemo } from "react";
 
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { useDialog } from "@/hooks/use-dialog";
@@ -29,7 +30,37 @@ export function PreviewDataDialog() {
     },
   });
 
-  const exportJson = JSON.stringify(userRecoveryPackage, undefined, 2);
+  const previewJson = useMemo(() => {
+    if (!isOpen || !userRecoveryPackage) return "";
+
+    const payloadData = userRecoveryPackage.payload.data;
+    const limit = 5;
+
+    const previewPackage = {
+      ...userRecoveryPackage,
+      payload: {
+        ...userRecoveryPackage.payload,
+        data: {
+          ...payloadData,
+          bookmarks: payloadData.bookmarks.slice(0, limit),
+          commentReactions: payloadData.commentReactions.slice(0, limit),
+          comments: payloadData.comments.slice(0, limit),
+          toolReactions: payloadData.toolReactions.slice(0, limit),
+          tools: payloadData.tools.slice(0, limit),
+        },
+        previewMeta: {
+          bookmarksCount: payloadData.bookmarks.length,
+          commentReactionsCount: payloadData.commentReactions.length,
+          commentsCount: payloadData.comments.length,
+          limit,
+          toolReactionsCount: payloadData.toolReactions.length,
+          toolsCount: payloadData.tools.length,
+        },
+      },
+    };
+
+    return JSON.stringify(previewPackage, undefined, 2);
+  }, [isOpen, userRecoveryPackage]);
 
   return (
     <Dialog onOpenChange={handleOpenChange} open={isOpen}>
@@ -47,7 +78,7 @@ export function PreviewDataDialog() {
           </DialogDescription>
         </DialogHeader>
         <pre className="max-h-96 overflow-auto border bg-card p-4 font-mono text-xs">
-          {exportJson}
+          {previewJson}
         </pre>
         <DialogFooter>
           <DialogClose asChild>
@@ -55,7 +86,14 @@ export function PreviewDataDialog() {
           </DialogClose>
           <Button
             disabled={copied}
-            onClick={async () => await copyToClipboard(exportJson)}
+            onClick={async () => {
+              const fullJson = JSON.stringify(
+                userRecoveryPackage,
+                undefined,
+                2,
+              );
+              await copyToClipboard(fullJson);
+            }}
             size="sm"
           >
             {copied ? (
