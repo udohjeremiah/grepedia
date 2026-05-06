@@ -100,7 +100,7 @@ export function ToolDirectory({ searchQuery, tools }: ToolDirectoryProps) {
 
   return (
     <div className="grid gap-4 md:max-h-140 md:grid-cols-[30%_minmax(0,1fr)] md:overflow-hidden">
-      <aside className="h-full overflow-hidden border">
+      <aside className="flex flex-col overflow-hidden border">
         <div className="flex items-center gap-2 border-b px-3 py-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           <FolderOpenIcon className="size-3.5 text-chart-4" />
           Categories
@@ -117,7 +117,7 @@ export function ToolDirectory({ searchQuery, tools }: ToolDirectoryProps) {
           </Button>
         </div>
         <Activity mode={isDesktop || isExpanded ? "visible" : "hidden"}>
-          <div className="h-full overflow-y-auto max-md:border-t">
+          <div className="overflow-y-auto max-md:border-t">
             {groupedByCategory.map((group) => {
               const isActive = group.category === safeCategory;
 
@@ -141,7 +141,7 @@ export function ToolDirectory({ searchQuery, tools }: ToolDirectoryProps) {
           </div>
         </Activity>
       </aside>
-      <section className="h-full overflow-hidden border">
+      <section className="flex flex-col overflow-hidden border">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-2.5">
           <div className="flex items-center gap-2">
             <FolderOpenIcon className="size-4 text-chart-4" />
@@ -155,7 +155,7 @@ export function ToolDirectory({ searchQuery, tools }: ToolDirectoryProps) {
           </span>
         </div>
         {(activeGroup?.tools.length ?? 0) > 0 ? (
-          <div className="h-full divide-y overflow-y-auto">
+          <div className="divide-y overflow-y-auto">
             {(activeGroup?.tools ?? []).map((tool) => (
               <Link
                 className="flex w-full flex-wrap items-center gap-2.5 px-4 py-2.5 transition-all hover:bg-muted hover:text-foreground dark:hover:bg-muted/50"

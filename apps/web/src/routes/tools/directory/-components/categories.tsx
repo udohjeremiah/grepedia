@@ -24,7 +24,7 @@ export function Categories({
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
-    <aside className="h-full overflow-hidden border">
+    <aside className="flex h-full flex-col overflow-hidden border">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2">
         <h3 className="flex items-center gap-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           <FolderOpenIcon className="size-3.5 text-chart-4" />
@@ -48,7 +48,7 @@ export function Categories({
         </Button>
       </div>
       <Activity mode={isDesktop || isExpanded ? "visible" : "hidden"}>
-        <div className="h-full overflow-y-auto max-md:border-t">
+        <div className="overflow-y-auto max-md:border-t">
           {categories.map((category) => {
             const isActive = category.name === selectedCategory;
 
