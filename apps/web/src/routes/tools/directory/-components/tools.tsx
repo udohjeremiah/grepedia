@@ -31,7 +31,7 @@ export function Tools({ categoryCount, categoryName }: ToolsProps) {
   } = useToolsDirectory({ category: categoryName ?? "" });
 
   return (
-    <section className="overflow-hidden border">
+    <section className="h-full overflow-hidden border">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b px-4 py-2.5">
         <div className="flex items-center gap-2">
           <FolderOpenIcon className="size-4 text-chart-4" />
@@ -44,7 +44,7 @@ export function Tools({ categoryCount, categoryName }: ToolsProps) {
         </span>
       </div>
       {tools.length > 0 ? (
-        <div className="divide-y">
+        <div className="h-full divide-y overflow-y-auto">
           {tools.map((tool) => (
             <Link
               className="flex w-full flex-wrap items-center gap-2.5 px-4 py-2.5 transition-all hover:bg-muted hover:text-foreground dark:hover:bg-muted/50"

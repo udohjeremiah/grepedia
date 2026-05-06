@@ -94,7 +94,7 @@ export function ToolRevision(revision: ToolRevisionProps) {
           )}
         </div>
         {showSnapshot && (
-          <pre className="max-h-48 overflow-auto border bg-card p-4 font-mono text-xs whitespace-break-spaces">
+          <pre className="max-h-96 overflow-auto border bg-card p-4 font-mono text-xs whitespace-break-spaces">
             {JSON.stringify(revision.snapshot, undefined, 2)}
           </pre>
         )}
