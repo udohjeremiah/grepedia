@@ -1,5 +1,6 @@
 import type { BetterFetchError } from "better-auth/react";
 
+// eslint-disable-next-line depend/ban-dependencies
 import axios from "axios";
 
 const hasMessage = (value: unknown): value is { message: string } => {

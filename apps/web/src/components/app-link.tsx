@@ -6,10 +6,12 @@ import { AnchorHTMLAttributes, forwardRef } from "react";
 type AppLinkProps = AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const AppLinkComponent = forwardRef<HTMLAnchorElement, AppLinkProps>(
-  ({ className, ...props }, ref) => {
+  ({ children, className, ...props }, ref) => {
     return (
       <Button asChild className={cn("size-fit p-0", className)} variant="link">
-        <a ref={ref} {...props} />
+        <a ref={ref} {...props}>
+          {children}
+        </a>
       </Button>
     );
   },

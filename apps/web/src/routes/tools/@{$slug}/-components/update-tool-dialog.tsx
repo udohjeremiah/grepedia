@@ -520,7 +520,7 @@ export function UpdateToolDialog() {
                       <div className="flex flex-wrap gap-2">
                         {field.state.value.map((category, index) => (
                           <Badge className="max-w-full" key={index}>
-                            <span
+                            <button
                               className="truncate"
                               onClick={() => {
                                 setCategoryInput(category);
@@ -528,7 +528,7 @@ export function UpdateToolDialog() {
                               }}
                             >
                               {category}
-                            </span>
+                            </button>
                             <button
                               className="shrink-0"
                               onClick={() => {

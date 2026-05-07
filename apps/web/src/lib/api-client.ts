@@ -1,7 +1,9 @@
+// eslint-disable-next-line depend/ban-dependencies
 import type { AxiosRequestConfig } from "axios";
 
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
+// eslint-disable-next-line depend/ban-dependencies
 import axios from "axios";
 
 import { env } from "@/env";

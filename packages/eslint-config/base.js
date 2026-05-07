@@ -37,6 +37,7 @@ export const baseConfig = [
       "@typescript-eslint/no-unused-vars": "off",
       "import-x/no-default-export": "error",
       "import-x/order": "off",
+      "security/detect-object-injection": "off",
       "turbo/no-undeclared-env-vars": "warn",
       "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [
