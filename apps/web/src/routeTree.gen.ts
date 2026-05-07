@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ToolsRouteRouteImport } from './routes/tools/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
@@ -34,6 +35,11 @@ import { Route as AuthenticatedAtChar123usernameChar125ModerationIndexRouteImpor
 import { Route as AuthenticatedAtChar123usernameChar125DataIndexRouteImport } from './routes/_authenticated/@{$username}/data/index'
 import { Route as AuthenticatedAtChar123usernameChar125BookmarksIndexRouteImport } from './routes/_authenticated/@{$username}/bookmarks/index'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRouteRoute = ToolsRouteRouteImport.update({
   id: '/tools',
   path: '/tools',
@@ -168,6 +174,7 @@ const AuthenticatedAtChar123usernameChar125BookmarksIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof RootIndexRoute
   '/tools': typeof ToolsRouteRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@{$username}': typeof AuthenticatedAtChar123usernameChar125RouteRouteWithChildren
   '/tools/@{$slug}': typeof ToolsAtChar123slugChar125RouteRouteWithChildren
   '/leaderboard/': typeof LeaderboardIndexRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof RootIndexRoute
   '/tools': typeof ToolsRouteRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/leaderboard': typeof LeaderboardIndexRoute
   '/privacy-policy': typeof PrivacyPolicyIndexRoute
   '/search': typeof SearchIndexRoute
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/tools': typeof ToolsRouteRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/@{$username}': typeof AuthenticatedAtChar123usernameChar125RouteRouteWithChildren
   '/tools/@{$slug}': typeof ToolsAtChar123slugChar125RouteRouteWithChildren
   '/_root/': typeof RootIndexRoute
@@ -243,6 +252,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/tools'
+    | '/sitemap.xml'
     | '/@{$username}'
     | '/tools/@{$slug}'
     | '/leaderboard/'
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/tools'
+    | '/sitemap.xml'
     | '/leaderboard'
     | '/privacy-policy'
     | '/search'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_authenticated'
     | '/tools'
+    | '/sitemap.xml'
     | '/_authenticated/@{$username}'
     | '/tools/@{$slug}'
     | '/_root/'
@@ -317,6 +329,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ToolsRouteRoute: typeof ToolsRouteRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   RootIndexRoute: typeof RootIndexRoute
   LeaderboardIndexRoute: typeof LeaderboardIndexRoute
   PrivacyPolicyIndexRoute: typeof PrivacyPolicyIndexRoute
@@ -326,6 +339,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools': {
       id: '/tools'
       path: '/tools'
@@ -596,6 +616,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ToolsRouteRoute: ToolsRouteRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   RootIndexRoute: RootIndexRoute,
   LeaderboardIndexRoute: LeaderboardIndexRoute,
   PrivacyPolicyIndexRoute: PrivacyPolicyIndexRoute,

@@ -147,6 +147,10 @@
       "types": "./dist/schemas/tools/reactions/tool-reaction.d.ts",
       "default": "./dist/schemas/tools/reactions/tool-reaction.js"
     },
+    "./schemas/tools/get-tool-slugs": {
+      "types": "./dist/schemas/tools/get-tool-slugs.d.ts",
+      "default": "./dist/schemas/tools/get-tool-slugs.js"
+    },
     "./schemas/tools/tool": {
       "types": "./dist/schemas/tools/tool.d.ts",
       "default": "./dist/schemas/tools/tool.js"
