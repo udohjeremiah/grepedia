@@ -1,3 +1,4 @@
+import pluginJsxA11y from "eslint-plugin-jsx-a11y";
 import pluginReact from "eslint-plugin-react";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
@@ -11,9 +12,11 @@ import { baseConfig } from "./base.js";
 export const reactLibraryConfig = [
   ...baseConfig,
   pluginReact.configs.flat.recommended,
+  pluginJsxA11y.flatConfigs.recommended,
   {
     languageOptions: {
       ...pluginReact.configs.flat.recommended.languageOptions,
+      ...pluginJsxA11y.flatConfigs.recommended.languageOptions,
       globals: {
         ...globals.serviceworker,
         ...globals.browser,
