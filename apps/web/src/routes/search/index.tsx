@@ -27,6 +27,7 @@ export const Route = createFileRoute("/search/")({
   // eslint-disable-next-line perfectionist/sort-objects
   head: ({ loaderData }) => {
     const query = loaderData?.query;
+
     return {
       meta: [
         { title: `${query ?? "Search"} • Search Results • Grepedia` },

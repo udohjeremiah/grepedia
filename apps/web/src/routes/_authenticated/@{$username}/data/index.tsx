@@ -13,7 +13,7 @@ import { userRecoveryPackageQueryOptions } from "./-queries/user-recovery-packag
 export const Route = createFileRoute("/_authenticated/@{$username}/data/")({
   component: RouteComponent,
   loader: ({ context }) => {
-    return context.queryClient.ensureQueryData(
+    context.queryClient.prefetchQuery(
       userRecoveryPackageQueryOptions({ userId: context.userId }),
     );
   },
