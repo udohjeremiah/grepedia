@@ -113,7 +113,7 @@ export function ToolDirectory({ searchQuery, tools }: ToolDirectoryProps) {
             size="sm"
             variant="outline"
           >
-            {isExpanded ? "Hide Categories" : "Show Categories"}
+            {isExpanded ? "Collapse Categories" : "Expand Categories"}
           </Button>
         </div>
         <Activity mode={isDesktop || isExpanded ? "visible" : "hidden"}>
