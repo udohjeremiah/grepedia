@@ -8,6 +8,10 @@ import { apiClient } from "@/lib/api-client";
 
 export async function addTool(body: AddToolBody) {
   const parsedBody = addToolBodySchema.parse(body);
-  const response = await apiClient.post("/tools", parsedBody);
-  return addToolResponseSchemas[201].parse(response.data);
+
+  const response = await apiClient
+    .post("tools", { json: parsedBody })
+    .json(addToolResponseSchemas[201]);
+
+  return response;
 }

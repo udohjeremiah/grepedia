@@ -7,8 +7,10 @@ import { apiClient } from "@/lib/api-client";
 
 export async function moderatorGetUser(username: string) {
   const parsedQueryString = moderatorGetUserQuerySchema.parse({ username });
-  const response = await apiClient.get("/moderation/users/lookup", {
-    params: parsedQueryString,
-  });
-  return moderatorGetUserResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get("moderation/users/lookup", { searchParams: parsedQueryString })
+    .json(moderatorGetUserResponseSchemas[200]);
+
+  return response;
 }

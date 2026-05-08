@@ -7,8 +7,10 @@ import { apiClient } from "@/lib/api-client";
 
 export async function moderatorGetTool(slug: string) {
   const parsedQueryString = moderatorGetToolQuerySchema.parse({ slug });
-  const response = await apiClient.get("/moderation/tools/lookup", {
-    params: parsedQueryString,
-  });
-  return moderatorGetToolResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get("moderation/tools/lookup", { searchParams: parsedQueryString })
+    .json(moderatorGetToolResponseSchemas[200]);
+
+  return response;
 }

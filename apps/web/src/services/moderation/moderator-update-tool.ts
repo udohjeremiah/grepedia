@@ -9,9 +9,10 @@ import { apiClient } from "@/lib/api-client";
 
 export async function moderatorUpdateTool(body: ModeratorUpdateToolBody) {
   const parsedBody = moderatorUpdateToolBodySchema.parse(body);
-  const response = await apiClient.patch(
-    "/moderation/tools/update",
-    parsedBody,
-  );
-  return moderatorUpdateToolResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .patch("moderation/tools/update", { json: parsedBody })
+    .json(moderatorUpdateToolResponseSchemas[200]);
+
+  return response;
 }

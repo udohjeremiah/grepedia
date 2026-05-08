@@ -23,11 +23,12 @@ export async function getToolCommentReplies({
   const { commentId, slug } = getToolCommentRepliesParamsSchema.parse(params);
   const parsedQueryString =
     getToolCommentRepliesQueryStringSchema.parse(queryString);
-  const response = await apiClient.get(
-    `/tools/${slug}/comments/${commentId}/replies`,
-    {
-      params: parsedQueryString,
-    },
-  );
-  return getToolCommentRepliesResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get(`tools/${slug}/comments/${commentId}/replies`, {
+      searchParams: parsedQueryString,
+    })
+    .json(getToolCommentRepliesResponseSchemas[200]);
+
+  return response;
 }

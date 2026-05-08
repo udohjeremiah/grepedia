@@ -11,8 +11,10 @@ export async function getToolsDirectory(
 ) {
   const parsedQueryString =
     getToolsDirectoryQueryStringSchema.parse(queryString);
-  const response = await apiClient.get("/tools/directory", {
-    params: parsedQueryString,
-  });
-  return getToolsDirectoryResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get("tools/directory", { searchParams: parsedQueryString })
+    .json(getToolsDirectoryResponseSchemas[200]);
+
+  return response;
 }

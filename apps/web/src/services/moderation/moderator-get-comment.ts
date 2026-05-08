@@ -7,8 +7,10 @@ import { apiClient } from "@/lib/api-client";
 
 export async function moderatorGetComment(commentId: string) {
   const parsedQueryString = moderatorGetCommentQuerySchema.parse({ commentId });
-  const response = await apiClient.get("/moderation/comments/lookup", {
-    params: parsedQueryString,
-  });
-  return moderatorGetCommentResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get("moderation/comments/lookup", { searchParams: parsedQueryString })
+    .json(moderatorGetCommentResponseSchemas[200]);
+
+  return response;
 }

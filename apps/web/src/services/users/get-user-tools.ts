@@ -8,6 +8,10 @@ import { apiClient } from "@/lib/api-client";
 
 export async function getUserTools(params: GetUserToolsParams) {
   const { userId } = getUserToolsParamsSchema.parse(params);
-  const response = await apiClient.get(`/users/${userId}/tools`);
-  return getUserToolsResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get(`users/${userId}/tools`)
+    .json(getUserToolsResponseSchemas[200]);
+
+  return response;
 }

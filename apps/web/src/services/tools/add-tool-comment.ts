@@ -16,6 +16,10 @@ type AddToolComment = {
 export async function addToolComment({ body, params }: AddToolComment) {
   const { slug } = addToolCommentParamsSchema.parse(params);
   const parsedBody = addToolCommentBodySchema.parse(body);
-  const response = await apiClient.post(`/tools/${slug}/comments`, parsedBody);
-  return addToolCommentResponseSchemas[201].parse(response.data);
+
+  const response = await apiClient
+    .post(`tools/${slug}/comments`, { json: parsedBody })
+    .json(addToolCommentResponseSchemas[201]);
+
+  return response;
 }

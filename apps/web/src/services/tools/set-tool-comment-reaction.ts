@@ -19,9 +19,10 @@ export async function setToolCommentReaction({
 }: SetToolCommentReaction) {
   const { commentId, slug } = setToolCommentReactionParamsSchema.parse(params);
   const parsedBody = setToolCommentReactionBodySchema.parse(body);
-  const response = await apiClient.post(
-    `/tools/${slug}/comments/${commentId}/reaction`,
-    parsedBody,
-  );
-  return setToolCommentReactionResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .post(`tools/${slug}/comments/${commentId}/reaction`, { json: parsedBody })
+    .json(setToolCommentReactionResponseSchemas[200]);
+
+  return response;
 }

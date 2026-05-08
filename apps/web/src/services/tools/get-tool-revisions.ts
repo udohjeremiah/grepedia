@@ -20,8 +20,10 @@ export async function getToolRevisions({
   const { slug } = getToolRevisionsParamsSchema.parse(params);
   const parsedQueryString =
     getToolRevisionsQueryStringSchema.parse(queryString);
-  const response = await apiClient.get(`/tools/${slug}/revisions`, {
-    params: parsedQueryString,
-  });
-  return getToolRevisionsResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get(`tools/${slug}/revisions`, { searchParams: parsedQueryString })
+    .json(getToolRevisionsResponseSchemas[200]);
+
+  return response;
 }

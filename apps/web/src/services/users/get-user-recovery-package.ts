@@ -10,6 +10,10 @@ export async function getUserRecoveryPackage(
   params: GetUserRecoveryPackageParams,
 ) {
   const { userId } = getUserRecoveryPackageParamsSchema.parse(params);
-  const response = await apiClient.get(`/users/${userId}/recovery-package`);
-  return getUserRecoveryPackageResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get(`users/${userId}/recovery-package`)
+    .json(getUserRecoveryPackageResponseSchemas[200]);
+
+  return response;
 }

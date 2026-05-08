@@ -22,8 +22,10 @@ export async function getToolComments({
 }: GetToolCommentsInput) {
   const { slug } = getToolCommentsParamsSchema.parse(params);
   const parsedQueryString = getToolCommentsQueryStringSchema.parse(queryString);
-  const response = await apiClient.get(`/tools/${slug}/comments`, {
-    params: parsedQueryString,
-  });
-  return getToolCommentsResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get(`tools/${slug}/comments`, { searchParams: parsedQueryString })
+    .json(getToolCommentsResponseSchemas[200]);
+
+  return response;
 }

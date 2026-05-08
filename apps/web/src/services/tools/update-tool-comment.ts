@@ -22,9 +22,10 @@ export async function updateToolComment({
 }: UpdateToolCommentInput) {
   const { commentId, slug } = updateToolCommentParamsSchema.parse(params);
   const parsedBody = updateToolCommentBodySchema.parse(body);
-  const response = await apiClient.patch(
-    `/tools/${slug}/comments/${commentId}`,
-    parsedBody,
-  );
-  return updateToolCommentResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .patch(`tools/${slug}/comments/${commentId}`, { json: parsedBody })
+    .json(updateToolCommentResponseSchemas[200]);
+
+  return response;
 }

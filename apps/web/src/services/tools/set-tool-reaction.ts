@@ -16,6 +16,10 @@ type SetToolReaction = {
 export async function setToolReaction({ body, params }: SetToolReaction) {
   const { slug } = setToolReactionParamsSchema.parse(params);
   const parsedBody = setToolReactionBodySchema.parse(body);
-  const response = await apiClient.post(`/tools/${slug}/reaction`, parsedBody);
-  return setToolReactionResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .post(`tools/${slug}/reaction`, { json: parsedBody })
+    .json(setToolReactionResponseSchemas[200]);
+
+  return response;
 }

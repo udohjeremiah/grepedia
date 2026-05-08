@@ -19,9 +19,10 @@ export async function toggleUserBookmark({
 }: ToggleUserBookmarkInput) {
   const { userId } = toggleUserBookmarkParamsSchema.parse(params);
   const parsedBody = toggleUserBookmarkBodySchema.parse(body);
-  const response = await apiClient.post(
-    `/users/${userId}/bookmarks`,
-    parsedBody,
-  );
-  return toggleUserBookmarkResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .post(`users/${userId}/bookmarks`, { json: parsedBody })
+    .json(toggleUserBookmarkResponseSchemas[200]);
+
+  return response;
 }

@@ -8,8 +8,10 @@ import { apiClient } from "@/lib/api-client";
 
 export async function removeUserBookmark(params: RemoveUserBookmarkParams) {
   const { bookmarkId, userId } = removeUserBookmarkParamsSchema.parse(params);
-  const response = await apiClient.delete(
-    `/users/${userId}/bookmarks/${bookmarkId}`,
-  );
-  return removeUserBookmarkResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .delete(`users/${userId}/bookmarks/${bookmarkId}`)
+    .json(removeUserBookmarkResponseSchemas[200]);
+
+  return response;
 }

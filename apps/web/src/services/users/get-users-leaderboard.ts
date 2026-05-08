@@ -11,8 +11,10 @@ export async function getUsersLeaderboard(
 ) {
   const parsedQueryString =
     getUsersLeaderboardQueryStringSchema.parse(queryString);
-  const response = await apiClient.get("/users/leaderboard", {
-    params: parsedQueryString,
-  });
-  return getUsersLeaderboardResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .get("users/leaderboard", { searchParams: parsedQueryString })
+    .json(getUsersLeaderboardResponseSchemas[200]);
+
+  return response;
 }

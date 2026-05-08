@@ -38,11 +38,9 @@ export const Route = createFileRoute("/sitemap.xml")({
             limit: 1000,
           });
 
-          const response = await apiClient.get("/tools/slugs", {
-            params: query,
-          });
-
-          const parsed = getToolSlugsResponseSchemas[200].parse(response.data);
+          const parsed = await apiClient
+            .get("tools/slugs", { searchParams: query })
+            .json(getToolSlugsResponseSchemas[200]);
 
           tools.push(...parsed.data.tools);
           cursor = parsed.data.nextCursor;

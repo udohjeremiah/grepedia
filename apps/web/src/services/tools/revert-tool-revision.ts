@@ -19,6 +19,10 @@ export async function revertToolRevision({
 }: RevertToolRevisionInput) {
   const { slug } = revertToolRevisionParamsSchema.parse(params);
   const parsedBody = revertToolRevisionBodySchema.parse(body);
-  const response = await apiClient.post(`/tools/${slug}/revisions`, parsedBody);
-  return revertToolRevisionResponseSchemas[200].parse(response.data);
+
+  const response = await apiClient
+    .post(`tools/${slug}/revisions`, { json: parsedBody })
+    .json(revertToolRevisionResponseSchemas[200]);
+
+  return response;
 }

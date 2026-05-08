@@ -1,73 +1,38 @@
-// eslint-disable-next-line depend/ban-dependencies
-import type { AxiosRequestConfig } from "axios";
-
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
-// eslint-disable-next-line depend/ban-dependencies
-import axios from "axios";
+import ky, { isHTTPError } from "ky";
 
 import { env } from "@/env";
 
-const rawApiClient = axios.create({
-  baseURL: env.VITE_API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
-  withCredentials: true,
-});
-
-const getServerCookie = createIsomorphicFn()
+const getCookie = createIsomorphicFn()
   .server(() => getRequestHeaders().get("cookie") ?? undefined)
   .client(() => {});
 
-function resolveAuthConfig(
-  config: AxiosRequestConfig = {},
-): AxiosRequestConfig {
-  const cookie = getServerCookie();
-
-  if (!cookie) return config;
-
-  return {
-    ...config,
-    headers: {
-      ...config.headers,
-      cookie,
-    },
-  };
-}
-
-export const apiClient = {
-  async delete<T = unknown>(url: string, config?: AxiosRequestConfig) {
-    return rawApiClient.delete<T>(url, resolveAuthConfig(config));
+export const apiClient = ky.create({
+  baseUrl: env.VITE_API_BASE_URL,
+  credentials: "include",
+  hooks: {
+    beforeError: [
+      ({ error }) => {
+        if (
+          isHTTPError(error) &&
+          typeof error.data === "object" &&
+          error.data !== null &&
+          "message" in error.data &&
+          typeof error.data.message === "string"
+        ) {
+          error.message = error.data.message;
+        }
+        return error;
+      },
+    ],
+    beforeRequest: [
+      ({ request }) => {
+        const cookie = getCookie();
+        if (cookie) {
+          request.headers.set("cookie", cookie);
+        }
+      },
+    ],
   },
-
-  async get<T = unknown>(url: string, config?: AxiosRequestConfig) {
-    return rawApiClient.get<T>(url, resolveAuthConfig(config));
-  },
-
-  async patch<T = unknown>(
-    url: string,
-    data?: unknown,
-    config?: AxiosRequestConfig,
-  ) {
-    return rawApiClient.patch<T>(url, data, resolveAuthConfig(config));
-  },
-
-  async post<T = unknown>(
-    url: string,
-    data?: unknown,
-    config?: AxiosRequestConfig,
-  ) {
-    return rawApiClient.post<T>(url, data, resolveAuthConfig(config));
-  },
-
-  async put<T = unknown>(
-    url: string,
-    data?: unknown,
-    config?: AxiosRequestConfig,
-  ) {
-    return rawApiClient.put<T>(url, data, resolveAuthConfig(config));
-  },
-
-  async request<T = unknown>(config: AxiosRequestConfig) {
-    return rawApiClient.request<T>(resolveAuthConfig(config));
-  },
-};
+});

@@ -1,8 +1,7 @@
-// eslint-disable-next-line depend/ban-dependencies
-import type { AxiosError } from "axios";
+import type { HTTPError } from "ky";
 
 declare module "@tanstack/react-query" {
   interface Register {
-    defaultError: AxiosError;
+    defaultError: HTTPError;
   }
 }
