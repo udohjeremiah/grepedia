@@ -669,6 +669,7 @@ export function UpdateToolDialog() {
                         <Calendar
                           captionLayout="dropdown"
                           defaultMonth={selectedDate}
+                          disabled={{ after: new Date() }}
                           mode="single"
                           onSelect={(date) => {
                             field.handleChange(
