@@ -29,6 +29,7 @@ export function Categories({
         <h3 className="flex items-center gap-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
           <FolderOpenIcon className="size-3.5 text-chart-4" />
           Categories
+          <Badge>{formatCompactNumber(categories.length)}</Badge>
         </h3>
         <Button asChild className="text-chart-2" size="xs" variant="outline">
           <Link to="/leaderboard">
