@@ -354,6 +354,20 @@ function buildVectorSearchPipeline({
   return pipelines[tab] as unknown as Document[];
 }
 
+function cosineSimilarity(a: number[], b: number[]): number {
+  if (a.length !== b.length) return 0;
+  let dot = 0,
+    normA = 0,
+    normB = 0;
+  for (const [index, element] of a.entries()) {
+    dot += element * b[index]!;
+    normA += element * element;
+    normB += b[index]! * b[index]!;
+  }
+  const denom = Math.sqrt(normA) * Math.sqrt(normB);
+  return denom === 0 ? 0 : dot / denom;
+}
+
 function getNextSearchCursor({
   last,
   limit,
@@ -465,9 +479,6 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
           >(vectorPipeline)
           .toArray();
       } else {
-        const { default: cosineSimilarity } =
-          await import("compute-cosine-similarity");
-
         const candidates = await tools
           .find({ embeddings: { $exists: true }, status: "published" })
           .project<ToolWithObjectIds>({
@@ -486,7 +497,7 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         const scored = candidates
           .flatMap((tool) => {
             if (!tool.embeddings || tool.embeddings.length === 0) return [];
-            const score = cosineSimilarity(queryVector, tool.embeddings) ?? 0;
+            const score = cosineSimilarity(queryVector, tool.embeddings);
             if (score < fastify.env.MIN_VECTOR_SCORE) return [];
             return [{ ...tool, score }];
           })

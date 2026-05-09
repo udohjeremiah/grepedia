@@ -5,7 +5,10 @@ import { z } from "zod";
 const health: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async (_request, reply) => {
+      const isProduction = fastify.env.NODE_ENV === "production";
+
       let databaseStatus: "error" | "ok" = "ok";
+      let embedderStatus: "error" | "ok" = "ok";
 
       try {
         await fastify.getDatabase().command({ ping: 1 });
@@ -13,7 +16,18 @@ const health: FastifyPluginAsyncZod = async (fastify) => {
         databaseStatus = "error";
       }
 
-      const embedderStatus = fastify.embedder ? "ok" : "error";
+      if (!isProduction) {
+        try {
+          const response = await fetch(`${fastify.env.OLLAMA_URL}/api/tags`, {
+            signal: AbortSignal.timeout(3000),
+          });
+          if (!response.ok) {
+            throw new Error("Ollama is unreachable");
+          }
+        } catch {
+          embedderStatus = "error";
+        }
+      }
 
       return reply.code(200).send({
         database: databaseStatus,

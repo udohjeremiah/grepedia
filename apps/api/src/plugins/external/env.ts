@@ -22,7 +22,8 @@ declare module "fastify" {
       MONGODB_COLL_USER_BOOKMARK: string;
       MONGODB_DATABASE: string;
       MONGODB_URL: string;
-      NODE_ENV: "development" | "production" | "testing";
+      NODE_ENV: "development" | "production";
+      OLLAMA_URL: string;
       PORT: number;
       RESEND_API_KEY: string;
       USER_DATA_EXPORT_SIGNING_SECRET: string;
@@ -112,6 +113,10 @@ const options: FastifyEnvOptions = {
         default: "development",
         type: "string",
       },
+      OLLAMA_URL: {
+        default: "http://localhost:11434",
+        type: "string",
+      },
       PORT: {
         default: 4000,
         type: "number",
@@ -142,6 +147,7 @@ const options: FastifyEnvOptions = {
       "MONGODB_COLL_TOOL_REVISION",
       "MONGODB_COLL_MODERATION_CASE",
       "USER_DATA_EXPORT_SIGNING_SECRET",
+      "OLLAMA_URL",
       "GEMINI_API_KEY",
       "MIN_VECTOR_SCORE",
       "RESEND_API_KEY",
