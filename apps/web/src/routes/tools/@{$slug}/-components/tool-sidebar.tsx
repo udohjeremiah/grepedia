@@ -128,22 +128,22 @@ export function ToolSidebar() {
                   <Button
                     asChild
                     className="gap-2.5"
-                    key={externalUrl.url}
+                    key={externalUrl}
                     variant="outline"
                   >
-                    <a href={externalUrl.url} rel="noreferrer" target="_blank">
+                    <a href={externalUrl} rel="noreferrer" target="_blank">
                       <Avatar className="after:border-none" size="sm">
                         <AvatarImage
-                          alt={externalUrl.platform}
+                          alt={externalUrl}
                           className="rounded-none"
-                          src={`https://www.google.com/s2/favicons?domain=${externalUrl.platform}&sz=64`}
+                          src={`https://www.google.com/s2/favicons?domain=${externalUrl}&sz=64`}
                         />
                         <AvatarFallback className="rounded-none text-base">
-                          {getInitials(externalUrl.platform)}
+                          {getInitials(new URL(externalUrl).hostname)}
                         </AvatarFallback>
                       </Avatar>
                       <span className="flex-1 truncate">
-                        {externalUrl.platform}
+                        {new URL(externalUrl).hostname}
                       </span>
                       <ExternalLinkIcon className="size-3" />
                     </a>

@@ -5,7 +5,7 @@ import { getToolsDirectoryCategoriesResponseSchemas } from "@workspace/shared/sc
 const getToolsDirectoryCategories: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (_request, reply) {
-      const tools = fastify.getToolCollection();
+      const tools = fastify.db.tools;
 
       const categories = await tools
         .aggregate<{

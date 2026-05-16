@@ -11,9 +11,9 @@ const getComment: FastifyPluginAsyncZod = async (fastify) => {
     handler: async function (request, reply) {
       const { commentId } = request.query;
 
-      const comments = fastify.getToolCommentCollection();
-      const tools = fastify.getToolCollection();
-      const users = fastify.getUserCollection();
+      const comments = fastify.db.toolComments;
+      const tools = fastify.db.tools;
+      const users = fastify.db.users;
 
       const comment = await comments.findOne({
         _id: ObjectId.createFromHexString(commentId),

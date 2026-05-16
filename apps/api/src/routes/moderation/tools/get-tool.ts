@@ -10,7 +10,7 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
     handler: async function (request, reply) {
       const { slug } = request.query;
 
-      const tools = fastify.getToolCollection();
+      const tools = fastify.db.tools;
 
       const tool = await tools.findOne(
         { slug },

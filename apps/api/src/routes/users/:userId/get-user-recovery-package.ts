@@ -16,12 +16,12 @@ const getUserRecoveryPackage: FastifyPluginAsyncZod = async (fastify) => {
     handler: async function (request, reply) {
       const { userId } = request.params;
 
-      const users = fastify.getUserCollection();
-      const userBookmarks = fastify.getUserBookmarkCollection();
-      const tools = fastify.getToolCollection();
-      const toolReactions = fastify.getToolReactionCollection();
-      const toolComments = fastify.getToolCommentCollection();
-      const toolCommentReactions = fastify.getToolCommentReactionCollection();
+      const users = fastify.db.users;
+      const userBookmarks = fastify.db.userBookmarks;
+      const tools = fastify.db.tools;
+      const toolReactions = fastify.db.toolReactions;
+      const toolComments = fastify.db.toolComments;
+      const toolCommentReactions = fastify.db.toolCommentReactions;
 
       const userObjectId = ObjectId.createFromHexString(userId);
       const [

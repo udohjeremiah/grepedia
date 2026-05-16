@@ -11,9 +11,9 @@ const getToolProposals: FastifyPluginAsyncZod = async (fastify) => {
     handler: async function (request, reply) {
       const { slug } = request.params;
 
-      const tools = fastify.getToolCollection();
-      const users = fastify.getUserCollection();
-      const moderationCases = fastify.getModerationCaseCollection();
+      const tools = fastify.db.tools;
+      const users = fastify.db.users;
+      const moderationCases = fastify.db.moderationCases;
 
       const tool = await tools.findOne({ slug }, { projection: { _id: 1 } });
 

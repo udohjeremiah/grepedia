@@ -10,7 +10,7 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
     handler: async function (request, reply) {
       const { slug, status } = request.body;
 
-      const tools = fastify.getToolCollection();
+      const tools = fastify.db.tools;
       const updateResult = await tools.findOneAndUpdate(
         { slug },
         { $set: { status, updatedAt: new Date() } },

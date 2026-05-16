@@ -42,8 +42,8 @@ const getToolRevisions: FastifyPluginAsyncZod = async (fastify) => {
         throw error;
       }
 
-      const tools = fastify.getToolCollection();
-      const toolRevisions = fastify.getToolRevisionCollection();
+      const tools = fastify.db.tools;
+      const toolRevisions = fastify.db.toolRevisions;
 
       const tool = await tools.findOne({ slug }, { projection: { _id: 1 } });
 
@@ -66,7 +66,7 @@ const getToolRevisions: FastifyPluginAsyncZod = async (fastify) => {
           revisionNumber: number;
           snapshot: {
             categories: string[];
-            externalUrls?: { platform: string; url: string }[];
+            externalUrls?: string[];
             longDescription: string;
             name: string;
             officialUrl: string;

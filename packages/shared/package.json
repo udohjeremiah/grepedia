@@ -115,6 +115,10 @@
       "types": "./dist/schemas/tools/directory/get-tools-directory-categories.d.ts",
       "default": "./dist/schemas/tools/directory/get-tools-directory-categories.js"
     },
+    "./schemas/tools/generate-tool": {
+      "types": "./dist/schemas/tools/generate-tool.d.ts",
+      "default": "./dist/schemas/tools/generate-tool.js"
+    },
     "./schemas/tools/get-tool": {
       "types": "./dist/schemas/tools/get-tool.d.ts",
       "default": "./dist/schemas/tools/get-tool.js"

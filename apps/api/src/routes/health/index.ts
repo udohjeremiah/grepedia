@@ -5,22 +5,18 @@ import { z } from "zod";
 const health: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async (_request, reply) => {
-      const isProduction = fastify.env.NODE_ENV === "production";
-
       let databaseStatus: "error" | "ok" = "ok";
       let embedderStatus: "error" | "ok" = "ok";
 
       try {
-        await fastify.getDatabase().command({ ping: 1 });
+        await fastify.db.instance.command({ ping: 1 });
       } catch {
         databaseStatus = "error";
       }
 
-      if (!isProduction) {
+      if (fastify.env.AI_PROVIDER === "ollama") {
         try {
-          const response = await fetch(`${fastify.env.OLLAMA_URL}/api/tags`, {
-            signal: AbortSignal.timeout(3000),
-          });
+          const response = await fetch(`${fastify.env.OLLAMA_URL}/api/tags`);
           if (!response.ok) {
             throw new Error("Ollama is unreachable");
           }

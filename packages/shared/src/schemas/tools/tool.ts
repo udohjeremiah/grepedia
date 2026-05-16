@@ -2,16 +2,14 @@ import { z } from "zod";
 
 import { objectIdSchema } from "../object-id.js";
 import { slugSchema } from "../slug.js";
+import { publicUrlSchema } from "../url-policy.js";
 
 export const toolSchema = z.object({
   _id: objectIdSchema,
   addedAt: z.iso.datetime(),
   addedBy: objectIdSchema,
   categories: z.array(z.string()).min(1).max(4),
-  externalUrls: z
-    .array(z.object({ platform: z.string(), url: z.url() }))
-    .max(4)
-    .optional(),
+  externalUrls: z.array(publicUrlSchema).max(4).optional(),
   longDescription: z.string(),
   name: z.string(),
   officialUrl: z.url(),

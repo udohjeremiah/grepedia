@@ -26,8 +26,8 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
       const { changes, discussionUrl, summary, title } = request.body;
       const normalizedChanges = normalizeToolInput(changes);
 
-      const tools = fastify.getToolCollection();
-      const moderationCases = fastify.getModerationCaseCollection();
+      const tools = fastify.db.tools;
+      const moderationCases = fastify.db.moderationCases;
 
       const tool = await tools.findOne({ slug });
 
@@ -54,7 +54,7 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
 
       const rawUrls = [
         normalizedChanges.officialUrl,
-        ...(normalizedChanges.externalUrls ?? []).map((item) => item.url),
+        ...(normalizedChanges.externalUrls ?? []),
       ].filter(Boolean);
       const normalizedUrls = new Set(
         rawUrls.map((value) => normalizeUrlForCompare(value)).filter(Boolean),
@@ -71,7 +71,7 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
         const duplicate = candidates.find((candidate) => {
           const candidateUrls = [
             candidate.officialUrl,
-            ...(candidate.externalUrls ?? []).map((item) => item.url),
+            ...(candidate.externalUrls ?? []),
           ]
             .map((value) => normalizeUrlForCompare(value))
             .filter(Boolean);

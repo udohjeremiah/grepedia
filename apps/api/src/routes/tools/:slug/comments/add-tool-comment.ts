@@ -17,9 +17,9 @@ const addToolComment: FastifyPluginAsyncZod = async (fastify) => {
       const { slug } = request.params;
       const { content, parentCommentId } = request.body;
 
-      const tools = fastify.getToolCollection();
-      const comments = fastify.getToolCommentCollection();
-      const users = fastify.getUserCollection();
+      const tools = fastify.db.tools;
+      const comments = fastify.db.toolComments;
+      const users = fastify.db.users;
 
       const tool = await tools.findOne({ slug }, { projection: { _id: 1 } });
 
@@ -105,7 +105,7 @@ const addToolComment: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      fastify.evaluateUserTrust(userId).catch((error: unknown) => {
+      fastify.evaluateUserTrust(userId).catch((error) => {
         fastify.log.error(error);
       });
 

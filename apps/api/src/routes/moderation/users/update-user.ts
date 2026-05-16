@@ -17,7 +17,7 @@ const updateUser: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const users = fastify.getUserCollection();
+      const users = fastify.db.users;
       const updateResult = await users.findOneAndUpdate(
         { username },
         {

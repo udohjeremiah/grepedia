@@ -54,32 +54,13 @@ import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { useDialog } from "@/hooks/use-dialog";
 import { useSubmission } from "@/hooks/use-submission";
-import { parseExternalUrl } from "@/utils/parse-external-url";
 
 import { useTool } from "../-queries/tool";
 import { useToolProposals } from "../revisions/-queries/tool-proposals";
 import { useToolUpdate } from "../revisions/-queries/tool-update";
 
-const MAX_LONG_DESCRIPTION = 5000;
+const MAX_LONG_DESCRIPTION = 10_000;
 const MAX_SUMMARY = 1000;
-const LONG_DESCRIPTION_TEMPLATE = `Use this space to describe the tool by answering the key questions below. Keep it clear, concise, and helpful — someone should understand the tool in 10-20 seconds.
-
-Delete this template before writing your description.
-
-1. What is it?
-   - Give a short, one or two sentence overview of the tool and its purpose.
-
-2. Who is it for?
-   - Mention the main audience or user persona who benefits most from this tool.
-
-3. What problem does it solve?
-   - Explain the core problem or need this tool addresses.
-
-4. Key features:
-   - List 3-5 of the most important or distinctive features in bullet points.
-
-5. Who is behind it?
-   - Include the organization, company, or creator for credibility.`;
 
 export function UpdateToolDialog() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
@@ -91,7 +72,7 @@ export function UpdateToolDialog() {
   const { user } = auth.useSession();
   const { data: tool } = useTool({ slug });
   const { data: proposals } = useToolProposals({ slug });
-  const { mutateAsync: updateTool } = useToolUpdate(slug);
+  const { mutate: updateTool } = useToolUpdate(slug);
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
@@ -99,7 +80,7 @@ export function UpdateToolDialog() {
       changes: {
         categories: tool.categories,
         externalUrls: tool.externalUrls,
-        longDescription: tool.longDescription || LONG_DESCRIPTION_TEMPLATE,
+        longDescription: tool.longDescription,
         name: tool.name,
         officialUrl: tool.officialUrl,
         releasedAt: tool.releasedAt,
@@ -110,36 +91,21 @@ export function UpdateToolDialog() {
       summary: "",
       title: "",
     } as UpdateToolBody,
-    onSubmit: async ({ value }) => {
+    onSubmit: ({ value }) => {
       resetStatus();
 
-      try {
-        await updateTool(value);
+      updateTool(value, {
+        onError: (error) => {
+          setApiError("Couldn't update tool", error);
+        },
+        onSuccess: () => {
+          setExternalUrlInput("");
+          setCategoryInput("");
+          setTagInput("");
 
-        form.reset({
-          changes: {
-            categories: [],
-            externalUrls: undefined,
-            longDescription: "",
-            name: "",
-            officialUrl: "",
-            releasedAt: undefined,
-            shortDescription: "",
-            tags: [],
-          },
-          discussionUrl: "",
-          summary: "",
-          title: "",
-        });
-
-        setExternalUrlInput("");
-        setCategoryInput("");
-        setTagInput("");
-
-        setSuccess("Update submitted", "Your update is pending review.");
-      } catch (error) {
-        setApiError("Couldn't update tool", error);
-      }
+          setSuccess("Update submitted", "Your update is pending review.");
+        },
+      });
     },
     validators: {
       onSubmit: updateToolBodySchema,
@@ -352,7 +318,7 @@ export function UpdateToolDialog() {
                       aria-invalid={isInvalid}
                       id={field.name}
                       maxLength={MAX_LONG_DESCRIPTION}
-                      minLength={20}
+                      minLength={1200}
                       onBlur={field.handleBlur}
                       onChange={(event) => {
                         const value = event.target.value;
@@ -378,15 +344,9 @@ export function UpdateToolDialog() {
                 const isDisabled = (field.state.value ?? []).length >= 4;
 
                 function addExternalUrl() {
-                  const parsedUrl = parseExternalUrl(externalUrlInput);
-                  if (!parsedUrl) return;
-
-                  const isDuplicate = field.state.value?.some(
-                    (item) => item.url === parsedUrl.url,
-                  );
-                  if (isDuplicate) return;
-
-                  field.pushValue(parsedUrl);
+                  if (!externalUrlInput) return;
+                  if (field.state.value?.includes(externalUrlInput)) return;
+                  field.pushValue(externalUrlInput);
                   field.handleBlur();
                   setExternalUrlInput("");
                 }
@@ -440,12 +400,12 @@ export function UpdateToolDialog() {
                             <button
                               className="truncate"
                               onClick={() => {
-                                setExternalUrlInput(item.url);
+                                setExternalUrlInput(item);
                                 field.removeValue(index);
                               }}
                               type="button"
                             >
-                              {item.platform}
+                              {new URL(item).hostname}
                             </button>
                             <button
                               className="shrink-0"

@@ -14,11 +14,11 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
     handler: async function (request, reply) {
       const { slug } = request.params;
 
-      const tools = fastify.getToolCollection();
-      const toolReactions = fastify.getToolReactionCollection();
-      const toolComments = fastify.getToolCommentCollection();
-      const userBookmarks = fastify.getUserBookmarkCollection();
-      const users = fastify.getUserCollection();
+      const tools = fastify.db.tools;
+      const toolReactions = fastify.db.toolReactions;
+      const toolComments = fastify.db.toolComments;
+      const userBookmarks = fastify.db.userBookmarks;
+      const users = fastify.db.users;
 
       const tool = await tools.findOne({ slug });
 

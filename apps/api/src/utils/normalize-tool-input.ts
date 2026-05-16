@@ -1,48 +1,41 @@
-type ExternalUrl = {
-  platform: string;
-  url: string;
-};
-
 type ToolInput = {
   categories: string[];
-  externalUrls?: ExternalUrl[];
+  externalUrls?: string[];
   tags: string[];
 };
 
-const sortStrings = (values: string[]) => {
-  return values
-    .map((value) => value.trim())
+const normalizeArray = (array: string[]) =>
+  array
+    .map((v) => v.trim())
+    .filter(Boolean)
     .toSorted((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-};
 
-const sortExternalUrls = (values: ExternalUrl[]) => {
-  const normalized = values.map((value) => ({
-    ...value,
-    platform: value.platform.trim(),
-    url: value.url.trim(),
-  }));
-
-  return normalized.toSorted((a, b) => {
-    const platform = a.platform.localeCompare(b.platform, undefined, {
-      sensitivity: "base",
-    });
-    if (platform !== 0) return platform;
-    return a.url.localeCompare(b.url, undefined, { sensitivity: "base" });
-  });
-};
+const toTitleCase = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
 /**
  * Normalizes tool input for consistent storage and comparisons.
- * Trims and sorts categories and tags, and trims + sorts external URLs by
- * platform then URL (case-insensitive).
+ *
+ * Rules:
+ * - categories: Title Case each word
+ * - tags: lowercase all values
+ * - externalUrls: trimmed and sorted (case-insensitive)
+ * - all arrays are sorted case-insensitively where applicable
  */
 export const normalizeToolInput = <T extends ToolInput>(input: T): T => {
   return {
     ...input,
-    categories: sortStrings(input.categories),
+    categories: normalizeArray(input.categories).map((category) =>
+      toTitleCase(category),
+    ),
     externalUrls: input.externalUrls
-      ? sortExternalUrls(input.externalUrls)
-      : input.externalUrls,
-    tags: sortStrings(input.tags),
+      ? normalizeArray(input.externalUrls)
+      : undefined,
+    tags: normalizeArray(input.tags).map((tag) => tag.toLowerCase()),
   };
 };

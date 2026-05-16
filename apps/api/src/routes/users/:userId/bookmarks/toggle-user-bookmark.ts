@@ -14,8 +14,8 @@ const toggleUserBookmark: FastifyPluginAsyncZod = async (fastify) => {
 
       const { toolSlug } = request.body;
 
-      const tools = fastify.getToolCollection();
-      const userBookmarks = fastify.getUserBookmarkCollection();
+      const tools = fastify.db.tools;
+      const userBookmarks = fastify.db.userBookmarks;
 
       const tool = await tools.findOne(
         { slug: toolSlug },

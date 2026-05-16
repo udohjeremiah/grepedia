@@ -30,8 +30,7 @@ const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
         // eslint-disable-next-line unicorn/no-null
         reply.send(response.body ? await response.text() : null);
       } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        fastify.log.error("Authentication Error:", error as any);
+        fastify.log.error(error, "Authentication error");
         reply.status(500).send({
           code: "AUTH_FAILURE",
           error: "Internal authentication error",

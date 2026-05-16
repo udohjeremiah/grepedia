@@ -16,14 +16,13 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       if (!request.user) throw new Error("User not authenticated");
 
       const body = normalizeToolInput(request.body);
-      const tools = fastify.getToolCollection();
-      const toolRevisions = fastify.getToolRevisionCollection();
-      const users = fastify.getUserCollection();
+      const tools = fastify.db.tools;
+      const toolRevisions = fastify.db.toolRevisions;
+      const users = fastify.db.users;
 
-      const rawUrls = [
-        body.officialUrl,
-        ...(body.externalUrls ?? []).map((item) => item.url),
-      ].filter(Boolean);
+      const rawUrls = [body.officialUrl, ...(body.externalUrls ?? [])].filter(
+        Boolean,
+      );
       const normalizedUrls = new Set(
         rawUrls.map((value) => normalizeUrlForCompare(value)).filter(Boolean),
       );
@@ -37,7 +36,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         const duplicate = candidates.find((candidate) => {
           const candidateUrls = [
             candidate.officialUrl,
-            ...(candidate.externalUrls ?? []).map((item) => item.url),
+            ...(candidate.externalUrls ?? []),
           ]
             .map((value) => normalizeUrlForCompare(value))
             .filter(Boolean);
@@ -72,8 +71,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         ];
         embeddings = await fastify.generateEmbeddings(contentToEmbed);
       } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        fastify.log.error("Embedding Error:", error as any);
+        fastify.log.error(error, "Embedding error");
         return reply.code(500).send({
           message: "Failed to generate tool embeddings",
           success: false,
@@ -144,7 +142,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         }
       }
 
-      fastify.evaluateUserTrust(userId).catch((error: unknown) => {
+      fastify.evaluateUserTrust(userId).catch((error) => {
         fastify.log.error(error);
       });
 

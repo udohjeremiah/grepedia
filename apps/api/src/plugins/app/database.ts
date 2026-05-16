@@ -13,75 +13,77 @@ import type { ToolWithObjectIds } from "@/schemas/tools/tool.js";
 import type { UserBookmarkWithObjectIds } from "@/schemas/users/user-bookmark.js";
 import type { UserWithObjectIds } from "@/schemas/users/user.js";
 
+type Database = {
+  instance: Db;
+  moderationCases: Collection<ModerationCaseWithObjectIds>;
+  toolCommentReactions: Collection<ToolCommentReactionWithObjectIds>;
+  toolComments: Collection<ToolCommentWithObjectIds>;
+  toolReactions: Collection<ToolReactionWithObjectIds>;
+  toolRevisions: Collection<ToolRevisionWithObjectIds>;
+  tools: Collection<ToolWithObjectIds>;
+  userBookmarks: Collection<UserBookmarkWithObjectIds>;
+  users: Collection<UserWithObjectIds>;
+};
+
 declare module "fastify" {
   interface FastifyInstance {
-    getDatabase: () => Db;
-    getModerationCaseCollection: () => Collection<ModerationCaseWithObjectIds>;
-    getToolCollection: () => Collection<ToolWithObjectIds>;
-    getToolCommentCollection: () => Collection<ToolCommentWithObjectIds>;
-    getToolCommentReactionCollection: () => Collection<ToolCommentReactionWithObjectIds>;
-    getToolReactionCollection: () => Collection<ToolReactionWithObjectIds>;
-    getToolRevisionCollection: () => Collection<ToolRevisionWithObjectIds>;
-    getUserBookmarkCollection: () => Collection<UserBookmarkWithObjectIds>;
-    getUserCollection: () => Collection<UserWithObjectIds>;
+    db: Database;
   }
 }
 
 /**
- * This plugin initializes MongoDB collections,
- * and exposes typed collection accessors.
+ * This plugin initializes and exposes typed MongoDB
+ * collections and syncs their indexes on startup.
+ *
+ * @see {@link https://www.mongodb.com/docs/drivers/node}
  */
 export default fp(
   async (fastify) => {
-    const database = fastify.mongo?.db;
-    if (!database) {
+    const instance = fastify.mongo?.db;
+    if (!instance) {
       throw new Error("MongoDB database is not initialized");
     }
 
-    const userCollection = database.collection<UserWithObjectIds>(
+    const users = instance.collection<UserWithObjectIds>(
       fastify.env.MONGODB_COLL_USER,
     );
 
-    const userBookmarkCollection =
-      database.collection<UserBookmarkWithObjectIds>(
-        fastify.env.MONGODB_COLL_USER_BOOKMARK,
-      );
+    const userBookmarks = instance.collection<UserBookmarkWithObjectIds>(
+      fastify.env.MONGODB_COLL_USER_BOOKMARK,
+    );
 
-    const toolCollection = database.collection<ToolWithObjectIds>(
+    const tools = instance.collection<ToolWithObjectIds>(
       fastify.env.MONGODB_COLL_TOOL,
     );
 
-    const toolReactionCollection =
-      database.collection<ToolReactionWithObjectIds>(
-        fastify.env.MONGODB_COLL_TOOL_REACTION,
-      );
+    const toolReactions = instance.collection<ToolReactionWithObjectIds>(
+      fastify.env.MONGODB_COLL_TOOL_REACTION,
+    );
 
-    const toolCommentCollection = database.collection<ToolCommentWithObjectIds>(
+    const toolComments = instance.collection<ToolCommentWithObjectIds>(
       fastify.env.MONGODB_COLL_TOOL_COMMENT,
     );
 
-    const toolCommentReactionCollection =
-      database.collection<ToolCommentReactionWithObjectIds>(
+    const toolCommentReactions =
+      instance.collection<ToolCommentReactionWithObjectIds>(
         fastify.env.MONGODB_COLL_TOOL_COMMENT_REACTION,
       );
 
-    const toolRevisionCollection =
-      database.collection<ToolRevisionWithObjectIds>(
-        fastify.env.MONGODB_COLL_TOOL_REVISION,
-      );
+    const toolRevisions = instance.collection<ToolRevisionWithObjectIds>(
+      fastify.env.MONGODB_COLL_TOOL_REVISION,
+    );
 
-    const moderationCaseCollection =
-      database.collection<ModerationCaseWithObjectIds>(
-        fastify.env.MONGODB_COLL_MODERATION_CASE,
-      );
+    const moderationCases = instance.collection<ModerationCaseWithObjectIds>(
+      fastify.env.MONGODB_COLL_MODERATION_CASE,
+    );
 
     fastify.addHook("onReady", async () => {
       await fastify.syncIndexes({
-        db: database,
+        db: instance,
         mode: "reconcile",
         targets: [
           {
-            collection: userBookmarkCollection,
+            collection: userBookmarks,
             specs: [
               {
                 key: { userId: 1, toolId: 1 },
@@ -99,7 +101,7 @@ export default fp(
             ],
           },
           {
-            collection: toolCollection,
+            collection: tools,
             specs: [
               {
                 key: { status: 1, _id: -1 },
@@ -153,7 +155,7 @@ export default fp(
             ],
           },
           {
-            collection: toolReactionCollection,
+            collection: toolReactions,
             specs: [
               {
                 key: { toolId: 1, userId: 1 },
@@ -177,7 +179,7 @@ export default fp(
             ],
           },
           {
-            collection: toolCommentCollection,
+            collection: toolComments,
             specs: [
               {
                 key: { toolId: 1, createdAt: -1 },
@@ -206,7 +208,7 @@ export default fp(
             ],
           },
           {
-            collection: toolCommentReactionCollection,
+            collection: toolCommentReactions,
             specs: [
               {
                 key: { commentId: 1, userId: 1 },
@@ -230,7 +232,7 @@ export default fp(
             ],
           },
           {
-            collection: toolRevisionCollection,
+            collection: toolRevisions,
             specs: [
               {
                 key: { toolId: 1, revisionNumber: -1, _id: -1 },
@@ -248,7 +250,7 @@ export default fp(
             ],
           },
           {
-            collection: moderationCaseCollection,
+            collection: moderationCases,
             specs: [
               {
                 key: { discussionUrl: 1 },
@@ -281,21 +283,17 @@ export default fp(
       });
     });
 
-    fastify.decorate("getDatabase", () => database);
-    fastify.decorate("getUserCollection", () => userCollection);
-    fastify.decorate("getUserBookmarkCollection", () => userBookmarkCollection);
-    fastify.decorate("getToolCollection", () => toolCollection);
-    fastify.decorate("getToolReactionCollection", () => toolReactionCollection);
-    fastify.decorate("getToolCommentCollection", () => toolCommentCollection);
-    fastify.decorate(
-      "getToolCommentReactionCollection",
-      () => toolCommentReactionCollection,
-    );
-    fastify.decorate("getToolRevisionCollection", () => toolRevisionCollection);
-    fastify.decorate(
-      "getModerationCaseCollection",
-      () => moderationCaseCollection,
-    );
+    fastify.decorate("db", {
+      instance,
+      users,
+      userBookmarks,
+      tools,
+      toolReactions,
+      toolComments,
+      toolCommentReactions,
+      toolRevisions,
+      moderationCases,
+    });
   },
-  { dependencies: ["mongodb", "sync-indexes"], name: "database" },
+  { dependencies: ["sync-indexes"], name: "database" },
 );

@@ -47,8 +47,8 @@ const setToolReaction: FastifyPluginAsyncZod = async (fastify) => {
       const { slug } = request.params;
       const { value } = request.body;
 
-      const tools = fastify.getToolCollection();
-      const toolReactions = fastify.getToolReactionCollection();
+      const tools = fastify.db.tools;
+      const toolReactions = fastify.db.toolReactions;
 
       const tool = await tools.findOne({ slug }, { projection: { _id: 1 } });
 

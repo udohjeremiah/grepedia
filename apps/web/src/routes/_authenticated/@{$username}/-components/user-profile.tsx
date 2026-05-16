@@ -138,7 +138,10 @@ function Profile({ user }: { user: Session["user"] }) {
         <Separator />
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
-            <BadgeIcon aria-label={role.label} className={cn(role.color)} />
+            <BadgeIcon
+              aria-label={role.label}
+              className="text-muted-foreground"
+            />
             <span className="text-sm text-muted-foreground">Role</span>
             <Badge variant={roleVariants[user.role]}>{role.label}</Badge>
           </div>
@@ -173,7 +176,7 @@ function Profile({ user }: { user: Session["user"] }) {
                     >
                       submit a request
                     </a>
-                  </Button>
+                  </Button>{" "}
                   to become a moderator.
                 </>
               )}

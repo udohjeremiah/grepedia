@@ -14,9 +14,9 @@ const moderatorReviewCase: FastifyPluginAsyncZod = async (fastify) => {
 
       const { caseId, decision, decisionSummary, decisionTitle } = request.body;
 
-      const moderationCases = fastify.getModerationCaseCollection();
-      const tools = fastify.getToolCollection();
-      const toolRevisions = fastify.getToolRevisionCollection();
+      const moderationCases = fastify.db.moderationCases;
+      const tools = fastify.db.tools;
+      const toolRevisions = fastify.db.toolRevisions;
 
       const moderationCase = await moderationCases.findOne({
         _id: ObjectId.createFromHexString(caseId),
@@ -84,8 +84,7 @@ const moderatorReviewCase: FastifyPluginAsyncZod = async (fastify) => {
             ];
             embeddings = await fastify.generateEmbeddings(contentToEmbed);
           } catch (error) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            fastify.log.error("Embedding Error:", error as any);
+            fastify.log.error(error, "Embedding error");
             return reply.code(500).send({
               message: "Failed to generate tool embeddings",
               success: false,

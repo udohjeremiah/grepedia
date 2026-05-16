@@ -11,9 +11,9 @@ const getUserBookmarks: FastifyPluginAsyncZod = async (fastify) => {
     handler: async function (request, reply) {
       const { userId } = request.params;
 
-      const users = fastify.getUserCollection();
-      const userBookmarks = fastify.getUserBookmarkCollection();
-      const tools = fastify.getToolCollection();
+      const users = fastify.db.users;
+      const userBookmarks = fastify.db.userBookmarks;
+      const tools = fastify.db.tools;
 
       const userObjectId = ObjectId.createFromHexString(userId);
       const [user, bookmarkDocuments] = await Promise.all([

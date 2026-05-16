@@ -29,10 +29,10 @@ const getToolCommentReplies: FastifyPluginAsyncZod = async (fastify) => {
       const { commentId, slug } = request.params;
       const { cursor, limit = 20 } = request.query;
 
-      const tools = fastify.getToolCollection();
-      const comments = fastify.getToolCommentCollection();
-      const commentReactions = fastify.getToolCommentReactionCollection();
-      const users = fastify.getUserCollection();
+      const tools = fastify.db.tools;
+      const comments = fastify.db.toolComments;
+      const commentReactions = fastify.db.toolCommentReactions;
+      const users = fastify.db.users;
 
       const tool = await tools.findOne({ slug }, { projection: { _id: 1 } });
 

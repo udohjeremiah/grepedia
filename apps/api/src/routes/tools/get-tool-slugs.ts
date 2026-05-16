@@ -37,7 +37,7 @@ const getToolSlugs: FastifyPluginAsyncZod = async (fastify) => {
         throw error;
       }
 
-      const tools = fastify.getToolCollection();
+      const tools = fastify.db.tools;
 
       const toolSlugs = await tools
         .aggregate<{
