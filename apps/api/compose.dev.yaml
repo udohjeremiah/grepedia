@@ -1,10 +1,9 @@
 services:
   mongo:
-    image: mongo
+    image: mongo:7.0
     container_name: api-mongodb
     ports:
       - "27017:27017"
-    env_file: .env
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]

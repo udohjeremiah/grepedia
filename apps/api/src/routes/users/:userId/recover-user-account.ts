@@ -67,12 +67,12 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
         recoveryPackage.payload.userId,
       );
 
-      const userBookmarks = fastify.getUserBookmarkCollection();
-      const tools = fastify.getToolCollection();
-      const toolReactions = fastify.getToolReactionCollection();
-      const toolComments = fastify.getToolCommentCollection();
-      const toolCommentReactions = fastify.getToolCommentReactionCollection();
-      const moderationCases = fastify.getModerationCaseCollection();
+      const userBookmarks = fastify.db.userBookmarks;
+      const tools = fastify.db.tools;
+      const toolReactions = fastify.db.toolReactions;
+      const toolComments = fastify.db.toolComments;
+      const toolCommentReactions = fastify.db.toolCommentReactions;
+      const moderationCases = fastify.db.moderationCases;
 
       const writeResults = await Promise.all([
         tools.updateMany(
@@ -115,7 +115,7 @@ const recoverUserAccount: FastifyPluginAsyncZod = async (fastify) => {
           userBookmarks,
         }),
       ]).catch((error) => {
-        fastify.log.error("Failed to recover user account:", error);
+        fastify.log.error(error, "Failed to recover user account");
         return reply.code(500).send({
           message: "Internal server error",
           success: false,

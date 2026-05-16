@@ -5,13 +5,17 @@ declare module "fastify" {
   export interface FastifyInstance {
     env: {
       ADMIN_USER_IDS: string;
+      AI_EMBEDDING_MODEL: string;
+      AI_GENERATION_MODEL: string;
+      AI_PROMPT_TOOL_GENERATION: string;
+      AI_PROVIDER: string;
       APP_NAME: string;
       BASE_URL: string;
       CLIENT_BASE_URL: string;
       COOKIE_DOMAIN: string;
+      CRAWLEE_MAX_PAGES: number;
       EMAIL_AUTH: string;
       GEMINI_API_KEY: string;
-      MIN_VECTOR_SCORE: number;
       MONGODB_COLL_MODERATION_CASE: string;
       MONGODB_COLL_TOOL: string;
       MONGODB_COLL_TOOL_COMMENT: string;
@@ -22,9 +26,11 @@ declare module "fastify" {
       MONGODB_COLL_USER_BOOKMARK: string;
       MONGODB_DATABASE: string;
       MONGODB_URL: string;
-      NODE_ENV: "development" | "production" | "testing";
+      NODE_ENV: "development" | "production";
+      OLLAMA_URL: string;
       PORT: number;
       RESEND_API_KEY: string;
+      SEARCH_VECTOR_SCORE: number;
       USER_DATA_EXPORT_SIGNING_SECRET: string;
     };
   }
@@ -38,6 +44,21 @@ const options: FastifyEnvOptions = {
     properties: {
       ADMIN_USER_IDS: {
         default: "",
+        type: "string",
+      },
+      AI_EMBEDDING_MODEL: {
+        default: "gemini-embedding-001",
+        type: "string",
+      },
+      AI_GENERATION_MODEL: {
+        default: "gemini-2.0-flash",
+        type: "string",
+      },
+      AI_PROMPT_TOOL_GENERATION: {
+        type: "string",
+      },
+      AI_PROVIDER: {
+        default: "gemini",
         type: "string",
       },
       APP_NAME: {
@@ -56,17 +77,16 @@ const options: FastifyEnvOptions = {
         default: "localhost",
         type: "string",
       },
+      CRAWLEE_MAX_PAGES: {
+        default: 10,
+        type: "number",
+      },
       EMAIL_AUTH: {
         default: "Grepedia <auth@resend.dev>",
         type: "string",
       },
       GEMINI_API_KEY: {
-        default: "********",
         type: "string",
-      },
-      MIN_VECTOR_SCORE: {
-        default: 0.5,
-        type: "number",
       },
       MONGODB_COLL_MODERATION_CASE: {
         default: "moderation-case",
@@ -112,13 +132,20 @@ const options: FastifyEnvOptions = {
         default: "development",
         type: "string",
       },
+      OLLAMA_URL: {
+        default: "http://localhost:11434",
+        type: "string",
+      },
       PORT: {
         default: 4000,
         type: "number",
       },
       RESEND_API_KEY: {
-        default: "re_xxxxxxxxx",
         type: "string",
+      },
+      SEARCH_VECTOR_SCORE: {
+        default: 0.5,
+        type: "number",
       },
       USER_DATA_EXPORT_SIGNING_SECRET: {
         default: "dev-user-data-export-signing-secret-change-me",
@@ -130,6 +157,8 @@ const options: FastifyEnvOptions = {
       "PORT",
       "APP_NAME",
       "BASE_URL",
+      "CLIENT_BASE_URL",
+      "COOKIE_DOMAIN",
       "MONGODB_URL",
       "MONGODB_DATABASE",
       "ADMIN_USER_IDS",
@@ -141,13 +170,17 @@ const options: FastifyEnvOptions = {
       "MONGODB_COLL_TOOL_COMMENT_REACTION",
       "MONGODB_COLL_TOOL_REVISION",
       "MONGODB_COLL_MODERATION_CASE",
-      "USER_DATA_EXPORT_SIGNING_SECRET",
-      "GEMINI_API_KEY",
-      "MIN_VECTOR_SCORE",
       "RESEND_API_KEY",
       "EMAIL_AUTH",
-      "CLIENT_BASE_URL",
-      "COOKIE_DOMAIN",
+      "CRAWLEE_MAX_PAGES",
+      "AI_PROVIDER",
+      "AI_EMBEDDING_MODEL",
+      "AI_GENERATION_MODEL",
+      "AI_PROMPT_TOOL_GENERATION",
+      "GEMINI_API_KEY",
+      "OLLAMA_URL",
+      "SEARCH_VECTOR_SCORE",
+      "USER_DATA_EXPORT_SIGNING_SECRET",
     ],
     type: "object",
   },

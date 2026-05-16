@@ -6,14 +6,24 @@ const health: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async (_request, reply) => {
       let databaseStatus: "error" | "ok" = "ok";
+      let embedderStatus: "error" | "ok" = "ok";
 
       try {
-        await fastify.getDatabase().command({ ping: 1 });
+        await fastify.db.instance.command({ ping: 1 });
       } catch {
         databaseStatus = "error";
       }
 
-      const embedderStatus = fastify.embedder ? "ok" : "error";
+      if (fastify.env.AI_PROVIDER === "ollama") {
+        try {
+          const response = await fetch(`${fastify.env.OLLAMA_URL}/api/tags`);
+          if (!response.ok) {
+            throw new Error("Ollama is unreachable");
+          }
+        } catch {
+          embedderStatus = "error";
+        }
+      }
 
       return reply.code(200).send({
         database: databaseStatus,

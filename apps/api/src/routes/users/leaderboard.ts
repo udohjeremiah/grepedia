@@ -60,7 +60,7 @@ const getUsersLeaderboard: FastifyPluginAsyncZod = async (fastify) => {
         throw error;
       }
 
-      const tools = fastify.getToolCollection();
+      const tools = fastify.db.tools;
 
       const cursorMatch: Document[] = [];
       if (decodedCursor) {

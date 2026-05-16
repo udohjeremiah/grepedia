@@ -98,9 +98,9 @@ const setToolCommentReaction: FastifyPluginAsyncZod = async (fastify) => {
       const { commentId, slug } = request.params;
       const { value } = request.body;
 
-      const tools = fastify.getToolCollection();
-      const comments = fastify.getToolCommentCollection();
-      const commentReactions = fastify.getToolCommentReactionCollection();
+      const tools = fastify.db.tools;
+      const comments = fastify.db.toolComments;
+      const commentReactions = fastify.db.toolCommentReactions;
 
       const tool = await tools.findOne({ slug }, { projection: { _id: 1 } });
 

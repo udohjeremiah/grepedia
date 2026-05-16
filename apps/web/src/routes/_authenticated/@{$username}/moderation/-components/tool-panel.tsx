@@ -33,16 +33,17 @@ export function ToolPanel({ identifier, tool }: ToolPanelProps) {
     updateTool(
       { slug: identifier, status: selectedStatus },
       {
-        onError: (error) =>
+        onError: (error) => {
           globalBannerStore.add({
             description: getErrorMessage(error),
             title: "Couldn't update tool",
             variant: "destructive",
-          }),
-        onSuccess: (data) => {
-          setSelectedStatus(data.data.tool.status);
+          });
+        },
+        onSuccess: ({ data }) => {
+          setSelectedStatus(data.tool.status);
           globalBannerStore.add({
-            description: `Tool ${data.data.tool.slug} updated successfully.`,
+            description: `Tool ${data.tool.slug} updated successfully.`,
             title: "Tool updated",
             variant: "success",
           });

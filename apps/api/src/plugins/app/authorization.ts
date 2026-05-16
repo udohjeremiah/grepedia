@@ -40,22 +40,10 @@ declare module "fastify" {
 }
 
 /**
- * This plugin provides authentication and
- * authorization guards built on top of
- * Better Auth sessions.
+ * This plugin adds authentication and authorization
+ * guards for protecting routes via `onRequest` hooks.
  *
- * It exposes reusable request guards that
- * can be attached via `onRequest` or
- * `preHandler` hooks.
- *
- * Available guards:
- * - `isAdminUserId`: helper to check whether a user id is listed in `ADMIN_USER_IDS`
- * - `setUserIfPresent`: resolves session user when available without enforcing auth
- * - `requireUser`: ensures the request is authenticated
- * - `requireUserId`: ensures the user id matches a route param id (defaults to `userId`)
- * - `requireRole`: ensures the user has a specific role
- * - `requireModerator`: ensures the user is moderator or in `ADMIN_USER_IDS`
- * - `requireStatus`: ensures the user has a required account status
+ * @see {@link https://better-auth.com}
  */
 export default fp(
   async (fastify) => {

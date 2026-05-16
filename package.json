@@ -11,6 +11,7 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "typecheck": "turbo typecheck",
+    "prompts:build": "tsx scripts/build-prompts.ts",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -25,6 +26,7 @@
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
+    "tsx": "^4.21.0",
     "turbo": "^2.6.3",
     "typescript": "5.7.3"
   },

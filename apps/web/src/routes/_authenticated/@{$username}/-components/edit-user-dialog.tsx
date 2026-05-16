@@ -73,7 +73,7 @@ export function EditUserDialog() {
   const navigate = useNavigate();
 
   const { user } = auth.useSession();
-  const { mutateAsync: updateUser } = auth.useUpdateUser();
+  const { mutate: updateUser } = auth.useUpdateUser();
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
@@ -84,25 +84,26 @@ export function EditUserDialog() {
       name: user?.name ?? "",
       username: user?.displayUsername ?? "",
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: ({ value }) => {
       resetStatus();
 
-      try {
-        await updateUser(value);
+      updateUser(value, {
+        onError: (error) => {
+          setApiError("Couldn't update account", error);
+        },
+        onSuccess: () => {
+          form.reset();
+          setSuccess(
+            "Account updated",
+            "Your account has been updated successfully.",
+          );
 
-        form.reset();
-        setSuccess(
-          "Account updated",
-          "Your account has been updated successfully.",
-        );
-
-        navigate({
-          params: { username: value.username },
-          to: "/@{$username}",
-        });
-      } catch (error) {
-        setApiError("Couldn't update account", error);
-      }
+          navigate({
+            params: { username: value.username },
+            to: "/@{$username}",
+          });
+        },
+      });
     },
     validators: {
       onSubmit: formSchema,

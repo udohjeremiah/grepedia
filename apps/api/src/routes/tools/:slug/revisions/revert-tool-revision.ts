@@ -27,8 +27,8 @@ const revertToolRevision: FastifyPluginAsyncZod = async (fastify) => {
       const { slug } = request.params;
       const { revisionId, summary, title } = request.body;
 
-      const tools = fastify.getToolCollection();
-      const toolRevisions = fastify.getToolRevisionCollection();
+      const tools = fastify.db.tools;
+      const toolRevisions = fastify.db.toolRevisions;
 
       const tool = await tools.findOne({ slug });
 

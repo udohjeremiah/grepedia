@@ -213,7 +213,7 @@ export default fp(
         }
         fastify.log.info("[index-sync] Done.");
       } catch (error) {
-        fastify.log.warn(`[index-sync] Failed: ${(error as Error).message}`);
+        fastify.log.warn(error, "[index-sync] Failed");
         throw error;
       }
     }

@@ -8,8 +8,7 @@ declare module "fastify" {
 }
 
 /**
- * This plugin initializes and configures
- * email delivery using Resend.
+ * This plugin initializes and configures Resend.
  *
  * @see {@link https://resend.com}
  */
@@ -19,5 +18,5 @@ export default fp(
 
     fastify.decorate("resend", resend);
   },
-  { dependencies: ["env"], name: "resend" },
+  { name: "resend" },
 );

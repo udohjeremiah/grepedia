@@ -34,16 +34,17 @@ export function CommentPanel({ comment, identifier }: CommentPanelProps) {
     updateComment(
       { commentId: identifier, status: selectedStatus },
       {
-        onError: (error) =>
+        onError: (error) => {
           globalBannerStore.add({
             description: getErrorMessage(error),
             title: "Couldn't update comment",
             variant: "destructive",
-          }),
-        onSuccess: (data) => {
-          setSelectedStatus(data.data.comment.status);
+          });
+        },
+        onSuccess: ({ data }) => {
+          setSelectedStatus(data.comment.status);
           globalBannerStore.add({
-            description: `Comment ${data.data.comment._id} updated successfully.`,
+            description: `Comment ${data.comment._id} updated successfully.`,
             title: "Comment updated",
             variant: "success",
           });

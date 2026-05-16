@@ -20,5 +20,5 @@ export default fp(
 
     fastify.decorate("gemini", gemini);
   },
-  { dependencies: ["env"], name: "gemini" },
+  { name: "gemini" },
 );

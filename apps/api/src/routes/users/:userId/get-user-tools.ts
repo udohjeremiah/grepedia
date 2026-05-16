@@ -13,10 +13,10 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
     handler: async function (request, reply) {
       const { userId } = request.params;
 
-      const users = fastify.getUserCollection();
-      const tools = fastify.getToolCollection();
-      const toolReactions = fastify.getToolReactionCollection();
-      const toolComments = fastify.getToolCommentCollection();
+      const users = fastify.db.users;
+      const tools = fastify.db.tools;
+      const toolReactions = fastify.db.toolReactions;
+      const toolComments = fastify.db.toolComments;
 
       const userObjectId = ObjectId.createFromHexString(userId);
       const user = await users.findOne({ _id: userObjectId });

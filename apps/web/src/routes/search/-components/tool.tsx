@@ -64,12 +64,13 @@ export function Tool(tool: ToolProps) {
     <Sheet>
       <SheetTrigger asChild>
         <Button className="size-full gap-2 p-2" variant="outline">
-          <Avatar className="size-15">
+          <Avatar className="size-15 after:border-none">
             <AvatarImage
               alt={tool.name}
+              className="rounded-none"
               src={`https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`}
             />
-            <AvatarFallback className="text-base">
+            <AvatarFallback className="rounded-none text-base">
               {getInitials(tool.name)}
             </AvatarFallback>
           </Avatar>
@@ -89,12 +90,15 @@ export function Tool(tool: ToolProps) {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className="flex-row gap-3 px-4">
-          <Avatar size="lg">
+          <Avatar className="after:border-none" size="lg">
             <AvatarImage
               alt={tool.name}
+              className="rounded-none"
               src={`https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`}
             />
-            <AvatarFallback>{getInitials(tool.name)}</AvatarFallback>
+            <AvatarFallback className="rounded-none">
+              {getInitials(tool.name)}
+            </AvatarFallback>
           </Avatar>
           <hgroup>
             <SheetTitle>{tool.name}</SheetTitle>

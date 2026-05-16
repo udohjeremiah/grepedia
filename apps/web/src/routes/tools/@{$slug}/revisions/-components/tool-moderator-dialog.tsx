@@ -67,11 +67,13 @@ export function ToolModeratorDialog({
       decisionSummary: undefined,
       decisionTitle: undefined,
     } as ModeratorReviewCaseBody,
-    onSubmit: async ({ value }) => {
+    onSubmit: ({ value }) => {
       resetStatus();
 
       reviewCase(value, {
-        onError: (error) => setApiError("Could not update case", error),
+        onError: (error) => {
+          setApiError("Could not update case", error);
+        },
         onSuccess: () => {
           setSuccess(
             "Case updated",

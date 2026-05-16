@@ -39,17 +39,18 @@ export function UserPanel({ identifier, user }: UserPanelProps) {
     updateUser(
       { role: selectedRole, status: selectedStatus, username: identifier },
       {
-        onError: (error) =>
+        onError: (error) => {
           globalBannerStore.add({
             description: getErrorMessage(error),
             title: "Couldn't update user",
             variant: "destructive",
-          }),
-        onSuccess: (data) => {
-          setSelectedRole(data.data.user.role);
-          setSelectedStatus(data.data.user.status);
+          });
+        },
+        onSuccess: ({ data }) => {
+          setSelectedRole(data.user.role);
+          setSelectedStatus(data.user.status);
           globalBannerStore.add({
-            description: `@${data.data.user.username} updated successfully.`,
+            description: `@${data.user.username} updated successfully.`,
             title: "User updated",
             variant: "success",
           });

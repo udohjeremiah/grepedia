@@ -32,8 +32,8 @@ type BuildVectorSearchPipelineParams = {
   commentsCollectionName: string;
   cursorMatches: SearchCursorMatches;
   limit: number;
-  minVectorScore: number;
   queryVector: number[];
+  searchVectorScore: number;
   tab: SearchTab;
   trendingWindowStart: Date;
   vectorIndex: string;
@@ -252,8 +252,8 @@ function buildVectorSearchPipeline({
   commentsCollectionName,
   cursorMatches,
   limit,
-  minVectorScore,
   queryVector,
+  searchVectorScore,
   tab,
   trendingWindowStart,
   vectorIndex,
@@ -283,7 +283,7 @@ function buildVectorSearchPipeline({
     all: [
       vectorStage,
       { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
-      { $match: { vectorScore: { $gte: minVectorScore } } },
+      { $match: { vectorScore: { $gte: searchVectorScore } } },
       ...(vectorScoreCursorMatch ? [{ $match: vectorScoreCursorMatch }] : []),
       // eslint-disable-next-line perfectionist/sort-objects
       { $sort: { vectorScore: -1, _id: -1 } },
@@ -292,7 +292,7 @@ function buildVectorSearchPipeline({
     new: [
       vectorStage,
       { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
-      { $match: { vectorScore: { $gte: minVectorScore } } },
+      { $match: { vectorScore: { $gte: searchVectorScore } } },
       ...(dateCursorMatch ? [{ $match: dateCursorMatch }] : []),
       // eslint-disable-next-line perfectionist/sort-objects
       { $sort: { releasedAt: -1, _id: -1 } },
@@ -301,7 +301,7 @@ function buildVectorSearchPipeline({
     popular: [
       vectorStage,
       { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
-      { $match: { vectorScore: { $gte: minVectorScore } } },
+      { $match: { vectorScore: { $gte: searchVectorScore } } },
       {
         $addFields: {
           score: { $subtract: ["$stats.upvotes", "$stats.downvotes"] },
@@ -315,7 +315,7 @@ function buildVectorSearchPipeline({
     trending: [
       vectorStage,
       { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
-      { $match: { vectorScore: { $gte: minVectorScore } } },
+      { $match: { vectorScore: { $gte: searchVectorScore } } },
       {
         $lookup: {
           as: "recentCommentStats",
@@ -352,6 +352,20 @@ function buildVectorSearchPipeline({
   } as const;
 
   return pipelines[tab] as unknown as Document[];
+}
+
+function cosineSimilarity(a: number[], b: number[]): number {
+  if (a.length !== b.length) return 0;
+  let dot = 0,
+    normA = 0,
+    normB = 0;
+  for (const [index, element] of a.entries()) {
+    dot += element * b[index]!;
+    normA += element * element;
+    normB += b[index]! * b[index]!;
+  }
+  const denom = Math.sqrt(normA) * Math.sqrt(normB);
+  return denom === 0 ? 0 : dot / denom;
 }
 
 function getNextSearchCursor({
@@ -416,8 +430,8 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
 
       const { cursor, limit = 20, query, tab } = request.query;
 
-      const tools = fastify.getToolCollection();
-      const toolComments = fastify.getToolCommentCollection();
+      const tools = fastify.db.tools;
+      const toolComments = fastify.db.toolComments;
 
       const trendingWindowStart = new Date(
         Date.now() - 1000 * 60 * 60 * 24 * 7,
@@ -452,8 +466,8 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
           commentsCollectionName: toolComments.collectionName,
           cursorMatches,
           limit,
-          minVectorScore: fastify.env.MIN_VECTOR_SCORE,
           queryVector,
+          searchVectorScore: fastify.env.SEARCH_VECTOR_SCORE,
           tab,
           trendingWindowStart,
           vectorIndex,
@@ -465,9 +479,6 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
           >(vectorPipeline)
           .toArray();
       } else {
-        const { default: cosineSimilarity } =
-          await import("compute-cosine-similarity");
-
         const candidates = await tools
           .find({ embeddings: { $exists: true }, status: "published" })
           .project<ToolWithObjectIds>({
@@ -486,8 +497,8 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
         const scored = candidates
           .flatMap((tool) => {
             if (!tool.embeddings || tool.embeddings.length === 0) return [];
-            const score = cosineSimilarity(queryVector, tool.embeddings) ?? 0;
-            if (score < fastify.env.MIN_VECTOR_SCORE) return [];
+            const score = cosineSimilarity(queryVector, tool.embeddings);
+            if (score < fastify.env.SEARCH_VECTOR_SCORE) return [];
             return [{ ...tool, score }];
           })
           .toSorted((a, b) => {

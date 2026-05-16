@@ -17,9 +17,9 @@ const updateToolComment: FastifyPluginAsyncZod = async (fastify) => {
       const { commentId, slug } = request.params;
       const { content } = request.body;
 
-      const comments = fastify.getToolCommentCollection();
-      const tools = fastify.getToolCollection();
-      const users = fastify.getUserCollection();
+      const comments = fastify.db.toolComments;
+      const tools = fastify.db.tools;
+      const users = fastify.db.users;
 
       const tool = await tools.findOne({ slug }, { projection: { _id: 1 } });
 

@@ -13,9 +13,9 @@ const deleteToolComment: FastifyPluginAsyncZod = async (fastify) => {
 
       const { commentId, slug } = request.params;
 
-      const comments = fastify.getToolCommentCollection();
-      const commentReactions = fastify.getToolCommentReactionCollection();
-      const tools = fastify.getToolCollection();
+      const comments = fastify.db.toolComments;
+      const commentReactions = fastify.db.toolCommentReactions;
+      const tools = fastify.db.tools;
 
       const tool = await tools.findOne({ slug }, { projection: { _id: 1 } });
 

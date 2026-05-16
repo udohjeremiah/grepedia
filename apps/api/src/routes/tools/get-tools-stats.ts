@@ -5,8 +5,8 @@ import { getToolsStatsResponseSchemas } from "@workspace/shared/schemas/tools/ge
 const getToolsStats: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (_request, reply) {
-      const tools = fastify.getToolCollection();
-      const comments = fastify.getToolCommentCollection();
+      const tools = fastify.db.tools;
+      const comments = fastify.db.toolComments;
 
       const [toolsCount, reviewsCount, addedByIds, updatedByIds] =
         await Promise.all([

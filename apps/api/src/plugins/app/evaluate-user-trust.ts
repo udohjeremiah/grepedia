@@ -68,9 +68,9 @@ export async function evaluateUserTrust(
   fastify: FastifyInstance,
   userId: ObjectId,
 ): Promise<undefined | UserTrustEvaluation> {
-  const users = fastify.getUserCollection();
-  const tools = fastify.getToolCollection();
-  const toolComments = fastify.getToolCommentCollection();
+  const users = fastify.db.users;
+  const tools = fastify.db.tools;
+  const toolComments = fastify.db.toolComments;
 
   const user = await users.findOne(
     { _id: userId },
@@ -265,7 +265,7 @@ async function escalateStatusIfNeeded({
   recommendedStatus: User["status"];
   statusAtEvaluation: User["status"];
   userId: ObjectId;
-  users: ReturnType<FastifyInstance["getUserCollection"]>;
+  users: FastifyInstance["db"]["users"];
 }): Promise<void> {
   if (isAdmin) return;
   if (statusOrder[recommendedStatus] <= statusOrder[statusAtEvaluation]) return;
@@ -356,7 +356,7 @@ async function promoteRoleIfEligible({
   roleAtEvaluation: User["role"];
   statusAtEvaluation: User["status"];
   userId: ObjectId;
-  users: ReturnType<FastifyInstance["getUserCollection"]>;
+  users: FastifyInstance["db"]["users"];
 }): Promise<void> {
   const roleOrder = {
     contributor: 1,
@@ -395,11 +395,15 @@ function scoreDuplicateRatio(comments: string[]): number {
   return clamp(Math.round(duplicateRatio * 100), 0, 100);
 }
 
+/**
+ * This plugin evaluates user trust scores and bot risk to
+ * automatically promote roles and escalate account statuses.
+ */
 export default fp(
   async (fastify) => {
     fastify.decorate("evaluateUserTrust", async (userId: ObjectId) => {
       return evaluateUserTrust(fastify, userId);
     });
   },
-  { name: "trust-policy" },
+  { name: "evaluate-user-trust" },
 );

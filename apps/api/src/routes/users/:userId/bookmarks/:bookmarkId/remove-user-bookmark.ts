@@ -18,8 +18,8 @@ const removeUserBookmark: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const users = fastify.getUserCollection();
-      const userBookmarks = fastify.getUserBookmarkCollection();
+      const users = fastify.db.users;
+      const userBookmarks = fastify.db.userBookmarks;
 
       const userObjectId = ObjectId.createFromHexString(userId);
       const user = await users.findOne({ _id: userObjectId });

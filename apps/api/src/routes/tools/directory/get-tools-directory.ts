@@ -51,7 +51,7 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const tools = fastify.getToolCollection();
+      const tools = fastify.db.tools;
 
       const toolsDirectory = await tools
         .aggregate<{
