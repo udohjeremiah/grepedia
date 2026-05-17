@@ -3,19 +3,18 @@ import { Button } from "@workspace/ui/components/button";
 import { cn } from "@workspace/ui/lib/cn";
 import { AnchorHTMLAttributes, forwardRef } from "react";
 
-type AppLinkProps = AnchorHTMLAttributes<HTMLAnchorElement>;
-
-const AppLinkComponent = forwardRef<HTMLAnchorElement, AppLinkProps>(
-  ({ children, className, ...props }, ref) => {
-    return (
-      <Button asChild className={cn("size-fit p-0", className)} variant="link">
-        <a ref={ref} {...props}>
-          {children}
-        </a>
-      </Button>
-    );
-  },
-);
+const AppLinkComponent = forwardRef<
+  HTMLAnchorElement,
+  AnchorHTMLAttributes<HTMLAnchorElement>
+>(({ children, className, ...props }, ref) => {
+  return (
+    <Button asChild className={cn("size-fit p-0", className)} variant="link">
+      <a ref={ref} {...props}>
+        {children}
+      </a>
+    </Button>
+  );
+});
 
 AppLinkComponent.displayName = "AppLinkComponent";
 

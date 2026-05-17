@@ -24,10 +24,6 @@ import { SearchIcon, XIcon } from "lucide-react";
 
 import { useDialog } from "@/hooks/use-dialog";
 
-interface SearchFormProps extends ComponentProps<"search"> {
-  onSubmitted?: () => void;
-}
-
 export function Search() {
   const { handleOpenChange, isOpen, setIsOpen } = useDialog();
 
@@ -55,7 +51,13 @@ export function Search() {
   );
 }
 
-function SearchForm({ className, onSubmitted, ...props }: SearchFormProps) {
+function SearchForm({
+  className,
+  onSubmitted,
+  ...props
+}: ComponentProps<"search"> & {
+  onSubmitted?: () => void;
+}) {
   const searchParams = useSearch({ from: "/search/" });
   const navigate = useNavigate();
 
