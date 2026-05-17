@@ -14,7 +14,7 @@ import {
 } from "@workspace/ui/components/toggle-group";
 import { cn } from "@workspace/ui/lib/cn";
 import { MessageSquareIcon, SendIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import { MarkdownEditor } from "@/components/markdown";
 import { auth } from "@/hooks/auth";
@@ -34,40 +34,11 @@ export function ToolComments() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
   const { data: tool } = useTool({ slug });
 
-  const trackingRef = useRef<HTMLDivElement>(null);
   const [sortedView, setSortedView] = useState<SortedView>("top");
   const [newComment, setNewComment] = useState("");
 
   const { user } = auth.useSession();
   const { isPending, mutate: addComment } = useToolAddComment(slug);
-
-  const {
-    data: comments,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useToolComments({ slug }, { sort: sortedView });
-
-  useEffect(() => {
-    const sentinel = trackingRef.current;
-    if (!sentinel || !hasNextPage || isFetchingNextPage) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (!entry) return;
-
-        const isInView = entry.isIntersecting;
-        if (isInView) fetchNextPage();
-      },
-      { rootMargin: "100px" },
-    );
-
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const handleAddComment = async () => {
     if (!user?.id) return globalThis.location.assign("/signin");
@@ -117,7 +88,10 @@ export function ToolComments() {
           </Badge>
         </div>
         <ToggleGroup
-          onValueChange={(value) => setSortedView(value as SortedView)}
+          onValueChange={(value) => {
+            if (!value) return;
+            setSortedView(value as SortedView);
+          }}
           size="sm"
           type="single"
           value={sortedView}
@@ -170,6 +144,52 @@ export function ToolComments() {
         </div>
       </div>
       <Separator />
+      <Suspense>
+        <ToolCommentList slug={slug} sortedView={sortedView} />
+      </Suspense>
+    </div>
+  );
+}
+
+function ToolCommentList({
+  slug,
+  sortedView,
+}: {
+  slug: string;
+  sortedView: SortedView;
+}) {
+  const trackingRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data: comments,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useToolComments({ slug }, { sort: sortedView });
+
+  useEffect(() => {
+    const sentinel = trackingRef.current;
+    if (!sentinel || !hasNextPage || isFetchingNextPage) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+
+        const isInView = entry.isIntersecting;
+        if (isInView) fetchNextPage();
+      },
+      { rootMargin: "100px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  return (
+    <>
       <ul className="flex flex-col gap-6 px-6 py-4">
         {comments.map((comment) => (
           <li key={comment._id}>
@@ -192,6 +212,6 @@ export function ToolComments() {
         className="pointer-events-none h-1"
         ref={trackingRef}
       />
-    </div>
+    </>
   );
 }
