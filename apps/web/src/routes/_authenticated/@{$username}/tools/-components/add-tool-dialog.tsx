@@ -161,8 +161,14 @@ export function AddToolDialog() {
             Back
           </Button>
           <Button disabled={isSubmitting} form={activeFormId} type="submit">
-            {isSubmitting && <Spinner />}
-            {step === STEPS.length ? "Submit Tool" : "Generate Tool"}
+            {isSubmitting ? (
+              <Spinner />
+            ) : // eslint-disable-next-line sonarjs/no-nested-conditional
+            step === STEPS.length ? (
+              "Submit"
+            ) : (
+              "Generate"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
