@@ -8,7 +8,6 @@ import {
 import { ObjectId } from "mongodb";
 
 import { normalizeToolInput } from "@/utils/normalize-tool-input.js";
-import { normalizeUrlForCompare } from "@/utils/normalize-url-for-compare.js";
 
 const updateTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
@@ -52,40 +51,15 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const rawUrls = [
-        normalizedChanges.officialUrl,
-        ...(normalizedChanges.externalUrls ?? []),
-      ].filter(Boolean);
-      const normalizedUrls = new Set(
-        rawUrls.map((value) => normalizeUrlForCompare(value)).filter(Boolean),
-      );
-      if (normalizedUrls.size > 0) {
-        const orClauses = [
-          { officialUrl: { $in: rawUrls } },
-          { "externalUrls.url": { $in: rawUrls } },
-        ];
-
-        const candidates = await tools
-          .find({ $or: orClauses, _id: { $ne: tool._id } })
-          .toArray();
-        const duplicate = candidates.find((candidate) => {
-          const candidateUrls = [
-            candidate.officialUrl,
-            ...(candidate.externalUrls ?? []),
-          ]
-            .map((value) => normalizeUrlForCompare(value))
-            .filter(Boolean);
-
-          return candidateUrls.some((value) => normalizedUrls.has(value));
+      const duplicate = await tools.findOne({
+        _id: { $ne: tool._id },
+        officialUrl: normalizedChanges.officialUrl,
+      });
+      if (duplicate) {
+        return reply.code(409).send({
+          message: "A tool with the same official URL already exists",
+          success: false,
         });
-
-        if (duplicate) {
-          return reply.code(409).send({
-            message:
-              "A tool with the same official or external URL already exists",
-            success: false,
-          });
-        }
       }
 
       const actorId = ObjectId.createFromHexString(request.user.id);

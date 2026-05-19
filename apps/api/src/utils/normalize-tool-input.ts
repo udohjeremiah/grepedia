@@ -1,6 +1,9 @@
+import { normalizeUrl } from "./normalize-url.js";
+
 type ToolInput = {
   categories: string[];
   externalUrls?: string[];
+  officialUrl: string;
   tags: string[];
 };
 
@@ -24,6 +27,7 @@ const toTitleCase = (value: string) =>
  * Rules:
  * - categories: Title Case each word
  * - tags: lowercase all values
+ * - officialUrl: normalized for canonical storage
  * - externalUrls: trimmed and sorted (case-insensitive)
  * - all arrays are sorted case-insensitively where applicable
  */
@@ -36,6 +40,7 @@ export const normalizeToolInput = <T extends ToolInput>(input: T): T => {
     externalUrls: input.externalUrls
       ? normalizeArray(input.externalUrls)
       : undefined,
+    officialUrl: normalizeUrl(input.officialUrl),
     tags: normalizeArray(input.tags).map((tag) => tag.toLowerCase()),
   };
 };

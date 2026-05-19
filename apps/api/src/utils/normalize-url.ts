@@ -12,7 +12,7 @@ const trimTrailingSlash = (value: string) => {
  * - Removes trailing slashes
  * - Forces https protocol for comparisons
  */
-export const normalizeUrlForCompare = (value: string) => {
+export const normalizeUrl = (value: string) => {
   try {
     const url = new URL(value.trim());
     const hostname = url.hostname.replace(/^www\./i, "").toLowerCase();

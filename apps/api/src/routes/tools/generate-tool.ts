@@ -5,10 +5,22 @@ import {
   generateToolResponseSchemas,
 } from "@workspace/shared/schemas/tools/generate-tool";
 
+import { normalizeUrl } from "@/utils/normalize-url.js";
+
 const generateTool: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
       const { url } = request.body;
+
+      const tools = fastify.db.tools;
+
+      const duplicate = await tools.findOne({ officialUrl: normalizeUrl(url) });
+      if (duplicate) {
+        return reply.code(409).send({
+          message: "A tool with the same official URL already exists",
+          success: false,
+        });
+      }
 
       let crawledText: string;
       try {

@@ -104,6 +104,25 @@ export default fp(
             collection: tools,
             specs: [
               {
+                key: { addedBy: 1 },
+                options: { name: "grepedia__tool__addedBy" },
+              },
+              {
+                key: { updatedBy: 1 },
+                options: { name: "grepedia__tool__updatedBy" },
+              },
+              {
+                key: { slug: 1 },
+                options: { name: "grepedia__tool__slug_unique", unique: true },
+              },
+              {
+                key: { officialUrl: 1 },
+                options: {
+                  unique: true,
+                  name: "grepedia__tool__official_url_unique",
+                },
+              },
+              {
                 key: { status: 1, _id: -1 },
                 options: { name: "grepedia__tool__status_id_desc" },
               },
@@ -139,18 +158,6 @@ export default fp(
                 options: {
                   name: "grepedia__tool__status_categories_name_id",
                 },
-              },
-              {
-                key: { addedBy: 1 },
-                options: { name: "grepedia__tool__addedBy" },
-              },
-              {
-                key: { updatedBy: 1 },
-                options: { name: "grepedia__tool__updatedBy" },
-              },
-              {
-                key: { slug: 1 },
-                options: { name: "grepedia__tool__slug_unique", unique: true },
               },
             ],
           },
