@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
+import { env } from "@/env";
 import { useFavicon } from "@/hooks/use-favicon";
 
 import { ToolHeader } from "./-components/tool-header";
@@ -21,22 +22,36 @@ export const Route = createFileRoute("/tools/@{$slug}")({
   head: ({ loaderData, params }) => {
     const tool = loaderData?.tool;
 
-    if (!tool) {
-      return {
-        meta: [
-          { title: `${params.slug} • Tool Details • Grepedia` },
-          {
-            content: `Explore tool details, proposals, and community debate for ${params.slug} on Grepedia.`,
-            name: "description",
-          },
-        ],
-      };
+    const ogImage = new URL(
+      `${env.VITE_BASE_URL}/tools/@${params.slug}/og-image`,
+    );
+
+    if (tool) {
+      ogImage.searchParams.set("name", tool.name);
+      ogImage.searchParams.set("officialUrl", tool.officialUrl);
+      ogImage.searchParams.set("description", tool.shortDescription);
+      ogImage.searchParams.set("categories", tool.categories.join(","));
+      ogImage.searchParams.set("upvotes", String(tool.stats.upvotes));
+      ogImage.searchParams.set("comments", String(tool.stats.comments));
     }
+
+    const title = `${tool?.name ?? params.slug} • Grepedia`;
+    const description =
+      tool?.shortDescription ??
+      `Explore tool details, reviews, proposals, and community debate for ${params.slug} on Grepedia.`;
 
     return {
       meta: [
-        { title: `${tool.name} • Grepedia` },
-        { content: tool.shortDescription, name: "description" },
+        { title },
+        { content: description, name: "description" },
+        { content: title, property: "og:title" },
+        { content: description, property: "og:description" },
+        { content: ogImage.toString(), property: "og:image" },
+        { content: "website", property: "og:type" },
+        { content: "summary_large_image", name: "twitter:card" },
+        { content: title, name: "twitter:title" },
+        { content: description, name: "twitter:description" },
+        { content: ogImage.toString(), name: "twitter:image" },
       ],
     };
   },
