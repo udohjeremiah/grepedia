@@ -27,6 +27,7 @@ import { Route as AuthSignupIndexRouteImport } from './routes/_auth/signup/index
 import { Route as AuthSigninIndexRouteImport } from './routes/_auth/signin/index'
 import { Route as AuthResetPasswordIndexRouteImport } from './routes/_auth/reset-password/index'
 import { Route as AuthRequestPasswordResetIndexRouteImport } from './routes/_auth/request-password-reset/index'
+import { Route as ToolsAtChar123slugChar125OgImageRouteImport } from './routes/tools/@{$slug}/og-image'
 import { Route as ToolsAtChar123slugChar125RevisionsIndexRouteImport } from './routes/tools/@{$slug}/revisions/index'
 import { Route as AuthenticatedAtChar123usernameChar125ToolsIndexRouteImport } from './routes/_authenticated/@{$username}/tools/index'
 import { Route as AuthenticatedAtChar123usernameChar125SessionsIndexRouteImport } from './routes/_authenticated/@{$username}/sessions/index'
@@ -128,6 +129,12 @@ const AuthRequestPasswordResetIndexRoute =
     path: '/request-password-reset/',
     getParentRoute: () => AuthRouteRoute,
   } as any)
+const ToolsAtChar123slugChar125OgImageRoute =
+  ToolsAtChar123slugChar125OgImageRouteImport.update({
+    id: '/og-image',
+    path: '/og-image',
+    getParentRoute: () => ToolsAtChar123slugChar125RouteRoute,
+  } as any)
 const ToolsAtChar123slugChar125RevisionsIndexRoute =
   ToolsAtChar123slugChar125RevisionsIndexRouteImport.update({
     id: '/revisions/',
@@ -181,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy/': typeof PrivacyPolicyIndexRoute
   '/search/': typeof SearchIndexRoute
   '/terms-of-service/': typeof TermsOfServiceIndexRoute
+  '/tools/@{$slug}/og-image': typeof ToolsAtChar123slugChar125OgImageRoute
   '/request-password-reset/': typeof AuthRequestPasswordResetIndexRoute
   '/reset-password/': typeof AuthResetPasswordIndexRoute
   '/signin/': typeof AuthSigninIndexRoute
@@ -204,6 +212,7 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyIndexRoute
   '/search': typeof SearchIndexRoute
   '/terms-of-service': typeof TermsOfServiceIndexRoute
+  '/tools/@{$slug}/og-image': typeof ToolsAtChar123slugChar125OgImageRoute
   '/request-password-reset': typeof AuthRequestPasswordResetIndexRoute
   '/reset-password': typeof AuthResetPasswordIndexRoute
   '/signin': typeof AuthSigninIndexRoute
@@ -232,6 +241,7 @@ export interface FileRoutesById {
   '/privacy-policy/': typeof PrivacyPolicyIndexRoute
   '/search/': typeof SearchIndexRoute
   '/terms-of-service/': typeof TermsOfServiceIndexRoute
+  '/tools/@{$slug}/og-image': typeof ToolsAtChar123slugChar125OgImageRoute
   '/_auth/request-password-reset/': typeof AuthRequestPasswordResetIndexRoute
   '/_auth/reset-password/': typeof AuthResetPasswordIndexRoute
   '/_auth/signin/': typeof AuthSigninIndexRoute
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/privacy-policy/'
     | '/search/'
     | '/terms-of-service/'
+    | '/tools/@{$slug}/og-image'
     | '/request-password-reset/'
     | '/reset-password/'
     | '/signin/'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/search'
     | '/terms-of-service'
+    | '/tools/@{$slug}/og-image'
     | '/request-password-reset'
     | '/reset-password'
     | '/signin'
@@ -309,6 +321,7 @@ export interface FileRouteTypes {
     | '/privacy-policy/'
     | '/search/'
     | '/terms-of-service/'
+    | '/tools/@{$slug}/og-image'
     | '/_auth/request-password-reset/'
     | '/_auth/reset-password/'
     | '/_auth/signin/'
@@ -465,6 +478,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRequestPasswordResetIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/tools/@{$slug}/og-image': {
+      id: '/tools/@{$slug}/og-image'
+      path: '/og-image'
+      fullPath: '/tools/@{$slug}/og-image'
+      preLoaderRoute: typeof ToolsAtChar123slugChar125OgImageRouteImport
+      parentRoute: typeof ToolsAtChar123slugChar125RouteRoute
+    }
     '/tools/@{$slug}/revisions/': {
       id: '/tools/@{$slug}/revisions/'
       path: '/revisions'
@@ -581,12 +601,15 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface ToolsAtChar123slugChar125RouteRouteChildren {
+  ToolsAtChar123slugChar125OgImageRoute: typeof ToolsAtChar123slugChar125OgImageRoute
   ToolsAtChar123slugChar125IndexRoute: typeof ToolsAtChar123slugChar125IndexRoute
   ToolsAtChar123slugChar125RevisionsIndexRoute: typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 
 const ToolsAtChar123slugChar125RouteRouteChildren: ToolsAtChar123slugChar125RouteRouteChildren =
   {
+    ToolsAtChar123slugChar125OgImageRoute:
+      ToolsAtChar123slugChar125OgImageRoute,
     ToolsAtChar123slugChar125IndexRoute: ToolsAtChar123slugChar125IndexRoute,
     ToolsAtChar123slugChar125RevisionsIndexRoute:
       ToolsAtChar123slugChar125RevisionsIndexRoute,
