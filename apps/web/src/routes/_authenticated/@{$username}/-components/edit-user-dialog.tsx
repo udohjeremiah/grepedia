@@ -56,15 +56,16 @@ const formSchema = z.object({
     z.undefined(),
   ]),
   country: z.union([z.string().length(2), z.undefined()]),
+  displayUsername: z
+    .string()
+    .min(3, "Please provide at least 3 characters.")
+    .max(30, "Please provide no more than 30 characters."),
   gender: z.union([
     z.enum(["male", "female", "nonBinary", "other", "preferNotToSay"]),
     z.undefined(),
   ]),
   name: z.string().min(2, "Please provide at least 2 characters."),
-  username: z
-    .string()
-    .min(3, "Please provide at least 3 characters.")
-    .max(30, "Please provide no more than 30 characters."),
+  username: z.string(),
 });
 
 type Gender = z.infer<typeof formSchema>["gender"];
@@ -80,6 +81,7 @@ export function EditUserDialog() {
     defaultValues: {
       bio: user?.bio ?? undefined,
       country: user?.country ?? undefined,
+      displayUsername: user?.displayUsername ?? "",
       gender: user?.gender ?? undefined,
       name: user?.name ?? "",
       username: user?.displayUsername ?? "",
@@ -99,7 +101,7 @@ export function EditUserDialog() {
           );
 
           navigate({
-            params: { username: value.username },
+            params: { username: value.displayUsername },
             to: "/@{$username}",
           });
         },
@@ -178,7 +180,7 @@ export function EditUserDialog() {
                 );
               }}
             </form.Field>
-            <form.Field name="username">
+            <form.Field name="displayUsername">
               {(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -194,9 +196,11 @@ export function EditUserDialog() {
                         aria-invalid={isInvalid}
                         id={field.name}
                         onBlur={field.handleBlur}
-                        onChange={(event) =>
-                          field.handleChange(event.target.value)
-                        }
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          field.handleChange(value);
+                          form.setFieldValue("username", value);
+                        }}
                         required={true}
                         value={field.state.value}
                       />
