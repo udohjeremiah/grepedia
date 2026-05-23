@@ -21,14 +21,18 @@ export const Route = createFileRoute("/tools/@{$slug}/og-image")({
           },
         };
 
-        const favicon = `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`;
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`;
+        const faviconBuffer = await fetch(faviconUrl)
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => Buffer.from(buffer));
+        const faviconDataUrl = `data:image/png;base64,${faviconBuffer.toString("base64")}`;
 
         let primary = "#7c3aed";
         let secondary = "#a78bfa";
 
         try {
           const { Vibrant } = await import("node-vibrant/node");
-          const palette = await Vibrant.from(favicon).getPalette();
+          const palette = await Vibrant.from(faviconBuffer).getPalette();
           primary = palette.Vibrant?.hex ?? primary;
           secondary = palette.DarkVibrant?.hex ?? secondary;
         } catch {
@@ -37,21 +41,12 @@ export const Route = createFileRoute("/tools/@{$slug}/og-image")({
 
         return new ImageResponse(
           <OgCard
-            favicon={favicon}
+            favicon={faviconDataUrl}
             primary={primary}
             secondary={secondary}
             tool={tool}
           />,
-          {
-            headers: {
-              "Cache-Control":
-                "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400",
-              "Content-Type": "image/png",
-            },
-            height: 630,
-            stylesheets: [stylesheet],
-            width: 1200,
-          },
+          { height: 630, stylesheets: [stylesheet], width: 1200 },
         );
       },
     },

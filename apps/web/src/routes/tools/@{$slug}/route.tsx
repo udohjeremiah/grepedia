@@ -23,7 +23,8 @@ export const Route = createFileRoute("/tools/@{$slug}")({
     const tool = loaderData?.tool;
 
     const ogImage = new URL(
-      `${env.VITE_BASE_URL}/tools/@${params.slug}/og-image`,
+      `/tools/@${params.slug}/og-image`,
+      env.VITE_BASE_URL,
     );
 
     if (tool) {

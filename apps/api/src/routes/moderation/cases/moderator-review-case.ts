@@ -141,6 +141,19 @@ const moderatorReviewCase: FastifyPluginAsyncZod = async (fastify) => {
               success: false,
             });
           }
+
+          const tool = await tools.findOne({ slug: moderationCase.toolSlug });
+
+          if (tool) {
+            fastify.preWarmOgImage(tool.slug, {
+              categories: changes.categories,
+              comments: tool.stats.comments,
+              description: changes.shortDescription,
+              name: changes.name,
+              officialUrl: changes.officialUrl,
+              upvotes: tool.stats.upvotes,
+            });
+          }
         }
       }
 
