@@ -22,10 +22,7 @@ export const Route = createFileRoute("/tools/@{$slug}")({
   head: ({ loaderData, params }) => {
     const tool = loaderData?.tool;
 
-    const ogImage = new URL(
-      `/tools/@${params.slug}/og-image`,
-      env.VITE_BASE_URL,
-    );
+    const ogImage = new URL(`/tools/@${params.slug}/og`, env.VITE_BASE_URL);
 
     if (tool) {
       ogImage.searchParams.set("name", tool.name);

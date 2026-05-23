@@ -2,16 +2,14 @@ interface OgCardProps {
   favicon: string;
   primary: string;
   secondary: string;
-  tool: OgTool;
+  tool: {
+    categories: string[];
+    name: string;
+    officialUrl: string;
+    shortDescription: string;
+    stats: { comments: number; upvotes: number };
+  };
 }
-
-type OgTool = {
-  categories: string[];
-  name: string;
-  officialUrl: string;
-  shortDescription: string;
-  stats: { comments: number; upvotes: number };
-};
 
 export function OgCard({ favicon, primary, secondary, tool }: OgCardProps) {
   return (

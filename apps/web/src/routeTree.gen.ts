@@ -27,8 +27,8 @@ import { Route as AuthSignupIndexRouteImport } from './routes/_auth/signup/index
 import { Route as AuthSigninIndexRouteImport } from './routes/_auth/signin/index'
 import { Route as AuthResetPasswordIndexRouteImport } from './routes/_auth/reset-password/index'
 import { Route as AuthRequestPasswordResetIndexRouteImport } from './routes/_auth/request-password-reset/index'
-import { Route as ToolsAtChar123slugChar125OgImageRouteImport } from './routes/tools/@{$slug}/og-image'
 import { Route as ToolsAtChar123slugChar125RevisionsIndexRouteImport } from './routes/tools/@{$slug}/revisions/index'
+import { Route as ToolsAtChar123slugChar125OgIndexRouteImport } from './routes/tools/@{$slug}/og/index'
 import { Route as AuthenticatedAtChar123usernameChar125ToolsIndexRouteImport } from './routes/_authenticated/@{$username}/tools/index'
 import { Route as AuthenticatedAtChar123usernameChar125SessionsIndexRouteImport } from './routes/_authenticated/@{$username}/sessions/index'
 import { Route as AuthenticatedAtChar123usernameChar125SecurityIndexRouteImport } from './routes/_authenticated/@{$username}/security/index'
@@ -129,16 +129,16 @@ const AuthRequestPasswordResetIndexRoute =
     path: '/request-password-reset/',
     getParentRoute: () => AuthRouteRoute,
   } as any)
-const ToolsAtChar123slugChar125OgImageRoute =
-  ToolsAtChar123slugChar125OgImageRouteImport.update({
-    id: '/og-image',
-    path: '/og-image',
-    getParentRoute: () => ToolsAtChar123slugChar125RouteRoute,
-  } as any)
 const ToolsAtChar123slugChar125RevisionsIndexRoute =
   ToolsAtChar123slugChar125RevisionsIndexRouteImport.update({
     id: '/revisions/',
     path: '/revisions/',
+    getParentRoute: () => ToolsAtChar123slugChar125RouteRoute,
+  } as any)
+const ToolsAtChar123slugChar125OgIndexRoute =
+  ToolsAtChar123slugChar125OgIndexRouteImport.update({
+    id: '/og/',
+    path: '/og/',
     getParentRoute: () => ToolsAtChar123slugChar125RouteRoute,
   } as any)
 const AuthenticatedAtChar123usernameChar125ToolsIndexRoute =
@@ -188,7 +188,6 @@ export interface FileRoutesByFullPath {
   '/privacy-policy/': typeof PrivacyPolicyIndexRoute
   '/search/': typeof SearchIndexRoute
   '/terms-of-service/': typeof TermsOfServiceIndexRoute
-  '/tools/@{$slug}/og-image': typeof ToolsAtChar123slugChar125OgImageRoute
   '/request-password-reset/': typeof AuthRequestPasswordResetIndexRoute
   '/reset-password/': typeof AuthResetPasswordIndexRoute
   '/signin/': typeof AuthSigninIndexRoute
@@ -202,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/@{$username}/security/': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/@{$username}/sessions/': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/@{$username}/tools/': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
+  '/tools/@{$slug}/og/': typeof ToolsAtChar123slugChar125OgIndexRoute
   '/tools/@{$slug}/revisions/': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -212,7 +212,6 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyIndexRoute
   '/search': typeof SearchIndexRoute
   '/terms-of-service': typeof TermsOfServiceIndexRoute
-  '/tools/@{$slug}/og-image': typeof ToolsAtChar123slugChar125OgImageRoute
   '/request-password-reset': typeof AuthRequestPasswordResetIndexRoute
   '/reset-password': typeof AuthResetPasswordIndexRoute
   '/signin': typeof AuthSigninIndexRoute
@@ -226,6 +225,7 @@ export interface FileRoutesByTo {
   '/@{$username}/security': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/@{$username}/sessions': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/@{$username}/tools': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
+  '/tools/@{$slug}/og': typeof ToolsAtChar123slugChar125OgIndexRoute
   '/tools/@{$slug}/revisions': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRoutesById {
@@ -241,7 +241,6 @@ export interface FileRoutesById {
   '/privacy-policy/': typeof PrivacyPolicyIndexRoute
   '/search/': typeof SearchIndexRoute
   '/terms-of-service/': typeof TermsOfServiceIndexRoute
-  '/tools/@{$slug}/og-image': typeof ToolsAtChar123slugChar125OgImageRoute
   '/_auth/request-password-reset/': typeof AuthRequestPasswordResetIndexRoute
   '/_auth/reset-password/': typeof AuthResetPasswordIndexRoute
   '/_auth/signin/': typeof AuthSigninIndexRoute
@@ -255,6 +254,7 @@ export interface FileRoutesById {
   '/_authenticated/@{$username}/security/': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/_authenticated/@{$username}/sessions/': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/_authenticated/@{$username}/tools/': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
+  '/tools/@{$slug}/og/': typeof ToolsAtChar123slugChar125OgIndexRoute
   '/tools/@{$slug}/revisions/': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRouteTypes {
@@ -269,7 +269,6 @@ export interface FileRouteTypes {
     | '/privacy-policy/'
     | '/search/'
     | '/terms-of-service/'
-    | '/tools/@{$slug}/og-image'
     | '/request-password-reset/'
     | '/reset-password/'
     | '/signin/'
@@ -283,6 +282,7 @@ export interface FileRouteTypes {
     | '/@{$username}/security/'
     | '/@{$username}/sessions/'
     | '/@{$username}/tools/'
+    | '/tools/@{$slug}/og/'
     | '/tools/@{$slug}/revisions/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -293,7 +293,6 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/search'
     | '/terms-of-service'
-    | '/tools/@{$slug}/og-image'
     | '/request-password-reset'
     | '/reset-password'
     | '/signin'
@@ -307,6 +306,7 @@ export interface FileRouteTypes {
     | '/@{$username}/security'
     | '/@{$username}/sessions'
     | '/@{$username}/tools'
+    | '/tools/@{$slug}/og'
     | '/tools/@{$slug}/revisions'
   id:
     | '__root__'
@@ -321,7 +321,6 @@ export interface FileRouteTypes {
     | '/privacy-policy/'
     | '/search/'
     | '/terms-of-service/'
-    | '/tools/@{$slug}/og-image'
     | '/_auth/request-password-reset/'
     | '/_auth/reset-password/'
     | '/_auth/signin/'
@@ -335,6 +334,7 @@ export interface FileRouteTypes {
     | '/_authenticated/@{$username}/security/'
     | '/_authenticated/@{$username}/sessions/'
     | '/_authenticated/@{$username}/tools/'
+    | '/tools/@{$slug}/og/'
     | '/tools/@{$slug}/revisions/'
   fileRoutesById: FileRoutesById
 }
@@ -478,18 +478,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRequestPasswordResetIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/tools/@{$slug}/og-image': {
-      id: '/tools/@{$slug}/og-image'
-      path: '/og-image'
-      fullPath: '/tools/@{$slug}/og-image'
-      preLoaderRoute: typeof ToolsAtChar123slugChar125OgImageRouteImport
-      parentRoute: typeof ToolsAtChar123slugChar125RouteRoute
-    }
     '/tools/@{$slug}/revisions/': {
       id: '/tools/@{$slug}/revisions/'
       path: '/revisions'
       fullPath: '/tools/@{$slug}/revisions/'
       preLoaderRoute: typeof ToolsAtChar123slugChar125RevisionsIndexRouteImport
+      parentRoute: typeof ToolsAtChar123slugChar125RouteRoute
+    }
+    '/tools/@{$slug}/og/': {
+      id: '/tools/@{$slug}/og/'
+      path: '/og'
+      fullPath: '/tools/@{$slug}/og/'
+      preLoaderRoute: typeof ToolsAtChar123slugChar125OgIndexRouteImport
       parentRoute: typeof ToolsAtChar123slugChar125RouteRoute
     }
     '/_authenticated/@{$username}/tools/': {
@@ -601,16 +601,16 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface ToolsAtChar123slugChar125RouteRouteChildren {
-  ToolsAtChar123slugChar125OgImageRoute: typeof ToolsAtChar123slugChar125OgImageRoute
   ToolsAtChar123slugChar125IndexRoute: typeof ToolsAtChar123slugChar125IndexRoute
+  ToolsAtChar123slugChar125OgIndexRoute: typeof ToolsAtChar123slugChar125OgIndexRoute
   ToolsAtChar123slugChar125RevisionsIndexRoute: typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 
 const ToolsAtChar123slugChar125RouteRouteChildren: ToolsAtChar123slugChar125RouteRouteChildren =
   {
-    ToolsAtChar123slugChar125OgImageRoute:
-      ToolsAtChar123slugChar125OgImageRoute,
     ToolsAtChar123slugChar125IndexRoute: ToolsAtChar123slugChar125IndexRoute,
+    ToolsAtChar123slugChar125OgIndexRoute:
+      ToolsAtChar123slugChar125OgIndexRoute,
     ToolsAtChar123slugChar125RevisionsIndexRoute:
       ToolsAtChar123slugChar125RevisionsIndexRoute,
   }

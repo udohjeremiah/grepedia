@@ -97,7 +97,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      fastify.preWarmOgImage(slug, {
+      fastify.preWarmOg(slug, {
         categories: toolDocument.categories,
         comments: toolDocument.stats.comments,
         description: toolDocument.shortDescription,

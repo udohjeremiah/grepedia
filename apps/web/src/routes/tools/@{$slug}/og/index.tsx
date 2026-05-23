@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ImageResponse } from "takumi-js/response";
 
-// import { OgCard } from "@/components/og-card";
+// import { OgCard } from "./-components/og-card";
 // import stylesheet from "@/styles/globals.css?inline";
 
-export const Route = createFileRoute("/tools/@{$slug}/og-image")({
+export const Route = createFileRoute("/tools/@{$slug}/og/")({
   server: {
     handlers: {
       GET: async ({ request }) => {

@@ -1,6 +1,6 @@
 import fp from "fastify-plugin";
 
-type PreWarmOgImageOptions = {
+type PreWarmOgOptions = {
   categories: string[];
   comments: number;
   description: string;
@@ -11,7 +11,7 @@ type PreWarmOgImageOptions = {
 
 declare module "fastify" {
   interface FastifyInstance {
-    preWarmOgImage: (slug: string, options: PreWarmOgImageOptions) => void;
+    preWarmOg: (slug: string, options: PreWarmOgOptions) => void;
   }
 }
 
@@ -22,9 +22,9 @@ declare module "fastify" {
  */
 export default fp(
   async (fastify) => {
-    const preWarmOgImage = (slug: string, options: PreWarmOgImageOptions) => {
+    const preWarmOg = (slug: string, options: PreWarmOgOptions) => {
       const ogImage = new URL(
-        `/tools/@${slug}/og-image`,
+        `/tools/@${slug}/og`,
         fastify.env.CLIENT_BASE_URL,
       );
 
@@ -38,7 +38,7 @@ export default fp(
       fetch(ogImage).catch(() => {});
     };
 
-    fastify.decorate("preWarmOgImage", preWarmOgImage);
+    fastify.decorate("preWarmOg", preWarmOg);
   },
-  { name: "pre-warm-og-image" },
+  { name: "pre-warm-og" },
 );

@@ -145,7 +145,7 @@ const moderatorReviewCase: FastifyPluginAsyncZod = async (fastify) => {
           const tool = await tools.findOne({ slug: moderationCase.toolSlug });
 
           if (tool) {
-            fastify.preWarmOgImage(tool.slug, {
+            fastify.preWarmOg(tool.slug, {
               categories: changes.categories,
               comments: tool.stats.comments,
               description: changes.shortDescription,
