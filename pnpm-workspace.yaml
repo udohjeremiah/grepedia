@@ -19,6 +19,9 @@ overrides:
   react: 19.2.0
   react-dom: 19.2.0
 
+publicHoistPattern:
+  - "@takumi-rs/core-*"
+
 supportedArchitectures:
   cpu: [x64, arm64]
   os: [linux, darwin, win32]
