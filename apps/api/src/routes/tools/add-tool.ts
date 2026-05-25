@@ -97,15 +97,6 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      fastify.preWarmOg(slug, {
-        categories: toolDocument.categories,
-        comments: toolDocument.stats.comments,
-        description: toolDocument.shortDescription,
-        name: toolDocument.name,
-        officialUrl: toolDocument.officialUrl,
-        upvotes: toolDocument.stats.upvotes,
-      });
-
       if (request.user.role === "member") {
         const promoteResult = await users.updateOne(
           { _id: userId, role: "member" },
