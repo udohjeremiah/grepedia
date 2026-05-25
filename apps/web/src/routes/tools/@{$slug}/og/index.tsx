@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ImageResponse } from "takumi-js/response";
 
-// import { OgCard } from "./-components/og-card";
-// import stylesheet from "@/styles/globals.css?inline";
+import stylesheet from "@/styles/globals.css?inline";
+
+import { OgCard } from "./-components/og-card";
 
 export const Route = createFileRoute("/tools/@{$slug}/og/")({
   server: {
@@ -27,8 +28,8 @@ export const Route = createFileRoute("/tools/@{$slug}/og/")({
         //   .then((buffer) => Buffer.from(buffer));
         // const faviconDataUrl = `data:image/png;base64,${faviconBuffer.toString("base64")}`;
 
-        // let primary = "#7c3aed";
-        // let secondary = "#a78bfa";
+        const primary = "#7c3aed";
+        const secondary = "#a78bfa";
 
         // try {
         //   const { Vibrant } = await import("node-vibrant/node");
@@ -39,34 +40,15 @@ export const Route = createFileRoute("/tools/@{$slug}/og/")({
         //   /* empty */
         // }
 
-        // return new ImageResponse(
-        //   <OgCard
-        //     favicon={faviconDataUrl}
-        //     primary={primary}
-        //     secondary={secondary}
-        //     tool={tool}
-        //   />,
-        //   { height: 630, stylesheets: [stylesheet], width: 1200 },
-        // );
         return new ImageResponse(
-          <div
-            style={{
-              alignItems: "center",
-              backgroundColor: "black",
-              color: "white",
-              display: "flex",
-              fontSize: 80,
-              height: "100%",
-              justifyContent: "center",
-              width: "100%",
-            }}
-          >
-            {tool.name} • Grepedia
-          </div>,
-          {
-            height: 630,
-            width: 1200,
-          },
+          <OgCard
+            // favicon={faviconDataUrl}
+            favicon={""}
+            primary={primary}
+            secondary={secondary}
+            tool={tool}
+          />,
+          { height: 630, stylesheets: [stylesheet], width: 1200 },
         );
       },
     },
