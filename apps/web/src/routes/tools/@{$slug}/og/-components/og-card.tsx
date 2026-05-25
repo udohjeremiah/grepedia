@@ -13,7 +13,7 @@ interface OgCardProps {
 
 export function OgCard({ favicon, primary, secondary, tool }: OgCardProps) {
   return (
-    <div className="relative flex size-full overflow-hidden bg-zinc-950 text-white">
+    <div className="relative flex size-full overflow-hidden bg-zinc-950 font-sans text-white">
       {/* Gradient background */}
       <div
         className="absolute inset-0"

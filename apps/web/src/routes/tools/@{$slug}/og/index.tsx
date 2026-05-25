@@ -28,8 +28,8 @@ export const Route = createFileRoute("/tools/@{$slug}/og/")({
           .then((buffer) => Buffer.from(buffer));
         const faviconDataUrl = `data:image/png;base64,${faviconBuffer.toString("base64")}`;
 
-        let primary = "#7c3aed";
-        let secondary = "#a78bfa";
+        let primary = "#c97a2b";
+        let secondary = "#e0a458";
 
         try {
           const { Vibrant } = await import("node-vibrant/node");
