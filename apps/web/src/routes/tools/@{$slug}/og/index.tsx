@@ -42,8 +42,7 @@ export const Route = createFileRoute("/tools/@{$slug}/og/")({
 
         return new ImageResponse(
           <OgCard
-            // favicon={faviconDataUrl}
-            favicon={""}
+            favicon={`https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`}
             primary={primary}
             secondary={secondary}
             tool={tool}
