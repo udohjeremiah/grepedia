@@ -3,4 +3,6 @@
   publish = "apps/web/dist/client"
 
 [functions]
-  external_node_modules = ["@takumi-rs/core"]
+  node_bundler = "esbuild"
+  directory = "netlify/functions"
+  included_files = ["node_modules/@takumi-rs/core-linux-x64-gnu/**/*.*"]

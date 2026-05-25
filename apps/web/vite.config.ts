@@ -22,9 +22,6 @@ const config = defineConfig({
       },
     }),
   ],
-  ssr: {
-    external: ["@takumi-rs/core"],
-  },
 });
 
 export default config;
