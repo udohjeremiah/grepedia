@@ -22,27 +22,27 @@ export const Route = createFileRoute("/tools/@{$slug}/og/")({
           },
         };
 
-        // const faviconUrl = `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`;
-        // const faviconBuffer = await fetch(faviconUrl)
-        //   .then((response) => response.arrayBuffer())
-        //   .then((buffer) => Buffer.from(buffer));
-        // const faviconDataUrl = `data:image/png;base64,${faviconBuffer.toString("base64")}`;
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`;
+        const faviconBuffer = await fetch(faviconUrl)
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => Buffer.from(buffer));
+        const faviconDataUrl = `data:image/png;base64,${faviconBuffer.toString("base64")}`;
 
-        const primary = "#7c3aed";
-        const secondary = "#a78bfa";
+        let primary = "#7c3aed";
+        let secondary = "#a78bfa";
 
-        // try {
-        //   const { Vibrant } = await import("node-vibrant/node");
-        //   const palette = await Vibrant.from(faviconBuffer).getPalette();
-        //   primary = palette.Vibrant?.hex ?? primary;
-        //   secondary = palette.DarkVibrant?.hex ?? secondary;
-        // } catch {
-        //   /* empty */
-        // }
+        try {
+          const { Vibrant } = await import("node-vibrant/node");
+          const palette = await Vibrant.from(faviconBuffer).getPalette();
+          primary = palette.Vibrant?.hex ?? primary;
+          secondary = palette.DarkVibrant?.hex ?? secondary;
+        } catch {
+          /* empty */
+        }
 
         return new ImageResponse(
           <OgCard
-            favicon={`https://www.google.com/s2/favicons?domain=${tool.officialUrl}&sz=128`}
+            favicon={faviconDataUrl}
             primary={primary}
             secondary={secondary}
             tool={tool}
