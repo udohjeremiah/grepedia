@@ -228,7 +228,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                 {(field.state.value ?? []).length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {(field.state.value ?? []).map((item, index) => (
-                      <Badge className="max-w-full" key={index}>
+                      <Badge className="max-w-full" key={item}>
                         <button
                           className="truncate"
                           onClick={() => {
@@ -309,7 +309,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                 {field.state.value.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {field.state.value.map((category, index) => (
-                      <Badge className="max-w-full" key={index}>
+                      <Badge className="max-w-full" key={category}>
                         <button
                           className="truncate"
                           onClick={() => {
@@ -389,7 +389,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                 {field.state.value.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {field.state.value.map((tag, index) => (
-                      <Badge className="max-w-full" key={index}>
+                      <Badge className="max-w-full" key={tag}>
                         <button
                           className="truncate"
                           onClick={() => {

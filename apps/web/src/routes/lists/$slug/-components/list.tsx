@@ -19,6 +19,7 @@ import {
 
 import { MarkdownPreview } from "@/components/markdown";
 import { categoryVariants } from "@/constants/category";
+import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { globalBannerStore } from "@/lib/global-banner-store";
 import { getInitials } from "@/utils/get-initials";
@@ -188,6 +189,7 @@ export function List() {
         ))}
       </ol>
       <script
+        // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -197,7 +199,7 @@ export function List() {
               "@type": "ListItem",
               name: tool.name,
               position: index + 1,
-              url: `/tools/${tool.slug}`,
+              url: `${env.VITE_BASE_URL}/tools/@${tool.slug}`,
             })),
             name: list.title,
           }),

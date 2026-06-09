@@ -128,6 +128,7 @@ function Calendar({
         ...classNames,
       }}
       components={{
+        // eslint-disable-next-line @eslint-react/no-nested-component-definitions
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
@@ -151,9 +152,11 @@ function Calendar({
             <ChevronDownIcon className={cn("size-4", className)} {...props} />
           );
         },
+        // eslint-disable-next-line @eslint-react/no-nested-component-definitions
         DayButton: ({ ...props }) => (
           <CalendarDayButton locale={locale} {...props} />
         ),
+        // eslint-disable-next-line @eslint-react/no-nested-component-definitions
         Root: ({ className, rootRef, ...props }) => {
           return (
             <div
@@ -164,6 +167,7 @@ function Calendar({
             />
           );
         },
+        // eslint-disable-next-line @eslint-react/no-nested-component-definitions
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>

@@ -85,7 +85,7 @@ export function ToolComment(comment: ToolCommentProps) {
 
   const handleReportComment = async () => {
     const commentHash = `comment-${comment._id}`;
-    const commentLink = `${globalThis.location.origin}/tools/${slug}#${commentHash}`;
+    const commentLink = `${globalThis.location.origin}/tools/@${slug}#${commentHash}`;
     const reportDetails = [
       `Tool Slug: ${slug}`,
       `Comment ID: ${comment._id}`,

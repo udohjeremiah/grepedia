@@ -56,7 +56,7 @@ export function ToolCommentReplies({ comment, slug }: ToolCommentRepliesProps) {
     );
   } else if (replies.length > 0) {
     repliesContent = replies.map((replyItem) => (
-      <ToolComment {...replyItem} key={replyItem._id} />
+      <ToolComment key={replyItem._id} {...replyItem} />
     ));
   } else {
     repliesContent = (
