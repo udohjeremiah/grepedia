@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { getListsResponseSchemas } from "@workspace/shared/schemas/lists/get-lists";
 import {
   getToolSlugsQueryStringSchema,
   getToolSlugsResponseSchemas,
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const staticPaths = [
           "/",
           "/leaderboard",
+          "/lists",
           "/privacy-policy",
           "/search",
           "/terms-of-service",
@@ -46,10 +48,25 @@ export const Route = createFileRoute("/sitemap.xml")({
           cursor = parsed.data.nextCursor;
         } while (cursor);
 
+        const lists = await apiClient
+          .get("lists")
+          .json(getListsResponseSchemas[200]);
+
         const staticUrls = staticPaths
           .map((path) => {
             const loc = `${env.VITE_BASE_URL}${path}`;
             return `<url><loc>${escapeXml(loc)}</loc></url>`;
+          })
+          .join("");
+
+        const listUrls = lists.data.lists
+          .map((list) => {
+            const loc = `${env.VITE_BASE_URL}/lists/${list.slug}`;
+            const lastmod = list.updatedAt
+              ? `<lastmod>${list.updatedAt}</lastmod>`
+              : "";
+
+            return `<url><loc>${escapeXml(loc)}</loc>${lastmod}</url>`;
           })
           .join("");
 
@@ -68,6 +85,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           `<?xml version="1.0" encoding="UTF-8"?>` +
           `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` +
           staticUrls +
+          listUrls +
           toolUrls +
           `</urlset>`;
 

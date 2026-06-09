@@ -28,7 +28,9 @@ export function DeleteCommentDialog({
   userId,
 }: DeleteCommentDialogProps) {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
-  const { isPending, mutate: deleteComment } = useToolDeleteComment(slug);
+
+  const { isPending: isDeleting, mutate: deleteComment } =
+    useToolDeleteComment(slug);
 
   const { handleOpenChange, isOpen } = useDialog();
 
@@ -80,16 +82,16 @@ export function DeleteCommentDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            disabled={isPending}
+            disabled={isDeleting}
             onClick={(event) => {
               event.preventDefault();
               handleDeleteComment();
             }}
             variant="destructive"
           >
-            {isPending ? "Deleting..." : "Delete Comment"}
+            {isDeleting ? "Deleting..." : "Delete Comment"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

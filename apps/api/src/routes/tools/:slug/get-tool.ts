@@ -1,10 +1,10 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
-import { omitKeys } from "@workspace/shared/omit-keys";
 import {
   getToolParamsSchema,
   getToolResponseSchemas,
 } from "@workspace/shared/schemas/tools/get-tool";
+import { omitKeys } from "@workspace/shared/utils/omit-keys";
 import { ObjectId } from "mongodb";
 
 import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";

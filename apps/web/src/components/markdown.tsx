@@ -94,6 +94,7 @@ export function MarkdownPreview({ className, value }: MarkdownPreviewProps) {
         "prose max-w-none overflow-auto prose-neutral dark:prose-invert prose-a:text-primary prose-a:underline-offset-4",
         className,
       )}
+      // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

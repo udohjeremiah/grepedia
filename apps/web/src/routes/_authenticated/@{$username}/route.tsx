@@ -2,6 +2,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import {
   BookmarkIcon,
   DatabaseIcon,
+  ListChecksIcon,
   MonitorIcon,
   ScaleIcon,
   ShieldIcon,
@@ -27,6 +28,18 @@ const baseNavItems = [
     value: "tools",
   },
   {
+    icon: BookmarkIcon,
+    label: "Bookmarks",
+    link: "/@{$username}/bookmarks",
+    value: "bookmarks",
+  },
+  {
+    icon: ListChecksIcon,
+    label: "Lists",
+    link: "/@{$username}/lists",
+    value: "lists",
+  },
+  {
     icon: ShieldIcon,
     label: "Security",
     link: "/@{$username}/security",
@@ -37,12 +50,6 @@ const baseNavItems = [
     label: "Sessions",
     link: "/@{$username}/sessions",
     value: "sessions",
-  },
-  {
-    icon: BookmarkIcon,
-    label: "Bookmarks",
-    link: "/@{$username}/bookmarks",
-    value: "bookmarks",
   },
   {
     icon: DatabaseIcon,

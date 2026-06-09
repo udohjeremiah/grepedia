@@ -4,7 +4,7 @@ import {
   infiniteQueryOptions,
   useSuspenseInfiniteQuery,
 } from "@tanstack/react-query";
-import { omitKeys } from "@workspace/shared/omit-keys";
+import { omitKeys } from "@workspace/shared/utils/omit-keys";
 
 import { search } from "@/services/search/search";
 

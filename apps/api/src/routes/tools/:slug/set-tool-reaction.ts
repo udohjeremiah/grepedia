@@ -72,6 +72,7 @@ const setToolReaction: FastifyPluginAsyncZod = async (fastify) => {
 
       if (action === "insert") {
         const now = new Date();
+
         const insertResult = await toolReactions.insertOne({
           createdAt: now,
           toolId: tool._id,
@@ -115,21 +116,13 @@ const setToolReaction: FastifyPluginAsyncZod = async (fastify) => {
         }
       }
 
-      const updateStatsResult = await tools.updateOne(
+      const updatedTool = await tools.findOneAndUpdate(
         { _id: tool._id },
         { $inc: getToolStatsDelta(action, value) },
-      );
-
-      if (!updateStatsResult.acknowledged) {
-        return reply.code(500).send({
-          message: "Internal server error",
-          success: false,
-        });
-      }
-
-      const updatedTool = await tools.findOne(
-        { _id: tool._id },
-        { projection: { "stats.downvotes": 1, "stats.upvotes": 1 } },
+        {
+          projection: { "stats.downvotes": 1, "stats.upvotes": 1 },
+          returnDocument: "after",
+        },
       );
 
       if (!updatedTool) {

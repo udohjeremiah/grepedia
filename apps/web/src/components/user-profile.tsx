@@ -26,7 +26,7 @@ export function UserProfile() {
   return (
     <Link params={{ username: user.username }} to="/@{$username}">
       <Avatar>
-        <AvatarImage alt={user.username} src={getAvatar(user.username)} />
+        <AvatarImage alt={user.name} src={getAvatar(user.username)} />
         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
       </Avatar>
     </Link>

@@ -52,10 +52,9 @@ const updateToolComment: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const now = new Date();
       const updateResult = await comments.findOneAndUpdate(
         { _id: commentObjectId },
-        { $set: { content, updatedAt: now } },
+        { $set: { content, updatedAt: new Date() } },
         { returnDocument: "after" },
       );
 

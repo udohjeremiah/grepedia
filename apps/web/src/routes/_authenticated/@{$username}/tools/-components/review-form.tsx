@@ -81,7 +81,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                     id={field.name}
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value)}
-                    required
+                    required={true}
                     value={field.state.value}
                   />
                 </InputGroup>
@@ -108,7 +108,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value)}
                     placeholder="https://example.com"
-                    required
+                    required={true}
                     type="url"
                     value={field.state.value}
                   />
@@ -133,7 +133,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                     onBlur={field.handleBlur}
                     onChange={(event) => field.handleChange(event.target.value)}
                     placeholder="Describe what this tool does in one clear sentence."
-                    required
+                    required={true}
                     value={field.state.value}
                   />
                 </InputGroup>
@@ -162,7 +162,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                     field.handleChange(value);
                   }}
                   placeholder="Explain what the tool does, its key features, and how people use it."
-                  required
+                  required={true}
                   value={field.state.value}
                 />
                 <FieldDescription>Markdown is supported.</FieldDescription>
@@ -228,7 +228,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                 {(field.state.value ?? []).length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {(field.state.value ?? []).map((item, index) => (
-                      <Badge className="max-w-full" key={index}>
+                      <Badge className="max-w-full" key={item}>
                         <button
                           className="truncate"
                           onClick={() => {
@@ -309,7 +309,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                 {field.state.value.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {field.state.value.map((category, index) => (
-                      <Badge className="max-w-full" key={index}>
+                      <Badge className="max-w-full" key={category}>
                         <button
                           className="truncate"
                           onClick={() => {
@@ -389,7 +389,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                 {field.state.value.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {field.state.value.map((tag, index) => (
-                      <Badge className="max-w-full" key={index}>
+                      <Badge className="max-w-full" key={tag}>
                         <button
                           className="truncate"
                           onClick={() => {
@@ -439,6 +439,7 @@ export function ReviewForm({ form, formId }: ReviewToolStepProps) {
                     <Button
                       className="justify-start"
                       id={field.name}
+                      type="button"
                       variant="outline"
                     >
                       {selectedDate ? (

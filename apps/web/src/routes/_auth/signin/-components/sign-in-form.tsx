@@ -61,7 +61,7 @@ export function SignInForm() {
           },
           onSuccess: (context) => {
             form.reset();
-            const username = (context.data as Session).user.username;
+            const username = (context.data as Session).user.displayUsername;
             navigate({
               params: { username },
               reloadDocument: true,

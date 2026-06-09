@@ -19,12 +19,13 @@ export function ToolCommentReply({
   username,
 }: ToolCommentReplyProps) {
   const [replyText, setReplyText] = useState("");
+
   const { user } = auth.useSession();
 
-  const { isPending, mutate: addComment } = useToolAddComment(slug);
+  const { isPending: isAdding, mutate: addComment } = useToolAddComment(slug);
 
   const handleReply = () => {
-    if (!user?.id) return globalThis.location.assign("/signin");
+    if (!user) return globalThis.location.assign("/signin");
 
     const content = replyText.trim();
     if (!content) return;
@@ -54,7 +55,7 @@ export function ToolCommentReply({
         value={replyText}
       />
       <Button
-        disabled={!replyText.trim() || isPending}
+        disabled={!replyText.trim() || isAdding}
         onClick={handleReply}
         size="xs"
       >

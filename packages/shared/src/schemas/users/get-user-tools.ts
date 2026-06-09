@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { defaultResponse } from "../default-response.js";
-import { objectIdSchema } from "../object-id.js";
-import { slugSchema } from "../slug.js";
+import { defaultResponse } from "@/schemas/default-response.js";
+import { objectIdSchema } from "@/schemas/object-id.js";
+import { slugSchema } from "@/schemas/slug.js";
 
 export const getUserToolsParamsSchema = z.object({
   userId: objectIdSchema,

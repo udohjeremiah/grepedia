@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { imageSchema } from "../image.js";
-import { objectIdSchema } from "../object-id.js";
+import { imageSchema } from "@/schemas/image.js";
+import { objectIdSchema } from "@/schemas/object-id.js";
 
 export const userSchema = z.object({
   _id: objectIdSchema,

@@ -28,7 +28,9 @@ export function RecoverAccountDialog() {
 
   const [payload, setPayload] = useState("");
 
-  const { isPending, mutate: recoverAccount } = useUserRecoverAccount(userId);
+  const { isPending: isRecovering, mutate: recoverAccount } =
+    useUserRecoverAccount(userId);
+
   const { resetStatus, setApiError, setError, setSuccess, status } =
     useSubmission();
 
@@ -128,10 +130,10 @@ export function RecoverAccountDialog() {
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button
-            disabled={!payload.trim() || isPending}
+            disabled={!payload.trim() || isRecovering}
             onClick={handleRecover}
           >
-            {isPending ? (
+            {isRecovering ? (
               <>
                 <Spinner /> Recovering...
               </>

@@ -3,9 +3,9 @@ import { Separator } from "@workspace/ui/components/separator";
 
 import { AppLink } from "@/components/app-link";
 
-export function Footer() {
-  const currentYear = new Date().getFullYear();
+const currentYear = new Date().getFullYear();
 
+export function Footer() {
   return (
     <footer className="border-t p-4 sm:px-8 md:px-16">
       <div className="flex items-center justify-between gap-2 max-md:flex-col">

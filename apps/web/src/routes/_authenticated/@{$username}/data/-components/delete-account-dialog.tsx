@@ -27,6 +27,7 @@ export function DeleteAccountDialog() {
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   const { isPending, user } = auth.useSession();
+
   const {
     isSubmitting,
     resetStatus,

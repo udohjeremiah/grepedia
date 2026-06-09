@@ -4,6 +4,9 @@ import type { Collection, Db } from "mongodb";
 
 import fp from "fastify-plugin";
 
+import type { ListReactionWithObjectIds } from "@/schemas/lists/list-reaction.js";
+import type { ListViewWithObjectIds } from "@/schemas/lists/list-view.js";
+import type { ListWithObjectIds } from "@/schemas/lists/list.js";
 import type { ModerationCaseWithObjectIds } from "@/schemas/moderation/moderation-case.js";
 import type { ToolCommentReactionWithObjectIds } from "@/schemas/tools/tool-comment-reaction.js";
 import type { ToolCommentWithObjectIds } from "@/schemas/tools/tool-comment.js";
@@ -15,6 +18,9 @@ import type { UserWithObjectIds } from "@/schemas/users/user.js";
 
 type Database = {
   instance: Db;
+  listReactions: Collection<ListReactionWithObjectIds>;
+  lists: Collection<ListWithObjectIds>;
+  listViews: Collection<ListViewWithObjectIds>;
   moderationCases: Collection<ModerationCaseWithObjectIds>;
   toolCommentReactions: Collection<ToolCommentReactionWithObjectIds>;
   toolComments: Collection<ToolCommentWithObjectIds>;
@@ -48,12 +54,12 @@ export default fp(
       fastify.env.MONGODB_COLL_USER,
     );
 
-    const userBookmarks = instance.collection<UserBookmarkWithObjectIds>(
-      fastify.env.MONGODB_COLL_USER_BOOKMARK,
-    );
-
     const tools = instance.collection<ToolWithObjectIds>(
       fastify.env.MONGODB_COLL_TOOL,
+    );
+
+    const toolRevisions = instance.collection<ToolRevisionWithObjectIds>(
+      fastify.env.MONGODB_COLL_TOOL_REVISION,
     );
 
     const toolReactions = instance.collection<ToolReactionWithObjectIds>(
@@ -69,8 +75,20 @@ export default fp(
         fastify.env.MONGODB_COLL_TOOL_COMMENT_REACTION,
       );
 
-    const toolRevisions = instance.collection<ToolRevisionWithObjectIds>(
-      fastify.env.MONGODB_COLL_TOOL_REVISION,
+    const userBookmarks = instance.collection<UserBookmarkWithObjectIds>(
+      fastify.env.MONGODB_COLL_USER_BOOKMARK,
+    );
+
+    const lists = instance.collection<ListWithObjectIds>(
+      fastify.env.MONGODB_COLL_LIST,
+    );
+
+    const listViews = instance.collection<ListViewWithObjectIds>(
+      fastify.env.MONGODB_COLL_LIST_VIEW,
+    );
+
+    const listReactions = instance.collection<ListReactionWithObjectIds>(
+      fastify.env.MONGODB_COLL_LIST_REACTION,
     );
 
     const moderationCases = instance.collection<ModerationCaseWithObjectIds>(
@@ -82,24 +100,6 @@ export default fp(
         db: instance,
         mode: "reconcile",
         targets: [
-          {
-            collection: userBookmarks,
-            specs: [
-              {
-                key: { userId: 1, toolId: 1 },
-                options: {
-                  name: "grepedia__user_bookmark__userId_toolId",
-                  unique: true,
-                },
-              },
-              {
-                key: { userId: 1, createdAt: -1 },
-                options: {
-                  name: "grepedia__user_bookmark__userId_createdAt_desc",
-                },
-              },
-            ],
-          },
           {
             collection: tools,
             specs: [
@@ -113,14 +113,11 @@ export default fp(
               },
               {
                 key: { slug: 1 },
-                options: { name: "grepedia__tool__slug_unique", unique: true },
+                options: { name: "grepedia__tool__slug", unique: true },
               },
               {
                 key: { officialUrl: 1 },
-                options: {
-                  unique: true,
-                  name: "grepedia__tool__official_url_unique",
-                },
+                options: { unique: true, name: "grepedia__tool__official_url" },
               },
               {
                 key: { status: 1, _id: -1 },
@@ -157,6 +154,24 @@ export default fp(
                 key: { status: 1, categories: 1, name: 1, _id: 1 },
                 options: {
                   name: "grepedia__tool__status_categories_name_id",
+                },
+              },
+            ],
+          },
+          {
+            collection: toolRevisions,
+            specs: [
+              {
+                key: { toolId: 1, revisionNumber: -1, _id: -1 },
+                options: {
+                  name: "grepedia__tool_revision__toolId_revisionNumber_desc_id_desc",
+                  unique: true,
+                },
+              },
+              {
+                key: { toolId: 1, createdAt: -1, _id: -1 },
+                options: {
+                  name: "grepedia__tool_revision__toolId_createdAt_desc_id_desc",
                 },
               },
             ],
@@ -239,19 +254,76 @@ export default fp(
             ],
           },
           {
-            collection: toolRevisions,
+            collection: userBookmarks,
             specs: [
               {
-                key: { toolId: 1, revisionNumber: -1, _id: -1 },
+                key: { userId: 1, toolId: 1 },
                 options: {
-                  name: "grepedia__tool_revision__toolId_revisionNumber_desc_id_desc",
+                  name: "grepedia__user_bookmark__userId_toolId",
                   unique: true,
                 },
               },
               {
-                key: { toolId: 1, createdAt: -1, _id: -1 },
+                key: { userId: 1, createdAt: -1 },
                 options: {
-                  name: "grepedia__tool_revision__toolId_createdAt_desc_id_desc",
+                  name: "grepedia__user_bookmark__userId_createdAt_desc",
+                },
+              },
+            ],
+          },
+          {
+            collection: lists,
+            specs: [
+              {
+                key: { slug: 1 },
+                options: { name: "grepedia__list__slug_unique", unique: true },
+              },
+              {
+                key: { createdBy: 1, updatedAt: -1, createdAt: -1 },
+                options: {
+                  name: "grepedia__list__createdBy_updatedAt_desc_createdAt_desc",
+                },
+              },
+              {
+                key: {
+                  status: 1,
+                  "stats.upvotes": -1,
+                  "stats.downvotes": 1,
+                  publishedAt: -1,
+                  _id: -1,
+                },
+                options: {
+                  name: "grepedia__list__status_upvotes_desc_downvotes_publishedAt_desc_id_desc",
+                },
+              },
+            ],
+          },
+          {
+            collection: listViews,
+            specs: [
+              {
+                key: { listId: 1, ip: 1 },
+                options: {
+                  name: "grepedia__list_views__listId_ip",
+                  unique: true,
+                },
+              },
+            ],
+          },
+          {
+            collection: listReactions,
+            specs: [
+              {
+                key: { listId: 1, userId: 1 },
+                options: {
+                  name: "grepedia__list_reaction__listId_userId",
+                  unique: true,
+                },
+              },
+              {
+                key: { userId: 1, updatedAt: -1 },
+                options: {
+                  name: "grepedia__list_reaction__userId_updatedAt_desc",
                 },
               },
             ],
@@ -262,7 +334,7 @@ export default fp(
               {
                 key: { discussionUrl: 1 },
                 options: {
-                  name: "grepedia__moderation_case__discussionUrl_unique",
+                  name: "grepedia__moderation_case__discussionUrl",
                   unique: true,
                 },
               },
@@ -293,12 +365,15 @@ export default fp(
     fastify.decorate("db", {
       instance,
       users,
-      userBookmarks,
       tools,
+      toolRevisions,
       toolReactions,
       toolComments,
       toolCommentReactions,
-      toolRevisions,
+      userBookmarks,
+      lists,
+      listViews,
+      listReactions,
       moderationCases,
     });
   },

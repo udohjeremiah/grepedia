@@ -107,7 +107,7 @@ export function ToolSidebar() {
               asChild
               className="justify-start"
               variant={
-                pathname === `/tools/${slug}/revisions`
+                pathname === `/tools/@${slug}/revisions`
                   ? "secondary"
                   : "outline"
               }

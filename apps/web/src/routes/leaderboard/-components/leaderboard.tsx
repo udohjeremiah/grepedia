@@ -62,6 +62,7 @@ const genderLabels: Record<UserGender, string> = {
 
 export function Leaderboard() {
   const { user } = auth.useSession();
+
   const userId = user?.id;
 
   const trackingRef = useRef<HTMLDivElement>(null);
@@ -73,7 +74,7 @@ export function Leaderboard() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useUsersLeaderboard({});
+  } = useUsersLeaderboard();
 
   const sortedLeaderBoard = useMemo(() => {
     const sortedResult = [...leaderboard];
@@ -253,7 +254,7 @@ export function Leaderboard() {
           >
             <RankBadge rank={user.rank} />
             <Avatar size={index < 3 ? "lg" : "default"}>
-              <AvatarImage alt={user.username} src={getAvatar(user.username)} />
+              <AvatarImage alt={user.name} src={getAvatar(user.username)} />
               <AvatarFallback className="text-foreground">
                 {getInitials(user.name)}
               </AvatarFallback>

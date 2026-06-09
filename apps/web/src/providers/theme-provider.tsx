@@ -39,7 +39,7 @@ const disableTransitions = createClientOnlyFn(() => {
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(getTheme());
+  const [themeState, setThemeState] = useState<Theme>(getTheme);
 
   const setTheme = useCallback((newTheme: Theme) => {
     const enable = disableTransitions();
@@ -58,9 +58,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [setTheme]);
 
   return (
-    <ThemeContext.Provider value={{ setTheme, theme }}>
+    <ThemeContext value={{ setTheme, theme: themeState }}>
       {children}
-    </ThemeContext.Provider>
+    </ThemeContext>
   );
 }
 

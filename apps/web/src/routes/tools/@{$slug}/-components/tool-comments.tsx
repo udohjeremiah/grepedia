@@ -32,16 +32,17 @@ type SortedView = "bottom" | "newest" | "top";
 
 export function ToolComments() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
-  const { data: tool } = useTool({ slug });
 
   const [sortedView, setSortedView] = useState<SortedView>("top");
   const [newComment, setNewComment] = useState("");
 
   const { user } = auth.useSession();
-  const { isPending, mutate: addComment } = useToolAddComment(slug);
 
-  const handleAddComment = async () => {
-    if (!user?.id) return globalThis.location.assign("/signin");
+  const { data: tool } = useTool({ slug });
+  const { isPending: isAdding, mutate: addComment } = useToolAddComment(slug);
+
+  const handleAddComment = () => {
+    if (!user) return globalThis.location.assign("/signin");
 
     const content = newComment.trim();
     if (!content) {
@@ -109,7 +110,7 @@ export function ToolComments() {
             <Avatar>
               <AvatarImage alt={user.name} src={getAvatar(user.username)} />
               <AvatarFallback className="bg-primary/10 font-semibold text-primary">
-                {getInitials(user.name ?? "")}
+                {getInitials(user.name)}
               </AvatarFallback>
             </Avatar>
             <p className="font-medium md:hidden">Add a comment</p>
@@ -133,7 +134,7 @@ export function ToolComments() {
               Markdown is supported.
             </p>
             <Button
-              disabled={!newComment.trim() || isPending}
+              disabled={!newComment.trim() || isAdding}
               onClick={handleAddComment}
               size="sm"
             >

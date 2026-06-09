@@ -1,18 +1,20 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { ModeratorGetToolQuery } from "@workspace/shared/schemas/moderation/moderator-get-tool";
+import { ModeratorGetToolQueryString } from "@workspace/shared/schemas/moderation/moderator-get-tool";
 
 import { moderatorGetTool } from "@/services/moderation/moderator-get-tool";
 
-export const moderatorGetToolQueryOptions = (params: ModeratorGetToolQuery) => {
+export const moderatorGetToolQueryOptions = (
+  queryString: ModeratorGetToolQueryString,
+) => {
   return queryOptions({
-    queryFn: () => moderatorGetTool(params.slug),
-    queryKey: ["moderation", "tool", params.slug],
+    queryFn: () => moderatorGetTool(queryString.slug),
+    queryKey: ["moderation", "tool", queryString.slug],
   });
 };
 
-export function useModeratorGetTool(params: ModeratorGetToolQuery) {
+export function useModeratorGetTool(queryString: ModeratorGetToolQueryString) {
   return useQuery({
-    ...moderatorGetToolQueryOptions(params),
+    ...moderatorGetToolQueryOptions(queryString),
     enabled: false,
     select: (data) => data.data.tool,
   });

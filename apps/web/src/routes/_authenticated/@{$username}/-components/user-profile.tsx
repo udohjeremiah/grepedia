@@ -90,7 +90,7 @@ function Profile({ user }: { user: Session["user"] }) {
       <div className="flex flex-col gap-6 border p-6">
         <div className="flex gap-4">
           <Avatar className="size-12">
-            <AvatarImage alt={user.username} src={getAvatar(user.username)} />
+            <AvatarImage alt={user.name} src={getAvatar(user.username)} />
             <AvatarFallback className="text-xl">
               {getInitials(user.name)}
             </AvatarFallback>

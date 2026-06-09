@@ -1,12 +1,14 @@
 import {
-  moderatorGetUserQuerySchema,
+  moderatorGetUserQueryStringSchema,
   moderatorGetUserResponseSchemas,
 } from "@workspace/shared/schemas/moderation/moderator-get-user";
 
 import { apiClient } from "@/lib/api-client";
 
 export async function moderatorGetUser(username: string) {
-  const parsedQueryString = moderatorGetUserQuerySchema.parse({ username });
+  const parsedQueryString = moderatorGetUserQueryStringSchema.parse({
+    username,
+  });
 
   const response = await apiClient
     .get("moderation/users/lookup", { searchParams: parsedQueryString })

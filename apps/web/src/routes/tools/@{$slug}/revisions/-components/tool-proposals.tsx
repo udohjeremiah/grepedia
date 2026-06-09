@@ -11,6 +11,7 @@ export function ToolProposals() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
 
   const { user } = auth.useSession();
+
   const { data: proposals } = useToolProposals({ slug });
 
   const canReview = user?.status === "active" && user?.role === "moderator";

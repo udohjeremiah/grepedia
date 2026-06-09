@@ -20,6 +20,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       const users = fastify.db.users;
 
       const duplicate = await tools.findOne({ officialUrl: body.officialUrl });
+
       if (duplicate) {
         return reply.code(409).send({
           message: "A tool with the same official URL already exists",
@@ -52,11 +53,11 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const addedAt = new Date();
+      const now = new Date();
       const userId = ObjectId.createFromHexString(request.user.id);
       const toolDocument = {
         ...body,
-        addedAt,
+        addedAt: now,
         addedBy: userId,
         embeddings,
         releasedAt: body.releasedAt ? new Date(body.releasedAt) : undefined,
@@ -75,7 +76,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       const revisionInsertResult = await toolRevisions.insertOne({
-        createdAt: addedAt,
+        createdAt: now,
         createdBy: userId,
         isRevert: false,
         revisionNumber: 1,
@@ -103,7 +104,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
           {
             $set: {
               role: "contributor",
-              updatedAt: addedAt,
+              updatedAt: now,
             },
           },
         );
@@ -122,7 +123,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
 
       return reply.code(201).send({
         data: {
-          addedAt: addedAt.toISOString(),
+          addedAt: now.toISOString(),
           toolId: insertResult.insertedId.toString(),
           toolSlug: slug,
         },

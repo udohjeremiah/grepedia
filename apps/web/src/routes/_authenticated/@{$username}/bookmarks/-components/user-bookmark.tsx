@@ -29,7 +29,9 @@ type UserBookmarkProps = ReturnType<typeof useUserBookmarks>["data"][number];
 export function UserBookmark(bookmark: UserBookmarkProps) {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
-  const { isPending, mutate: removeBookmark } = useUserRemoveBookmark(userId);
+  const { isPending: isRemoving, mutate: removeBookmark } =
+    useUserRemoveBookmark(userId);
+
   const { resetStatus, setApiError, status } = useSubmission();
 
   const { handleOpenChange, isOpen, setIsOpen } = useDialog({
@@ -90,7 +92,7 @@ export function UserBookmark(bookmark: UserBookmarkProps) {
         </Button>
         <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
           <AlertDialogTrigger asChild>
-            <Button disabled={isPending} size="icon-sm" variant="ghost">
+            <Button disabled={isRemoving} size="icon-sm" variant="ghost">
               <Trash2Icon />
               <span className="sr-only">Remove {bookmark.name} bookmark</span>
             </Button>
@@ -107,16 +109,18 @@ export function UserBookmark(bookmark: UserBookmarkProps) {
             </AlertDialogHeader>
             <SubmissionAlert status={status} />
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+              <AlertDialogCancel disabled={isRemoving}>
+                Cancel
+              </AlertDialogCancel>
               <AlertDialogAction
-                disabled={isPending}
+                disabled={isRemoving}
                 onClick={(event) => {
                   event.preventDefault();
                   handleRemoveBookmark();
                 }}
                 variant="destructive"
               >
-                {isPending ? "Removing..." : "Remove Bookmark"}
+                {isRemoving ? "Removing..." : "Remove Bookmark"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

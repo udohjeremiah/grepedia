@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { objectIdSchema } from "../object-id.js";
-import { slugSchema } from "../slug.js";
-import { publicUrlSchema } from "../url-policy.js";
+import { objectIdSchema } from "@/schemas/object-id.js";
+import { slugSchema } from "@/schemas/slug.js";
+import { publicUrlSchema } from "@/schemas/url-policy.js";
 
 export const toolSchema = z.object({
   _id: objectIdSchema,

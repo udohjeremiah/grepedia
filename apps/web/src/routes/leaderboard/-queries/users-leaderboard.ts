@@ -8,7 +8,7 @@ import {
 import { getUsersLeaderboard } from "@/services/users/get-users-leaderboard";
 
 export const usersLeaderboardQueryOptions = (
-  params: GetUsersLeaderboardQueryString,
+  params: GetUsersLeaderboardQueryString = {},
 ) => {
   return infiniteQueryOptions({
     initialPageParam: "",
@@ -20,7 +20,9 @@ export const usersLeaderboardQueryOptions = (
   });
 };
 
-export const useUsersLeaderboard = (params: GetUsersLeaderboardQueryString) => {
+export const useUsersLeaderboard = (
+  params: GetUsersLeaderboardQueryString = {},
+) => {
   return useSuspenseInfiniteQuery({
     ...usersLeaderboardQueryOptions(params),
     select: (data) => ({

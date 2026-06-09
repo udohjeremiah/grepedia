@@ -99,7 +99,7 @@ const getToolCommentReplies: FastifyPluginAsyncZod = async (fastify) => {
                 ],
               },
         )
-        // eslint-disable-next-line perfectionist/sort-objects, unicorn/no-array-sort
+        // eslint-disable-next-line perfectionist/sort-objects
         .sort({ createdAt: -1, _id: -1 })
         .limit(limit)
         .toArray();

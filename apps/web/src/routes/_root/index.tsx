@@ -7,7 +7,6 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import { AppLink } from "@/components/app-link";
 import { ErrorFallback } from "@/components/error-fallback";
-import { auth } from "@/hooks/auth";
 
 import { SearchForm } from "./-components/search-form";
 import { ToolsStats } from "./-components/tools-stats";
@@ -31,8 +30,6 @@ export const Route = createFileRoute("/_root/")({
 });
 
 function RouteComponent() {
-  const { user } = auth.useSession();
-
   return (
     <div className="flex min-h-svh flex-col">
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-6 p-4 md:p-6">
@@ -63,24 +60,18 @@ function RouteComponent() {
         </QueryErrorResetBoundary>
         <Separator />
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <AppLink className="text-xs" to="/tools/directory">
               All Tools
             </AppLink>
             <span className="text-muted-foreground">•</span>
-            {user ? (
-              <AppLink
-                className="text-xs"
-                params={{ username: user.username }}
-                to="/@{$username}"
-              >
-                Account
-              </AppLink>
-            ) : (
-              <AppLink className="text-xs" to="/signin">
-                Sign In
-              </AppLink>
-            )}
+            <AppLink className="text-xs" to="/lists">
+              Curated Lists
+            </AppLink>
+            <span className="text-muted-foreground">•</span>
+            <AppLink className="text-xs" to="/signin">
+              Sign In
+            </AppLink>
           </div>
           <Button asChild className="size-fit p-0" variant="link">
             <a href="https://www.netlify.com" rel="noreferrer" target="_blank">

@@ -15,6 +15,7 @@ const generateTool: FastifyPluginAsyncZod = async (fastify) => {
       const tools = fastify.db.tools;
 
       const duplicate = await tools.findOne({ officialUrl: normalizeUrl(url) });
+
       if (duplicate) {
         return reply.code(409).send({
           message: "A tool with the same official URL already exists",

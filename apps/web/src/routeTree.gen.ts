@@ -11,17 +11,22 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ToolsRouteRouteImport } from './routes/tools/route'
+import { Route as ListsRouteRouteImport } from './routes/lists/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as TermsOfServiceIndexRouteImport } from './routes/terms-of-service/index'
 import { Route as SearchIndexRouteImport } from './routes/search/index'
 import { Route as PrivacyPolicyIndexRouteImport } from './routes/privacy-policy/index'
+import { Route as ListsIndexRouteImport } from './routes/lists/index'
 import { Route as LeaderboardIndexRouteImport } from './routes/leaderboard/index'
 import { Route as RootIndexRouteImport } from './routes/_root/index'
 import { Route as ToolsAtChar123slugChar125RouteRouteImport } from './routes/tools/@{$slug}/route'
+import { Route as ListsSlugRouteRouteImport } from './routes/lists/$slug/route'
 import { Route as AuthenticatedAtChar123usernameChar125RouteRouteImport } from './routes/_authenticated/@{$username}/route'
 import { Route as ToolsDirectoryIndexRouteImport } from './routes/tools/directory/index'
 import { Route as ToolsAtChar123slugChar125IndexRouteImport } from './routes/tools/@{$slug}/index'
+import { Route as ListsNewIndexRouteImport } from './routes/lists/new/index'
+import { Route as ListsSlugIndexRouteImport } from './routes/lists/$slug/index'
 import { Route as AuthenticatedAtChar123usernameChar125IndexRouteImport } from './routes/_authenticated/@{$username}/index'
 import { Route as AuthSignupIndexRouteImport } from './routes/_auth/signup/index'
 import { Route as AuthSigninIndexRouteImport } from './routes/_auth/signin/index'
@@ -29,10 +34,12 @@ import { Route as AuthResetPasswordIndexRouteImport } from './routes/_auth/reset
 import { Route as AuthRequestPasswordResetIndexRouteImport } from './routes/_auth/request-password-reset/index'
 import { Route as ToolsAtChar123slugChar125RevisionsIndexRouteImport } from './routes/tools/@{$slug}/revisions/index'
 import { Route as ToolsAtChar123slugChar125OgIndexRouteImport } from './routes/tools/@{$slug}/og/index'
+import { Route as ListsSlugEditIndexRouteImport } from './routes/lists/$slug/edit/index'
 import { Route as AuthenticatedAtChar123usernameChar125ToolsIndexRouteImport } from './routes/_authenticated/@{$username}/tools/index'
 import { Route as AuthenticatedAtChar123usernameChar125SessionsIndexRouteImport } from './routes/_authenticated/@{$username}/sessions/index'
 import { Route as AuthenticatedAtChar123usernameChar125SecurityIndexRouteImport } from './routes/_authenticated/@{$username}/security/index'
 import { Route as AuthenticatedAtChar123usernameChar125ModerationIndexRouteImport } from './routes/_authenticated/@{$username}/moderation/index'
+import { Route as AuthenticatedAtChar123usernameChar125ListsIndexRouteImport } from './routes/_authenticated/@{$username}/lists/index'
 import { Route as AuthenticatedAtChar123usernameChar125DataIndexRouteImport } from './routes/_authenticated/@{$username}/data/index'
 import { Route as AuthenticatedAtChar123usernameChar125BookmarksIndexRouteImport } from './routes/_authenticated/@{$username}/bookmarks/index'
 
@@ -44,6 +51,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ToolsRouteRoute = ToolsRouteRouteImport.update({
   id: '/tools',
   path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsRouteRoute = ListsRouteRouteImport.update({
+  id: '/lists',
+  path: '/lists',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -69,6 +81,11 @@ const PrivacyPolicyIndexRoute = PrivacyPolicyIndexRouteImport.update({
   path: '/privacy-policy/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ListsIndexRoute = ListsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ListsRouteRoute,
+} as any)
 const LeaderboardIndexRoute = LeaderboardIndexRouteImport.update({
   id: '/leaderboard/',
   path: '/leaderboard/',
@@ -85,6 +102,11 @@ const ToolsAtChar123slugChar125RouteRoute =
     path: '/@{$slug}',
     getParentRoute: () => ToolsRouteRoute,
   } as any)
+const ListsSlugRouteRoute = ListsSlugRouteRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ListsRouteRoute,
+} as any)
 const AuthenticatedAtChar123usernameChar125RouteRoute =
   AuthenticatedAtChar123usernameChar125RouteRouteImport.update({
     id: '/@{$username}',
@@ -102,6 +124,16 @@ const ToolsAtChar123slugChar125IndexRoute =
     path: '/',
     getParentRoute: () => ToolsAtChar123slugChar125RouteRoute,
   } as any)
+const ListsNewIndexRoute = ListsNewIndexRouteImport.update({
+  id: '/new/',
+  path: '/new/',
+  getParentRoute: () => ListsRouteRoute,
+} as any)
+const ListsSlugIndexRoute = ListsSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ListsSlugRouteRoute,
+} as any)
 const AuthenticatedAtChar123usernameChar125IndexRoute =
   AuthenticatedAtChar123usernameChar125IndexRouteImport.update({
     id: '/',
@@ -141,6 +173,11 @@ const ToolsAtChar123slugChar125OgIndexRoute =
     path: '/og/',
     getParentRoute: () => ToolsAtChar123slugChar125RouteRoute,
   } as any)
+const ListsSlugEditIndexRoute = ListsSlugEditIndexRouteImport.update({
+  id: '/edit/',
+  path: '/edit/',
+  getParentRoute: () => ListsSlugRouteRoute,
+} as any)
 const AuthenticatedAtChar123usernameChar125ToolsIndexRoute =
   AuthenticatedAtChar123usernameChar125ToolsIndexRouteImport.update({
     id: '/tools/',
@@ -165,6 +202,12 @@ const AuthenticatedAtChar123usernameChar125ModerationIndexRoute =
     path: '/moderation/',
     getParentRoute: () => AuthenticatedAtChar123usernameChar125RouteRoute,
   } as any)
+const AuthenticatedAtChar123usernameChar125ListsIndexRoute =
+  AuthenticatedAtChar123usernameChar125ListsIndexRouteImport.update({
+    id: '/lists/',
+    path: '/lists/',
+    getParentRoute: () => AuthenticatedAtChar123usernameChar125RouteRoute,
+  } as any)
 const AuthenticatedAtChar123usernameChar125DataIndexRoute =
   AuthenticatedAtChar123usernameChar125DataIndexRouteImport.update({
     id: '/data/',
@@ -180,11 +223,14 @@ const AuthenticatedAtChar123usernameChar125BookmarksIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof RootIndexRoute
+  '/lists': typeof ListsRouteRouteWithChildren
   '/tools': typeof ToolsRouteRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/@{$username}': typeof AuthenticatedAtChar123usernameChar125RouteRouteWithChildren
+  '/lists/$slug': typeof ListsSlugRouteRouteWithChildren
   '/tools/@{$slug}': typeof ToolsAtChar123slugChar125RouteRouteWithChildren
   '/leaderboard/': typeof LeaderboardIndexRoute
+  '/lists/': typeof ListsIndexRoute
   '/privacy-policy/': typeof PrivacyPolicyIndexRoute
   '/search/': typeof SearchIndexRoute
   '/terms-of-service/': typeof TermsOfServiceIndexRoute
@@ -193,14 +239,18 @@ export interface FileRoutesByFullPath {
   '/signin/': typeof AuthSigninIndexRoute
   '/signup/': typeof AuthSignupIndexRoute
   '/@{$username}/': typeof AuthenticatedAtChar123usernameChar125IndexRoute
+  '/lists/$slug/': typeof ListsSlugIndexRoute
+  '/lists/new/': typeof ListsNewIndexRoute
   '/tools/@{$slug}/': typeof ToolsAtChar123slugChar125IndexRoute
   '/tools/directory/': typeof ToolsDirectoryIndexRoute
   '/@{$username}/bookmarks/': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
   '/@{$username}/data/': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  '/@{$username}/lists/': typeof AuthenticatedAtChar123usernameChar125ListsIndexRoute
   '/@{$username}/moderation/': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/@{$username}/security/': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/@{$username}/sessions/': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/@{$username}/tools/': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
+  '/lists/$slug/edit/': typeof ListsSlugEditIndexRoute
   '/tools/@{$slug}/og/': typeof ToolsAtChar123slugChar125OgIndexRoute
   '/tools/@{$slug}/revisions/': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
@@ -209,6 +259,7 @@ export interface FileRoutesByTo {
   '/tools': typeof ToolsRouteRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/leaderboard': typeof LeaderboardIndexRoute
+  '/lists': typeof ListsIndexRoute
   '/privacy-policy': typeof PrivacyPolicyIndexRoute
   '/search': typeof SearchIndexRoute
   '/terms-of-service': typeof TermsOfServiceIndexRoute
@@ -217,14 +268,18 @@ export interface FileRoutesByTo {
   '/signin': typeof AuthSigninIndexRoute
   '/signup': typeof AuthSignupIndexRoute
   '/@{$username}': typeof AuthenticatedAtChar123usernameChar125IndexRoute
+  '/lists/$slug': typeof ListsSlugIndexRoute
+  '/lists/new': typeof ListsNewIndexRoute
   '/tools/@{$slug}': typeof ToolsAtChar123slugChar125IndexRoute
   '/tools/directory': typeof ToolsDirectoryIndexRoute
   '/@{$username}/bookmarks': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
   '/@{$username}/data': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  '/@{$username}/lists': typeof AuthenticatedAtChar123usernameChar125ListsIndexRoute
   '/@{$username}/moderation': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/@{$username}/security': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/@{$username}/sessions': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/@{$username}/tools': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
+  '/lists/$slug/edit': typeof ListsSlugEditIndexRoute
   '/tools/@{$slug}/og': typeof ToolsAtChar123slugChar125OgIndexRoute
   '/tools/@{$slug}/revisions': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
@@ -232,12 +287,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/lists': typeof ListsRouteRouteWithChildren
   '/tools': typeof ToolsRouteRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/@{$username}': typeof AuthenticatedAtChar123usernameChar125RouteRouteWithChildren
+  '/lists/$slug': typeof ListsSlugRouteRouteWithChildren
   '/tools/@{$slug}': typeof ToolsAtChar123slugChar125RouteRouteWithChildren
   '/_root/': typeof RootIndexRoute
   '/leaderboard/': typeof LeaderboardIndexRoute
+  '/lists/': typeof ListsIndexRoute
   '/privacy-policy/': typeof PrivacyPolicyIndexRoute
   '/search/': typeof SearchIndexRoute
   '/terms-of-service/': typeof TermsOfServiceIndexRoute
@@ -246,14 +304,18 @@ export interface FileRoutesById {
   '/_auth/signin/': typeof AuthSigninIndexRoute
   '/_auth/signup/': typeof AuthSignupIndexRoute
   '/_authenticated/@{$username}/': typeof AuthenticatedAtChar123usernameChar125IndexRoute
+  '/lists/$slug/': typeof ListsSlugIndexRoute
+  '/lists/new/': typeof ListsNewIndexRoute
   '/tools/@{$slug}/': typeof ToolsAtChar123slugChar125IndexRoute
   '/tools/directory/': typeof ToolsDirectoryIndexRoute
   '/_authenticated/@{$username}/bookmarks/': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
   '/_authenticated/@{$username}/data/': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  '/_authenticated/@{$username}/lists/': typeof AuthenticatedAtChar123usernameChar125ListsIndexRoute
   '/_authenticated/@{$username}/moderation/': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/_authenticated/@{$username}/security/': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   '/_authenticated/@{$username}/sessions/': typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
   '/_authenticated/@{$username}/tools/': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
+  '/lists/$slug/edit/': typeof ListsSlugEditIndexRoute
   '/tools/@{$slug}/og/': typeof ToolsAtChar123slugChar125OgIndexRoute
   '/tools/@{$slug}/revisions/': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
@@ -261,11 +323,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/lists'
     | '/tools'
     | '/sitemap.xml'
     | '/@{$username}'
+    | '/lists/$slug'
     | '/tools/@{$slug}'
     | '/leaderboard/'
+    | '/lists/'
     | '/privacy-policy/'
     | '/search/'
     | '/terms-of-service/'
@@ -274,14 +339,18 @@ export interface FileRouteTypes {
     | '/signin/'
     | '/signup/'
     | '/@{$username}/'
+    | '/lists/$slug/'
+    | '/lists/new/'
     | '/tools/@{$slug}/'
     | '/tools/directory/'
     | '/@{$username}/bookmarks/'
     | '/@{$username}/data/'
+    | '/@{$username}/lists/'
     | '/@{$username}/moderation/'
     | '/@{$username}/security/'
     | '/@{$username}/sessions/'
     | '/@{$username}/tools/'
+    | '/lists/$slug/edit/'
     | '/tools/@{$slug}/og/'
     | '/tools/@{$slug}/revisions/'
   fileRoutesByTo: FileRoutesByTo
@@ -290,6 +359,7 @@ export interface FileRouteTypes {
     | '/tools'
     | '/sitemap.xml'
     | '/leaderboard'
+    | '/lists'
     | '/privacy-policy'
     | '/search'
     | '/terms-of-service'
@@ -298,26 +368,33 @@ export interface FileRouteTypes {
     | '/signin'
     | '/signup'
     | '/@{$username}'
+    | '/lists/$slug'
+    | '/lists/new'
     | '/tools/@{$slug}'
     | '/tools/directory'
     | '/@{$username}/bookmarks'
     | '/@{$username}/data'
+    | '/@{$username}/lists'
     | '/@{$username}/moderation'
     | '/@{$username}/security'
     | '/@{$username}/sessions'
     | '/@{$username}/tools'
+    | '/lists/$slug/edit'
     | '/tools/@{$slug}/og'
     | '/tools/@{$slug}/revisions'
   id:
     | '__root__'
     | '/_auth'
     | '/_authenticated'
+    | '/lists'
     | '/tools'
     | '/sitemap.xml'
     | '/_authenticated/@{$username}'
+    | '/lists/$slug'
     | '/tools/@{$slug}'
     | '/_root/'
     | '/leaderboard/'
+    | '/lists/'
     | '/privacy-policy/'
     | '/search/'
     | '/terms-of-service/'
@@ -326,14 +403,18 @@ export interface FileRouteTypes {
     | '/_auth/signin/'
     | '/_auth/signup/'
     | '/_authenticated/@{$username}/'
+    | '/lists/$slug/'
+    | '/lists/new/'
     | '/tools/@{$slug}/'
     | '/tools/directory/'
     | '/_authenticated/@{$username}/bookmarks/'
     | '/_authenticated/@{$username}/data/'
+    | '/_authenticated/@{$username}/lists/'
     | '/_authenticated/@{$username}/moderation/'
     | '/_authenticated/@{$username}/security/'
     | '/_authenticated/@{$username}/sessions/'
     | '/_authenticated/@{$username}/tools/'
+    | '/lists/$slug/edit/'
     | '/tools/@{$slug}/og/'
     | '/tools/@{$slug}/revisions/'
   fileRoutesById: FileRoutesById
@@ -341,6 +422,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  ListsRouteRoute: typeof ListsRouteRouteWithChildren
   ToolsRouteRoute: typeof ToolsRouteRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   RootIndexRoute: typeof RootIndexRoute
@@ -364,6 +446,13 @@ declare module '@tanstack/react-router' {
       path: '/tools'
       fullPath: '/tools'
       preLoaderRoute: typeof ToolsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lists': {
+      id: '/lists'
+      path: '/lists'
+      fullPath: '/lists'
+      preLoaderRoute: typeof ListsRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -401,6 +490,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyPolicyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lists/': {
+      id: '/lists/'
+      path: '/'
+      fullPath: '/lists/'
+      preLoaderRoute: typeof ListsIndexRouteImport
+      parentRoute: typeof ListsRouteRoute
+    }
     '/leaderboard/': {
       id: '/leaderboard/'
       path: '/leaderboard'
@@ -422,6 +518,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsAtChar123slugChar125RouteRouteImport
       parentRoute: typeof ToolsRouteRoute
     }
+    '/lists/$slug': {
+      id: '/lists/$slug'
+      path: '/$slug'
+      fullPath: '/lists/$slug'
+      preLoaderRoute: typeof ListsSlugRouteRouteImport
+      parentRoute: typeof ListsRouteRoute
+    }
     '/_authenticated/@{$username}': {
       id: '/_authenticated/@{$username}'
       path: '/@{$username}'
@@ -442,6 +545,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/tools/@{$slug}/'
       preLoaderRoute: typeof ToolsAtChar123slugChar125IndexRouteImport
       parentRoute: typeof ToolsAtChar123slugChar125RouteRoute
+    }
+    '/lists/new/': {
+      id: '/lists/new/'
+      path: '/new'
+      fullPath: '/lists/new/'
+      preLoaderRoute: typeof ListsNewIndexRouteImport
+      parentRoute: typeof ListsRouteRoute
+    }
+    '/lists/$slug/': {
+      id: '/lists/$slug/'
+      path: '/'
+      fullPath: '/lists/$slug/'
+      preLoaderRoute: typeof ListsSlugIndexRouteImport
+      parentRoute: typeof ListsSlugRouteRoute
     }
     '/_authenticated/@{$username}/': {
       id: '/_authenticated/@{$username}/'
@@ -492,6 +609,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsAtChar123slugChar125OgIndexRouteImport
       parentRoute: typeof ToolsAtChar123slugChar125RouteRoute
     }
+    '/lists/$slug/edit/': {
+      id: '/lists/$slug/edit/'
+      path: '/edit'
+      fullPath: '/lists/$slug/edit/'
+      preLoaderRoute: typeof ListsSlugEditIndexRouteImport
+      parentRoute: typeof ListsSlugRouteRoute
+    }
     '/_authenticated/@{$username}/tools/': {
       id: '/_authenticated/@{$username}/tools/'
       path: '/tools'
@@ -518,6 +642,13 @@ declare module '@tanstack/react-router' {
       path: '/moderation'
       fullPath: '/@{$username}/moderation/'
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125ModerationIndexRouteImport
+      parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
+    }
+    '/_authenticated/@{$username}/lists/': {
+      id: '/_authenticated/@{$username}/lists/'
+      path: '/lists'
+      fullPath: '/@{$username}/lists/'
+      preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125ListsIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
     '/_authenticated/@{$username}/data/': {
@@ -559,6 +690,7 @@ interface AuthenticatedAtChar123usernameChar125RouteRouteChildren {
   AuthenticatedAtChar123usernameChar125IndexRoute: typeof AuthenticatedAtChar123usernameChar125IndexRoute
   AuthenticatedAtChar123usernameChar125BookmarksIndexRoute: typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
   AuthenticatedAtChar123usernameChar125DataIndexRoute: typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
+  AuthenticatedAtChar123usernameChar125ListsIndexRoute: typeof AuthenticatedAtChar123usernameChar125ListsIndexRoute
   AuthenticatedAtChar123usernameChar125ModerationIndexRoute: typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   AuthenticatedAtChar123usernameChar125SecurityIndexRoute: typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
   AuthenticatedAtChar123usernameChar125SessionsIndexRoute: typeof AuthenticatedAtChar123usernameChar125SessionsIndexRoute
@@ -573,6 +705,8 @@ const AuthenticatedAtChar123usernameChar125RouteRouteChildren: AuthenticatedAtCh
       AuthenticatedAtChar123usernameChar125BookmarksIndexRoute,
     AuthenticatedAtChar123usernameChar125DataIndexRoute:
       AuthenticatedAtChar123usernameChar125DataIndexRoute,
+    AuthenticatedAtChar123usernameChar125ListsIndexRoute:
+      AuthenticatedAtChar123usernameChar125ListsIndexRoute,
     AuthenticatedAtChar123usernameChar125ModerationIndexRoute:
       AuthenticatedAtChar123usernameChar125ModerationIndexRoute,
     AuthenticatedAtChar123usernameChar125SecurityIndexRoute:
@@ -599,6 +733,36 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface ListsSlugRouteRouteChildren {
+  ListsSlugIndexRoute: typeof ListsSlugIndexRoute
+  ListsSlugEditIndexRoute: typeof ListsSlugEditIndexRoute
+}
+
+const ListsSlugRouteRouteChildren: ListsSlugRouteRouteChildren = {
+  ListsSlugIndexRoute: ListsSlugIndexRoute,
+  ListsSlugEditIndexRoute: ListsSlugEditIndexRoute,
+}
+
+const ListsSlugRouteRouteWithChildren = ListsSlugRouteRoute._addFileChildren(
+  ListsSlugRouteRouteChildren,
+)
+
+interface ListsRouteRouteChildren {
+  ListsSlugRouteRoute: typeof ListsSlugRouteRouteWithChildren
+  ListsIndexRoute: typeof ListsIndexRoute
+  ListsNewIndexRoute: typeof ListsNewIndexRoute
+}
+
+const ListsRouteRouteChildren: ListsRouteRouteChildren = {
+  ListsSlugRouteRoute: ListsSlugRouteRouteWithChildren,
+  ListsIndexRoute: ListsIndexRoute,
+  ListsNewIndexRoute: ListsNewIndexRoute,
+}
+
+const ListsRouteRouteWithChildren = ListsRouteRoute._addFileChildren(
+  ListsRouteRouteChildren,
+)
 
 interface ToolsAtChar123slugChar125RouteRouteChildren {
   ToolsAtChar123slugChar125IndexRoute: typeof ToolsAtChar123slugChar125IndexRoute
@@ -638,6 +802,7 @@ const ToolsRouteRouteWithChildren = ToolsRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  ListsRouteRoute: ListsRouteRouteWithChildren,
   ToolsRouteRoute: ToolsRouteRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   RootIndexRoute: RootIndexRoute,

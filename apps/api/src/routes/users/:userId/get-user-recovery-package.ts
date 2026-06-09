@@ -1,11 +1,11 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
-import { canonicalStringify } from "@workspace/shared/canonical-stringify";
 import {
   getUserRecoveryPackageParamsSchema,
   getUserRecoveryPackageResponseSchemas,
 } from "@workspace/shared/schemas/users/recovery-package/get-user-recovery-package";
 import { userRecoveryPackageSchema } from "@workspace/shared/schemas/users/recovery-package/user-recovery-package";
+import { canonicalStringify } from "@workspace/shared/utils/canonical-stringify";
 import { ObjectId } from "mongodb";
 import { createHmac, randomUUID } from "node:crypto";
 

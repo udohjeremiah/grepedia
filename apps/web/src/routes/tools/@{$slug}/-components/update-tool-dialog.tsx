@@ -70,9 +70,11 @@ export function UpdateToolDialog() {
   const [tagInput, setTagInput] = useState("");
 
   const { user } = auth.useSession();
+
   const { data: tool } = useTool({ slug });
   const { data: proposals } = useToolProposals({ slug });
   const { mutate: updateTool } = useToolUpdate(slug);
+
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
@@ -396,7 +398,7 @@ export function UpdateToolDialog() {
                     {(field.state.value ?? []).length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {(field.state.value ?? []).map((item, index) => (
-                          <Badge className="max-w-full" key={index}>
+                          <Badge className="max-w-full" key={item}>
                             <button
                               className="truncate"
                               onClick={() => {
@@ -479,7 +481,7 @@ export function UpdateToolDialog() {
                     {field.state.value.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {field.state.value.map((category, index) => (
-                          <Badge className="max-w-full" key={index}>
+                          <Badge className="max-w-full" key={category}>
                             <button
                               className="truncate"
                               onClick={() => {
@@ -565,7 +567,7 @@ export function UpdateToolDialog() {
                     {field.state.value.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {field.state.value.map((tag, index) => (
-                          <Badge className="max-w-full" key={index}>
+                          <Badge className="max-w-full" key={tag}>
                             <button
                               className="truncate"
                               onClick={() => {
@@ -615,6 +617,7 @@ export function UpdateToolDialog() {
                         <Button
                           className="justify-start"
                           id={field.name}
+                          type="button"
                           variant="outline"
                         >
                           {selectedDate ? (

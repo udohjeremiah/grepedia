@@ -356,14 +356,17 @@ function buildVectorSearchPipeline({
 
 function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) return 0;
+
   let dot = 0,
     normA = 0,
     normB = 0;
+
   for (const [index, element] of a.entries()) {
     dot += element * b[index]!;
     normA += element * element;
     normB += b[index]! * b[index]!;
   }
+
   const denom = Math.sqrt(normA) * Math.sqrt(normB);
   return denom === 0 ? 0 : dot / denom;
 }

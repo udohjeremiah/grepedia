@@ -1,12 +1,16 @@
 import { createLink, LinkComponent } from "@tanstack/react-router";
 import { Button } from "@workspace/ui/components/button";
 import { cn } from "@workspace/ui/lib/cn";
-import { AnchorHTMLAttributes, forwardRef } from "react";
+import { AnchorHTMLAttributes } from "react";
 
-const AppLinkComponent = forwardRef<
-  HTMLAnchorElement,
-  AnchorHTMLAttributes<HTMLAnchorElement>
->(({ children, className, ...props }, ref) => {
+const AppLinkComponent = ({
+  children,
+  className,
+  ref,
+  ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement> & {
+  ref?: React.RefObject<HTMLAnchorElement | null>;
+}) => {
   return (
     <Button asChild className={cn("size-fit p-0", className)} variant="link">
       <a ref={ref} {...props}>
@@ -14,7 +18,7 @@ const AppLinkComponent = forwardRef<
       </a>
     </Button>
   );
-});
+};
 
 AppLinkComponent.displayName = "AppLinkComponent";
 

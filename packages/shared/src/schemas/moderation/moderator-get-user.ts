@@ -1,13 +1,15 @@
 import { z } from "zod";
 
-import { defaultResponse } from "../default-response.js";
-import { objectIdSchema } from "../object-id.js";
+import { defaultResponse } from "@/schemas/default-response.js";
+import { objectIdSchema } from "@/schemas/object-id.js";
 
-export const moderatorGetUserQuerySchema = z.object({
+export const moderatorGetUserQueryStringSchema = z.object({
   username: z.string().min(1),
 });
 
-export type ModeratorGetUserQuery = z.infer<typeof moderatorGetUserQuerySchema>;
+export type ModeratorGetUserQueryString = z.infer<
+  typeof moderatorGetUserQueryStringSchema
+>;
 
 export const moderatorGetUserResponseSchemas = {
   200: z.object({

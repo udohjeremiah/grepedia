@@ -30,6 +30,7 @@ async function applyReactionAction({
 }) {
   if (action === "insert") {
     const now = new Date();
+
     const insertResult = await commentReactions.insertOne({
       commentId,
       createdAt: now,

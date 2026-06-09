@@ -3,11 +3,13 @@ import { z } from "zod";
 import { defaultResponse } from "../default-response.js";
 import { slugSchema } from "../slug.js";
 
-export const moderatorGetToolQuerySchema = z.object({
+export const moderatorGetToolQueryStringSchema = z.object({
   slug: slugSchema,
 });
 
-export type ModeratorGetToolQuery = z.infer<typeof moderatorGetToolQuerySchema>;
+export type ModeratorGetToolQueryString = z.infer<
+  typeof moderatorGetToolQueryStringSchema
+>;
 
 export const moderatorGetToolResponseSchemas = {
   200: z.object({

@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { omitKeys } from "@workspace/shared/omit-keys";
+import { omitKeys } from "@workspace/shared/utils/omit-keys";
 import { Button } from "@workspace/ui/components/button";
 import { Checkbox } from "@workspace/ui/components/checkbox";
 import {

@@ -10,6 +10,7 @@ export function DownloadJSON() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
   const { user } = auth.useSession();
+
   const { data: userRecoveryPackage } = useUserRecoveryPackage({ userId });
 
   function handleDownload() {

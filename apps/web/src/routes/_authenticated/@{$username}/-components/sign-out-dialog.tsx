@@ -27,6 +27,7 @@ export function SignOutDialog() {
   const [revokeAllSessions, setRevokeAllSessions] = useState(false);
 
   const { mutateAsync: revokeSessions } = auth.useRevokeSessions();
+
   const { isSubmitting, setSubmitting } = useSubmission();
 
   const { closeDialog, handleOpenChange, isOpen } = useDialog({
@@ -67,7 +68,7 @@ export function SignOutDialog() {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2">
-            <LogOutIcon className="size-5" />
+            <LogOutIcon className="size-5 text-destructive" />
             Sign Out
           </AlertDialogTitle>
           <AlertDialogDescription>

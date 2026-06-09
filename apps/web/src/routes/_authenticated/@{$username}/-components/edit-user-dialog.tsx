@@ -75,6 +75,7 @@ export function EditUserDialog() {
 
   const { user } = auth.useSession();
   const { mutate: updateUser } = auth.useUpdateUser();
+
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({

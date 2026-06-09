@@ -16,6 +16,9 @@ declare module "fastify" {
       CRAWLEE_MAX_PAGES: number;
       EMAIL_AUTH: string;
       GEMINI_API_KEY: string;
+      MONGODB_COLL_LIST: string;
+      MONGODB_COLL_LIST_REACTION: string;
+      MONGODB_COLL_LIST_VIEW: string;
       MONGODB_COLL_MODERATION_CASE: string;
       MONGODB_COLL_TOOL: string;
       MONGODB_COLL_TOOL_COMMENT: string;
@@ -86,6 +89,18 @@ const options: FastifyEnvOptions = {
         type: "string",
       },
       GEMINI_API_KEY: {
+        type: "string",
+      },
+      MONGODB_COLL_LIST: {
+        default: "list",
+        type: "string",
+      },
+      MONGODB_COLL_LIST_REACTION: {
+        default: "list-reaction",
+        type: "string",
+      },
+      MONGODB_COLL_LIST_VIEW: {
+        default: "list-view",
         type: "string",
       },
       MONGODB_COLL_MODERATION_CASE: {
@@ -163,12 +178,15 @@ const options: FastifyEnvOptions = {
       "MONGODB_DATABASE",
       "ADMIN_USER_IDS",
       "MONGODB_COLL_USER",
-      "MONGODB_COLL_USER_BOOKMARK",
       "MONGODB_COLL_TOOL",
+      "MONGODB_COLL_TOOL_REVISION",
       "MONGODB_COLL_TOOL_REACTION",
       "MONGODB_COLL_TOOL_COMMENT",
       "MONGODB_COLL_TOOL_COMMENT_REACTION",
-      "MONGODB_COLL_TOOL_REVISION",
+      "MONGODB_COLL_USER_BOOKMARK",
+      "MONGODB_COLL_LIST",
+      "MONGODB_COLL_LIST_VIEW",
+      "MONGODB_COLL_LIST_REACTION",
       "MONGODB_COLL_MODERATION_CASE",
       "RESEND_API_KEY",
       "EMAIL_AUTH",

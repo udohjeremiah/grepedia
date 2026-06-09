@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { omitKeys } from "@workspace/shared/omit-keys";
+import { omitKeys } from "@workspace/shared/utils/omit-keys";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,

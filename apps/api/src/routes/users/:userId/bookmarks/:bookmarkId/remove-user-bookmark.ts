@@ -32,6 +32,7 @@ const removeUserBookmark: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       const bookmarkObjectId = ObjectId.createFromHexString(bookmarkId);
+
       const deleteResult = await userBookmarks.deleteOne({
         _id: bookmarkObjectId,
         userId: userObjectId,

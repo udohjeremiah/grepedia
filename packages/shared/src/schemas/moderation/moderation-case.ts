@@ -1,8 +1,9 @@
 import { z } from "zod";
 
-import { discordUrlSchema } from "../discord-url.js";
-import { objectIdSchema } from "../object-id.js";
-import { slugSchema } from "../slug.js";
+import { discordUrlSchema } from "@/schemas/discord-url.js";
+import { objectIdSchema } from "@/schemas/object-id.js";
+import { slugSchema } from "@/schemas/slug.js";
+
 import { toolRevisionSnapshotSchema } from "../tools/revisions/tool-revision.js";
 
 export const moderationCaseStatusSchema = z.enum([
