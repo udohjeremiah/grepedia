@@ -1,8 +1,9 @@
 import { z } from "zod";
 
-import { defaultResponse } from "../default-response.js";
-import { objectIdSchema } from "../object-id.js";
-import { officialUrlSchema, publicUrlSchema } from "../url-policy.js";
+import { defaultResponse } from "@/schemas/default-response.js";
+import { objectIdSchema } from "@/schemas/object-id.js";
+import { slugSchema } from "@/schemas/slug.js";
+import { officialUrlSchema, publicUrlSchema } from "@/schemas/url-policy.js";
 
 export const addToolBodySchema = z.object({
   categories: z
@@ -45,7 +46,7 @@ export const addToolResponseSchemas = {
     data: z.object({
       addedAt: z.iso.datetime(),
       toolId: objectIdSchema,
-      toolSlug: z.string(),
+      toolSlug: slugSchema,
     }),
     message: z.string(),
     success: z.boolean(),

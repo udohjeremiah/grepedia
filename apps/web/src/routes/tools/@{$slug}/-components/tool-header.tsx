@@ -102,6 +102,7 @@ const tiers: { color: string; label: string; minScore: number }[] = [
 
 export function ToolHeader() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
+
   const { user } = auth.useSession();
 
   const { data: tool } = useTool({ slug });
@@ -113,21 +114,13 @@ export function ToolHeader() {
   const { copied, copyToClipboard } = useCopyToClipboard();
   const { copyToClipboard: copyReportDetails } = useCopyToClipboard();
 
-  const status = statusConfig[tool.status];
-  const score = tool.stats.upvotes - tool.stats.downvotes;
-  const tier = tiers.find(({ minScore }) => score >= minScore)!;
-
-  const hasBookmarked = tool.relations.bookmarked;
-  const hasDownvoted = tool.relations.downvoted;
-  const hasUpvoted = tool.relations.upvoted;
-
   const handleToggleBookmark = () => {
-    if (!user?.id) return globalThis.location.assign("/signin");
+    if (!user) return globalThis.location.assign("/signin");
     toggleToolBookmark();
   };
 
   const handleSetToolReaction = (value: -1 | 1) => {
-    if (!user?.id) return globalThis.location.assign("/signin");
+    if (!user) return globalThis.location.assign("/signin");
     setToolReaction({ value });
   };
 
@@ -155,6 +148,14 @@ export function ToolHeader() {
       globalThis.open(env.VITE_REPORT_TOOL_URL, "_blank", "noreferrer");
     }
   };
+
+  const status = statusConfig[tool.status];
+  const score = tool.stats.upvotes - tool.stats.downvotes;
+  const tier = tiers.find(({ minScore }) => score >= minScore)!;
+
+  const hasBookmarked = tool.relations.bookmarked;
+  const hasDownvoted = tool.relations.downvoted;
+  const hasUpvoted = tool.relations.upvoted;
 
   return (
     <div className="flex flex-col gap-6">

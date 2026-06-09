@@ -1,20 +1,22 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { ModeratorGetCommentQuery } from "@workspace/shared/schemas/moderation/moderator-get-comment";
+import { ModeratorGetCommentQueryString } from "@workspace/shared/schemas/moderation/moderator-get-comment";
 
 import { moderatorGetComment } from "@/services/moderation/moderator-get-comment";
 
 export const moderatorGetCommentQueryOptions = (
-  params: ModeratorGetCommentQuery,
+  queryString: ModeratorGetCommentQueryString,
 ) => {
   return queryOptions({
-    queryFn: () => moderatorGetComment(params.commentId),
-    queryKey: ["moderation", "comment", params.commentId],
+    queryFn: () => moderatorGetComment(queryString.commentId),
+    queryKey: ["moderation", "comment", queryString.commentId],
   });
 };
 
-export function useModeratorGetComment(params: ModeratorGetCommentQuery) {
+export function useModeratorGetComment(
+  queryString: ModeratorGetCommentQueryString,
+) {
   return useQuery({
-    ...moderatorGetCommentQueryOptions(params),
+    ...moderatorGetCommentQueryOptions(queryString),
     enabled: false,
     select: (data) => data.data.comment,
   });

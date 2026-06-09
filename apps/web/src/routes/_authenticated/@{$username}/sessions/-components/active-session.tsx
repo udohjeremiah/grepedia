@@ -42,7 +42,8 @@ const DEVICE_ICON_MAP = {
 } as const;
 
 export function ActiveSession(session: ActiveSession) {
-  const { isPending, mutate: revokeSession } = auth.useRevokeSession();
+  const { isPending: isRevoking, mutate: revokeSession } =
+    auth.useRevokeSession();
 
   const { handleOpenChange, isOpen, setIsOpen } = useDialog();
 
@@ -124,18 +125,18 @@ export function ActiveSession(session: ActiveSession) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={isPending}>
+                <AlertDialogCancel disabled={isRevoking}>
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction
-                  disabled={isPending}
+                  disabled={isRevoking}
                   onClick={(event) => {
                     event.preventDefault();
                     handleRevokeSession();
                   }}
                   variant="destructive"
                 >
-                  {isPending ? "Revoking..." : "Revoke Session"}
+                  {isRevoking ? "Revoking..." : "Revoke Session"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

@@ -19,6 +19,7 @@ export function ToolRevision(revision: ToolRevisionProps) {
   const [showSnapshot, setShowSnapshot] = useState(false);
 
   const { user } = auth.useSession();
+
   const { isPending: isReverting, mutate: revertRevision } =
     useToolRevertRevision(slug);
 

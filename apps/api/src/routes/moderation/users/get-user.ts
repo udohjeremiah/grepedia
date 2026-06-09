@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 import {
-  moderatorGetUserQuerySchema,
+  moderatorGetUserQueryStringSchema,
   moderatorGetUserResponseSchemas,
 } from "@workspace/shared/schemas/moderation/moderator-get-user";
 
@@ -68,7 +68,7 @@ const getUser: FastifyPluginAsyncZod = async (fastify) => {
     method: "GET",
     onRequest: [fastify.requireModerator],
     schema: {
-      querystring: moderatorGetUserQuerySchema,
+      querystring: moderatorGetUserQueryStringSchema,
       response: moderatorGetUserResponseSchemas,
       security: [{ sessionCookie: [] }],
       tags: ["Moderation"],

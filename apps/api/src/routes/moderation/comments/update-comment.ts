@@ -25,11 +25,10 @@ const updateComment: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       const previousStatus = comment.status;
-      const now = new Date();
 
       const updateResult = await comments.findOneAndUpdate(
         { _id: commentObjectId },
-        { $set: { status, updatedAt: now } },
+        { $set: { status, updatedAt: new Date() } },
         { projection: { _id: 1, status: 1 }, returnDocument: "after" },
       );
 

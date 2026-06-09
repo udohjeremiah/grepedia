@@ -1,6 +1,5 @@
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { TrophyIcon } from "lucide-react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -22,7 +21,7 @@ export const Route = createFileRoute("/leaderboard/")({
     ],
   }),
   loader: ({ context }) => {
-    context.queryClient.prefetchInfiniteQuery(usersLeaderboardQueryOptions({}));
+    context.queryClient.prefetchInfiniteQuery(usersLeaderboardQueryOptions());
   },
 });
 
@@ -31,13 +30,8 @@ function RouteComponent() {
     <AppLayout>
       <main className="mx-auto flex max-w-6xl flex-1 p-4 sm:px-8 md:px-16">
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center bg-chart-4/10 text-chart-4">
-                <TrophyIcon className="size-5" />
-              </div>
-              <h2 className="text-2xl font-bold tracking-tight">Leaderboard</h2>
-            </div>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl font-bold tracking-tight">Leaderboard</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
               Top contributors ranked by their impact on the platform.
             </p>

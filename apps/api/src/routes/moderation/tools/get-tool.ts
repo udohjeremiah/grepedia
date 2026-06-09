@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 import {
-  moderatorGetToolQuerySchema,
+  moderatorGetToolQueryStringSchema,
   moderatorGetToolResponseSchemas,
 } from "@workspace/shared/schemas/moderation/moderator-get-tool";
 
@@ -40,7 +40,7 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
     method: "GET",
     onRequest: [fastify.requireModerator],
     schema: {
-      querystring: moderatorGetToolQuerySchema,
+      querystring: moderatorGetToolQueryStringSchema,
       response: moderatorGetToolResponseSchemas,
       security: [{ sessionCookie: [] }],
       tags: ["Moderation"],

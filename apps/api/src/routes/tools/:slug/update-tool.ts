@@ -63,9 +63,10 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       const actorId = ObjectId.createFromHexString(request.user.id);
-      const submittedAt = new Date();
+      const now = new Date();
+
       const insertResult = await moderationCases.insertOne({
-        createdAt: submittedAt,
+        createdAt: now,
         createdBy: actorId,
         discussionUrl,
         payload: {
@@ -86,7 +87,7 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
         toolId: tool._id,
         toolSlug: tool.slug,
         type: "tool_update_proposal",
-        updatedAt: submittedAt,
+        updatedAt: now,
       });
 
       if (!insertResult.acknowledged) {
@@ -99,7 +100,7 @@ const updateTool: FastifyPluginAsyncZod = async (fastify) => {
       return reply.code(202).send({
         data: {
           caseId: insertResult.insertedId.toHexString(),
-          submittedAt: submittedAt.toISOString(),
+          submittedAt: now.toISOString(),
         },
         message: "Tool update submitted for moderation review",
         success: true,

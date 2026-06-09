@@ -20,7 +20,6 @@ const getUserBookmarks: FastifyPluginAsyncZod = async (fastify) => {
         users.findOne({ _id: userObjectId }),
         userBookmarks
           .find({ userId: userObjectId })
-          // eslint-disable-next-line unicorn/no-array-sort
           .sort({ createdAt: -1 })
           .toArray(),
       ]);

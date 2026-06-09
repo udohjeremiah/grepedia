@@ -1,12 +1,12 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import type { Collection } from "mongodb";
 
-import { canonicalStringify } from "@workspace/shared/canonical-stringify";
 import {
   recoverUserAccountBodySchema,
   recoverUserAccountParamsSchema,
   recoverUserAccountResponseSchemas,
 } from "@workspace/shared/schemas/users/recovery-package/recover-user-account";
+import { canonicalStringify } from "@workspace/shared/utils/canonical-stringify";
 import { ObjectId } from "mongodb";
 import { createHmac, timingSafeEqual } from "node:crypto";
 

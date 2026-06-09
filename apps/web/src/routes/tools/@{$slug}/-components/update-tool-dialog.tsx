@@ -70,9 +70,11 @@ export function UpdateToolDialog() {
   const [tagInput, setTagInput] = useState("");
 
   const { user } = auth.useSession();
+
   const { data: tool } = useTool({ slug });
   const { data: proposals } = useToolProposals({ slug });
   const { mutate: updateTool } = useToolUpdate(slug);
+
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({
@@ -615,6 +617,7 @@ export function UpdateToolDialog() {
                         <Button
                           className="justify-start"
                           id={field.name}
+                          type="button"
                           variant="outline"
                         >
                           {selectedDate ? (

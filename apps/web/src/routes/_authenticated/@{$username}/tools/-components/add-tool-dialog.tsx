@@ -61,6 +61,9 @@ export function AddToolDialog() {
             variant: "destructive",
           });
         },
+        onSettled: () => {
+          setStep((step) => step + 1);
+        },
         onSuccess: ({ data }) => {
           reviewForm.setFieldValue("categories", data.categories ?? []);
           reviewForm.setFieldValue("externalUrls", data.externalUrls);
@@ -76,8 +79,6 @@ export function AddToolDialog() {
             data.shortDescription ?? "",
           );
           reviewForm.setFieldValue("tags", data.tags ?? []);
-
-          setStep((step) => step + 1);
         },
       });
     },

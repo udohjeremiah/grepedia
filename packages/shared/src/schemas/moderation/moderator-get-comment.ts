@@ -1,15 +1,15 @@
 import { z } from "zod";
 
-import { defaultResponse } from "../default-response.js";
-import { objectIdSchema } from "../object-id.js";
-import { slugSchema } from "../slug.js";
+import { defaultResponse } from "@/schemas/default-response.js";
+import { objectIdSchema } from "@/schemas/object-id.js";
+import { slugSchema } from "@/schemas/slug.js";
 
-export const moderatorGetCommentQuerySchema = z.object({
+export const moderatorGetCommentQueryStringSchema = z.object({
   commentId: objectIdSchema,
 });
 
-export type ModeratorGetCommentQuery = z.infer<
-  typeof moderatorGetCommentQuerySchema
+export type ModeratorGetCommentQueryString = z.infer<
+  typeof moderatorGetCommentQueryStringSchema
 >;
 
 export const moderatorGetCommentResponseSchemas = {

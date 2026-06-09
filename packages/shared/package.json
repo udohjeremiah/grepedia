@@ -11,14 +11,6 @@
     "typecheck": "tsc --noEmit"
   },
   "exports": {
-    "./canonical-stringify": {
-      "types": "./dist/canonical-stringify.d.ts",
-      "default": "./dist/canonical-stringify.js"
-    },
-    "./omit-keys": {
-      "types": "./dist/omit-keys.d.ts",
-      "default": "./dist/omit-keys.js"
-    },
     "./schemas/discord-url": {
       "types": "./dist/schemas/discord-url.d.ts",
       "default": "./dist/schemas/discord-url.js"
@@ -26,6 +18,46 @@
     "./schemas/image": {
       "types": "./dist/schemas/image.d.ts",
       "default": "./dist/schemas/image.js"
+    },
+    "./schemas/lists/delete-list": {
+      "types": "./dist/schemas/lists/delete-list.d.ts",
+      "default": "./dist/schemas/lists/delete-list.js"
+    },
+    "./schemas/lists/get-list": {
+      "types": "./dist/schemas/lists/get-list.d.ts",
+      "default": "./dist/schemas/lists/get-list.js"
+    },
+    "./schemas/lists/get-lists": {
+      "types": "./dist/schemas/lists/get-lists.d.ts",
+      "default": "./dist/schemas/lists/get-lists.js"
+    },
+    "./schemas/lists/list": {
+      "types": "./dist/schemas/lists/list.d.ts",
+      "default": "./dist/schemas/lists/list.js"
+    },
+    "./schemas/lists/publish-list": {
+      "types": "./dist/schemas/lists/publish-list.d.ts",
+      "default": "./dist/schemas/lists/publish-list.js"
+    },
+    "./schemas/lists/reactions/list-reaction": {
+      "types": "./dist/schemas/lists/reactions/list-reaction.d.ts",
+      "default": "./dist/schemas/lists/reactions/list-reaction.js"
+    },
+    "./schemas/lists/reactions/set-list-reaction": {
+      "types": "./dist/schemas/lists/reactions/set-list-reaction.d.ts",
+      "default": "./dist/schemas/lists/reactions/set-list-reaction.js"
+    },
+    "./schemas/lists/save-list": {
+      "types": "./dist/schemas/lists/save-list.d.ts",
+      "default": "./dist/schemas/lists/save-list.js"
+    },
+    "./schemas/lists/toggle-archive-list": {
+      "types": "./dist/schemas/lists/toggle-archive-list.d.ts",
+      "default": "./dist/schemas/lists/toggle-archive-list.js"
+    },
+    "./schemas/lists/views/list-view": {
+      "types": "./dist/schemas/lists/views/list-view.d.ts",
+      "default": "./dist/schemas/lists/views/list-view.js"
     },
     "./schemas/moderation/moderation-case": {
       "types": "./dist/schemas/moderation/moderation-case.d.ts",
@@ -206,19 +238,27 @@
     "./schemas/users/user": {
       "types": "./dist/schemas/users/user.d.ts",
       "default": "./dist/schemas/users/user.js"
+    },
+    "./utils/canonical-stringify": {
+      "types": "./dist/utils/canonical-stringify.d.ts",
+      "default": "./dist/utils/canonical-stringify.js"
+    },
+    "./utils/omit-keys": {
+      "types": "./dist/utils/omit-keys.d.ts",
+      "default": "./dist/utils/omit-keys.js"
     }
   },
   "dependencies": {
-    "zod": "^4.1.11"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^25.0.10",
+    "@types/node": "^25.9.1",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
-    "concurrently": "^9.0.0",
-    "eslint": "^9.32.0",
-    "rimraf": "^6.1.2",
-    "tsc-alias": "^1.8.16",
-    "typescript": "^5.9.3"
+    "concurrently": "^10.0.3",
+    "eslint": "^9.39.4",
+    "rimraf": "^6.1.3",
+    "tsc-alias": "^1.8.17",
+    "typescript": "^6.0.3"
   }
 }

@@ -1,18 +1,20 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { ModeratorGetUserQuery } from "@workspace/shared/schemas/moderation/moderator-get-user";
+import { ModeratorGetUserQueryString } from "@workspace/shared/schemas/moderation/moderator-get-user";
 
 import { moderatorGetUser } from "@/services/moderation/moderator-get-user";
 
-export const moderatorGetUserQueryOptions = (params: ModeratorGetUserQuery) => {
+export const moderatorGetUserQueryOptions = (
+  queryString: ModeratorGetUserQueryString,
+) => {
   return queryOptions({
-    queryFn: () => moderatorGetUser(params.username),
-    queryKey: ["moderation", "user", params.username],
+    queryFn: () => moderatorGetUser(queryString.username),
+    queryKey: ["moderation", "user", queryString.username],
   });
 };
 
-export function useModeratorGetUser(params: ModeratorGetUserQuery) {
+export function useModeratorGetUser(queryString: ModeratorGetUserQueryString) {
   return useQuery({
-    ...moderatorGetUserQueryOptions(params),
+    ...moderatorGetUserQueryOptions(queryString),
     enabled: false,
     select: (data) => data.data.user,
   });

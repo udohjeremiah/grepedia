@@ -1,12 +1,14 @@
 import {
-  moderatorGetCommentQuerySchema,
+  moderatorGetCommentQueryStringSchema,
   moderatorGetCommentResponseSchemas,
 } from "@workspace/shared/schemas/moderation/moderator-get-comment";
 
 import { apiClient } from "@/lib/api-client";
 
 export async function moderatorGetComment(commentId: string) {
-  const parsedQueryString = moderatorGetCommentQuerySchema.parse({ commentId });
+  const parsedQueryString = moderatorGetCommentQueryStringSchema.parse({
+    commentId,
+  });
 
   const response = await apiClient
     .get("moderation/comments/lookup", { searchParams: parsedQueryString })

@@ -42,13 +42,14 @@ type ToolCommentProps = ReturnType<typeof useToolComments>["data"][number];
 
 export function ToolComment(comment: ToolCommentProps) {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
-  const { user } = auth.useSession();
 
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(comment.content);
 
+  const { user } = auth.useSession();
+
   const {
-    isPending,
+    isPending: isReacting,
     mutate: setCommentReaction,
     variables,
   } = useToolSetCommentReaction(slug, comment.parentCommentId);
@@ -58,7 +59,7 @@ export function ToolComment(comment: ToolCommentProps) {
   const { copyToClipboard } = useCopyToClipboard();
 
   const handleUpdateComment = () => {
-    if (!user?.id) return globalThis.location.assign("/signin");
+    if (!user) return globalThis.location.assign("/signin");
 
     const content = draft.trim();
     if (!content || content === comment.content) {
@@ -78,7 +79,7 @@ export function ToolComment(comment: ToolCommentProps) {
   };
 
   const handleSetCommentReaction = (value: -1 | 1) => {
-    if (!user?.id) return globalThis.location.assign("/signin");
+    if (!user) return globalThis.location.assign("/signin");
     setCommentReaction({ commentId: comment._id, value });
   };
 
@@ -115,7 +116,8 @@ export function ToolComment(comment: ToolCommentProps) {
     new Date(comment.createdAt).getTime();
   const hasUpvoted = comment.viewerReaction === 1;
   const hasDownvoted = comment.viewerReaction === -1;
-  const isPendingForComment = isPending && variables?.commentId === comment._id;
+  const isPendingForComment =
+    isReacting && variables?.commentId === comment._id;
   const canDelete = isAuthor && comment.replyCount === 0;
 
   return (

@@ -1,5 +1,5 @@
+import eslintReact from "@eslint-react/eslint-plugin";
 import pluginJsxA11y from "eslint-plugin-jsx-a11y";
-import pluginReact from "eslint-plugin-react";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 
@@ -11,11 +11,11 @@ import { baseConfig } from "./base.js";
  * @type {import("eslint").Linter.Config} */
 export const reactLibraryConfig = [
   ...baseConfig,
-  pluginReact.configs.flat.recommended,
+  eslintReact.configs.recommended,
   pluginJsxA11y.flatConfigs.recommended,
   {
     languageOptions: {
-      ...pluginReact.configs.flat.recommended.languageOptions,
+      ...eslintReact.configs.recommended.languageOptions,
       ...pluginJsxA11y.flatConfigs.recommended.languageOptions,
       globals: {
         ...globals.serviceworker,
@@ -29,9 +29,6 @@ export const reactLibraryConfig = [
     },
     rules: {
       ...pluginReactHooks.configs.recommended.rules,
-      "react/prop-types": "off",
-      // React scope no longer necessary with new JSX transform.
-      "react/react-in-jsx-scope": "off",
       "unicorn/prevent-abbreviations": [
         "error",
         {

@@ -32,9 +32,6 @@ export function UserPanel({ identifier, user }: UserPanelProps) {
   const { isPending: isUpdating, mutate: updateUser } =
     useModeratorUpdateUser(identifier);
 
-  const isUnchanged =
-    selectedRole === user.role && selectedStatus === user.status;
-
   const handleUpdate = () => {
     updateUser(
       { role: selectedRole, status: selectedStatus, username: identifier },
@@ -58,6 +55,9 @@ export function UserPanel({ identifier, user }: UserPanelProps) {
       },
     );
   };
+
+  const isUnchanged =
+    selectedRole === user.role && selectedStatus === user.status;
 
   return (
     <div className="grid gap-3 border p-4 text-sm">

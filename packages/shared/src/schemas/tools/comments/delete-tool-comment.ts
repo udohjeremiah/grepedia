@@ -15,9 +15,7 @@ export type DeleteToolCommentParams = z.infer<
 
 export const deleteToolCommentResponseSchemas = {
   200: z.object({
-    data: z.object({
-      commentId: objectIdSchema,
-    }),
+    data: z.object({ commentId: objectIdSchema }),
     message: z.string(),
     success: z.boolean(),
   }),

@@ -58,6 +58,7 @@ export function ToolModeratorDialog({
 
   const { isPending: isReviewing, mutate: reviewCase } =
     useToolModeratorReviewCase(slug);
+
   const { resetStatus, setApiError, setSuccess, status } = useSubmission();
 
   const form = useForm({

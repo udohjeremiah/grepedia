@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { objectIdSchema } from "@/schemas/object-id.js";
+import { slugSchema } from "@/schemas/slug.js";
 
 import { officialUrlSchema, publicUrlSchema } from "../../url-policy.js";
 
@@ -18,7 +19,7 @@ export const toolRevisionSnapshotSchema = z.object({
 export const toolRevisionSchema = z.object({
   _id: objectIdSchema,
   createdAt: z.iso.datetime(),
-  createdBy: z.string(),
+  createdBy: objectIdSchema,
   isRevert: z.boolean(),
   linkedDiscussionId: objectIdSchema.optional(),
   linkedDiscussionUrl: z.url().optional(),
@@ -27,7 +28,7 @@ export const toolRevisionSchema = z.object({
   summary: z.string(),
   title: z.string(),
   toolId: objectIdSchema,
-  toolSlug: z.string(),
+  toolSlug: slugSchema,
 });
 
 export type ToolRevision = z.infer<typeof toolRevisionSchema>;

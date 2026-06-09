@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 import {
-  moderatorGetCommentQuerySchema,
+  moderatorGetCommentQueryStringSchema,
   moderatorGetCommentResponseSchemas,
 } from "@workspace/shared/schemas/moderation/moderator-get-comment";
 import { ObjectId } from "mongodb";
@@ -65,7 +65,7 @@ const getComment: FastifyPluginAsyncZod = async (fastify) => {
     method: "GET",
     onRequest: [fastify.requireModerator],
     schema: {
-      querystring: moderatorGetCommentQuerySchema,
+      querystring: moderatorGetCommentQueryStringSchema,
       response: moderatorGetCommentResponseSchemas,
       security: [{ sessionCookie: [] }],
       tags: ["Moderation"],

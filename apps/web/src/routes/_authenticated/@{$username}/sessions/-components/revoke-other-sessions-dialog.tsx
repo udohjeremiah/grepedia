@@ -18,16 +18,11 @@ import { useDialog } from "@/hooks/use-dialog";
 export function RevokeOtherSessionsDialog() {
   const { session } = auth.useSession();
   const { data: sessions } = auth.useListSessions();
-  const { isPending, mutate: revokeOtherSessions } =
+
+  const { isPending: isRevoking, mutate: revokeOtherSessions } =
     auth.useRevokeOtherSessions();
 
   const { handleOpenChange, isOpen, setIsOpen } = useDialog();
-
-  const sessionList = sessions ?? [];
-  const currentSessionId = session?.id;
-  const otherSessions = currentSessionId
-    ? sessionList.filter((session) => session.id !== currentSessionId)
-    : [];
 
   const handleRevokeOtherSessions = () => {
     revokeOtherSessions({
@@ -38,6 +33,12 @@ export function RevokeOtherSessionsDialog() {
       },
     });
   };
+
+  const sessionList = sessions ?? [];
+  const currentSessionId = session?.id;
+  const otherSessions = currentSessionId
+    ? sessionList.filter((session) => session.id !== currentSessionId)
+    : [];
 
   return (
     <AlertDialog onOpenChange={handleOpenChange} open={isOpen}>
@@ -70,16 +71,16 @@ export function RevokeOtherSessionsDialog() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isRevoking}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            disabled={isPending}
+            disabled={isRevoking}
             onClick={(event) => {
               event.preventDefault();
               handleRevokeOtherSessions();
             }}
             variant="destructive"
           >
-            {isPending ? "Revoking..." : "Revoke Other Sessions"}
+            {isRevoking ? "Revoking..." : "Revoke Other Sessions"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

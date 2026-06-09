@@ -60,6 +60,7 @@ const addToolComment: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       const now = new Date();
+
       const insertResult = await comments.insertOne({
         content,
         createdAt: now,
