@@ -7,5 +7,5 @@
       "@workspace/ui/*": ["../../packages/ui/src/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "eslint.config.js", "vite.config.js"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }

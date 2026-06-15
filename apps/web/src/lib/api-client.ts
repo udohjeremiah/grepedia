@@ -29,9 +29,7 @@ export const apiClient = ky.create({
     beforeRequest: [
       ({ request }) => {
         const cookie = getCookie();
-        if (cookie) {
-          request.headers.set("cookie", cookie);
-        }
+        if (cookie) request.headers.set("cookie", cookie);
       },
     ],
   },

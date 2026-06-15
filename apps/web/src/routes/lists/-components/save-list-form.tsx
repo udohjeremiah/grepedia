@@ -8,7 +8,6 @@ import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -192,7 +191,6 @@ export function SaveListForm({ list }: { list?: ListWithTools }) {
                     required={true}
                     value={field.state.value}
                   />
-                  <FieldDescription>Markdown is supported.</FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );

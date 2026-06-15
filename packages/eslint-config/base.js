@@ -1,14 +1,14 @@
 import js from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier";
-import * as pluginDepend from "eslint-plugin-depend";
+import prettier from "eslint-config-prettier";
+import * as depend from "eslint-plugin-depend";
 import { importX } from "eslint-plugin-import-x";
 import onlyWarn from "eslint-plugin-only-warn";
 import * as perfectionist from "eslint-plugin-perfectionist";
-import pluginSecurity from "eslint-plugin-security";
+import security from "eslint-plugin-security";
 import * as sonarjs from "eslint-plugin-sonarjs";
-import turboPlugin from "eslint-plugin-turbo";
-import eslintPluginUnicorn from "eslint-plugin-unicorn";
-import pluginUnusedImport from "eslint-plugin-unused-imports";
+import turbo from "eslint-plugin-turbo";
+import unicorn from "eslint-plugin-unicorn";
+import unusedImports from "eslint-plugin-unused-imports";
 import * as tseslint from "typescript-eslint";
 
 /**
@@ -19,19 +19,19 @@ import * as tseslint from "typescript-eslint";
 export const baseConfig = [
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  pluginDepend.configs["flat/recommended"],
+  depend.configs["flat/recommended"],
   sonarjs.configs.recommended,
-  pluginSecurity.configs.recommended,
-  eslintPluginUnicorn.configs.recommended,
+  security.configs.recommended,
+  unicorn.configs.recommended,
   importX.flatConfigs.recommended,
   importX.flatConfigs.typescript,
   perfectionist.configs["recommended-natural"],
-  eslintConfigPrettier,
+  prettier,
   {
     plugins: {
       onlyWarn,
-      turbo: turboPlugin,
-      "unused-imports": pluginUnusedImport,
+      turbo,
+      "unused-imports": unusedImports,
     },
     rules: {
       "@typescript-eslint/no-unused-vars": "off",

@@ -7,6 +7,7 @@ export const listWithObjectIdsSchema = listSchema.extend({
   archivedAt: z.date().optional(),
   createdAt: z.date(),
   createdBy: z.instanceof(ObjectId),
+  isOfficial: z.boolean().optional(),
   publishedAt: z.date().optional(),
   tools: z.array(
     z.object({

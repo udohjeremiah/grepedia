@@ -1,6 +1,6 @@
 import eslintReact from "@eslint-react/eslint-plugin";
-import pluginJsxA11y from "eslint-plugin-jsx-a11y";
-import pluginReactHooks from "eslint-plugin-react-hooks";
+import jsxA11y from "eslint-plugin-jsx-a11y";
+import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 
 import { baseConfig } from "./base.js";
@@ -12,11 +12,11 @@ import { baseConfig } from "./base.js";
 export const reactLibraryConfig = [
   ...baseConfig,
   eslintReact.configs.recommended,
-  pluginJsxA11y.flatConfigs.recommended,
+  jsxA11y.flatConfigs.recommended,
   {
     languageOptions: {
       ...eslintReact.configs.recommended.languageOptions,
-      ...pluginJsxA11y.flatConfigs.recommended.languageOptions,
+      ...jsxA11y.flatConfigs.recommended.languageOptions,
       globals: {
         ...globals.serviceworker,
         ...globals.browser,
@@ -25,10 +25,10 @@ export const reactLibraryConfig = [
   },
   {
     plugins: {
-      "react-hooks": pluginReactHooks,
+      "react-hooks": reactHooks,
     },
     rules: {
-      ...pluginReactHooks.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
       "unicorn/prevent-abbreviations": [
         "error",
         {

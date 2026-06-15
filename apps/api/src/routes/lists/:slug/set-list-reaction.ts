@@ -7,6 +7,8 @@ import {
 } from "@workspace/shared/schemas/lists/reactions/set-list-reaction";
 import { ObjectId } from "mongodb";
 
+import { getOfficialListBySlug } from "@/utils/official-lists.js";
+
 type ReactionAction = "delete" | "insert" | "update";
 type ReactionValue = -1 | 1;
 
@@ -46,6 +48,13 @@ const setListReaction: FastifyPluginAsyncZod = async (fastify) => {
 
       const { slug } = request.params;
       const { value } = request.body;
+
+      if (getOfficialListBySlug(slug)) {
+        return reply.code(403).send({
+          message: "Official lists cannot be reacted to",
+          success: false,
+        });
+      }
 
       const lists = fastify.db.lists;
       const listReactions = fastify.db.listReactions;

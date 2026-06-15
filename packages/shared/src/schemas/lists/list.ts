@@ -9,10 +9,10 @@ export const listSchema = z.object({
   createdAt: z.iso.datetime(),
   createdBy: objectIdSchema,
   description: z.string(),
+  isOfficial: z.boolean().optional(),
   publishedAt: z.iso.datetime().optional(),
   slug: slugSchema,
   stats: z.object({
-    bookmarks: z.int().min(0),
     downvotes: z.int().min(0),
     upvotes: z.int().min(0),
     views: z.int().min(0),

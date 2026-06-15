@@ -14,9 +14,10 @@ export const Route = createFileRoute("/lists/")({
   component: RouteComponent,
   head: () => ({
     meta: [
-      { title: "Curated Lists • Grepedia" },
+      { title: "Lists • Grepedia" },
       {
-        content: "Explore curated lists of tools from the Grepedia community.",
+        content:
+          "Explore featured and curated lists of tools created by the Grepedia community.",
         name: "description",
       },
     ],
@@ -32,9 +33,10 @@ function RouteComponent() {
       <div className="flex flex-col gap-6">
         <div className="flex flex-wrap justify-between gap-4">
           <div className="flex flex-col gap-1">
-            <h2 className="text-2xl font-bold tracking-tight">Curated Lists</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Lists</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Explore tool collections curated and shared by the community.
+              Explore featured and curated lists of tools created by the
+              community.
             </p>
           </div>
           <Button asChild>
@@ -49,7 +51,7 @@ function RouteComponent() {
             <ErrorBoundary
               FallbackComponent={({ resetErrorBoundary }) => (
                 <ErrorFallback
-                  description="Something unexpected happened, so we couldn't load the curated lists. Click the button below to try again."
+                  description="Something unexpected happened, so we couldn't load the lists. Click the button below to try again."
                   onRetry={resetErrorBoundary}
                 />
               )}

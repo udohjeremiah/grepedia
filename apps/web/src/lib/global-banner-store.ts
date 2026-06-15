@@ -19,13 +19,13 @@ function createGlobalBannerStore() {
   const listeners = new Set<Listener>();
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
-  const getState = () => state;
-
   const emit = () => {
     for (const listener of listeners) {
       listener();
     }
   };
+
+  const getState = () => state;
 
   const setState = (next: State) => {
     state = next;
@@ -40,6 +40,8 @@ function createGlobalBannerStore() {
       listeners.delete(listener);
     };
   };
+
+  const get = () => getState().banners;
 
   const add = (
     banner: Omit<GlobalBanner, "id" | "timestamp"> & { id?: string },
@@ -90,7 +92,7 @@ function createGlobalBannerStore() {
     }
   };
 
-  const clearAll = () => {
+  const removeAll = () => {
     for (const timer of timers.values()) {
       clearTimeout(timer);
     }
@@ -101,9 +103,9 @@ function createGlobalBannerStore() {
 
   return {
     add,
-    clearAll,
-    getState,
+    get,
     remove,
+    removeAll,
     subscribe,
   };
 }

@@ -96,7 +96,7 @@ const saveList: FastifyPluginAsyncZod = async (fastify) => {
           createdBy: userId,
           description: body.description,
           slug: listSlug,
-          stats: { bookmarks: 0, downvotes: 0, upvotes: 0, views: 0 },
+          stats: { downvotes: 0, upvotes: 0, views: 0 },
           status: "draft",
           title: body.title,
           tools: items,

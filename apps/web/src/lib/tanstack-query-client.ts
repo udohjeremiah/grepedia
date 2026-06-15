@@ -56,8 +56,7 @@ export function tanstackQueryClient() {
       // Automatic query invalidation after mutations:
       // - A mutation with a `mutationKey` would invalidate everything related to that key only.
       // - A mutation without a `mutationKey` would invalidate everything in the cache.
-      // The invalidation isn't awaited or returned because we want the
-      // mutations to finish as fast as possible.
+      // The invalidation isn't awaited or returned because we want the mutations to finish as fast as possible.
       queryClient.invalidateQueries({ queryKey: mutation.options.mutationKey });
     },
   });

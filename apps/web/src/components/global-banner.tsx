@@ -78,5 +78,5 @@ export function GlobalBanner() {
 }
 
 function getBanners() {
-  return globalBannerStore.getState().banners;
+  return globalBannerStore.get();
 }
