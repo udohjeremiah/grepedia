@@ -3,12 +3,20 @@ import type { Collection, Document } from "mongodb";
 
 import {
   getListParamsSchema,
+  getListQueryStringSchema,
   getListResponseSchemas,
 } from "@workspace/shared/schemas/lists/get-list";
+import { omitKeys } from "@workspace/shared/utils/omit-keys";
 import { ObjectId } from "mongodb";
+import { z } from "zod";
 
 import type { ToolWithObjectIds } from "@/schemas/tools/tool.js";
 
+import {
+  decodeCursor,
+  encodeCursor,
+  InvalidCursorError,
+} from "@/utils/cursor.js";
 import {
   getOfficialListBySlug,
   getPeriodEnd,
@@ -17,9 +25,16 @@ import {
 } from "@/utils/official-lists.js";
 import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
+const officialListToolsCursorSchema = z.object({
+  id: z.string(),
+  score: z.number(),
+});
+
 async function resolveOfficialListTools(
   tools: Collection<ToolWithObjectIds>,
   period: "month" | "today" | "week" | "yesterday",
+  cursor: string | undefined,
+  limit: number,
 ) {
   const periodStart = getPeriodStart(period);
   const periodEnd = getPeriodEnd(period);
@@ -31,6 +46,8 @@ async function resolveOfficialListTools(
     status: "published",
   };
 
+  const decodedCursor = decodeCursor(cursor, officialListToolsCursorSchema);
+
   const pipeline: Document[] = [
     { $match: filter },
     {
@@ -38,14 +55,31 @@ async function resolveOfficialListTools(
         score: { $subtract: ["$stats.upvotes", "$stats.downvotes"] },
       },
     },
-    { $sort: { _id: -1, score: -1 } },
-    { $limit: 50 },
+    ...(decodedCursor
+      ? [
+          {
+            $match: {
+              $or: [
+                { score: { $lt: decodedCursor.score } },
+                {
+                  _id: { $lt: ObjectId.createFromHexString(decodedCursor.id) },
+                  score: decodedCursor.score,
+                },
+              ],
+            },
+          },
+        ]
+      : []),
+    // eslint-disable-next-line perfectionist/sort-objects
+    { $sort: { score: -1, _id: -1 } },
+    { $limit: limit },
     {
       $project: {
         _id: 1,
         categories: 1,
         name: 1,
         officialUrl: 1,
+        score: 1,
         shortDescription: 1,
         slug: 1,
         stats: 1,
@@ -54,15 +88,29 @@ async function resolveOfficialListTools(
     },
   ];
 
-  return tools
-    .aggregate<ToolWithObjectIds & { _id: ObjectId }>(pipeline)
+  const toolDocuments = await tools
+    .aggregate<ToolWithObjectIds & { _id: ObjectId; score: number }>(pipeline)
     .toArray();
+
+  let nextCursor: string | undefined;
+  const lastTool = toolDocuments.at(-1);
+
+  if (lastTool && toolDocuments.length === limit) {
+    nextCursor = encodeCursor({
+      id: lastTool._id.toHexString(),
+      score: lastTool.score,
+    });
+  }
+
+  return { nextCursor, toolDocuments };
 }
 
 const getList: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     handler: async function (request, reply) {
       const { slug } = request.params;
+      const { cursor, limit = 20 } = request.query;
 
       const lists = fastify.db.lists;
       const listViews = fastify.db.listViews;
@@ -72,31 +120,46 @@ const getList: FastifyPluginAsyncZod = async (fastify) => {
       const officialList = getOfficialListBySlug(slug);
 
       if (officialList) {
-        const toolDocuments = await resolveOfficialListTools(
-          tools,
-          officialList.period,
-        );
+        try {
+          const { nextCursor, toolDocuments } = await resolveOfficialListTools(
+            tools,
+            officialList.period,
+            cursor,
+            limit,
+          );
 
-        const now = new Date();
+          const now = new Date();
 
-        const listResponse = serializeMongoTypes({
-          _id: `00000000000000000000000${OFFICIAL_LISTS.indexOf(officialList) + 1}`,
-          createdAt: now.toISOString(),
-          createdBy: "000000000000000000000000",
-          description: officialList.description,
-          isOfficial: true,
-          slug: officialList.slug,
-          stats: { downvotes: 0, upvotes: 0, views: 0 },
-          status: "published" as const,
-          title: officialList.title,
-          tools: toolDocuments,
-        });
+          const listResponse = {
+            _id: `00000000000000000000000${OFFICIAL_LISTS.indexOf(officialList) + 1}`,
+            createdAt: now.toISOString(),
+            createdBy: "000000000000000000000000",
+            description: officialList.description,
+            isOfficial: true,
+            slug: officialList.slug,
+            stats: { downvotes: 0, upvotes: 0, views: 0 },
+            status: "published" as const,
+            title: officialList.title,
+          };
 
-        return reply.code(200).send({
-          data: { list: listResponse },
-          message: "List retrieved successfully",
-          success: true,
-        });
+          return reply.code(200).send({
+            data: {
+              list: listResponse,
+              nextCursor,
+              tools: serializeMongoTypes(toolDocuments),
+            },
+            message: "List retrieved successfully",
+            success: true,
+          });
+        } catch (error) {
+          if (error instanceof InvalidCursorError) {
+            return reply.code(400).send({
+              message: "Invalid cursor",
+              success: false,
+            });
+          }
+          throw error;
+        }
       }
 
       const list = await lists.findOne({ slug });
@@ -172,10 +235,8 @@ const getList: FastifyPluginAsyncZod = async (fastify) => {
         )
         .toArray();
 
-      const listResponse = serializeMongoTypes({
-        ...listDocument,
-        relations: { reaction: reactionDocument?.value },
-        tools: toolDocuments.toSorted((a, b) => {
+      const sortedTools = serializeMongoTypes(
+        toolDocuments.toSorted((a, b) => {
           const positionA = listDocument.tools.find((tool) =>
             tool.toolId.equals(a._id),
           )?.position;
@@ -186,10 +247,15 @@ const getList: FastifyPluginAsyncZod = async (fastify) => {
 
           return (positionA ?? 0) - (positionB ?? 0);
         }),
+      );
+
+      const listResponse = serializeMongoTypes({
+        ...omitKeys(listDocument, ["tools"]),
+        relations: { reaction: reactionDocument?.value },
       });
 
       return reply.code(200).send({
-        data: { list: listResponse },
+        data: { list: listResponse, tools: sortedTools },
         message: "List retrieved successfully",
         success: true,
       });
@@ -198,6 +264,7 @@ const getList: FastifyPluginAsyncZod = async (fastify) => {
     onRequest: [fastify.setUserIfPresent],
     schema: {
       params: getListParamsSchema,
+      querystring: getListQueryStringSchema,
       response: getListResponseSchemas,
       tags: ["Lists"],
     },

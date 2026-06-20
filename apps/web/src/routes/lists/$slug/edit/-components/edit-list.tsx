@@ -6,7 +6,7 @@ import { useList } from "../../-queries/list";
 
 export function EditList() {
   const { slug } = useParams({ from: "/lists/$slug" });
-  const { data: list } = useList({ slug });
+  const { data } = useList({ slug });
 
-  return <SaveListForm list={list} />;
+  return <SaveListForm data={data} />;
 }

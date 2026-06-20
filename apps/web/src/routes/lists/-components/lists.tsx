@@ -10,14 +10,40 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { cn } from "@workspace/ui/lib/cn";
 import { SearchIcon, SearchXIcon, StarIcon, XIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useLists } from "../-queries/lists";
 import { List } from "./list";
 
 export function Lists() {
-  const { data: lists } = useLists();
+  const {
+    data: lists,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useLists();
+
+  const trackingRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sentinel = trackingRef.current;
+    if (!sentinel || !hasNextPage || isFetchingNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        if (entry.isIntersecting) fetchNextPage();
+      },
+      { rootMargin: "100px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -110,6 +136,21 @@ export function Lists() {
           </Empty>
         )}
       </section>
+      <div
+        className={cn(
+          "pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transition-opacity duration-200",
+          isFetchingNextPage ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <div className="flex items-center justify-center border bg-background p-1">
+          <Spinner className="size-5" />
+        </div>
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none h-1"
+        ref={trackingRef}
+      />
     </>
   );
 }

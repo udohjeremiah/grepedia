@@ -8,15 +8,12 @@ import {
 
 import { apiClient } from "@/lib/api-client";
 
-type RevertToolRevisionInput = {
+type RevertToolRevision = {
   body: RevertToolRevisionBody;
   params: RevertToolRevisionParams;
 };
 
-export async function revertToolRevision({
-  body,
-  params,
-}: RevertToolRevisionInput) {
+export async function revertToolRevision({ body, params }: RevertToolRevision) {
   const { slug } = revertToolRevisionParamsSchema.parse(params);
   const parsedBody = revertToolRevisionBodySchema.parse(body);
 

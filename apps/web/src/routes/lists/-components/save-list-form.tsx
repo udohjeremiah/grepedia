@@ -51,12 +51,12 @@ type SubmitAction = "publish" | "save";
 
 const MAX_DESCRIPTION = 500;
 
-export function SaveListForm({ list }: { list?: ListWithTools }) {
+export function SaveListForm({ data }: { data?: ListWithTools }) {
   const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<BuilderTool[]>([]);
-  const [toolMap, setToolMap] = useState(() => toToolMap(toBuilderTools(list)));
+  const [toolMap, setToolMap] = useState(() => toToolMap(toBuilderTools(data)));
   const submitActionRef = useRef<SubmitAction>("save");
 
   const { isPending: isSaving, mutate: saveList } = useSaveList();
@@ -67,10 +67,10 @@ export function SaveListForm({ list }: { list?: ListWithTools }) {
 
   const form = useForm({
     defaultValues: {
-      description: list?.description ?? "",
-      slug: list?.slug,
-      title: list?.title ?? "",
-      tools: (list?.tools ?? []).map((tool, index) => ({
+      description: data?.list?.description ?? "",
+      slug: data?.list?.slug,
+      title: data?.list?.title ?? "",
+      tools: (data?.tools ?? []).map((tool, index) => ({
         position: index + 1,
         toolId: tool._id,
       })),
@@ -391,9 +391,9 @@ export function SaveListForm({ list }: { list?: ListWithTools }) {
   );
 }
 
-function toBuilderTools(list?: ListWithTools): BuilderTool[] {
+function toBuilderTools(data?: ListWithTools): BuilderTool[] {
   return (
-    list?.tools.map((tool) => ({
+    data?.tools.map((tool) => ({
       _id: tool._id,
       name: tool.name,
       officialUrl: tool.officialUrl,

@@ -8,12 +8,12 @@ import {
 
 import { apiClient } from "@/lib/api-client";
 
-type UpdateToolInput = {
+type UpdateTool = {
   body: UpdateToolBody;
   params: UpdateToolParams;
 };
 
-export async function updateTool({ body, params }: UpdateToolInput) {
+export async function updateTool({ body, params }: UpdateTool) {
   const { slug } = updateToolParamsSchema.parse(params);
   const parsedBody = updateToolBodySchema.parse(body);
 

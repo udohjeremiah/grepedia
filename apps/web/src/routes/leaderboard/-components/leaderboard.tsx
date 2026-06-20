@@ -93,18 +93,13 @@ export function Leaderboard() {
 
   useEffect(() => {
     const sentinel = trackingRef.current;
-    if (!sentinel || !hasNextPage || isFetchingNextPage) {
-      return;
-    }
+    if (!sentinel || !hasNextPage || isFetchingNextPage) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         if (!entry) return;
-
-        if (entry.isIntersecting) {
-          fetchNextPage();
-        }
+        if (entry.isIntersecting) fetchNextPage();
       },
       { rootMargin: "100px" },
     );
@@ -316,7 +311,7 @@ export function Leaderboard() {
           isFetchingNextPage ? "opacity-100" : "opacity-0",
         )}
       >
-        <Spinner className="size-4" />
+        <Spinner className="size-5" />
       </div>
       <div
         aria-hidden="true"

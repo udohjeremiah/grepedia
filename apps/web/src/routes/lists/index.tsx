@@ -23,7 +23,7 @@ export const Route = createFileRoute("/lists/")({
     ],
   }),
   loader: ({ context }) => {
-    context.queryClient.prefetchQuery(listsQueryOptions());
+    context.queryClient.prefetchInfiniteQuery(listsQueryOptions());
   },
 });
 

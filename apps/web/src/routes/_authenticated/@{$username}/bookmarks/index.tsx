@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/bookmarks/")(
   {
     component: RouteComponent,
     loader: ({ context }) => {
-      context.queryClient.prefetchQuery(
+      context.queryClient.prefetchInfiniteQuery(
         userBookmarksQueryOptions({ userId: context.userId }),
       );
     },

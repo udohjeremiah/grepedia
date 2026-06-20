@@ -11,7 +11,7 @@ import {
 
 import { apiClient } from "@/lib/api-client";
 
-type GetToolCommentRepliesInput = {
+type GetToolCommentReplies = {
   params: GetToolCommentRepliesParams;
   queryString: GetToolCommentRepliesQueryString;
 };
@@ -19,7 +19,7 @@ type GetToolCommentRepliesInput = {
 export async function getToolCommentReplies({
   params,
   queryString,
-}: GetToolCommentRepliesInput) {
+}: GetToolCommentReplies) {
   const { commentId, slug } = getToolCommentRepliesParamsSchema.parse(params);
   const parsedQueryString =
     getToolCommentRepliesQueryStringSchema.parse(queryString);

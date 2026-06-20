@@ -8,15 +8,12 @@ import {
 
 import { apiClient } from "@/lib/api-client";
 
-type ToggleUserBookmarkInput = {
+type ToggleUserBookmark = {
   body: ToggleUserBookmarkBody;
   params: ToggleUserBookmarkParams;
 };
 
-export async function toggleUserBookmark({
-  body,
-  params,
-}: ToggleUserBookmarkInput) {
+export async function toggleUserBookmark({ body, params }: ToggleUserBookmark) {
   const { userId } = toggleUserBookmarkParamsSchema.parse(params);
   const parsedBody = toggleUserBookmarkBodySchema.parse(body);
 

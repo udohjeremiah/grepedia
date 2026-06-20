@@ -8,7 +8,10 @@ import {
   EmptyTitle,
 } from "@workspace/ui/components/empty";
 import { Separator } from "@workspace/ui/components/separator";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { cn } from "@workspace/ui/lib/cn";
 import { FileXIcon, ListChecksIcon, PlusIcon } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 import { List } from "@/routes/lists/-components/list";
 import { useLists } from "@/routes/lists/-queries/lists";
@@ -16,10 +19,34 @@ import { useLists } from "@/routes/lists/-queries/lists";
 export function UserLists() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
-  const { data: lists } = useLists({ createdBy: userId });
+  const {
+    data: lists,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useLists({ createdBy: userId });
+
+  const trackingRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sentinel = trackingRef.current;
+    if (!sentinel || !hasNextPage || isFetchingNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        if (entry.isIntersecting) fetchNextPage();
+      },
+      { rootMargin: "100px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className="flex flex-1 flex-col gap-6 border p-6">
+    <div className="relative flex flex-1 flex-col gap-6 border p-6">
       <div className="flex gap-4">
         <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
           <ListChecksIcon className="size-5" />
@@ -62,6 +89,21 @@ export function UserLists() {
           </EmptyHeader>
         </Empty>
       )}
+      <div
+        className={cn(
+          "pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transition-opacity duration-200",
+          isFetchingNextPage ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <div className="flex items-center justify-center border bg-background p-1">
+          <Spinner className="size-5" />
+        </div>
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none h-1"
+        ref={trackingRef}
+      />
     </div>
   );
 }

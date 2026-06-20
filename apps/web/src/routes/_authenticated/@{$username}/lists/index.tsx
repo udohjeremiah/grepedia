@@ -11,7 +11,7 @@ import { UserLists } from "./-components/user-lists";
 export const Route = createFileRoute("/_authenticated/@{$username}/lists/")({
   component: RouteComponent,
   loader: ({ context }) => {
-    context.queryClient.prefetchQuery(
+    context.queryClient.prefetchInfiniteQuery(
       listsQueryOptions({ createdBy: context.userId }),
     );
   },

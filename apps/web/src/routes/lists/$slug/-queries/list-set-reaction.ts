@@ -35,32 +35,37 @@ export const useListSetReaction = (slug: string) => {
       queryClient.setQueryData(listKey, (cached) => {
         if (!cached) return cached;
 
-        const currentReaction = cached.data.list.relations?.reaction;
-
-        let upvotes = cached.data.list.stats.upvotes;
-        let downvotes = cached.data.list.stats.downvotes;
-
-        const nextReaction = currentReaction === value ? undefined : value;
-
-        if (currentReaction === 1) upvotes = Math.max(0, upvotes - 1);
-        if (currentReaction === -1) downvotes = Math.max(0, downvotes - 1);
-        if (nextReaction === 1) upvotes += 1;
-        if (nextReaction === -1) downvotes += 1;
-
         return {
           ...cached,
-          data: {
-            ...cached.data,
-            list: {
-              ...cached.data.list,
-              relations: { reaction: nextReaction },
-              stats: {
-                ...cached.data.list.stats,
-                downvotes,
-                upvotes,
+          pages: cached.pages.map((page) => {
+            const currentReaction = page.data.list.relations?.reaction;
+
+            let upvotes = page.data.list.stats.upvotes;
+            let downvotes = page.data.list.stats.downvotes;
+
+            const nextReaction = currentReaction === value ? undefined : value;
+
+            if (currentReaction === 1) upvotes = Math.max(0, upvotes - 1);
+            if (currentReaction === -1) downvotes = Math.max(0, downvotes - 1);
+            if (nextReaction === 1) upvotes += 1;
+            if (nextReaction === -1) downvotes += 1;
+
+            return {
+              ...page,
+              data: {
+                ...page.data,
+                list: {
+                  ...page.data.list,
+                  relations: { reaction: nextReaction },
+                  stats: {
+                    ...page.data.list.stats,
+                    downvotes,
+                    upvotes,
+                  },
+                },
               },
-            },
-          },
+            };
+          }),
         };
       });
 

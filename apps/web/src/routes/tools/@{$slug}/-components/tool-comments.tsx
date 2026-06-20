@@ -170,17 +170,13 @@ function ToolCommentList({
 
   useEffect(() => {
     const sentinel = trackingRef.current;
-    if (!sentinel || !hasNextPage || isFetchingNextPage) {
-      return;
-    }
+    if (!sentinel || !hasNextPage || isFetchingNextPage) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         if (!entry) return;
-
-        const isInView = entry.isIntersecting;
-        if (isInView) fetchNextPage();
+        if (entry.isIntersecting) fetchNextPage();
       },
       { rootMargin: "100px" },
     );

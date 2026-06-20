@@ -7,13 +7,11 @@ import { listQueryOptions } from "./-queries/list";
 export const Route = createFileRoute("/lists/$slug/")({
   component: RouteComponent,
   loader: async ({ context, params }) => {
-    const {
-      data: { list },
-    } = await context.queryClient.ensureQueryData(
+    const data = await context.queryClient.ensureInfiniteQueryData(
       listQueryOptions({ slug: params.slug }),
     );
 
-    return { list };
+    return { list: data.pages[0]?.data.list };
   },
   // eslint-disable-next-line perfectionist/sort-objects
   head: ({ loaderData }) => {

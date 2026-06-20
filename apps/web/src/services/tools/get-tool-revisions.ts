@@ -8,7 +8,7 @@ import {
 
 import { apiClient } from "@/lib/api-client";
 
-type GetToolRevisionsInput = {
+type GetToolRevisions = {
   params: GetToolRevisionsParams;
   queryString: GetToolRevisionsQueryString;
 };
@@ -16,7 +16,7 @@ type GetToolRevisionsInput = {
 export async function getToolRevisions({
   params,
   queryString,
-}: GetToolRevisionsInput) {
+}: GetToolRevisions) {
   const { slug } = getToolRevisionsParamsSchema.parse(params);
   const parsedQueryString =
     getToolRevisionsQueryStringSchema.parse(queryString);

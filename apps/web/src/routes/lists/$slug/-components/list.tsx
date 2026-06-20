@@ -7,6 +7,7 @@ import {
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Separator } from "@workspace/ui/components/separator";
+import { Spinner } from "@workspace/ui/components/spinner";
 import { cn } from "@workspace/ui/lib/cn";
 import { format } from "date-fns";
 import {
@@ -17,6 +18,7 @@ import {
   Share2Icon,
   SparklesIcon,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 import { MarkdownPreview } from "@/components/markdown";
 import { categoryVariants } from "@/constants/category";
@@ -35,9 +37,34 @@ export function List() {
 
   const { user } = auth.useSession();
 
-  const { data: list } = useList({ slug });
+  const trackingRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data: { list, tools },
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useList({ slug });
+
   const { isPending: isReacting, mutate: setListReaction } =
     useListSetReaction(slug);
+
+  useEffect(() => {
+    const sentinel = trackingRef.current;
+    if (!sentinel || !hasNextPage || isFetchingNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        if (entry.isIntersecting) fetchNextPage();
+      },
+      { rootMargin: "100px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const handleSetListReaction = (value: -1 | 1) => {
     if (!user) return globalThis.location.assign("/signin");
@@ -78,7 +105,7 @@ export function List() {
             </Badge>
           )}
           <span className="text-xs text-muted-foreground">
-            {list.tools.length} {list.tools.length === 1 ? "tool" : "tools"}
+            {tools.length} {tools.length === 1 ? "tool" : "tools"}
           </span>
         </div>
         <div className="space-y-3">
@@ -158,8 +185,23 @@ export function List() {
           </Button>
         </div>
       )}
-      <ToolList tools={list.tools} />
-      <JsonLdScript list={list} />
+      <ToolList tools={tools} />
+      <JsonLdScript list={list} tools={tools} />
+      <div
+        className={cn(
+          "pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transition-opacity duration-200",
+          isFetchingNextPage ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <div className="flex items-center justify-center border bg-background p-1">
+          <Spinner className="size-5" />
+        </div>
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none h-1"
+        ref={trackingRef}
+      />
     </article>
   );
 }
@@ -173,7 +215,13 @@ async function handleShare() {
   });
 }
 
-function JsonLdScript({ list }: { list: ReturnType<typeof useList>["data"] }) {
+function JsonLdScript({
+  list,
+  tools,
+}: {
+  list: ReturnType<typeof useList>["data"]["list"];
+  tools: ReturnType<typeof useList>["data"]["tools"];
+}) {
   return (
     <script
       // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
@@ -182,7 +230,7 @@ function JsonLdScript({ list }: { list: ReturnType<typeof useList>["data"] }) {
           "@context": "https://schema.org",
           "@type": "ItemList",
           description: list.description,
-          itemListElement: list.tools.map((tool, index) => ({
+          itemListElement: tools.map((tool, index) => ({
             "@type": "ListItem",
             name: tool.name,
             position: index + 1,

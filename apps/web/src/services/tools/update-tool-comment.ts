@@ -11,15 +11,12 @@ import {
 
 import { apiClient } from "@/lib/api-client";
 
-type UpdateToolCommentInput = {
+type UpdateToolComment = {
   body: UpdateToolCommentBody;
   params: UpdateToolCommentParams;
 };
 
-export async function updateToolComment({
-  body,
-  params,
-}: UpdateToolCommentInput) {
+export async function updateToolComment({ body, params }: UpdateToolComment) {
   const { commentId, slug } = updateToolCommentParamsSchema.parse(params);
   const parsedBody = updateToolCommentBodySchema.parse(body);
 

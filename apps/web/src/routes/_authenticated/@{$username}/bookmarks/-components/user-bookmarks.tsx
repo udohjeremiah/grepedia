@@ -14,8 +14,10 @@ import {
   InputGroupInput,
 } from "@workspace/ui/components/input-group";
 import { Separator } from "@workspace/ui/components/separator";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { cn } from "@workspace/ui/lib/cn";
 import { BookmarkIcon, SearchIcon, SearchXIcon, XIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useUserBookmarks } from "../-queries/user-bookmarks";
 import { UserBookmark } from "./user-bookmark";
@@ -23,9 +25,33 @@ import { UserBookmark } from "./user-bookmark";
 export function UserBookmarks() {
   const { userId } = useRouteContext({ from: "/_authenticated" });
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    data: userBookmarks,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useUserBookmarks({ userId });
 
-  const { data: userBookmarks } = useUserBookmarks({ userId });
+  const trackingRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sentinel = trackingRef.current;
+    if (!sentinel || !hasNextPage || isFetchingNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        if (entry.isIntersecting) fetchNextPage();
+      },
+      { rootMargin: "100px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredBookmarks = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -113,6 +139,21 @@ export function UserBookmarks() {
           </EmptyContent>
         </Empty>
       )}
+      <div
+        className={cn(
+          "pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transition-opacity duration-200",
+          isFetchingNextPage ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <div className="flex items-center justify-center border bg-background p-1">
+          <Spinner className="size-5" />
+        </div>
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none h-1"
+        ref={trackingRef}
+      />
     </div>
   );
 }
