@@ -17,11 +17,7 @@ import {
   SheetTrigger,
 } from "@workspace/ui/components/sheet";
 import { format } from "date-fns";
-import {
-  CalendarIcon,
-  SearchIcon,
-  StarIcon,
-} from "lucide-react";
+import { CalendarIcon, SearchIcon, StarIcon } from "lucide-react";
 
 import { MarkdownPreview } from "@/components/markdown";
 import { formatCompactNumber } from "@/utils/format-compact-number";
