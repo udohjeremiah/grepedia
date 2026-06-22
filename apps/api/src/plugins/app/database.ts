@@ -7,11 +7,9 @@ import fp from "fastify-plugin";
 import type { ListReactionWithObjectIds } from "@/schemas/lists/list-reaction.js";
 import type { ListViewWithObjectIds } from "@/schemas/lists/list-view.js";
 import type { ListWithObjectIds } from "@/schemas/lists/list.js";
-import type { ModerationCaseWithObjectIds } from "@/schemas/moderation/moderation-case.js";
 import type { ToolCommentReactionWithObjectIds } from "@/schemas/tools/tool-comment-reaction.js";
 import type { ToolCommentWithObjectIds } from "@/schemas/tools/tool-comment.js";
 import type { ToolReactionWithObjectIds } from "@/schemas/tools/tool-reaction.js";
-import type { ToolRevisionWithObjectIds } from "@/schemas/tools/tool-revision.js";
 import type { ToolWithObjectIds } from "@/schemas/tools/tool.js";
 import type { UserBookmarkWithObjectIds } from "@/schemas/users/user-bookmark.js";
 import type { UserWithObjectIds } from "@/schemas/users/user.js";
@@ -21,11 +19,9 @@ type Database = {
   listReactions: Collection<ListReactionWithObjectIds>;
   lists: Collection<ListWithObjectIds>;
   listViews: Collection<ListViewWithObjectIds>;
-  moderationCases: Collection<ModerationCaseWithObjectIds>;
   toolCommentReactions: Collection<ToolCommentReactionWithObjectIds>;
   toolComments: Collection<ToolCommentWithObjectIds>;
   toolReactions: Collection<ToolReactionWithObjectIds>;
-  toolRevisions: Collection<ToolRevisionWithObjectIds>;
   tools: Collection<ToolWithObjectIds>;
   userBookmarks: Collection<UserBookmarkWithObjectIds>;
   users: Collection<UserWithObjectIds>;
@@ -58,10 +54,6 @@ export default fp(
       fastify.env.MONGODB_COLL_TOOL,
     );
 
-    const toolRevisions = instance.collection<ToolRevisionWithObjectIds>(
-      fastify.env.MONGODB_COLL_TOOL_REVISION,
-    );
-
     const toolReactions = instance.collection<ToolReactionWithObjectIds>(
       fastify.env.MONGODB_COLL_TOOL_REACTION,
     );
@@ -89,10 +81,6 @@ export default fp(
 
     const listReactions = instance.collection<ListReactionWithObjectIds>(
       fastify.env.MONGODB_COLL_LIST_REACTION,
-    );
-
-    const moderationCases = instance.collection<ModerationCaseWithObjectIds>(
-      fastify.env.MONGODB_COLL_MODERATION_CASE,
     );
 
     fastify.addHook("onReady", async () => {
@@ -158,24 +146,6 @@ export default fp(
                 key: { status: 1, categories: 1, name: 1, _id: 1 },
                 options: {
                   name: "grepedia__tool__status_categories_name_id",
-                },
-              },
-            ],
-          },
-          {
-            collection: toolRevisions,
-            specs: [
-              {
-                key: { toolId: 1, revisionNumber: -1, _id: -1 },
-                options: {
-                  name: "grepedia__tool_revision__toolId_revisionNumber_desc_id_desc",
-                  unique: true,
-                },
-              },
-              {
-                key: { toolId: 1, createdAt: -1, _id: -1 },
-                options: {
-                  name: "grepedia__tool_revision__toolId_createdAt_desc_id_desc",
                 },
               },
             ],
@@ -332,36 +302,6 @@ export default fp(
               },
             ],
           },
-          {
-            collection: moderationCases,
-            specs: [
-              {
-                key: { discussionUrl: 1 },
-                options: {
-                  name: "grepedia__moderation_case__discussionUrl",
-                  unique: true,
-                },
-              },
-              {
-                key: { status: 1, type: 1, createdAt: -1, _id: -1 },
-                options: {
-                  name: "grepedia__moderation_case__status_type_createdAt_desc_id_desc",
-                },
-              },
-              {
-                key: { userId: 1, type: 1, status: 1, createdAt: -1 },
-                options: {
-                  name: "grepedia__moderation_case__userId_type_status_createdAt_desc",
-                },
-              },
-              {
-                key: { toolId: 1, type: 1, status: 1, createdAt: -1 },
-                options: {
-                  name: "grepedia__moderation_case__toolId_type_status_createdAt_desc",
-                },
-              },
-            ],
-          },
         ],
       });
     });
@@ -370,7 +310,6 @@ export default fp(
       instance,
       users,
       tools,
-      toolRevisions,
       toolReactions,
       toolComments,
       toolCommentReactions,
@@ -378,7 +317,6 @@ export default fp(
       lists,
       listViews,
       listReactions,
-      moderationCases,
     });
   },
   { dependencies: ["sync-indexes"], name: "database" },

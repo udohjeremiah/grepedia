@@ -34,7 +34,7 @@ function RouteComponent() {
         <div className="flex flex-col gap-1">
           <h3 className="font-semibold">Moderation</h3>
           <p className="text-sm text-muted-foreground">
-            Appeals and moderation requests start on Discord. Moderators can
+            Appeals and moderation requests start on GitHub. Moderators can
             review users, tools, and comments here by selecting a target and
             fetching by identifier.
           </p>

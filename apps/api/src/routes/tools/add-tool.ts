@@ -16,7 +16,6 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
 
       const body = normalizeToolInput(request.body);
       const tools = fastify.db.tools;
-      const toolRevisions = fastify.db.toolRevisions;
       const users = fastify.db.users;
 
       const duplicate = await tools.findOne({ officialUrl: body.officialUrl });
@@ -69,29 +68,6 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
       const insertResult = await tools.insertOne(toolDocument);
 
       if (!insertResult.acknowledged) {
-        return reply.code(500).send({
-          message: "Internal server error",
-          success: false,
-        });
-      }
-
-      const revisionInsertResult = await toolRevisions.insertOne({
-        createdAt: now,
-        createdBy: userId,
-        isRevert: false,
-        revisionNumber: 1,
-        snapshot: {
-          ...body,
-          releasedAt: body.releasedAt ? new Date(body.releasedAt) : undefined,
-        },
-        summary:
-          "Created the initial tool listing with its basic details, description, and metadata.",
-        title: "Initial tool publication",
-        toolId: insertResult.insertedId,
-        toolSlug: slug,
-      });
-
-      if (!revisionInsertResult.acknowledged) {
         return reply.code(500).send({
           message: "Internal server error",
           success: false,

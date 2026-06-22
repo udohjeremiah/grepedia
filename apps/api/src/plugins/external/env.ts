@@ -19,12 +19,10 @@ declare module "fastify" {
       MONGODB_COLL_LIST: string;
       MONGODB_COLL_LIST_REACTION: string;
       MONGODB_COLL_LIST_VIEW: string;
-      MONGODB_COLL_MODERATION_CASE: string;
       MONGODB_COLL_TOOL: string;
       MONGODB_COLL_TOOL_COMMENT: string;
       MONGODB_COLL_TOOL_COMMENT_REACTION: string;
       MONGODB_COLL_TOOL_REACTION: string;
-      MONGODB_COLL_TOOL_REVISION: string;
       MONGODB_COLL_USER: string;
       MONGODB_COLL_USER_BOOKMARK: string;
       MONGODB_DATABASE: string;
@@ -102,10 +100,6 @@ const options: FastifyEnvOptions = {
         default: "list-view",
         type: "string",
       },
-      MONGODB_COLL_MODERATION_CASE: {
-        default: "moderation-case",
-        type: "string",
-      },
       MONGODB_COLL_TOOL: {
         default: "tool",
         type: "string",
@@ -120,10 +114,6 @@ const options: FastifyEnvOptions = {
       },
       MONGODB_COLL_TOOL_REACTION: {
         default: "tool-reaction",
-        type: "string",
-      },
-      MONGODB_COLL_TOOL_REVISION: {
-        default: "tool-revision",
         type: "string",
       },
       MONGODB_COLL_USER: {
@@ -174,7 +164,6 @@ const options: FastifyEnvOptions = {
       "ADMIN_USER_IDS",
       "MONGODB_COLL_USER",
       "MONGODB_COLL_TOOL",
-      "MONGODB_COLL_TOOL_REVISION",
       "MONGODB_COLL_TOOL_REACTION",
       "MONGODB_COLL_TOOL_COMMENT",
       "MONGODB_COLL_TOOL_COMMENT_REACTION",
@@ -182,7 +171,6 @@ const options: FastifyEnvOptions = {
       "MONGODB_COLL_LIST",
       "MONGODB_COLL_LIST_VIEW",
       "MONGODB_COLL_LIST_REACTION",
-      "MONGODB_COLL_MODERATION_CASE",
       "RESEND_API_KEY",
       "EMAIL_AUTH",
       "CRAWLEE_MAX_PAGES",

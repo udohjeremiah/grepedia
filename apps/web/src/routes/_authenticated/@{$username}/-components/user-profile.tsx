@@ -30,7 +30,6 @@ import { BadgeIcon } from "@/components/badge-icon";
 import { countryOptions } from "@/constants/country-options";
 import { roleConfig, roleVariants } from "@/constants/role";
 import { statusConfig, statusVariants } from "@/constants/status";
-import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { getAvatar } from "@/utils/get-avatar";
 import { getInitials } from "@/utils/get-initials";
@@ -128,7 +127,11 @@ function Profile({ user }: { user: Session["user"] }) {
             </AlertDescription>
             <AlertAction>
               <Button asChild size="xs" variant="outline">
-                <a href={env.VITE_APPEAL_URL} rel="noreferrer" target="_blank">
+                <a
+                  href="https://github.com/udohjeremiah/grepedia/issues/new/choose"
+                  rel="noreferrer"
+                  target="_blank"
+                >
                   Open Appeal
                 </a>
               </Button>
@@ -170,7 +173,7 @@ function Profile({ user }: { user: Session["user"] }) {
                   You can{" "}
                   <Button asChild className="size-fit p-0" variant="link">
                     <a
-                      href={env.VITE_MODERATOR_REQUEST_URL}
+                      href="https://github.com/udohjeremiah/grepedia/issues/new/choose"
                       rel="noreferrer"
                       target="_blank"
                     >

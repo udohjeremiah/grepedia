@@ -24,16 +24,13 @@ import {
 } from "lucide-react";
 
 import { BadgeIcon } from "@/components/badge-icon";
-import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
-import { globalBannerStore } from "@/lib/global-banner-store";
 import { getInitials } from "@/utils/get-initials";
 
 import { useTool } from "../-queries/tool";
 import { useToolSetReaction } from "../-queries/tool-set-reaction";
 import { useToolToggleBookmark } from "../-queries/tool-toggle-bookmark";
-import { UpdateToolDialog } from "./update-tool-dialog";
 
 type Tool = ReturnType<typeof useTool>["data"];
 
@@ -112,7 +109,6 @@ export function ToolHeader() {
     useToolToggleBookmark(slug, user?.id);
 
   const { copied, copyToClipboard } = useCopyToClipboard();
-  const { copyToClipboard: copyReportDetails } = useCopyToClipboard();
 
   const handleToggleBookmark = () => {
     if (!user) return globalThis.location.assign("/signin");
@@ -122,31 +118,6 @@ export function ToolHeader() {
   const handleSetToolReaction = (value: -1 | 1) => {
     if (!user) return globalThis.location.assign("/signin");
     setToolReaction({ value });
-  };
-
-  const handleReportTool = async () => {
-    const toolLink = globalThis.location.href;
-    const reportDetails = [
-      `Tool Name: ${tool.name}`,
-      `Tool Slug: ${slug}`,
-      `Tool Link: ${toolLink}`,
-      `Reported By: @${user?.username ?? "anonymous"}`,
-    ].join("\n");
-
-    const copiedReport = await copyReportDetails(reportDetails);
-
-    globalBannerStore.add({
-      autoDismiss: false,
-      description: copiedReport
-        ? "Tool report details copied to your clipboard. Paste them in Grepedia's Discord server to submit your report."
-        : "Failed to copy the report details. Please try again.",
-      title: copiedReport ? "Copied successfully" : "Copy failed",
-      variant: copiedReport ? "success" : "destructive",
-    });
-
-    if (copiedReport) {
-      globalThis.open(env.VITE_REPORT_TOOL_URL, "_blank", "noreferrer");
-    }
   };
 
   const status = statusConfig[tool.status];
@@ -302,15 +273,20 @@ export function ToolHeader() {
           </span>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <UpdateToolDialog />
           <Button
+            asChild
             className="gap-1.5 px-2"
-            onClick={handleReportTool}
             size="sm"
             variant="destructive"
           >
-            <FlagIcon className="size-3.5" />
-            <span className="text-xs">Report</span>
+            <a
+              href="https://github.com/udohjeremiah/grepedia/issues/new/choose"
+              rel="noreferrer"
+              target="_blank"
+            >
+              <FlagIcon className="size-3.5" />
+              <span className="text-xs">Report</span>
+            </a>
           </Button>
         </div>
       </div>

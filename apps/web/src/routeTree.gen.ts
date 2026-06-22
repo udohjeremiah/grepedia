@@ -32,7 +32,6 @@ import { Route as AuthSignupIndexRouteImport } from './routes/_auth/signup/index
 import { Route as AuthSigninIndexRouteImport } from './routes/_auth/signin/index'
 import { Route as AuthResetPasswordIndexRouteImport } from './routes/_auth/reset-password/index'
 import { Route as AuthRequestPasswordResetIndexRouteImport } from './routes/_auth/request-password-reset/index'
-import { Route as ToolsAtChar123slugChar125RevisionsIndexRouteImport } from './routes/tools/@{$slug}/revisions/index'
 import { Route as ToolsAtChar123slugChar125OgIndexRouteImport } from './routes/tools/@{$slug}/og/index'
 import { Route as ListsSlugEditIndexRouteImport } from './routes/lists/$slug/edit/index'
 import { Route as AuthenticatedAtChar123usernameChar125ToolsIndexRouteImport } from './routes/_authenticated/@{$username}/tools/index'
@@ -160,12 +159,6 @@ const AuthRequestPasswordResetIndexRoute =
     path: '/request-password-reset/',
     getParentRoute: () => AuthRouteRoute,
   } as any)
-const ToolsAtChar123slugChar125RevisionsIndexRoute =
-  ToolsAtChar123slugChar125RevisionsIndexRouteImport.update({
-    id: '/revisions/',
-    path: '/revisions/',
-    getParentRoute: () => ToolsAtChar123slugChar125RouteRoute,
-  } as any)
 const ToolsAtChar123slugChar125OgIndexRoute =
   ToolsAtChar123slugChar125OgIndexRouteImport.update({
     id: '/og/',
@@ -244,7 +237,6 @@ export interface FileRoutesByFullPath {
   '/@{$username}/tools/': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
   '/lists/$slug/edit/': typeof ListsSlugEditIndexRoute
   '/tools/@{$slug}/og/': typeof ToolsAtChar123slugChar125OgIndexRoute
-  '/tools/@{$slug}/revisions/': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof RootIndexRoute
@@ -272,7 +264,6 @@ export interface FileRoutesByTo {
   '/@{$username}/tools': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
   '/lists/$slug/edit': typeof ListsSlugEditIndexRoute
   '/tools/@{$slug}/og': typeof ToolsAtChar123slugChar125OgIndexRoute
-  '/tools/@{$slug}/revisions': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -307,7 +298,6 @@ export interface FileRoutesById {
   '/_authenticated/@{$username}/tools/': typeof AuthenticatedAtChar123usernameChar125ToolsIndexRoute
   '/lists/$slug/edit/': typeof ListsSlugEditIndexRoute
   '/tools/@{$slug}/og/': typeof ToolsAtChar123slugChar125OgIndexRoute
-  '/tools/@{$slug}/revisions/': typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -341,7 +331,6 @@ export interface FileRouteTypes {
     | '/@{$username}/tools/'
     | '/lists/$slug/edit/'
     | '/tools/@{$slug}/og/'
-    | '/tools/@{$slug}/revisions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -369,7 +358,6 @@ export interface FileRouteTypes {
     | '/@{$username}/tools'
     | '/lists/$slug/edit'
     | '/tools/@{$slug}/og'
-    | '/tools/@{$slug}/revisions'
   id:
     | '__root__'
     | '/_auth'
@@ -403,7 +391,6 @@ export interface FileRouteTypes {
     | '/_authenticated/@{$username}/tools/'
     | '/lists/$slug/edit/'
     | '/tools/@{$slug}/og/'
-    | '/tools/@{$slug}/revisions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -582,13 +569,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRequestPasswordResetIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/tools/@{$slug}/revisions/': {
-      id: '/tools/@{$slug}/revisions/'
-      path: '/revisions'
-      fullPath: '/tools/@{$slug}/revisions/'
-      preLoaderRoute: typeof ToolsAtChar123slugChar125RevisionsIndexRouteImport
-      parentRoute: typeof ToolsAtChar123slugChar125RouteRoute
-    }
     '/tools/@{$slug}/og/': {
       id: '/tools/@{$slug}/og/'
       path: '/og'
@@ -744,7 +724,6 @@ const ListsRouteRouteWithChildren = ListsRouteRoute._addFileChildren(
 interface ToolsAtChar123slugChar125RouteRouteChildren {
   ToolsAtChar123slugChar125IndexRoute: typeof ToolsAtChar123slugChar125IndexRoute
   ToolsAtChar123slugChar125OgIndexRoute: typeof ToolsAtChar123slugChar125OgIndexRoute
-  ToolsAtChar123slugChar125RevisionsIndexRoute: typeof ToolsAtChar123slugChar125RevisionsIndexRoute
 }
 
 const ToolsAtChar123slugChar125RouteRouteChildren: ToolsAtChar123slugChar125RouteRouteChildren =
@@ -752,8 +731,6 @@ const ToolsAtChar123slugChar125RouteRouteChildren: ToolsAtChar123slugChar125Rout
     ToolsAtChar123slugChar125IndexRoute: ToolsAtChar123slugChar125IndexRoute,
     ToolsAtChar123slugChar125OgIndexRoute:
       ToolsAtChar123slugChar125OgIndexRoute,
-    ToolsAtChar123slugChar125RevisionsIndexRoute:
-      ToolsAtChar123slugChar125RevisionsIndexRoute,
   }
 
 const ToolsAtChar123slugChar125RouteRouteWithChildren =

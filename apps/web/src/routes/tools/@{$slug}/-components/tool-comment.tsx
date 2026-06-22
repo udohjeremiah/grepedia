@@ -24,7 +24,6 @@ import {
 import { useState } from "react";
 
 import { MarkdownEditor, MarkdownPreview } from "@/components/markdown";
-import { env } from "@/env";
 import { auth } from "@/hooks/auth";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { globalBannerStore } from "@/lib/global-banner-store";
@@ -106,7 +105,11 @@ export function ToolComment(comment: ToolCommentProps) {
     });
 
     if (copiedReport) {
-      globalThis.open(env.VITE_REPORT_TOOL_URL, "_blank", "noreferrer");
+      globalThis.open(
+        "https://github.com/udohjeremiah/grepedia/issues/new/choose",
+        "_blank",
+        "noreferrer",
+      );
     }
   };
 

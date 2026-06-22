@@ -4,13 +4,8 @@ import { z } from "zod";
 export const env = createEnv({
   client: {
     VITE_API_BASE_URL: z.url(),
-    VITE_APPEAL_URL: z.url(),
     VITE_BASE_URL: z.url(),
-    VITE_MODERATOR_REQUEST_URL: z.url(),
-    VITE_REPORT_COMMENT_URL: z.url(),
-    VITE_REPORT_TOOL_URL: z.url(),
     VITE_SUPPORT_EMAIL: z.email(),
-    VITE_TOOL_UPDATE_URL: z.url(),
   },
 
   /**

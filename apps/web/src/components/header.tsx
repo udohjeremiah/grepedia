@@ -4,7 +4,6 @@ import { Link } from "@tanstack/react-router";
 import { Separator } from "@workspace/ui/components/separator";
 import { cn } from "@workspace/ui/lib/cn";
 
-import { DiscordLink } from "@/components/discord-link";
 import { GitHubLink } from "@/components/github-link";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { UserProfile } from "@/components/user-profile";
@@ -40,7 +39,6 @@ export function Header({ search, tabs }: HeaderProps) {
           <ThemeSwitcher />
           <Separator orientation="vertical" />
           <GitHubLink />
-          <DiscordLink />
         </div>
       </header>
       {tabs && <nav>{tabs}</nav>}

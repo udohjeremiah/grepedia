@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Link, useLocation, useParams } from "@tanstack/react-router";
+import { useParams } from "@tanstack/react-router";
 import {
   Avatar,
   AvatarFallback,
@@ -14,7 +14,6 @@ import {
   CalendarIcon,
   ClockIcon,
   ExternalLinkIcon,
-  FileStackIcon,
   FolderOpenIcon,
   GlobeIcon,
   type LucideIcon,
@@ -30,7 +29,6 @@ import { useTool } from "../-queries/tool";
 
 export function ToolSidebar() {
   const { slug } = useParams({ from: "/tools/@{$slug}" });
-  const pathname = useLocation({ select: (location) => location.pathname });
 
   const { data: tool } = useTool({ slug });
 
@@ -103,20 +101,6 @@ export function ToolSidebar() {
                 </span>
               </div>
             )}
-            <Button
-              asChild
-              className="justify-start"
-              variant={
-                pathname === `/tools/@${slug}/revisions`
-                  ? "secondary"
-                  : "outline"
-              }
-            >
-              <Link params={{ slug }} to="/tools/@{$slug}/revisions">
-                <FileStackIcon />
-                Revisions
-              </Link>
-            </Button>
           </div>
         </SidebarSection>
         {tool.externalUrls && tool.externalUrls.length > 0 && (

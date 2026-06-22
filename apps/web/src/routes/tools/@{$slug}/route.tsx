@@ -36,7 +36,7 @@ export const Route = createFileRoute("/tools/@{$slug}")({
     const title = `${tool?.name ?? params.slug} • Grepedia`;
     const description =
       tool?.shortDescription ??
-      `Explore tool details, reviews, proposals, and community debate for ${params.slug} on Grepedia.`;
+      `Explore tool details and reviews for ${params.slug} on Grepedia.`;
 
     return {
       meta: [

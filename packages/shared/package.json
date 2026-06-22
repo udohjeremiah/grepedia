@@ -11,10 +11,6 @@
     "typecheck": "tsc --noEmit"
   },
   "exports": {
-    "./schemas/discord-url": {
-      "types": "./dist/schemas/discord-url.d.ts",
-      "default": "./dist/schemas/discord-url.js"
-    },
     "./schemas/image": {
       "types": "./dist/schemas/image.d.ts",
       "default": "./dist/schemas/image.js"
@@ -59,10 +55,6 @@
       "types": "./dist/schemas/lists/views/list-view.d.ts",
       "default": "./dist/schemas/lists/views/list-view.js"
     },
-    "./schemas/moderation/moderation-case": {
-      "types": "./dist/schemas/moderation/moderation-case.d.ts",
-      "default": "./dist/schemas/moderation/moderation-case.js"
-    },
     "./schemas/moderation/moderator-get-comment": {
       "types": "./dist/schemas/moderation/moderator-get-comment.d.ts",
       "default": "./dist/schemas/moderation/moderator-get-comment.js"
@@ -74,10 +66,6 @@
     "./schemas/moderation/moderator-get-user": {
       "types": "./dist/schemas/moderation/moderator-get-user.d.ts",
       "default": "./dist/schemas/moderation/moderator-get-user.js"
-    },
-    "./schemas/moderation/moderator-review-case": {
-      "types": "./dist/schemas/moderation/moderator-review-case.d.ts",
-      "default": "./dist/schemas/moderation/moderator-review-case.js"
     },
     "./schemas/moderation/moderator-update-comment": {
       "types": "./dist/schemas/moderation/moderator-update-comment.d.ts",
@@ -158,22 +146,6 @@
     "./schemas/tools/get-tools-stats": {
       "types": "./dist/schemas/tools/get-tools-stats.d.ts",
       "default": "./dist/schemas/tools/get-tools-stats.js"
-    },
-    "./schemas/tools/revisions/get-tool-revisions": {
-      "types": "./dist/schemas/tools/revisions/get-tool-revisions.d.ts",
-      "default": "./dist/schemas/tools/revisions/get-tool-revisions.js"
-    },
-    "./schemas/tools/revisions/revert-tool-revision": {
-      "types": "./dist/schemas/tools/revisions/revert-tool-revision.d.ts",
-      "default": "./dist/schemas/tools/revisions/revert-tool-revision.js"
-    },
-    "./schemas/tools/revisions/tool-revision": {
-      "types": "./dist/schemas/tools/revisions/tool-revision.d.ts",
-      "default": "./dist/schemas/tools/revisions/tool-revision.js"
-    },
-    "./schemas/tools/proposals/get-tool-proposals": {
-      "types": "./dist/schemas/tools/proposals/get-tool-proposals.d.ts",
-      "default": "./dist/schemas/tools/proposals/get-tool-proposals.js"
     },
     "./schemas/tools/reactions/set-tool-reaction": {
       "types": "./dist/schemas/tools/reactions/set-tool-reaction.d.ts",
