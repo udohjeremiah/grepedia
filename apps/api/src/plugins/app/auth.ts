@@ -195,6 +195,23 @@ function createAuth(fastify: FastifyInstance) {
         },
       },
       deleteUser: {
+        afterDelete: async (user) => {
+          const userObjectId = fastify.mongo.ObjectId.createFromHexString(
+            user.id,
+          );
+
+          const userBookmarks = fastify.db.userBookmarks;
+          const toolReactions = fastify.db.toolReactions;
+          const toolCommentReactions = fastify.db.toolCommentReactions;
+          const listReactions = fastify.db.listReactions;
+
+          await Promise.all([
+            userBookmarks.deleteMany({ userId: userObjectId }),
+            toolReactions.deleteMany({ userId: userObjectId }),
+            toolCommentReactions.deleteMany({ userId: userObjectId }),
+            listReactions.deleteMany({ userId: userObjectId }),
+          ]);
+        },
         enabled: true,
         sendDeleteAccountVerification: async ({ url, user }) => {
           const html = await buildEmail({

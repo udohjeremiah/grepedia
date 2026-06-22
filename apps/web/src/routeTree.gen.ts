@@ -40,7 +40,6 @@ import { Route as AuthenticatedAtChar123usernameChar125SessionsIndexRouteImport 
 import { Route as AuthenticatedAtChar123usernameChar125SecurityIndexRouteImport } from './routes/_authenticated/@{$username}/security/index'
 import { Route as AuthenticatedAtChar123usernameChar125ModerationIndexRouteImport } from './routes/_authenticated/@{$username}/moderation/index'
 import { Route as AuthenticatedAtChar123usernameChar125ListsIndexRouteImport } from './routes/_authenticated/@{$username}/lists/index'
-import { Route as AuthenticatedAtChar123usernameChar125DataIndexRouteImport } from './routes/_authenticated/@{$username}/data/index'
 import { Route as AuthenticatedAtChar123usernameChar125BookmarksIndexRouteImport } from './routes/_authenticated/@{$username}/bookmarks/index'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -208,12 +207,6 @@ const AuthenticatedAtChar123usernameChar125ListsIndexRoute =
     path: '/lists/',
     getParentRoute: () => AuthenticatedAtChar123usernameChar125RouteRoute,
   } as any)
-const AuthenticatedAtChar123usernameChar125DataIndexRoute =
-  AuthenticatedAtChar123usernameChar125DataIndexRouteImport.update({
-    id: '/data/',
-    path: '/data/',
-    getParentRoute: () => AuthenticatedAtChar123usernameChar125RouteRoute,
-  } as any)
 const AuthenticatedAtChar123usernameChar125BookmarksIndexRoute =
   AuthenticatedAtChar123usernameChar125BookmarksIndexRouteImport.update({
     id: '/bookmarks/',
@@ -244,7 +237,6 @@ export interface FileRoutesByFullPath {
   '/tools/@{$slug}/': typeof ToolsAtChar123slugChar125IndexRoute
   '/tools/directory/': typeof ToolsDirectoryIndexRoute
   '/@{$username}/bookmarks/': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
-  '/@{$username}/data/': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
   '/@{$username}/lists/': typeof AuthenticatedAtChar123usernameChar125ListsIndexRoute
   '/@{$username}/moderation/': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/@{$username}/security/': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
@@ -273,7 +265,6 @@ export interface FileRoutesByTo {
   '/tools/@{$slug}': typeof ToolsAtChar123slugChar125IndexRoute
   '/tools/directory': typeof ToolsDirectoryIndexRoute
   '/@{$username}/bookmarks': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
-  '/@{$username}/data': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
   '/@{$username}/lists': typeof AuthenticatedAtChar123usernameChar125ListsIndexRoute
   '/@{$username}/moderation': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/@{$username}/security': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
@@ -309,7 +300,6 @@ export interface FileRoutesById {
   '/tools/@{$slug}/': typeof ToolsAtChar123slugChar125IndexRoute
   '/tools/directory/': typeof ToolsDirectoryIndexRoute
   '/_authenticated/@{$username}/bookmarks/': typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
-  '/_authenticated/@{$username}/data/': typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
   '/_authenticated/@{$username}/lists/': typeof AuthenticatedAtChar123usernameChar125ListsIndexRoute
   '/_authenticated/@{$username}/moderation/': typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   '/_authenticated/@{$username}/security/': typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
@@ -344,7 +334,6 @@ export interface FileRouteTypes {
     | '/tools/@{$slug}/'
     | '/tools/directory/'
     | '/@{$username}/bookmarks/'
-    | '/@{$username}/data/'
     | '/@{$username}/lists/'
     | '/@{$username}/moderation/'
     | '/@{$username}/security/'
@@ -373,7 +362,6 @@ export interface FileRouteTypes {
     | '/tools/@{$slug}'
     | '/tools/directory'
     | '/@{$username}/bookmarks'
-    | '/@{$username}/data'
     | '/@{$username}/lists'
     | '/@{$username}/moderation'
     | '/@{$username}/security'
@@ -408,7 +396,6 @@ export interface FileRouteTypes {
     | '/tools/@{$slug}/'
     | '/tools/directory/'
     | '/_authenticated/@{$username}/bookmarks/'
-    | '/_authenticated/@{$username}/data/'
     | '/_authenticated/@{$username}/lists/'
     | '/_authenticated/@{$username}/moderation/'
     | '/_authenticated/@{$username}/security/'
@@ -651,13 +638,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125ListsIndexRouteImport
       parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
     }
-    '/_authenticated/@{$username}/data/': {
-      id: '/_authenticated/@{$username}/data/'
-      path: '/data'
-      fullPath: '/@{$username}/data/'
-      preLoaderRoute: typeof AuthenticatedAtChar123usernameChar125DataIndexRouteImport
-      parentRoute: typeof AuthenticatedAtChar123usernameChar125RouteRoute
-    }
     '/_authenticated/@{$username}/bookmarks/': {
       id: '/_authenticated/@{$username}/bookmarks/'
       path: '/bookmarks'
@@ -689,7 +669,6 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 interface AuthenticatedAtChar123usernameChar125RouteRouteChildren {
   AuthenticatedAtChar123usernameChar125IndexRoute: typeof AuthenticatedAtChar123usernameChar125IndexRoute
   AuthenticatedAtChar123usernameChar125BookmarksIndexRoute: typeof AuthenticatedAtChar123usernameChar125BookmarksIndexRoute
-  AuthenticatedAtChar123usernameChar125DataIndexRoute: typeof AuthenticatedAtChar123usernameChar125DataIndexRoute
   AuthenticatedAtChar123usernameChar125ListsIndexRoute: typeof AuthenticatedAtChar123usernameChar125ListsIndexRoute
   AuthenticatedAtChar123usernameChar125ModerationIndexRoute: typeof AuthenticatedAtChar123usernameChar125ModerationIndexRoute
   AuthenticatedAtChar123usernameChar125SecurityIndexRoute: typeof AuthenticatedAtChar123usernameChar125SecurityIndexRoute
@@ -703,8 +682,6 @@ const AuthenticatedAtChar123usernameChar125RouteRouteChildren: AuthenticatedAtCh
       AuthenticatedAtChar123usernameChar125IndexRoute,
     AuthenticatedAtChar123usernameChar125BookmarksIndexRoute:
       AuthenticatedAtChar123usernameChar125BookmarksIndexRoute,
-    AuthenticatedAtChar123usernameChar125DataIndexRoute:
-      AuthenticatedAtChar123usernameChar125DataIndexRoute,
     AuthenticatedAtChar123usernameChar125ListsIndexRoute:
       AuthenticatedAtChar123usernameChar125ListsIndexRoute,
     AuthenticatedAtChar123usernameChar125ModerationIndexRoute:

@@ -1,7 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import {
   BookmarkIcon,
-  DatabaseIcon,
   ListChecksIcon,
   MonitorIcon,
   ScaleIcon,
@@ -40,22 +39,16 @@ const baseNavItems = [
     value: "lists",
   },
   {
-    icon: ShieldIcon,
-    label: "Security",
-    link: "/@{$username}/security",
-    value: "security",
-  },
-  {
     icon: MonitorIcon,
     label: "Sessions",
     link: "/@{$username}/sessions",
     value: "sessions",
   },
   {
-    icon: DatabaseIcon,
-    label: "Data",
-    link: "/@{$username}/data",
-    value: "data",
+    icon: ShieldIcon,
+    label: "Security",
+    link: "/@{$username}/security",
+    value: "security",
   },
 ] as const;
 

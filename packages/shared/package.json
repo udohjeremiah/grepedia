@@ -219,18 +219,6 @@
       "types": "./dist/schemas/users/get-users-leaderboard.d.ts",
       "default": "./dist/schemas/users/get-users-leaderboard.js"
     },
-    "./schemas/users/recovery-package/get-user-recovery-package": {
-      "types": "./dist/schemas/users/recovery-package/get-user-recovery-package.d.ts",
-      "default": "./dist/schemas/users/recovery-package/get-user-recovery-package.js"
-    },
-    "./schemas/users/recovery-package/recover-user-account": {
-      "types": "./dist/schemas/users/recovery-package/recover-user-account.d.ts",
-      "default": "./dist/schemas/users/recovery-package/recover-user-account.js"
-    },
-    "./schemas/users/recovery-package/user-recovery-package": {
-      "types": "./dist/schemas/users/recovery-package/user-recovery-package.d.ts",
-      "default": "./dist/schemas/users/recovery-package/user-recovery-package.js"
-    },
     "./schemas/users/trust/user-trust": {
       "types": "./dist/schemas/users/trust/user-trust.d.ts",
       "default": "./dist/schemas/users/trust/user-trust.js"

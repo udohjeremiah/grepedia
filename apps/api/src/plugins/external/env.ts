@@ -34,7 +34,6 @@ declare module "fastify" {
       PORT: number;
       RESEND_API_KEY: string;
       SEARCH_VECTOR_SCORE: number;
-      USER_DATA_EXPORT_SIGNING_SECRET: string;
     };
   }
 }
@@ -162,10 +161,6 @@ const options: FastifyEnvOptions = {
         default: 0.5,
         type: "number",
       },
-      USER_DATA_EXPORT_SIGNING_SECRET: {
-        default: "dev-user-data-export-signing-secret-change-me",
-        type: "string",
-      },
     },
     required: [
       "NODE_ENV",
@@ -198,7 +193,6 @@ const options: FastifyEnvOptions = {
       "GEMINI_API_KEY",
       "OLLAMA_URL",
       "SEARCH_VECTOR_SCORE",
-      "USER_DATA_EXPORT_SIGNING_SECRET",
     ],
     type: "object",
   },

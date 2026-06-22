@@ -47,7 +47,7 @@ export function DeleteAccountDialog() {
   });
 
   const handleDeleteAccount = async () => {
-    if (deleteConfirmText !== user?.username) {
+    if (deleteConfirmText.toLowerCase() !== user?.username) {
       setError(
         "Username mismatch",
         "The username you entered does not match your current username.",
@@ -92,13 +92,9 @@ export function DeleteAccountDialog() {
           </AlertDialogTitle>
           <AlertDialogDescription className="flex flex-col gap-3">
             <span>
-              This will permanently delete your account profile and bookmarks.
-              Your tools, comments, and reactions will remain on the platform.
-            </span>
-            <span className="border border-chart-4/20 bg-chart-4/10 p-3 text-xs text-chart-4">
-              Export your account data first. You will need the recovery package
-              if you want to re-link your past contributions after creating a
-              new account.
+              This will permanently delete your user profile, bookmarks and
+              reactions. Your tools, lists, and comments will remain on the
+              platform.
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>

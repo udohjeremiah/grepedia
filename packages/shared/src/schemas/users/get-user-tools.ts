@@ -4,9 +4,7 @@ import { defaultResponse } from "@/schemas/default-response.js";
 import { objectIdSchema } from "@/schemas/object-id.js";
 import { slugSchema } from "@/schemas/slug.js";
 
-export const getUserToolsParamsSchema = z.object({
-  userId: objectIdSchema,
-});
+export const getUserToolsParamsSchema = z.object({ userId: objectIdSchema });
 
 export type GetUserToolsParams = z.infer<typeof getUserToolsParamsSchema>;
 
