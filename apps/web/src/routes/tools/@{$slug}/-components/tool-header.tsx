@@ -260,18 +260,6 @@ export function ToolHeader() {
             {score}
           </span>
         </div>
-        <Separator orientation="vertical" />
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs text-muted-foreground">Comments</span>
-          <span
-            className={cn(
-              "text-sm font-semibold text-muted-foreground",
-              tool.stats.comments > 0 && "text-foreground",
-            )}
-          >
-            {tool.stats.comments}
-          </span>
-        </div>
         <div className="ml-auto flex items-center gap-2">
           <Button
             asChild

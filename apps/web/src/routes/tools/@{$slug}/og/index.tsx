@@ -17,7 +17,7 @@ export const Route = createFileRoute("/tools/@{$slug}/og/")({
           officialUrl: url.searchParams.get("officialUrl") ?? "",
           shortDescription: url.searchParams.get("description") ?? "",
           stats: {
-            comments: Number(url.searchParams.get("comments") ?? 0),
+            downvotes: Number(url.searchParams.get("downvotes") ?? 0),
             upvotes: Number(url.searchParams.get("upvotes") ?? 0),
           },
         };

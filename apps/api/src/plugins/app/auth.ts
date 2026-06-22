@@ -11,6 +11,7 @@ import { APIError, createAuthMiddleware } from "better-auth/api";
 import { betterAuth } from "better-auth/minimal";
 import { username } from "better-auth/plugins";
 import fp from "fastify-plugin";
+import { ObjectId } from "mongodb";
 import { randomInt } from "node:crypto";
 
 export type AuthInstance = ReturnType<typeof createAuth>;
@@ -196,19 +197,15 @@ function createAuth(fastify: FastifyInstance) {
       },
       deleteUser: {
         afterDelete: async (user) => {
-          const userObjectId = fastify.mongo.ObjectId.createFromHexString(
-            user.id,
-          );
+          const userObjectId = ObjectId.createFromHexString(user.id);
 
           const userBookmarks = fastify.db.userBookmarks;
           const toolReactions = fastify.db.toolReactions;
-          const toolCommentReactions = fastify.db.toolCommentReactions;
           const listReactions = fastify.db.listReactions;
 
           await Promise.all([
             userBookmarks.deleteMany({ userId: userObjectId }),
             toolReactions.deleteMany({ userId: userObjectId }),
-            toolCommentReactions.deleteMany({ userId: userObjectId }),
             listReactions.deleteMany({ userId: userObjectId }),
           ]);
         },

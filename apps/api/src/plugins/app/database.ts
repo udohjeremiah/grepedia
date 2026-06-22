@@ -7,8 +7,6 @@ import fp from "fastify-plugin";
 import type { ListReactionWithObjectIds } from "@/schemas/lists/list-reaction.js";
 import type { ListViewWithObjectIds } from "@/schemas/lists/list-view.js";
 import type { ListWithObjectIds } from "@/schemas/lists/list.js";
-import type { ToolCommentReactionWithObjectIds } from "@/schemas/tools/tool-comment-reaction.js";
-import type { ToolCommentWithObjectIds } from "@/schemas/tools/tool-comment.js";
 import type { ToolReactionWithObjectIds } from "@/schemas/tools/tool-reaction.js";
 import type { ToolWithObjectIds } from "@/schemas/tools/tool.js";
 import type { UserBookmarkWithObjectIds } from "@/schemas/users/user-bookmark.js";
@@ -19,8 +17,6 @@ type Database = {
   listReactions: Collection<ListReactionWithObjectIds>;
   lists: Collection<ListWithObjectIds>;
   listViews: Collection<ListViewWithObjectIds>;
-  toolCommentReactions: Collection<ToolCommentReactionWithObjectIds>;
-  toolComments: Collection<ToolCommentWithObjectIds>;
   toolReactions: Collection<ToolReactionWithObjectIds>;
   tools: Collection<ToolWithObjectIds>;
   userBookmarks: Collection<UserBookmarkWithObjectIds>;
@@ -57,15 +53,6 @@ export default fp(
     const toolReactions = instance.collection<ToolReactionWithObjectIds>(
       fastify.env.MONGODB_COLL_TOOL_REACTION,
     );
-
-    const toolComments = instance.collection<ToolCommentWithObjectIds>(
-      fastify.env.MONGODB_COLL_TOOL_COMMENT,
-    );
-
-    const toolCommentReactions =
-      instance.collection<ToolCommentReactionWithObjectIds>(
-        fastify.env.MONGODB_COLL_TOOL_COMMENT_REACTION,
-      );
 
     const userBookmarks = instance.collection<UserBookmarkWithObjectIds>(
       fastify.env.MONGODB_COLL_USER_BOOKMARK,
@@ -118,12 +105,6 @@ export default fp(
                 },
               },
               {
-                key: { status: 1, "stats.comments": -1, _id: -1 },
-                options: {
-                  name: "grepedia__tool__status_comments_desc_id_desc",
-                },
-              },
-              {
                 key: {
                   status: 1,
                   "stats.upvotes": -1,
@@ -171,59 +152,6 @@ export default fp(
               {
                 key: { userId: 1, toolId: 1 },
                 options: { name: "grepedia__tool_reaction__userId_toolId" },
-              },
-            ],
-          },
-          {
-            collection: toolComments,
-            specs: [
-              {
-                key: { toolId: 1, createdAt: -1 },
-                options: {
-                  name: "grepedia__tool_comment__toolId_createdAt_desc",
-                },
-              },
-              {
-                key: { toolId: 1, parentCommentId: 1, createdAt: -1, _id: -1 },
-                options: {
-                  name: "grepedia__tool_comment__toolId_parentCommentId_createdAt_desc_id_desc",
-                },
-              },
-              {
-                key: { parentCommentId: 1, createdAt: -1, _id: -1 },
-                options: {
-                  name: "grepedia__tool_comment__parentCommentId_createdAt_desc_id_desc",
-                },
-              },
-              {
-                key: { userId: 1, createdAt: -1 },
-                options: {
-                  name: "grepedia__tool_comment__userId_createdAt_desc",
-                },
-              },
-            ],
-          },
-          {
-            collection: toolCommentReactions,
-            specs: [
-              {
-                key: { commentId: 1, userId: 1 },
-                options: {
-                  name: "grepedia__tool_comment_reaction__commentId_userId",
-                  unique: true,
-                },
-              },
-              {
-                key: { commentId: 1, value: 1 },
-                options: {
-                  name: "grepedia__tool_comment_reaction__commentId_value",
-                },
-              },
-              {
-                key: { userId: 1, commentId: 1 },
-                options: {
-                  name: "grepedia__tool_comment_reaction__userId_commentId",
-                },
               },
             ],
           },
@@ -311,8 +239,6 @@ export default fp(
       users,
       tools,
       toolReactions,
-      toolComments,
-      toolCommentReactions,
       userBookmarks,
       lists,
       listViews,

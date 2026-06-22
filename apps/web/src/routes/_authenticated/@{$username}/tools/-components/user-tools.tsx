@@ -11,7 +11,6 @@ import {
   ArrowUpRightIcon,
   FolderOpenIcon,
   type LucideIcon,
-  MessageSquareIcon,
   PenLineIcon,
   PlusIcon,
   SearchIcon,
@@ -26,13 +25,7 @@ import { useUserTools } from "../-queries/user-tools";
 import { AddToolDialog } from "./add-tool-dialog";
 import { ToolDirectory } from "./tool-directory";
 
-type FilterView =
-  | "added"
-  | "all"
-  | "commented"
-  | "downvoted"
-  | "updated"
-  | "upvoted";
+type FilterView = "added" | "all" | "downvoted" | "updated" | "upvoted";
 
 type StatConfigProps = {
   filterView: "all" | StatKey;
@@ -40,7 +33,7 @@ type StatConfigProps = {
   stats: Record<StatKey, number>;
 };
 
-type StatKey = "added" | "commented" | "downvoted" | "updated" | "upvoted";
+type StatKey = "added" | "downvoted" | "updated" | "upvoted";
 
 export const getStatConfig = ({
   filterView,
@@ -55,15 +48,6 @@ export const getStatConfig = ({
       isActive: filterView === "added",
       label: "Tools Added",
       onClick: () => setFilterView(filterView === "added" ? "all" : "added"),
-    },
-    commented: {
-      colorClass: "bg-primary/10 text-primary",
-      count: stats.commented,
-      icon: MessageSquareIcon,
-      isActive: filterView === "commented",
-      label: "Comments Given",
-      onClick: () =>
-        setFilterView(filterView === "commented" ? "all" : "commented"),
     },
     downvoted: {
       colorClass: "bg-destructive/10 text-destructive",
@@ -112,12 +96,6 @@ export function UserTools() {
         filteredResult = filteredResult.filter((tool) => tool.relations.added);
         break;
       }
-      case "commented": {
-        filteredResult = filteredResult.filter(
-          (tool) => tool.relations.commented,
-        );
-        break;
-      }
       case "downvoted": {
         filteredResult = filteredResult.filter(
           (tool) => tool.relations.downvoted,
@@ -158,7 +136,6 @@ export function UserTools() {
   const filterLabel: Record<FilterView, string> = {
     added: "Tools You Added",
     all: "All Tools",
-    commented: "Tools You Commented On",
     downvoted: "Tools You Downvoted",
     updated: "Tools You Updated",
     upvoted: "Tools You Upvoted",
@@ -189,7 +166,6 @@ export function UserTools() {
           <StatCard {...statConfig.updated} />
           <StatCard {...statConfig.upvoted} />
           <StatCard {...statConfig.downvoted} />
-          <StatCard {...statConfig.commented} />
         </div>
       </div>
       <div className="flex flex-col gap-6 border p-6">

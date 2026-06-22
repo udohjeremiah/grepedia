@@ -20,8 +20,6 @@ declare module "fastify" {
       MONGODB_COLL_LIST_REACTION: string;
       MONGODB_COLL_LIST_VIEW: string;
       MONGODB_COLL_TOOL: string;
-      MONGODB_COLL_TOOL_COMMENT: string;
-      MONGODB_COLL_TOOL_COMMENT_REACTION: string;
       MONGODB_COLL_TOOL_REACTION: string;
       MONGODB_COLL_USER: string;
       MONGODB_COLL_USER_BOOKMARK: string;
@@ -104,14 +102,6 @@ const options: FastifyEnvOptions = {
         default: "tool",
         type: "string",
       },
-      MONGODB_COLL_TOOL_COMMENT: {
-        default: "tool-comment",
-        type: "string",
-      },
-      MONGODB_COLL_TOOL_COMMENT_REACTION: {
-        default: "tool-comment-reaction",
-        type: "string",
-      },
       MONGODB_COLL_TOOL_REACTION: {
         default: "tool-reaction",
         type: "string",
@@ -165,8 +155,6 @@ const options: FastifyEnvOptions = {
       "MONGODB_COLL_USER",
       "MONGODB_COLL_TOOL",
       "MONGODB_COLL_TOOL_REACTION",
-      "MONGODB_COLL_TOOL_COMMENT",
-      "MONGODB_COLL_TOOL_COMMENT_REACTION",
       "MONGODB_COLL_USER_BOOKMARK",
       "MONGODB_COLL_LIST",
       "MONGODB_COLL_LIST_VIEW",

@@ -4,16 +4,10 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import { ErrorFallback } from "@/components/error-fallback";
 
-import { Tool } from "./-components/tool";
-import { toolCommentsQueryOptions } from "./-queries/tool-comments";
+import { ToolDescription } from "./-components/tool-description";
 
 export const Route = createFileRoute("/tools/@{$slug}/")({
   component: RouteComponent,
-  loader: ({ context, params }) => {
-    context.queryClient.prefetchInfiniteQuery(
-      toolCommentsQueryOptions({ params }),
-    );
-  },
 });
 
 function RouteComponent() {
@@ -29,7 +23,7 @@ function RouteComponent() {
           )}
           onReset={reset}
         >
-          <Tool />
+          <ToolDescription />
         </ErrorBoundary>
       )}
     </QueryErrorResetBoundary>

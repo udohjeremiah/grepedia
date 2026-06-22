@@ -19,16 +19,14 @@ interface LookupBarProps {
   target: ModerationTarget;
 }
 
-type ModerationTarget = "comment" | "tool" | "user";
+type ModerationTarget = "tool" | "user";
 
 const labelByTarget: Record<ModerationTarget, string> = {
-  comment: "Comment ID",
   tool: "Tool Slug",
   user: "Username",
 };
 
 const placeholderByTarget: Record<ModerationTarget, string> = {
-  comment: "Enter comment id",
   tool: "Enter tool slug",
   user: "Enter username",
 };
@@ -52,7 +50,6 @@ export function LookupBar({
           <SelectContent>
             <SelectItem value="user">User</SelectItem>
             <SelectItem value="tool">Tool</SelectItem>
-            <SelectItem value="comment">Comment</SelectItem>
           </SelectContent>
         </Select>
       </div>

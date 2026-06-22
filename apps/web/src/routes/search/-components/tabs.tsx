@@ -1,16 +1,10 @@
-import {
-  MessageSquareIcon,
-  SearchIcon,
-  SparklesIcon,
-  StarIcon,
-} from "lucide-react";
+import { SearchIcon, SparklesIcon, StarIcon } from "lucide-react";
 
 import { Tab } from "./tab";
 
 export const tabs = [
   { icon: SearchIcon, label: "All", value: "all" },
   { icon: StarIcon, label: "Popular", value: "popular" },
-  { icon: MessageSquareIcon, label: "Trending", value: "trending" },
   { icon: SparklesIcon, label: "New", value: "new" },
 ] as const;
 

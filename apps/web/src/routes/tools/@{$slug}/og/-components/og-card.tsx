@@ -7,7 +7,7 @@ interface OgCardProps {
     name: string;
     officialUrl: string;
     shortDescription: string;
-    stats: { comments: number; upvotes: number };
+    stats: { downvotes: number; upvotes: number };
   };
 }
 
@@ -62,7 +62,7 @@ export function OgCard({ favicon, primary, secondary, tool }: OgCardProps) {
         <div className="flex items-center justify-between">
           <div className="flex gap-6 text-2xl text-white/70">
             <span>▲ {tool.stats.upvotes}</span>
-            <span>💬 {tool.stats.comments}</span>
+            <span>💬 {tool.stats.downvotes}</span>
           </div>
           <div
             className="bg-clip-text text-3xl font-bold text-transparent"

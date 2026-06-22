@@ -61,7 +61,7 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
         embeddings,
         releasedAt: body.releasedAt ? new Date(body.releasedAt) : undefined,
         slug,
-        stats: { comments: 0, downvotes: 0, upvotes: 0 },
+        stats: { downvotes: 0, upvotes: 0 },
         status: "published" as const,
       };
 
@@ -92,10 +92,6 @@ const addTool: FastifyPluginAsyncZod = async (fastify) => {
           });
         }
       }
-
-      fastify.evaluateUserTrust(userId).catch((error) => {
-        fastify.log.error(error);
-      });
 
       return reply.code(201).send({
         data: {

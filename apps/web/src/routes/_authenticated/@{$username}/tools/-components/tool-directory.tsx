@@ -16,7 +16,6 @@ import {
 import {
   FileCode2Icon,
   FolderOpenIcon,
-  MessageSquareIcon,
   SearchXIcon,
   ThumbsDownIcon,
   ThumbsUpIcon,
@@ -183,10 +182,6 @@ export function ToolDirectory({ searchQuery, tools }: ToolDirectoryProps) {
                   <span className="flex items-center gap-1">
                     <ThumbsDownIcon className="size-3" />
                     {formatCompactNumber(tool.stats.downvotes)}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MessageSquareIcon className="size-3" />
-                    {formatCompactNumber(tool.stats.comments)}
                   </span>
                 </div>
               </Link>

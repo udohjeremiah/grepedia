@@ -19,7 +19,6 @@ import {
 import { format } from "date-fns";
 import {
   CalendarIcon,
-  MessageSquareIcon,
   SearchIcon,
   StarIcon,
 } from "lucide-react";
@@ -46,10 +45,6 @@ const statConfigByTab = {
     getValue: (tool: ToolProps) =>
       formatCompactNumber(tool.stats.upvotes - tool.stats.downvotes),
     icon: StarIcon,
-  },
-  trending: {
-    getValue: (tool: ToolProps) => formatCompactNumber(tool.stats.comments),
-    icon: MessageSquareIcon,
   },
 } as const;
 

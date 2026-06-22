@@ -17,7 +17,6 @@ export const getToolResponseSchemas = {
         addedBy: z.string(),
         relations: z.object({
           bookmarked: z.boolean(),
-          commented: z.boolean(),
           downvoted: z.boolean(),
           upvoted: z.boolean(),
         }),

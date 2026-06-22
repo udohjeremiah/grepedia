@@ -93,8 +93,7 @@ export function DeleteAccountDialog() {
           <AlertDialogDescription className="flex flex-col gap-3">
             <span>
               This will permanently delete your user profile, bookmarks and
-              reactions. Your tools, lists, and comments will remain on the
-              platform.
+              reactions. Your tools and lists will remain on the platform.
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>

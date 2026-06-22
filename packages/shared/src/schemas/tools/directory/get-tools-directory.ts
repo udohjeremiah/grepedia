@@ -32,7 +32,6 @@ export const getToolsDirectoryResponseSchemas = {
           shortDescription: z.string(),
           slug: slugSchema,
           stats: z.object({
-            comments: z.int(),
             downvotes: z.int(),
             upvotes: z.int(),
           }),

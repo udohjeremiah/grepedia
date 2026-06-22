@@ -16,7 +16,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
       const users = fastify.db.users;
       const tools = fastify.db.tools;
       const toolReactions = fastify.db.toolReactions;
-      const toolComments = fastify.db.toolComments;
 
       const userObjectId = ObjectId.createFromHexString(userId);
       const user = await users.findOne({ _id: userObjectId });
@@ -28,21 +27,15 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const [toolsAdded, toolsUpdated, toolsReactions, comments] =
-        await Promise.all([
-          tools
-            .find({ addedBy: user._id }, { projection: { _id: 1 } })
-            .toArray(),
-          tools
-            .find({ updatedBy: user._id }, { projection: { _id: 1 } })
-            .toArray(),
-          toolReactions
-            .find({ userId: user._id }, { projection: { toolId: 1, value: 1 } })
-            .toArray(),
-          toolComments
-            .find({ userId: user._id }, { projection: { toolId: 1 } })
-            .toArray(),
-        ]);
+      const [toolsAdded, toolsUpdated, toolsReactions] = await Promise.all([
+        tools.find({ addedBy: user._id }, { projection: { _id: 1 } }).toArray(),
+        tools
+          .find({ updatedBy: user._id }, { projection: { _id: 1 } })
+          .toArray(),
+        toolReactions
+          .find({ userId: user._id }, { projection: { toolId: 1, value: 1 } })
+          .toArray(),
+      ]);
 
       const upvotedToolIds = toolsReactions
         .filter((r) => r.value === 1)
@@ -52,14 +45,11 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
         .filter((r) => r.value === -1)
         .map((r) => r.toolId);
 
-      const commentedToolIds = comments.map((c) => c.toolId);
-
       const mergedToolIds: ObjectId[] = [
         ...toolsAdded.map((tool) => tool._id),
         ...toolsUpdated.map((tool) => tool._id),
         ...upvotedToolIds,
         ...downvotedToolIds,
-        ...commentedToolIds,
       ];
 
       const toolIdMap = new Map<string, ObjectId>(
@@ -99,9 +89,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
       const downvotedSet = new Set(
         downvotedToolIds.map((id) => id.toHexString()),
       );
-      const commentedSet = new Set(
-        commentedToolIds.map((id) => id.toHexString()),
-      );
 
       const toolsResponse = allTool.map((tool) => {
         const idHex = tool._id.toHexString();
@@ -114,7 +101,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
           officialUrl: tool.officialUrl,
           relations: {
             added: addedSet.has(idHex),
-            commented: commentedSet.has(idHex),
             downvoted: downvotedSet.has(idHex),
             updated: updatedSet.has(idHex),
             upvoted: upvotedSet.has(idHex),
@@ -130,7 +116,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
         data: {
           stats: {
             added: addedSet.size,
-            commented: commentedSet.size,
             downvoted: downvotedSet.size,
             updated: updatedSet.size,
             upvoted: upvotedSet.size,

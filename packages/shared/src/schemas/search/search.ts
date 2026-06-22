@@ -15,7 +15,7 @@ export const searchQueryStringSchema = z.object({
     .string()
     .min(2, "Please provide at least 2 characters.")
     .max(8192, "Please provide no more than 8192 characters."),
-  tab: z.enum(["all", "popular", "trending", "new"]).default("all"),
+  tab: z.enum(["all", "popular", "new"]).default("all"),
 });
 
 export type SearchQueryString = z.infer<typeof searchQueryStringSchema>;
@@ -34,7 +34,6 @@ export const searchResponseSchemas = {
           shortDescription: z.string(),
           slug: slugSchema,
           stats: z.object({
-            comments: z.int(),
             downvotes: z.int(),
             upvotes: z.int(),
           }),

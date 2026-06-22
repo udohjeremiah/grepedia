@@ -35,8 +35,8 @@ function RouteComponent() {
           <h3 className="font-semibold">Moderation</h3>
           <p className="text-sm text-muted-foreground">
             Appeals and moderation requests start on GitHub. Moderators can
-            review users, tools, and comments here by selecting a target and
-            fetching by identifier.
+            review users and tools here by selecting a target and fetching by
+            identifier.
           </p>
         </div>
         <Separator />

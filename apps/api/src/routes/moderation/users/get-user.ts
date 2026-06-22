@@ -5,8 +5,6 @@ import {
   moderatorGetUserResponseSchemas,
 } from "@workspace/shared/schemas/moderation/moderator-get-user";
 
-import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
-
 const getUser: FastifyPluginAsyncZod = async (fastify) => {
   fastify.route({
     handler: async function (request, reply) {
@@ -15,7 +13,6 @@ const getUser: FastifyPluginAsyncZod = async (fastify) => {
       const users = fastify.db.users;
       const tools = fastify.db.tools;
       const toolReactions = fastify.db.toolReactions;
-      const toolComments = fastify.db.toolComments;
 
       const user = await users.findOne(
         { username },
@@ -29,24 +26,18 @@ const getUser: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const [toolsAdded, toolsUpdated, toolCommentsCount, toolReactionsCount] =
-        await Promise.all([
-          tools.countDocuments({ addedBy: user._id }),
-          tools.countDocuments({ updatedBy: user._id }),
-          toolComments.countDocuments({ userId: user._id }),
-          toolReactions.countDocuments({ userId: user._id }),
-        ]);
+      const [toolsAdded, toolsUpdated, toolReactionsCount] = await Promise.all([
+        tools.countDocuments({ addedBy: user._id }),
+        tools.countDocuments({ updatedBy: user._id }),
+        toolReactions.countDocuments({ userId: user._id }),
+      ]);
 
-      const totalContributions =
-        toolsAdded + toolsUpdated + toolCommentsCount + toolReactionsCount;
-
-      const trustProfile = await fastify.evaluateUserTrust(user._id);
+      const totalContributions = toolsAdded + toolsUpdated + toolReactionsCount;
 
       return reply.code(200).send({
         data: {
           user: {
             contributions: {
-              toolComments: toolCommentsCount,
               toolReactions: toolReactionsCount,
               toolsAdded,
               toolsUpdated,
@@ -55,9 +46,6 @@ const getUser: FastifyPluginAsyncZod = async (fastify) => {
             id: user._id.toHexString(),
             role: user.role,
             status: user.status,
-            trustProfile: trustProfile
-              ? serializeMongoTypes(trustProfile)
-              : undefined,
             username: user.username,
           },
         },

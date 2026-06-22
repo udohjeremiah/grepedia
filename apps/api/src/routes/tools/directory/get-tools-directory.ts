@@ -62,7 +62,6 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
           shortDescription: string;
           slug: string;
           stats: {
-            comments: number;
             downvotes: number;
             upvotes: number;
           };

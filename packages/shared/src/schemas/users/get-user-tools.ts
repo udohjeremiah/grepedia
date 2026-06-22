@@ -13,7 +13,6 @@ export const getUserToolsResponseSchemas = {
     data: z.object({
       stats: z.object({
         added: z.int(),
-        commented: z.int(),
         downvoted: z.int(),
         updated: z.int(),
         upvoted: z.int(),
@@ -27,7 +26,6 @@ export const getUserToolsResponseSchemas = {
           officialUrl: z.url(),
           relations: z.object({
             added: z.boolean(),
-            commented: z.boolean(),
             downvoted: z.boolean(),
             updated: z.boolean(),
             upvoted: z.boolean(),
@@ -35,7 +33,6 @@ export const getUserToolsResponseSchemas = {
           shortDescription: z.string(),
           slug: slugSchema,
           stats: z.object({
-            comments: z.int(),
             downvotes: z.int(),
             upvotes: z.int(),
           }),

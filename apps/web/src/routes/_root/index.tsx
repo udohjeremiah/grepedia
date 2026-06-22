@@ -1,16 +1,9 @@
-import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@workspace/ui/components/button";
-import { Separator } from "@workspace/ui/components/separator";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
 
 import { AppLink } from "@/components/app-link";
-import { ErrorFallback } from "@/components/error-fallback";
 
 import { SearchForm } from "./-components/search-form";
-import { ToolsStats } from "./-components/tools-stats";
-import { toolsStatsQueryOptions } from "./-queries/tools-stats";
 
 export const Route = createFileRoute("/_root/")({
   component: RouteComponent,
@@ -24,9 +17,6 @@ export const Route = createFileRoute("/_root/")({
       },
     ],
   }),
-  loader: ({ context }) => {
-    context.queryClient.prefetchQuery(toolsStatsQueryOptions());
-  },
 });
 
 function RouteComponent() {
@@ -39,26 +29,7 @@ function RouteComponent() {
         </div>
         <SearchForm className="w-full" />
       </main>
-      <footer className="mx-auto flex flex-col items-center gap-2 p-4 md:p-6">
-        <QueryErrorResetBoundary>
-          {({ reset }) => (
-            <ErrorBoundary
-              FallbackComponent={({ resetErrorBoundary }) => (
-                <ErrorFallback
-                  description="Couldn't load tools stats."
-                  onRetry={resetErrorBoundary}
-                  variant="compact"
-                />
-              )}
-              onReset={reset}
-            >
-              <Suspense>
-                <ToolsStats />
-              </Suspense>
-            </ErrorBoundary>
-          )}
-        </QueryErrorResetBoundary>
-        <Separator />
+      <footer className="mx-auto p-4 md:p-6">
         <div className="flex flex-col items-center">
           <div className="flex flex-wrap items-center gap-2">
             <AppLink className="text-xs" to="/tools/directory">

@@ -10,19 +10,18 @@ export const roleConfig: Record<
 > = {
   contributor: {
     color: "text-blue-500",
-    description: "Can submit and update tools and resources for the community.",
+    description: "Can submit tools and lists for the community.",
     label: "Contributor",
   },
   member: {
     color: "text-muted-foreground",
     description:
-      "Standard account with access to browse, bookmark, and comment on tools.",
+      "Standard account with access to browse, bookmark, and react to tools and lists.",
     label: "Member",
   },
   moderator: {
     color: "text-violet-500",
-    description:
-      "Can review, revert and moderate content and user submissions.",
+    description: "Can moderate content and user submissions.",
     label: "Moderator",
   },
 } as const;

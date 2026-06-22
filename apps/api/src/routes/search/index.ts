@@ -21,26 +21,21 @@ import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
 type BuildSearchPipelineParams = {
   baseFilter: Record<string, unknown>;
-  commentsCollectionName: string;
   cursorMatches: SearchCursorMatches;
   limit: number;
   tab: SearchTab;
-  trendingWindowStart: Date;
 };
 
 type BuildVectorSearchPipelineParams = {
-  commentsCollectionName: string;
   cursorMatches: SearchCursorMatches;
   limit: number;
   queryVector: number[];
   searchVectorScore: number;
   tab: SearchTab;
-  trendingWindowStart: Date;
   vectorIndex: string;
 };
 
 type CursorPayload =
-  | { comments: number; id: string; type: "comments" }
   | { date: string; id: string; type: "date" }
   | { id: string; score: number; type: "score" }
   | { id: string; type: "id" }
@@ -51,7 +46,6 @@ type GetNextSearchCursorParams = {
     | undefined
     | {
         _id?: ObjectId;
-        recentComments?: number;
         releasedAt?: Date;
         score?: number;
         stats: { downvotes: number; upvotes: number };
@@ -63,14 +57,12 @@ type GetNextSearchCursorParams = {
 
 type NextCursor =
   | undefined
-  | { comments: number; id: string; type: "comments" }
   | { date: string; id: string; type: "date" }
   | { id: string; score: number; type: "score" }
   | { id: string; type: "id" }
   | { id: string; type: "vectorScore"; vectorScore: number };
 
 type SearchCursorMatches = {
-  commentsCursorMatch?: Record<string, unknown>;
   dateCursorMatch?: Record<string, unknown>;
   idCursorMatch?: Record<string, unknown>;
   scoreCursorMatch?: Record<string, unknown>;
@@ -84,11 +76,6 @@ const searchCursorPayloadSchema = z.discriminatedUnion("type", [
     date: z.iso.datetime(),
     id: objectIdSchema,
     type: z.literal("date"),
-  }),
-  z.object({
-    comments: z.number(),
-    id: objectIdSchema,
-    type: z.literal("comments"),
   }),
   z.object({ id: objectIdSchema, score: z.number(), type: z.literal("score") }),
   z.object({
@@ -140,20 +127,6 @@ function buildCursorMatches(
     };
   }
 
-  if (decodedCursor.type === "comments") {
-    return {
-      commentsCursorMatch: {
-        $or: [
-          { recentComments: { $lt: decodedCursor.comments } },
-          {
-            _id: { $lt: ObjectId.createFromHexString(decodedCursor.id) },
-            recentComments: decodedCursor.comments,
-          },
-        ],
-      },
-    };
-  }
-
   return {
     dateCursorMatch: {
       $or: [
@@ -169,18 +142,11 @@ function buildCursorMatches(
 
 function buildSearchPipeline({
   baseFilter,
-  commentsCollectionName,
   cursorMatches,
   limit,
   tab,
-  trendingWindowStart,
 }: BuildSearchPipelineParams): Document[] {
-  const {
-    commentsCursorMatch,
-    dateCursorMatch,
-    idCursorMatch,
-    scoreCursorMatch,
-  } = cursorMatches;
+  const { dateCursorMatch, idCursorMatch, scoreCursorMatch } = cursorMatches;
 
   const pipelines = {
     all: [
@@ -208,62 +174,21 @@ function buildSearchPipeline({
       { $sort: { score: -1, _id: -1 } },
       { $limit: limit },
     ],
-    trending: [
-      { $match: baseFilter },
-      {
-        $lookup: {
-          as: "recentCommentStats",
-          from: commentsCollectionName,
-          let: { toolId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$toolId", "$$toolId"] },
-                    { $gte: ["$createdAt", trendingWindowStart] },
-                  ],
-                },
-              },
-            },
-            { $count: "count" },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          recentComments: {
-            $ifNull: [{ $arrayElemAt: ["$recentCommentStats.count", 0] }, 0],
-          },
-        },
-      },
-      { $match: { recentComments: { $gt: 0 } } },
-      ...(commentsCursorMatch ? [{ $match: commentsCursorMatch }] : []),
-      // eslint-disable-next-line perfectionist/sort-objects
-      { $sort: { recentComments: -1, _id: -1 } },
-      { $limit: limit },
-    ],
   } as const;
 
   return pipelines[tab] as unknown as Document[];
 }
 
 function buildVectorSearchPipeline({
-  commentsCollectionName,
   cursorMatches,
   limit,
   queryVector,
   searchVectorScore,
   tab,
-  trendingWindowStart,
   vectorIndex,
 }: BuildVectorSearchPipelineParams): Document[] {
-  const {
-    commentsCursorMatch,
-    dateCursorMatch,
-    scoreCursorMatch,
-    vectorScoreCursorMatch,
-  } = cursorMatches;
+  const { dateCursorMatch, scoreCursorMatch, vectorScoreCursorMatch } =
+    cursorMatches;
 
   const candidateLimit = Math.max(limit * 10, 200);
   const vectorFilter = { status: "published" };
@@ -310,43 +235,6 @@ function buildVectorSearchPipeline({
       ...(scoreCursorMatch ? [{ $match: scoreCursorMatch }] : []),
       // eslint-disable-next-line perfectionist/sort-objects
       { $sort: { score: -1, _id: -1 } },
-      { $limit: limit },
-    ],
-    trending: [
-      vectorStage,
-      { $set: { vectorScore: { $meta: "vectorSearchScore" } } },
-      { $match: { vectorScore: { $gte: searchVectorScore } } },
-      {
-        $lookup: {
-          as: "recentCommentStats",
-          from: commentsCollectionName,
-          let: { toolId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$toolId", "$$toolId"] },
-                    { $gte: ["$createdAt", trendingWindowStart] },
-                  ],
-                },
-              },
-            },
-            { $count: "count" },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          recentComments: {
-            $ifNull: [{ $arrayElemAt: ["$recentCommentStats.count", 0] }, 0],
-          },
-        },
-      },
-      { $match: { recentComments: { $gt: 0 } } },
-      ...(commentsCursorMatch ? [{ $match: commentsCursorMatch }] : []),
-      // eslint-disable-next-line perfectionist/sort-objects
-      { $sort: { recentComments: -1, _id: -1 } },
       { $limit: limit },
     ],
   } as const;
@@ -403,14 +291,6 @@ function getNextSearchCursor({
     };
   }
 
-  if (tab === "trending") {
-    return {
-      comments: last.recentComments ?? 0,
-      id: last._id.toString(),
-      type: "comments",
-    };
-  }
-
   if (tab === "new" && last.releasedAt) {
     return {
       date: last.releasedAt.toISOString(),
@@ -434,11 +314,6 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       const { cursor, limit = 20, query, tab } = request.query;
 
       const tools = fastify.db.tools;
-      const toolComments = fastify.db.toolComments;
-
-      const trendingWindowStart = new Date(
-        Date.now() - 1000 * 60 * 60 * 24 * 7,
-      );
 
       let decodedCursor;
       try {
@@ -466,13 +341,11 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
       if (isProduction) {
         const vectorIndex = "tool_embeddings";
         const vectorPipeline = buildVectorSearchPipeline({
-          commentsCollectionName: toolComments.collectionName,
           cursorMatches,
           limit,
           queryVector,
           searchVectorScore: fastify.env.SEARCH_VECTOR_SCORE,
           tab,
-          trendingWindowStart,
           vectorIndex,
         });
 
@@ -530,11 +403,9 @@ const search: FastifyPluginAsyncZod = async (fastify) => {
 
           const pipeline = buildSearchPipeline({
             baseFilter: { ...baseFilter, _id: { $in: candidateIds } },
-            commentsCollectionName: toolComments.collectionName,
             cursorMatches,
             limit,
             tab,
-            trendingWindowStart,
           });
 
           result = await tools.aggregate<ToolWithObjectIds>(pipeline).toArray();

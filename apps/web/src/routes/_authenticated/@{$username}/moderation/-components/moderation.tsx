@@ -5,30 +5,26 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@workspace/ui/components/empty";
-import { FlagIcon, UserRoundXIcon, WrenchIcon } from "lucide-react";
+import { UserRoundXIcon, WrenchIcon } from "lucide-react";
 import { useState } from "react";
 
 import { globalBannerStore } from "@/lib/global-banner-store";
 import { getErrorMessage } from "@/utils/get-error-message";
 
-import { useModeratorGetComment } from "../-queries/moderator-get-comment";
 import { useModeratorGetTool } from "../-queries/moderator-get-tool";
 import { useModeratorGetUser } from "../-queries/moderator-get-user";
-import { CommentPanel } from "./comment-panel";
 import { LookupBar } from "./lookup-bar";
 import { ToolPanel } from "./tool-panel";
 import { UserPanel } from "./user-panel";
 
-type ModerationTarget = "comment" | "tool" | "user";
+type ModerationTarget = "tool" | "user";
 
 const emptyIconByTarget: Record<ModerationTarget, React.ReactNode> = {
-  comment: <FlagIcon className="text-muted-foreground" />,
   tool: <WrenchIcon className="text-muted-foreground" />,
   user: <UserRoundXIcon className="text-muted-foreground" />,
 };
 
 const emptyIdentifierByTarget: Record<ModerationTarget, string> = {
-  comment: "comment id",
   tool: "tool",
   user: "user",
 };
@@ -39,26 +35,14 @@ export function Moderation() {
 
   const userLookup = useModeratorGetUser({ username: identifier });
   const toolLookup = useModeratorGetTool({ slug: identifier });
-  const commentLookup = useModeratorGetComment({ commentId: identifier });
 
-  const isFetching =
-    userLookup.isFetching || toolLookup.isFetching || commentLookup.isFetching;
+  const isFetching = userLookup.isFetching || toolLookup.isFetching;
 
   const handleFetch = async () => {
     if (!identifier.trim()) return;
 
     try {
       switch (target) {
-        case "comment": {
-          const { data: comment } = await commentLookup.refetch();
-          if (!comment) return;
-          globalBannerStore.add({
-            description: `Fetched comment ${comment._id} successfully.`,
-            title: "Comment fetched",
-            variant: "success",
-          });
-          break;
-        }
         case "tool": {
           const { data: tool } = await toolLookup.refetch();
           if (!tool) return;
@@ -94,7 +78,6 @@ export function Moderation() {
 
   const user = userLookup.data;
   const tool = toolLookup.data;
-  const comment = commentLookup.data;
 
   return (
     <>
@@ -115,10 +98,7 @@ export function Moderation() {
       {target === "tool" && tool && (
         <ToolPanel identifier={identifier} tool={tool} />
       )}
-      {target === "comment" && comment && (
-        <CommentPanel comment={comment} identifier={identifier} />
-      )}
-      {!user && !tool && !comment && (
+      {!user && !tool && (
         <Empty className="border border-dashed">
           <EmptyHeader>
             <EmptyMedia variant="icon">{emptyIconByTarget[target]}</EmptyMedia>

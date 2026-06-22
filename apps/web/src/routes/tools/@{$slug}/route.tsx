@@ -30,13 +30,13 @@ export const Route = createFileRoute("/tools/@{$slug}")({
       ogImage.searchParams.set("description", tool.shortDescription);
       ogImage.searchParams.set("categories", tool.categories.join(","));
       ogImage.searchParams.set("upvotes", String(tool.stats.upvotes));
-      ogImage.searchParams.set("comments", String(tool.stats.comments));
+      ogImage.searchParams.set("downvotes", String(tool.stats.downvotes));
     }
 
     const title = `${tool?.name ?? params.slug} • Grepedia`;
     const description =
       tool?.shortDescription ??
-      `Explore tool details and reviews for ${params.slug} on Grepedia.`;
+      `Explore tool details for ${params.slug} on Grepedia.`;
 
     return {
       meta: [

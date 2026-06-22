@@ -16,7 +16,6 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
 
       const tools = fastify.db.tools;
       const toolReactions = fastify.db.toolReactions;
-      const toolComments = fastify.db.toolComments;
       const userBookmarks = fastify.db.userBookmarks;
       const users = fastify.db.users;
 
@@ -55,15 +54,11 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
         ? ObjectId.createFromHexString(request.user.id)
         : undefined;
 
-      const [reaction, comment, bookmark] = currentUserId
+      const [reaction, bookmark] = currentUserId
         ? await Promise.all([
             toolReactions.findOne(
               { toolId: tool._id, userId: currentUserId },
               { projection: { value: 1 } },
-            ),
-            toolComments.findOne(
-              { toolId: tool._id, userId: currentUserId },
-              { projection: { _id: 1 } },
             ),
             userBookmarks.findOne(
               { toolId: tool._id, userId: currentUserId },
@@ -80,7 +75,6 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
           tool.addedBy.toHexString(),
         relations: {
           bookmarked: Boolean(bookmark),
-          commented: Boolean(comment),
           downvoted: reaction?.value === -1,
           upvoted: reaction?.value === 1,
         },

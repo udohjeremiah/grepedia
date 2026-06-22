@@ -17,7 +17,6 @@ export const toolSchema = z.object({
   shortDescription: z.string(),
   slug: slugSchema,
   stats: z.object({
-    comments: z.int().min(0),
     downvotes: z.int().min(0),
     upvotes: z.int().min(0),
   }),
