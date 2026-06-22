@@ -16,8 +16,8 @@ import {
 import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
 const toolsDirectoryCursorSchema = z.object({
-  _id: objectIdSchema,
   category: z.string().min(1).max(64),
+  id: objectIdSchema,
   name: z.string(),
 });
 
@@ -81,7 +81,7 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
                       { name: { $gt: decodedCursor.name } },
                       {
                         _id: {
-                          $gt: ObjectId.createFromHexString(decodedCursor._id),
+                          $gt: ObjectId.createFromHexString(decodedCursor.id),
                         },
                         name: decodedCursor.name,
                       },
@@ -111,8 +111,8 @@ const getToolsDirectory: FastifyPluginAsyncZod = async (fastify) => {
 
       if (lastTool && toolsDirectory.length === limit) {
         nextCursor = encodeCursor({
-          _id: lastTool._id.toHexString(),
           category,
+          id: lastTool._id.toHexString(),
           name: lastTool.name,
         });
       }

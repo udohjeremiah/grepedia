@@ -17,7 +17,7 @@ import {
 import { serializeMongoTypes } from "@/utils/serialize-mongo-types.js";
 
 const toolRevisionsCursorSchema = z.object({
-  _id: objectIdSchema,
+  id: objectIdSchema,
   revisionNumber: z.int().min(1),
 });
 
@@ -90,7 +90,7 @@ const getToolRevisions: FastifyPluginAsyncZod = async (fastify) => {
                       { revisionNumber: { $lt: decodedCursor.revisionNumber } },
                       {
                         _id: {
-                          $lt: ObjectId.createFromHexString(decodedCursor._id),
+                          $lt: ObjectId.createFromHexString(decodedCursor.id),
                         },
                         revisionNumber: decodedCursor.revisionNumber,
                       },
@@ -149,7 +149,7 @@ const getToolRevisions: FastifyPluginAsyncZod = async (fastify) => {
 
       if (lastRevision && revisions.length === limit) {
         nextCursor = encodeCursor({
-          _id: lastRevision._id.toHexString(),
+          id: lastRevision._id.toHexString(),
           revisionNumber: lastRevision.revisionNumber,
         });
       }

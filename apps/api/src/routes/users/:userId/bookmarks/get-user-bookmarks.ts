@@ -125,8 +125,8 @@ const getUserBookmarks: FastifyPluginAsyncZod = async (fastify) => {
 
       if (lastBookmark && bookmarkDocuments.length === limit) {
         nextCursor = encodeCursor({
-          _id: lastBookmark._id.toHexString(),
           createdAt: lastBookmark.createdAt.toISOString(),
+          id: lastBookmark._id.toHexString(),
         });
       }
 
