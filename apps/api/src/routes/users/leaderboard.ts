@@ -20,7 +20,6 @@ const leaderboardCursorSchema = z.object({
   rank: z.int().min(1),
   score: z.int().min(0),
   toolsAdded: z.int().min(0),
-  toolsUpdated: z.int().min(0),
   userId: objectIdSchema,
 });
 
@@ -28,7 +27,6 @@ type LeaderboardAggregate = {
   _id: ObjectId;
   score: number;
   toolsAdded: number;
-  toolsUpdated: number;
   user: {
     _id: ObjectId;
     country?: string;
@@ -73,17 +71,11 @@ const getUsersLeaderboard: FastifyPluginAsyncZod = async (fastify) => {
                 toolsAdded: { $lt: decodedCursor.toolsAdded },
               },
               {
-                score: decodedCursor.score,
-                toolsAdded: decodedCursor.toolsAdded,
-                toolsUpdated: { $lt: decodedCursor.toolsUpdated },
-              },
-              {
                 _id: {
                   $gt: ObjectId.createFromHexString(decodedCursor.userId),
                 },
                 score: decodedCursor.score,
                 toolsAdded: decodedCursor.toolsAdded,
-                toolsUpdated: decodedCursor.toolsUpdated,
               },
             ],
           },
@@ -102,49 +94,19 @@ const getUsersLeaderboard: FastifyPluginAsyncZod = async (fastify) => {
             $group: {
               _id: "$addedBy",
               toolsAdded: { $sum: 1 },
-              toolsUpdated: { $sum: 0 },
-            },
-          },
-          {
-            $unionWith: {
-              coll: fastify.env.MONGODB_COLL_TOOL,
-              pipeline: [
-                {
-                  $match: {
-                    status: "published",
-                    updatedBy: { $type: "objectId" },
-                  },
-                },
-                {
-                  $group: {
-                    _id: "$updatedBy",
-                    toolsAdded: { $sum: 0 },
-                    toolsUpdated: { $sum: 1 },
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $group: {
-              _id: "$_id",
-              toolsAdded: { $sum: "$toolsAdded" },
-              toolsUpdated: { $sum: "$toolsUpdated" },
             },
           },
           {
             $addFields: {
-              score: { $add: ["$toolsAdded", "$toolsUpdated"] },
+              score: "$toolsAdded",
             },
           },
           ...cursorMatch,
           {
             $sort: {
+              _id: 1,
               score: -1,
               toolsAdded: -1,
-              toolsUpdated: -1,
-              // eslint-disable-next-line perfectionist/sort-objects
-              _id: 1,
             },
           },
           { $limit: limit },
@@ -173,31 +135,6 @@ const getUsersLeaderboard: FastifyPluginAsyncZod = async (fastify) => {
         ])
         .toArray();
 
-      const totalsResult = await tools
-        .aggregate<{
-          _id: string;
-          totalAdded: number;
-          totalUpdated: number;
-        }>([
-          { $match: { status: "published" } },
-          {
-            $group: {
-              _id: "totals",
-              totalAdded: {
-                $sum: {
-                  $cond: [{ $eq: [{ $type: "$addedBy" }, "objectId"] }, 1, 0],
-                },
-              },
-              totalUpdated: {
-                $sum: {
-                  $cond: [{ $eq: [{ $type: "$updatedBy" }, "objectId"] }, 1, 0],
-                },
-              },
-            },
-          },
-        ])
-        .toArray();
-
       const rankBase = decodedCursor?.rank ?? 0;
 
       const leaderboardResponse = leaderboard.map((entry, index) => ({
@@ -208,7 +145,6 @@ const getUsersLeaderboard: FastifyPluginAsyncZod = async (fastify) => {
         name: entry.user.name,
         rank: rankBase + index + 1,
         toolsAdded: entry.toolsAdded,
-        toolsUpdated: entry.toolsUpdated,
         userId: entry.user._id,
         username: entry.user.username,
       }));
@@ -221,21 +157,14 @@ const getUsersLeaderboard: FastifyPluginAsyncZod = async (fastify) => {
           rank: rankBase + leaderboard.length,
           score: lastEntry.score,
           toolsAdded: lastEntry.toolsAdded,
-          toolsUpdated: lastEntry.toolsUpdated,
           userId: lastEntry._id.toHexString(),
         });
       }
-
-      const totals = totalsResult[0] ?? {
-        totalAdded: 0,
-        totalUpdated: 0,
-      };
 
       return reply.code(200).send({
         data: {
           leaderboard: serializeMongoTypes(leaderboardResponse),
           nextCursor,
-          totals,
         },
         message: "Leaderboard retrieved successfully",
         success: true,

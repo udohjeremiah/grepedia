@@ -18,7 +18,6 @@ export const moderatorGetUserResponseSchemas = {
         contributions: z.object({
           toolReactions: z.int(),
           toolsAdded: z.int(),
-          toolsUpdated: z.int(),
           total: z.int(),
         }),
         id: z.string(),
@@ -43,7 +42,6 @@ export const moderatorGetUserResponseSchemas = {
               duplicateRatioPercent: z.number().min(0).max(100),
               recentActions1h: z.int().min(0),
               toolsAdded: z.int().min(0),
-              toolsUpdated: z.int().min(0),
             }),
             userId: objectIdSchema,
           })

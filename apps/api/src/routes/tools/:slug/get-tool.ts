@@ -30,7 +30,7 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
 
       const userIds = [
         ...new Set(
-          [tool.addedBy, tool.updatedBy]
+          [tool.addedBy]
             .filter((value): value is ObjectId => value instanceof ObjectId)
             .map((value) => value.toHexString()),
         ),
@@ -78,10 +78,6 @@ const getTool: FastifyPluginAsyncZod = async (fastify) => {
           downvoted: reaction?.value === -1,
           upvoted: reaction?.value === 1,
         },
-        updatedBy: tool.updatedBy
-          ? (userById.get(tool.updatedBy.toHexString()) ??
-            tool.updatedBy.toHexString())
-          : undefined,
       });
 
       return reply.code(200).send({

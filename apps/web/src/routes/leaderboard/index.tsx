@@ -33,7 +33,8 @@ function RouteComponent() {
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold tracking-tight">Leaderboard</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Top contributors ranked by their impact on the platform.
+              Top contributors ranked by the number of tools submitted to the
+              platform.
             </p>
           </div>
           <QueryErrorResetBoundary>

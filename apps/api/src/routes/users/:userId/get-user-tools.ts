@@ -27,11 +27,8 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const [toolsAdded, toolsUpdated, toolsReactions] = await Promise.all([
+      const [toolsAdded, toolsReactions] = await Promise.all([
         tools.find({ addedBy: user._id }, { projection: { _id: 1 } }).toArray(),
-        tools
-          .find({ updatedBy: user._id }, { projection: { _id: 1 } })
-          .toArray(),
         toolReactions
           .find({ userId: user._id }, { projection: { toolId: 1, value: 1 } })
           .toArray(),
@@ -47,7 +44,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
 
       const mergedToolIds: ObjectId[] = [
         ...toolsAdded.map((tool) => tool._id),
-        ...toolsUpdated.map((tool) => tool._id),
         ...upvotedToolIds,
         ...downvotedToolIds,
       ];
@@ -72,7 +68,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
                     shortDescription: 1,
                     slug: 1,
                     stats: 1,
-                    updatedAt: 1,
                   },
                 },
               )
@@ -81,9 +76,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
 
       const addedSet = new Set(
         toolsAdded.map((tool) => tool._id.toHexString()),
-      );
-      const updatedSet = new Set(
-        toolsUpdated.map((tool) => tool._id.toHexString()),
       );
       const upvotedSet = new Set(upvotedToolIds.map((id) => id.toHexString()));
       const downvotedSet = new Set(
@@ -102,13 +94,11 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
           relations: {
             added: addedSet.has(idHex),
             downvoted: downvotedSet.has(idHex),
-            updated: updatedSet.has(idHex),
             upvoted: upvotedSet.has(idHex),
           },
           shortDescription: tool.shortDescription,
           slug: tool.slug,
           stats: tool.stats,
-          updatedAt: tool.updatedAt,
         });
       });
 
@@ -117,7 +107,6 @@ const getUserTools: FastifyPluginAsyncZod = async (fastify) => {
           stats: {
             added: addedSet.size,
             downvoted: downvotedSet.size,
-            updated: updatedSet.size,
             upvoted: upvotedSet.size,
           },
           tools: toolsResponse,

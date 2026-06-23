@@ -14,7 +14,6 @@ export const getUserToolsResponseSchemas = {
       stats: z.object({
         added: z.int(),
         downvoted: z.int(),
-        updated: z.int(),
         upvoted: z.int(),
       }),
       tools: z.array(
@@ -27,7 +26,6 @@ export const getUserToolsResponseSchemas = {
           relations: z.object({
             added: z.boolean(),
             downvoted: z.boolean(),
-            updated: z.boolean(),
             upvoted: z.boolean(),
           }),
           shortDescription: z.string(),
@@ -36,7 +34,6 @@ export const getUserToolsResponseSchemas = {
             downvotes: z.int(),
             upvotes: z.int(),
           }),
-          updatedAt: z.iso.datetime().optional(),
         }),
       ),
     }),

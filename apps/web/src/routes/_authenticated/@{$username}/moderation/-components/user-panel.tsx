@@ -67,7 +67,6 @@ export function UserPanel({ identifier, user }: UserPanelProps) {
         </p>
         <div className="grid gap-1 sm:grid-cols-2">
           <p>Tools added: {user.contributions.toolsAdded}</p>
-          <p>Tools updated: {user.contributions.toolsUpdated}</p>
           <p>Tool reactions: {user.contributions.toolReactions}</p>
           <p>Total contributions: {user.contributions.total}</p>
         </div>

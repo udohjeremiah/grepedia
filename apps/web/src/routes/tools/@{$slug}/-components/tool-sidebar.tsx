@@ -9,7 +9,7 @@ import {
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
 import { Separator } from "@workspace/ui/components/separator";
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import {
   CalendarIcon,
   ClockIcon,
@@ -17,7 +17,6 @@ import {
   FolderOpenIcon,
   GlobeIcon,
   type LucideIcon,
-  RefreshCwIcon,
   TagIcon,
   UserCircleIcon,
 } from "lucide-react";
@@ -56,17 +55,9 @@ export function ToolSidebar() {
         </SidebarSection>
         <Separator />
         <SidebarSection icon={UserCircleIcon} title="People">
-          <div className="flex flex-col gap-2.5">
-            <div className="flex items-center justify-between gap-4 text-sm">
-              <span className="text-muted-foreground">Added by</span>
-              <span>@{tool.addedBy}</span>
-            </div>
-            {tool.updatedBy && (
-              <div className="flex items-center justify-between gap-4 text-sm">
-                <span className="text-muted-foreground">Updated by</span>
-                <span>@{tool.updatedBy}</span>
-              </div>
-            )}
+          <div className="flex items-center justify-between gap-4 text-sm">
+            <span className="text-muted-foreground">Added by</span>
+            <span>@{tool.addedBy}</span>
           </div>
         </SidebarSection>
         <Separator />
@@ -88,19 +79,6 @@ export function ToolSidebar() {
               </span>
               <span>{format(new Date(tool.addedAt), "MMM d, yyyy")}</span>
             </div>
-            {tool.updatedAt && (
-              <div className="flex items-center justify-between gap-4 text-sm">
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <RefreshCwIcon className="size-3" />
-                  Updated
-                </span>
-                <span>
-                  {formatDistanceToNow(new Date(tool.updatedAt), {
-                    addSuffix: true,
-                  })}
-                </span>
-              </div>
-            )}
           </div>
         </SidebarSection>
         {tool.externalUrls && tool.externalUrls.length > 0 && (

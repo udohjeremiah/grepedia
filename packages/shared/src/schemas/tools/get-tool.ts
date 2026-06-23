@@ -20,7 +20,6 @@ export const getToolResponseSchemas = {
           downvoted: z.boolean(),
           upvoted: z.boolean(),
         }),
-        updatedBy: z.string().optional(),
       }),
     }),
     message: z.string(),

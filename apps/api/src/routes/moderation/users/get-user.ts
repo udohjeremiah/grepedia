@@ -26,13 +26,12 @@ const getUser: FastifyPluginAsyncZod = async (fastify) => {
         });
       }
 
-      const [toolsAdded, toolsUpdated, toolReactionsCount] = await Promise.all([
+      const [toolsAdded, toolReactionsCount] = await Promise.all([
         tools.countDocuments({ addedBy: user._id }),
-        tools.countDocuments({ updatedBy: user._id }),
         toolReactions.countDocuments({ userId: user._id }),
       ]);
 
-      const totalContributions = toolsAdded + toolsUpdated + toolReactionsCount;
+      const totalContributions = toolsAdded + toolReactionsCount;
 
       return reply.code(200).send({
         data: {
@@ -40,7 +39,6 @@ const getUser: FastifyPluginAsyncZod = async (fastify) => {
             contributions: {
               toolReactions: toolReactionsCount,
               toolsAdded,
-              toolsUpdated,
               total: totalContributions,
             },
             id: user._id.toHexString(),

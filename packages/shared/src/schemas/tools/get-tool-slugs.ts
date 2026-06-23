@@ -16,12 +16,7 @@ export const getToolSlugsResponseSchemas = {
   200: z.object({
     data: z.object({
       nextCursor: z.string().optional(),
-      tools: z.array(
-        z.object({
-          slug: slugSchema,
-          updatedAt: z.iso.datetime().optional(),
-        }),
-      ),
+      tools: z.array(z.object({ slug: slugSchema })),
     }),
     message: z.string(),
     success: z.boolean(),

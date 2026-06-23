@@ -31,7 +31,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           "/tools/directory",
         ];
 
-        const tools: Array<{ slug: string; updatedAt?: string }> = [];
+        const tools: Array<{ slug: string }> = [];
         let cursor: string | undefined;
 
         do {
@@ -73,11 +73,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         const toolUrls = tools
           .map((tool) => {
             const loc = `${env.VITE_BASE_URL}/tools/@${tool.slug}`;
-            const lastmod = tool.updatedAt
-              ? `<lastmod>${tool.updatedAt}</lastmod>`
-              : "";
 
-            return `<url><loc>${escapeXml(loc)}</loc>${lastmod}</url>`;
+            return `<url><loc>${escapeXml(loc)}</loc></url>`;
           })
           .join("");
 

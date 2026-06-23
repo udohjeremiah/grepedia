@@ -22,8 +22,6 @@ export const toolSchema = z.object({
   }),
   status: z.enum(["pending", "published", "archived", "flagged"]),
   tags: z.array(z.string()).min(1).max(8),
-  updatedAt: z.iso.datetime().optional(),
-  updatedBy: objectIdSchema.optional(),
 });
 
 export type Tool = z.infer<typeof toolSchema>;

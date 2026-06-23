@@ -83,10 +83,6 @@ export default fp(
                 options: { name: "grepedia__tool__addedBy" },
               },
               {
-                key: { updatedBy: 1 },
-                options: { name: "grepedia__tool__updatedBy" },
-              },
-              {
                 key: { slug: 1 },
                 options: { name: "grepedia__tool__slug", unique: true },
               },

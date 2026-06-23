@@ -11,7 +11,6 @@ import {
   ArrowUpRightIcon,
   FolderOpenIcon,
   type LucideIcon,
-  PenLineIcon,
   PlusIcon,
   SearchIcon,
   ThumbsDownIcon,
@@ -25,7 +24,7 @@ import { useUserTools } from "../-queries/user-tools";
 import { AddToolDialog } from "./add-tool-dialog";
 import { ToolDirectory } from "./tool-directory";
 
-type FilterView = "added" | "all" | "downvoted" | "updated" | "upvoted";
+type FilterView = "added" | "all" | "downvoted" | "upvoted";
 
 type StatConfigProps = {
   filterView: "all" | StatKey;
@@ -33,7 +32,7 @@ type StatConfigProps = {
   stats: Record<StatKey, number>;
 };
 
-type StatKey = "added" | "downvoted" | "updated" | "upvoted";
+type StatKey = "added" | "downvoted" | "upvoted";
 
 export const getStatConfig = ({
   filterView,
@@ -57,15 +56,6 @@ export const getStatConfig = ({
       label: "Downvotes Given",
       onClick: () =>
         setFilterView(filterView === "downvoted" ? "all" : "downvoted"),
-    },
-    updated: {
-      colorClass: "bg-success/10 text-success",
-      count: stats.updated,
-      icon: PenLineIcon,
-      isActive: filterView === "updated",
-      label: "Tools Updated",
-      onClick: () =>
-        setFilterView(filterView === "updated" ? "all" : "updated"),
     },
     upvoted: {
       colorClass: "bg-info/10 text-info",
@@ -102,12 +92,6 @@ export function UserTools() {
         );
         break;
       }
-      case "updated": {
-        filteredResult = filteredResult.filter(
-          (tool) => tool.relations.updated,
-        );
-        break;
-      }
       case "upvoted": {
         filteredResult = filteredResult.filter(
           (tool) => tool.relations.upvoted,
@@ -137,7 +121,6 @@ export function UserTools() {
     added: "Tools You Added",
     all: "All Tools",
     downvoted: "Tools You Downvoted",
-    updated: "Tools You Updated",
     upvoted: "Tools You Upvoted",
   };
 
@@ -163,7 +146,6 @@ export function UserTools() {
         <Separator />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <StatCard {...statConfig.added} />
-          <StatCard {...statConfig.updated} />
           <StatCard {...statConfig.upvoted} />
           <StatCard {...statConfig.downvoted} />
         </div>

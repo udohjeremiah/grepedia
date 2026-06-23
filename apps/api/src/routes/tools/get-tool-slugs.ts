@@ -43,7 +43,6 @@ const getToolSlugs: FastifyPluginAsyncZod = async (fastify) => {
         .aggregate<{
           _id: ObjectId;
           slug: string;
-          updatedAt?: Date;
         }>([
           {
             $match: {
@@ -63,7 +62,6 @@ const getToolSlugs: FastifyPluginAsyncZod = async (fastify) => {
             $project: {
               _id: 1,
               slug: 1,
-              updatedAt: 1,
             },
           },
         ])
@@ -81,7 +79,6 @@ const getToolSlugs: FastifyPluginAsyncZod = async (fastify) => {
           tools: serializeMongoTypes(
             toolSlugs.map((tool) => ({
               slug: tool.slug,
-              updatedAt: tool.updatedAt,
             })),
           ),
         },

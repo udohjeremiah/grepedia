@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/@{$username}/tools/")({
     meta: [
       { title: "Tools • Grepedia" },
       {
-        content: `Browse tools associated with @${params.username}, including owned, added, and updated tools.`,
+        content: `Browse tools associated with @${params.username}, including added, upvoted and downvoted tools.`,
         name: "description",
       },
     ],

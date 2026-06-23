@@ -119,10 +119,6 @@
       "types": "./dist/schemas/tools/tool.d.ts",
       "default": "./dist/schemas/tools/tool.js"
     },
-    "./schemas/tools/update-tool": {
-      "types": "./dist/schemas/tools/update-tool.d.ts",
-      "default": "./dist/schemas/tools/update-tool.js"
-    },
     "./schemas/users/bookmarks/get-user-bookmarks": {
       "types": "./dist/schemas/users/bookmarks/get-user-bookmarks.d.ts",
       "default": "./dist/schemas/users/bookmarks/get-user-bookmarks.js"
